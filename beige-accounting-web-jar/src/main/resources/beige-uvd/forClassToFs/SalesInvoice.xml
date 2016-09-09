@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Beigesoft ™
+  Licensed under the Apache License, Version 2.0
+ 
+  You may obtain a copy of the License at
+ 
+  http://www.apache.org/licenses/LICENSE-2.0
+ -->
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Explicit final definition.</comment>
+<entry key="prepaymentFromwdgNewForm">inputPrepaymentFrom</entry>
+<entry key="prepaymentFromwdgEditForm">inputPrepaymentFrom</entry>
+<entry key="itsTotalwdgNewForm">inputReadOnly</entry>
+<entry key="itsTotalwdgEditForm">inputReadOnly</entry>
+<entry key="totalTaxeswdgInputWrapper">wdgInpWrpSalTaxSales</entry>
+<entry key="subtotalwdgInputWrapper">wdgInpWrpSalTaxSales</entry>
+<entry key="totalTaxeswdgToCellDetail">wdgToCellDetailSalTaxSales</entry>
+<entry key="subtotalwdgToCellDetail">wdgToCellDetailSalTaxSales</entry>
+<entry key="totalTaxeswdgToCellHeader">wdgToCellHeaderSalTaxSales</entry>
+<entry key="subtotalwdgToCellHeader">wdgToCellHeaderSalTaxSales</entry>
+<entry key="paymentTotalwdgNewForm">inputReadOnly</entry>
+<entry key="paymentTotalwdgEditForm">inputReadOnly</entry>
+<entry key="paymentDescriptionwdgNewForm">inputReadOnly</entry>
+<entry key="paymentDescriptionwdgEditForm">inputReadOnly</entry>
+</properties>

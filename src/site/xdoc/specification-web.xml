@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+  <properties>
+    <title>Beigesoft WEB interface specification version #1</title>
+  </properties>
+
+  <body>
+
+    <!-- The body of the document contains a number of sections -->
+    <section name="Specification WEB interface version #1">
+      <p>It designed to be used for a single user(on Android, Windows) as well as standard heavy load WEB application.
+      </p>
+      <p>It supply unified interface for render list (pages) of a model and its form.</p>
+      <p>This interface use modal dialogs.</p>
+      <p>It use standard JEE MVC servlet + JSP.</p>
+      <p>It use standard JEE JDNI resource initialization and lookup.</p>
+      <p>It use org.beigesoft.factory.IFactoryAppBeans for instantiation application beans
+      cause it is hard to do it by JDNI. JDNI instantiate only JDBC dataSource and FactoryAppBeans.</p>
+      <p>To achive goal "Improve performance" - "The less quantity of requests the better":
+        <ul>
+          <li>There is no scrollable lists.</li>
+          <li>
+            It use AJAX-JSON multitarget response e.g.
+            {"multiTargetResponse": [
+              {"target": "listMain", "content": "good1 12.2USD...", "nameTargetParent": null, "javascript": null},
+              {"target": "userPref", "content": "...", "nameTargetParent": "upfeGroup", "javascript": "makeModal(\'userPref\')"}]} 
+            i.e. if user received a form he also reseived a hidden dialogs (entity pickers) and so on. 
+          </li>
+          <li>Ajax JSON responce made with JSP has actually JSON format (i.e. made with XML escape characters).</li>
+          <li>Client side validation doesn't allows user to send wrong data</li>
+          <li>Client side doesn't allows user to send non-changed data from "edit" form.</li>
+        </ul>
+      </p>
+      <p>It is required what user must be authorized.</p>
+      <p>All dialogs are modal.</p>
+      <p>WEB interface contains of 
+        <ul>
+          <li>main menu that invoikes by AJAX "main entities list"</li>
+          <li>main entities list - only list of business entities, e.g. "invoices", it has actions that invoke by AJAX "main entity form"
+          to create/edit/delete chosen entity. This list may has hidden (invoked by javascript) only filter-order dialog-form 
+          (if entity list filterable/orderable).</li>
+          <li>main entity dialog-form - consist of entity edit form and may consist of owned entities lists, e.g. "invoice lines".
+            Action "save" make AJAX request and refresh this form and underlain main list (with filter/order if any).
+          </li>
+          <li>owned entity dialog-form (invoice line for an invoice) - consist of owned entity edit form.
+          Action "save" make AJAX request and refresh main antity form and main list (with filter/order if any).</li>
+          <li>entity picker - exist for any entity and invoked by AJAX or "showModal" if exist in page.
+            It also may has hidden filter/order dialog.</li>
+        </ul>
+        This is example main WEB-page:
+        <pre style="white-space: pre-wrap;">
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+  &lt;meta charset="UTF-8"&gt;
+  &lt;meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"&gt;
+  &lt;script type="text/javascript" src="../static/js/beige.ajax.js"&gt;&lt;/script&gt;
+  &lt;script type="text/javascript" src="../static/js/beige.form.js"&gt;&lt;/script&gt;
+  &lt;script type="text/javascript" src="../static/js/beige.i18n.en.js"&gt;&lt;/script&gt;
+  &lt;link rel="stylesheet" href="../static/css/beige.common.css" /&gt;
+  &lt;link rel="icon" type="image/png"  href="../static/img/favicon.png"&gt;
+  &lt;title&gt;Beige WEB&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+  &lt;div class="navbar"&gt;
+    &lt;a class="navbar-brand" href="main.jsp"&gt;Main&lt;/a&gt;
+    &lt;div class="dropdown"&gt;
+      &lt;a href="#" class="dropdown-btn"&gt;Entities&lt;/a&gt;
+      &lt;div class="dropdown-content"&gt;
+         &lt;a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&amp;nameEntity=PersistableHead&amp;page=1');"&gt;Persistable heads&lt;/a&gt;
+         &lt;a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&amp;nameEntity=Department&amp;page=1');"&gt;Departments&lt;/a&gt;
+         &lt;a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&amp;nameEntity=GoodVersionTime&amp;page=1');"&gt;Products&lt;/a&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+    &lt;div class="nav-right"&gt;
+      &lt;a href="http://www.beigesoft.org/" target="_blank"&gt;Beigesoft ™&lt;/a&gt;
+      
+      
+        &lt;a href="../index.jsp"&gt;Exit&lt;/a&gt;
+      
+    &lt;/div&gt;
+  &lt;/div&gt;  
+
+  &lt;div id="lstMainPlace"&gt;
+  &lt;/div&gt;
+  
+  &lt;div id="frmMainPlace"&gt;
+  &lt;/div&gt;
+
+  &lt;div id="frmSubPlace"&gt;
+  &lt;/div&gt;
+
+  &lt;div id="pickersPlace"&gt;
+  &lt;/div&gt;
+
+  &lt;div id="pickersPlaceDub"&gt;
+  &lt;/div&gt;
+
+  &lt;dialog id="dlgError" class="dlg dlg-alert"&gt;
+      &lt;div class="error"&gt;
+        &lt;div class="dialog-title error-title"&gt;
+          Error!
+          &lt;button onclick="document.getElementById('dlgError').close()" class="btn-close btn-error"&gt;x&lt;/button&gt;
+        &lt;/div&gt;
+        &lt;div id="errorPlace" class="msg-place"&gt;
+        &lt;/div&gt;
+     &lt;/div&gt;
+  &lt;/dialog&gt;
+
+  &lt;dialog id="dlgWarning" class="dlg dlg-alert"&gt;
+    &lt;div class="warning"&gt;
+      &lt;div class="dialog-title warning-title"&gt;
+        Warning!
+        &lt;button onclick="document.getElementById('dlgWarning').close()" class="btn-close btn-warning"&gt;x&lt;/button&gt;
+      &lt;/div&gt;
+      &lt;div id="warningPlace" class="msg-place"&gt;
+      &lt;/div&gt;
+   &lt;/div&gt;
+  &lt;/dialog&gt;
+
+  &lt;div id="dlgSuccess" class="dlg-notifier"&gt;
+    &lt;div class="success"&gt;
+      &lt;div class="dialog-title success-title"&gt;
+        Success!
+        &lt;button onclick="document.getElementById('dlgSuccess').close()" class="btn-close btn-success"&gt;x&lt;/button&gt;
+      &lt;/div&gt;
+      &lt;div id="successPlace" class="msg-place"&gt;
+      &lt;/div&gt;
+   &lt;/div&gt;
+  &lt;/div&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;
+        </pre>
+      </p>
+      <h4>Fields ordering.</h4>
+      <p>There are 7 settings to order fields:<br></br>
+         orderShowForm, orderShowList, orderShowPicker, orderPrintForm, orderPrintfullForm, orderPrintList, orderPrintfullList<br></br>
+         Minus "-" means no show, 1, 4... - order.
+         <p>Next standard of ordering by field type in beige-uvd/fieldTypeToFs/orderShow[*].xml:
+          <pre style="white-space: pre-wrap;">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd"&gt;
+&lt;properties&gt;
+&lt;comment&gt;Correspondence of Java types order show in form(minus-1 no show, 1, 4... - order).
+  ORDER is essential, the LAST value will be used.&lt;/comment&gt;
+&lt;entry key="java.lang.Object"&gt;2000&lt;/entry&gt;
+&lt;entry key="java.lang.Long"&gt;1&lt;/entry&gt;&lt;!--Entity ID--&gt;
+&lt;entry key="java.util.Date"&gt;100&lt;/entry&gt;&lt;!--Doc Date--&gt;
+&lt;entry key="org.beigesoft.model.IHasId"&gt;200&lt;/entry&gt;&lt;!--e.g. Customer--&gt;
+&lt;entry key="java.lang.Enum"&gt;300&lt;/entry&gt;&lt;!--e.g. sales tax--&gt;
+&lt;entry key="java.math.BigDecimal"&gt;400&lt;/entry&gt;&lt;!--e.g. itsTotal--&gt;
+&lt;entry key="java.lang.String"&gt;1000&lt;/entry&gt;&lt;!--e.g. description--&gt;
+&lt;entry key="java.lang.Boolean"&gt;1100&lt;/entry&gt;&lt;!--e.g. is accounted--&gt;
+&lt;/properties&gt;
+          </pre>
+         </p>
+         <p>Next standard of ordering by field name in beige-uvd/fieldNameToFs/orderShow[*].xml:
+          <pre style="white-space: pre-wrap;">
+...
+&lt;entry key="itsId"&gt;1&lt;/entry&gt;
+&lt;entry key="itsVersion"&gt;2&lt;/entry&gt;
+&lt;entry key="idDatabaseBirth"&gt;3&lt;/entry&gt;
+&lt;entry key="idBirth"&gt;4&lt;/entry&gt;
+&lt;entry key="itsName"&gt;100&lt;/entry&gt;
+&lt;entry key="itsPrice"&gt;400&lt;/entry&gt;
+&lt;entry key="itsCost"&gt;401&lt;/entry&gt;
+&lt;entry key="itsQuantity"&gt;405&lt;/entry&gt;
+&lt;entry key="subtotal"&gt;410&lt;/entry&gt;
+&lt;entry key="itsTotal"&gt;450&lt;/entry&gt;
+...
+          </pre>
+         </p>
+      </p>
+      <p>Filtering/ordering is unpersistable, but entity form remember it if any. So filter/order params (only for main list) stored in page and passed
+      in request params then main/owned form are invoked. The has prefix "fltordM" e.g. "&amp;fltordMitsIdVal1=1&amp;fltordMitsNameOpr1='&gt;'"</p>
+      <p>Picker's filter/order params has prefix "fltordP[entitySimpleName]" for pickers in "pickersPlace"
+      and "fltordPD[entitySimpleName]" for pickers in "pickersDubPlace"</p>
+      <p>
+        Forced filter implemented with parameter [prefixFilterOrder]forcedFor that contains fields names filter forced for.
+      </p>
+          </section>
+
+  </body>
+
+</document>

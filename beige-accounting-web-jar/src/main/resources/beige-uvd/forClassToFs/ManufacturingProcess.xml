@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Beigesoft ™
+  Licensed under the Apache License, Version 2.0
+ 
+  You may obtain a copy of the License at
+ 
+  http://www.apache.org/licenses/LICENSE-2.0
+ -->
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Explicit final definition.</comment>
+<entry key="invItemwdgNewForm">inputProductInProgress</entry>
+<entry key="invItemwdgEditForm">inputProductInProgress</entry>
+<entry key="itsTotalwdgNewForm">inputTotalReadOnly</entry>
+<entry key="itsTotalwdgEditForm">inputTotalReadOnly</entry>
+<entry key="itsCostwdgNewForm">inputCostReadOnly</entry>
+<entry key="itsCostwdgEditForm">inputCostReadOnly</entry>
+<entry key="itsQuantitywdgNewForm">inputQuantityChangingCost</entry>
+<entry key="itsQuantitywdgEditForm">inputQuantityChangingCost</entry>
+<entry key="totalMaterialsCostwdgNewForm">inputReadOnly</entry>
+<entry key="totalAdditionCostwdgNewForm">inputReadOnly</entry>
+<entry key="totalMaterialsCostwdgEditForm">inputReadOnly</entry>
+<entry key="totalAdditionCostwdgEditForm">inputReadOnly</entry>
+</properties>

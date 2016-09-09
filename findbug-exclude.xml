@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+  <!-- All apache sources: -->
+  <Match>
+    <Package name="~org\.apache.*"/>
+  </Match>
+  <!-- All android generated sources: -->
+  <Match>
+    <Class name="~.*R\$.*"/>
+  </Match>
+  <!-- ResultSet and Statement will be closed by RecordSetJdbc: -->
+  <Match>
+     <Class name="org.beigesoft.jdbc.service.SrvDatabase" />
+     <Method name="retrieveRecords" />
+     <Bug pattern="OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE" />
+  </Match>
+  <!-- 1 - no need, 2 - opinion: https://sourceforge.net/p/findbugs/bugs/1379/: -->
+  <Match>
+     <Class name="org.beigesoft.properties.LinkedProperties" />
+     <Bug pattern="EQ_DOESNT_OVERRIDE_EQUALS" />
+  </Match>
+  <!-- Completely wrong rule: -->
+  <Match>
+     <Class name="org.beigesoft.jdbc.service.SrvDatabase" />
+     <Bug pattern="SQL_NONCONSTANT_STRING_PASSED_TO_EXECUTE" />
+  </Match>
+  <Match>
+     <Class name="~.*\.R\$.*" />
+     <Bug pattern="NM_FIELD_NAMING_CONVENTION" />
+  </Match>
+</FindBugsFilter>

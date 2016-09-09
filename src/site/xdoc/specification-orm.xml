@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+  <properties>
+    <title>Beigesoft ORM specification version #2</title>
+  </properties>
+
+  <body>
+
+    <!-- The body of the document contains a number of sections -->
+    <section name="Specification Beige-ORM version #1">
+      <p>It use Reflection API to generate SQL queries (DDL and DML).</p>
+      <p>It use standard Beige-Settings to describe ORM configuration with standard Properties XML.
+      All <b>current</b> configuration files are located in <b>beige-orm</b> folder.</p>
+      RDBMS specific configuration files saved in <b>beige-orm/[RDBMSname]</b> folder, e.g. <b>beige-orm/sqlite</b>.
+      <p>DDL and SQL queries generated according simple SQL table descriptor that is assigned for every persistable class.</p>
+      <p>SQL descriptors a filled by Beige-Settings with XML files and programmatically.</p>
+
+      <h4>SQL descriptor TableSql</h4>
+      <p>Consist of:
+        <ul>
+          <li>Map[fieldName-FieldSql] - fields map there fieldName same as in the class, e.g. "itsName"</li>
+          <li>versionAlgorithm - optimistic locking version algorithm. 0 - autoincrement, 1 - date changed.</li>
+          <li>constraint - table all CONSTRAINTs e.g. PRIMARY KEY ("id"), FOREIGN KEY.....</li>
+          <li>idName - ID name (field primary non-complex key) e.g. "itsId" (complex is always null!!!).</li>
+          <li>idDefinitionForeign - ID SQL definition for foreign key non-complex (complex is always null!!!),
+          e.g. Customer.itsId has SQL type "bigserial primary key", but Invoice.Customer has definition "bigint".</li>
+          <li>isFullDefinedInXml - if this table doesn't need to farther define by program.</li>
+        </ul>
+      </p>
+      
+      <h4>SQL descriptor FieldSql</h4>
+      <p>Consist of:
+        <ul>
+          <li>definition - DDL string e.g. "INTEGER NOT NULL"</li>
+          <li>foreignEntity - simple class name o foreign (owned) entity e.g. for itsDepartment "Department".
+          It used to resolve LEFT JOIN in SELECT statement.</li>
+        </ul>
+      </p>
+      
+      <h4>Tables descriptor.</h4>
+      <p>This is map ["EntitySimpleName - TableSql"]</p>
+        
+      <h4>Base configuration file <b>persistance-[RDBMS].xml</b> consist of:</h4>
+      <p>useSubFolder - <b>sqlite</b> | <b>postgresql</b> | <b>h2</b>. It used as name of directory that contains RDBMS specific configuration files.</p>
+      <p>classes - array of classes names(name include package same as getClass().getCanonicalName()) that
+      represent persistable models.</p>
+      <p>settingsKeysForClases - "idName, idDefinitionForeign, constraintAdd, constraint, isFullDefinedInXml, excludeFields", they are reserved settings, so don't change them.</p>
+      <p>settingsKeysForFields - "definition, isNullable, foreignEntity", they are reserved settings, so don't change them.</p>
+      <p>excludeFields - array of non-persistable fields names for all classes, e.g. <b>isNew</b>.</p>
+      
+      <h4>Application settings file <b>[RDBMS]/app-settings.xml</b> consist of:</h4>
+      <p>jdbcDriverClass - SQL driver class name.</p>
+      <p>databaseUrl - a database url of the form jdbc:subprotocol:subname.</p>
+      <p>userName - RDBMS user name.</p>
+      <p>userPassword - RDBMS user password.</p>
+      <p>checkTableExist - SQL select statment what return if table exist e.g. "select * from SQLITE_MASTER where TBL_NAME=':tableName';".</p>
+      <p>H2 required full path of database file e.g. <b>jdbc:h2:~/beigeaccountingtest</b> is in linux "home" path.
+      For multiplatform purpose there is non-standard word <b>#currentDir#</b> that point to current working directory = System.getProperty("user.dir").
+      So JDBC URL will be <b>jdbc:h2:#currentDir#beigeaccountingtest</b> .Also word <b>#currentParentDir#</b> is point to System.getProperty("user.dir").
+      So testing databases for JUnit used <b>#currentParentDir#</b> and will be at [sourceBeigeErp/]</p>
+
+      <h4>Common rules to generate DDL and SQL statements for persistable models.</h4>
+      <p>ALTER TABLE not supported, so just run it manually.</p>
+      <p>SQL92 problemable standard says that tables and fields names are either without quotes case insensitive or in quotes case sensitive
+      <a href="https://pubs.vmware.com/vfabric5/index.jsp?topic=/com.vmware.vfabric.sqlfire.1.0/reference/language_ref/sql_identifiers.html">SQL identifiers</a>. 
+      But not all database services accept names with quotes e.g. Jetty JDBC realm.
+      H2, Oracle treated field name without quotes itsId as ITSID, but Postgresql as itsid.
+      So Beige ORM used upper case names. To make SQL queries more redable SQL words are in lower case.
+      E.g. <b>create table USERJETTY (ITSID bigserial primary key, ITSNAME text not null).</b>.
+      I recommend very friendly and usefull H2 HTML based console utility. With it you can quickly make huge SQL query as fast as with
+      a visual SQL query builder. It insert upper case table and field name in query string when you click on a table or a field.
+      </p>
+      <p>It would be better if SQL identifier standard was as Java one.
+        In that case SQL queries (generated) will be more readable, e.g. "SELECT itsName FROM InvItem WHERE itsId=2;".
+      </p>
+      <p>Table name is class simple name in UPPER CASE letters.</p>
+      <p>Table field name is class field name in UPPER CASE letters.</p>
+      <p>Consequently all persistable models must have unique simple class name and their fields used prefix "its" to
+      prevent names collision.</p>
+      <p>But in XML files and in descriptors fields names are same as in class
+      cause use Java reflection API.</p>
+
+      <p>For unification purpose RDBMS types are Sqlite-oriented i.e. 
+      <b>java.util.Date</b> stored as <b>Long</b> and <b>Boolean</b> stored as <b>Integer</b>
+       in all RDBMS</p>
+            
+      <h4>Reveal column definition automatically.</h4>
+      <p>Beige-Settings makes it from XML files:
+        <ul>
+          <li>file <b>[RDBMS]/javaTypeToFs/definition.xml</b>.
+          It contains simple set of Java types and corresponded RDBMS types. 
+          E.g. for SQlite entries like - "java.lang.Integer" - "INTEGER", "java.util.Date" - "INTEGER"</li>
+          <li>file <b>[RDBMS]/fieldNameJavaTypeToFs/[fieldName]definition.xml</b>.
+          It contains set of Java types and corresponded RDBMS types. 
+          E.g. for primary key "itsId" on SQlite - "java.lang.Integer" - "integer not null primary key autoincrement"</li>
+          <li>file <b>[RDBMS]/fieldNameToFs/definition.xml</b>.
+          It contains set of field names corresponded RDBMS types. 
+          E.g. "itsName" - "string not null", "itsDate" - "integer not null"</li>
+        </ul>
+      </p>
+
+      <h4>Reveal DDL primary ID automatically.</h4>
+      <p>ID always defined with XML. See Beige-Accounting WarehouseRest for complex ID example.</p>
+
+      <h4>Reveal DDL for foreign ID automatically.</h4>
+      <p>Foreign (owned) entity revials automatically along with restriction foreign key. E.g. column "itsDepartment" - "integer"
+      will be same tape as primapy key entity "Department". Also constraint "foreign key (ITSDEPARTMENT)
+      references DEPARTMENT (ITSID)" will be added.</p>
+      <p>If field type simple name exist in tablesMap that means it's foreign entity.
+      To make such field NOT NULL add its setting isNullable = false. Class settings idName and idDefinitionForeign must be filled.</p>
+      
+      <h4>Create tables</h4>
+      <p>Tables will be created automatically if no exist according app setting <b>checkTableExist</b>.</p>
+      <p>This is simple SELECT statement that has parameter <b>:tableName</b> that will be replaced by real table name.
+      If query return 0 records - table not exist.</p>
+            
+      <h4>DML queries.</h4>
+      <p>Update/Insert queries are maked in usual way.</p>
+      <p>Select never retrieve owned items set (these are Many to One composition e.g. invoice's lines). 
+      But SELECT always retrieve owned entities (1st level) (that is One to One aggregation e.g. invoice's organization).
+      E.g. retrieved SalesInvoice already has retrieved property Customer, but Customer has 2-d level entity
+      PreferCurrency only ID. So to retrieve full model Customer->PreferCurrency you should make 2-nd query (invoke ORM retrieve entity by ID).</p>
+      <p>Entities with complex ID are inserted in usual way, but they retrieved and updated with manually WHERE clause. 
+      See Beige-Accounting WarehouseRest in SrvPurchaseInvoiceLine for example</p>
+
+      <h4>Creating tables.</h4>
+      <p>You hove to invoke method createTablesIfNeed(). Beige-ORM will create tables that not existed.
+      It never alter tables so you have to make script upgrade_[new_version].sql script. If all tables has been created
+      then insert.sql will be invoked if it exist.</p>
+      
+      <h4>Upgrade database.</h4>
+      <p>The most task of upgrade do not only upgrade tables definition, they also do inserts and update data, triggers, views.
+        So database must has version. When it's need to upgrade database then make script upgrade_[new version].sql
+        and BeigeORM start it in single transaction. This script should update database version itself.
+      </p>
+
+      <h5>Database Info persistable model</h5>
+      <p>Persistable model DatabaseInfo consist of:
+        <ul>
+          <li>databaseId - Integer, not null primary key and database ID</li>
+          <li>databaseVersion - Integer, not null database version</li>
+          <li>description - String</li>
+        </ul>
+        This is only row existed in table.
+      </p>
+
+      <h4>Transaction management</h4>
+      <p>There is two approaches to prevent dirty read:
+        <ol>
+          <li>Locking table or row. Not good for performance.</li>
+          <li>Dirty check - it's calling optimistic locking</li>
+        </ol>
+        E.g. Postgresql for <b>Repeatable read</b> isolation mode block table to prevent changing.
+        But Postgresql for <b>Serializable</b> mode use checking (not exactly locking).
+        During INSERT/UPDATE any record is locked.
+        Performance depends of locking implementation in concrete RDBMS.
+        BeigeERP is designed for high-performance. It's time to go from abstraction to concrete business logic.
+        Use <b>Read uncommitted</b> level and <b>check version</b> for an Invoice gives same result as <b>repeatable read</b>. 
+        Maintenance <b>theRest</b> of a good with checking <b>CHECK theRest >= 0</b>
+        will not fail transaction if theRest has changed by another transaction but it still enought.
+        It's reliable and cheap way that reqired only <p>Read uncommitted</p> level.
+        Calculation Cost of Goods Sold is involving many records to be read. Any way there is no difference
+        data has been changed during calculation or after. So just maintain <b>invoicesVersion</b> that increments each time that
+        an invoice has inserted or updated (so do for receipt and other influencing data) and recalculate COGS when it need.
+        So use custom <b>dirty check</b> and <b>Read uncommitted</b> level is reliable way that gives performance adventages.
+      </p>
+      <p>A RDBMS may not implements all 4 isolation modes.
+        Postgresql treated <b>read uncommited</b> as <b>read commited</b>.
+        Sqlite implements only <b>serializable</b> and <b>read uncommited</b>.
+      </p>
+      
+      <h4>Optimistic locking by "version check".</h4>
+      <p>Entity should has <b>itsVersion</b> filed of type <b>Long</b>.</p>
+      <p>Version algorithms:
+        <ol>
+          <li>Auto-increment</li>
+          <li>Time changed</li>
+        </ol>
+        Class setting "versionAlgorithm" is used to set field <b>versionAlgorithm</b> in <b>org.beigesoft.orm.model.TableSql</b> 
+      </p>
+
+      <p>
+        Many ORM use "Lazy initialization" by default that required "transaction per request/view". But "Lazy" means 
+        many SQL requests, that's not good for performance. Also holding connection during whole request is not good for performance.
+        Beige-ORM retrieve almost full model through 2 level. E.g. an retrieved Invoice has already retrieved Customer(1st level),
+        but in this Customer DefaultCurrency(2-nd level) has only ID. Beige-ORM never retrieved owned entities-list, e.g. InvoiceLines.
+        So it's take 2 SQL queries to retrieve model Invoice. 
+        Standard "Lazy configured" ORM takes more SQL requests to retrieve such model.
+        User can works with owned entities-list as well as with standard entities-list.
+        I.e. user can filter and order it. It's useful for huge owned list, e.g. a warehouse can has hundreds places.
+        Bean Managed Transactions (code inside business service) actually more flexable then CMT cause you can change
+        business service with new logic by invoking simple setter for it during runtime.
+      </p>
+            
+      <h5>Exceptions throw ExceptionWithCode:</h5>
+      <ul>
+        <li>1000 - not_yet_implemented</li>
+        <li>1001 - Something goes wrong, e.g. attempt to update entity with complex ID by update without where that not yet supported</li>
+        <li>1002 - Configuration mistake</li>
+        <li>1151 - dirty_read</li>
+        <li>1152 - exception update/insert It should be 1 row updated/inserted but it was...</li>
+        <li>1153 - BAD_PARAMS bad parameters e.g. isolation level</li>
+        <li>1154 - SQL_EXEC_ERROR SQL exception</li>
+      </ul>
+    </section>
+
+
+  </body>
+
+</document>

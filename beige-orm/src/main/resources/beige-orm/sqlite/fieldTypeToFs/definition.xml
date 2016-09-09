@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Beigesoft ™
+  Licensed under the Apache License, Version 2.0
+ 
+  You may obtain a copy of the License at
+ 
+  http://www.apache.org/licenses/LICENSE-2.0
+ -->
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Correspondence of Java types to services that explain about property. ORDER is essential, the LAST value will be used.</comment>
+<entry key="java.lang.Integer">integer</entry>
+<entry key="java.lang.Long">integer</entry>
+<entry key="java.lang.Float">real</entry>
+<entry key="java.lang.Double">real</entry>
+<entry key="java.lang.String">text</entry>
+<entry key="java.lang.Boolean">integer not null default 0</entry>
+<entry key="java.util.Date">integer</entry>
+<entry key="java.lang.Enum">integer</entry>
+<entry key="java.math.BigDecimal">real</entry>
+</properties>

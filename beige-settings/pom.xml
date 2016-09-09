@@ -1,0 +1,59 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.beigesoft</groupId>
+    <artifactId>beige-software</artifactId>
+    <version>1.1.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>beige-settings</artifactId>
+  
+  <name>Beigesoft settings library.</name>
+  <description>It helps to quickly make settings for class and its fields of with properties XML.
+    Instead of create a lot of files to describe every class and its fields it use describing by type, by name.
+    E.g. setting "java.lang.Integer"-"INTEGER NOT NULL" will be assigned fo every field of this type.
+    Of course it can be overriden by settings for field name and so on.
+    It is used by beige-web to describe how to render an entity and convert from HTML value.
+    It is used by beige-orm to describe how to map an entity to a DBMS.
+    It make simple settings - Map&lt;String, String&gt;, e.g. "title"-"Beige ORM 1.1", 
+    class settings Map&lt;String, Map&lt;String, String&gt;&gt;, 
+    e.g. "org.mode.Customer"-["defaultOrder"-"ITSNAME", "wdgFilterOrder"-"filterOrderStd"],
+    fields settings Map&lt;String, Map&lt;String, Map&lt;String, String&gt;&gt;&gt;,
+    e.g. "org.mode.Customer"-["itsId"["wdgNew"-"null", "wdgFilter"-"filterNumber"]]
+  </description>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  
+  <dependencies>
+    <dependency>
+      <groupId>org.beigesoft</groupId>
+      <artifactId>beige-common</artifactId>
+      <version>${beige.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+     <plugin>
+       <groupId>org.apache.maven.plugins</groupId>
+       <artifactId>maven-jar-plugin</artifactId>
+       <version>2.4</version>
+       <executions>
+         <execution>
+           <goals>
+             <goal>test-jar</goal>
+           </goals>
+         </execution>
+       </executions>
+     </plugin>
+    </plugins>
+  </build>
+
+</project>

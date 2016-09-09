@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Beigesoft ™
+  Licensed under the Apache License, Version 2.0
+ 
+  You may obtain a copy of the License at
+ 
+  http://www.apache.org/licenses/LICENSE-2.0
+ -->
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Correspondence of field name to field setting.</comment>
+<entry key="itsId">1</entry>
+<entry key="itsVersion">2</entry>
+<entry key="idDatabaseBirth">3</entry>
+<entry key="idBirth">4</entry>
+<entry key="itsName">100</entry>
+<entry key="itsPrice">400</entry>
+<entry key="itsCost">401</entry>
+<entry key="itsQuantity">405</entry>
+<entry key="subtotal">410</entry>
+<entry key="itsTotal">450</entry>
+</properties>

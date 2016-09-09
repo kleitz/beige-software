@@ -1,0 +1,65 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.beigesoft</groupId>
+    <artifactId>beige-software</artifactId>
+    <version>1.1.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>beige-orm</artifactId>
+  
+  <name>Beigesoft ORM library.</name>
+  <description>Beigesoft ORM library. This is simple lightweigt multiplatform (JDBC/Android) ORM library.
+  It supports Postgresql, H2 and SQlite.
+  Consist of ORM logic except platform dependent database access logic - e.g. JDBC or Android.
+  It's configurable with standard Java Properties XML files.
+  Standard SQL queries both DML(e.g. SELECT) and DDL(e.g. CREATE) 
+  are automatically generated and could be modified/replaced by Properties XML.</description>
+  
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  
+  <dependencies>
+    <dependency>
+      <groupId>org.beigesoft</groupId>
+      <artifactId>beige-common</artifactId>
+      <version>${beige.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.beigesoft</groupId>
+      <artifactId>beige-settings</artifactId>
+      <version>${beige.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.beigesoft</groupId>
+      <artifactId>beige-settings</artifactId>
+      <version>${beige.version}</version>
+      <type>test-jar</type>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+  
+  <build>
+    <plugins>
+     <plugin>
+       <groupId>org.apache.maven.plugins</groupId>
+       <artifactId>maven-jar-plugin</artifactId>
+       <version>2.4</version>
+       <executions>
+         <execution>
+           <goals>
+             <goal>test-jar</goal>
+           </goals>
+         </execution>
+       </executions>
+     </plugin>
+    </plugins>
+  </build>
+  
+</project>

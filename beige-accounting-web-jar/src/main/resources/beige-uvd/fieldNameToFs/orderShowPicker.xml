@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Beigesoft ™
+  Licensed under the Apache License, Version 2.0
+ 
+  You may obtain a copy of the License at
+ 
+  http://www.apache.org/licenses/LICENSE-2.0
+ -->
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Correspondence of field name to field setting.</comment>
+<entry key="sourceDatabaseBirth">-1</entry>
+<entry key="isSubaccFromMethod">-1</entry>
+<entry key="sourceIdName">-1</entry>
+<entry key="subaccExpenseType">-1</entry>
+<entry key="subaccExpenseId">-1</entry>
+<entry key="subaccCashId">-1</entry>
+<entry key="subaccCashType">-1</entry>
+<entry key="sourceType">-1</entry>
+<entry key="sourceId">-1</entry>
+<entry key="sourceDatabaseBirth">-1</entry>
+<entry key="subaccDebitType">-1</entry>
+<entry key="subaccDebitId">-1</entry>
+<entry key="subaccCreditType">-1</entry>
+<entry key="subaccCreditId">-1</entry>
+<entry key="idDatabaseBirth">-1</entry>
+<entry key="reversedId">-1</entry>
+<entry key="idBirth">-1</entry>
+<entry key="itsOwner">-1</entry>
+<entry key="isNew">-1</entry>
+<entry key="itsVersion">-1</entry>
+<entry key="purchaseInvoiceId">-1</entry>
+<entry key="salesInvoiceId">-1</entry>
+<entry key="itsId">1</entry>
+<entry key="itsName">100</entry>
+<entry key="subaccName">100</entry>
+<entry key="manufacturingProcess">190</entry>
+<entry key="accDebit">304</entry>
+<entry key="subaccDebit">306</entry>
+<entry key="debit">308</entry>
+<entry key="accCredit">310</entry>
+<entry key="subaccCredit">312</entry>
+<entry key="credit">314</entry>
+<entry key="subaccCash">395</entry>
+<entry key="itsPrice">400</entry>
+<entry key="itsCost">401</entry>
+<entry key="itsQuantity">405</entry>
+<entry key="subtotal">410</entry>
+<entry key="totalTaxes">420</entry>
+<entry key="itsTotal">450</entry>
+<entry key="prepaymentFrom">-1</entry>
+<entry key="prepaymentTo">-1</entry>
+<entry key="paymentTotal">470</entry>
+<entry key="paymentDescription">475</entry>
+<entry key="totalMaterialsCost">410</entry>
+<entry key="totalAdditionCost">415</entry>
+<entry key="allowance">410</entry>
+<entry key="yearWageFrom">420</entry>
+<entry key="yearWageTo">430</entry>
+<entry key="wageFrom">440</entry>
+<entry key="wageTo">450</entry>
+<entry key="plusAmount">460</entry>
+<entry key="itsPercentage">470</entry>
+<entry key="theRest">900</entry>
+</properties>

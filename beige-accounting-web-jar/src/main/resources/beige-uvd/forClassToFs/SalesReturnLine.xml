@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Beigesoft ™
+  Licensed under the Apache License, Version 2.0
+ 
+  You may obtain a copy of the License at
+ 
+  http://www.apache.org/licenses/LICENSE-2.0
+ -->
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Explicit final definition.</comment>
+<entry key="itsCostwdgNewForm">inputCost</entry>
+<entry key="totalTaxeswdgNewForm">null</entry>
+<entry key="subtotalwdgNewForm">null</entry>
+<entry key="taxesDescriptionwdgNewForm">null</entry>
+<entry key="taxesDescriptionwdgEditForm">null</entry>
+<entry key="subtotalwdgToCellDetail">wdgToCellDetailSalTaxPurch</entry>
+<entry key="subtotalwdgToCellHeader">wdgToCellHeaderSalTaxPurch</entry>
+<entry key="totalTaxeswdgToCellDetail">wdgToCellDetailSalTaxPurch</entry>
+<entry key="totalTaxeswdgToCellHeader">wdgToCellHeaderSalTaxPurch</entry>
+<entry key="taxesDescriptionwdgToCellDetail">wdgToCellDetailSalTaxPurch</entry>
+<entry key="taxesDescriptionwdgToCellHeader">wdgToCellHeaderSalTaxPurch</entry>
+</properties>

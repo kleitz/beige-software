@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Beigesoft ™
+  Licensed under the Apache License, Version 2.0
+ 
+  You may obtain a copy of the License at
+ 
+  http://www.apache.org/licenses/LICENSE-2.0
+ -->
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>App properties</comment>
+<entry key="title">Beige ORM</entry>
+<entry key="jdbcDriverClass">org.sqlite.JDBC</entry>
+<entry key="dataSourceClassName">org.sqlite.SQLiteDataSource</entry>
+<entry key="databaseName">#currentParentDir#beigeaccountingtest.sqlite</entry>
+<entry key="databaseUrl">jdbc:sqlite:#currentParentDir#beigeaccountingtest.sqlite</entry>
+<entry key="checkTableExist">select * from SQLITE_MASTER where TBL_NAME=':tableName';</entry>
+<entry key="initRdbms">init-sqlite.sql</entry>
+</properties>

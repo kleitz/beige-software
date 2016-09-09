@@ -1,0 +1,300 @@
+@SuppressWarnings("unchecked")
+@SuppressWarnings("rawtypes")
+
+Postrgesql:
+delete all tables, triggers, views etc owned by:
+drop owned by beigeaccounting;
+
+$ANT_HOME/bin/ant -Dtomcat.home=$TOMCATA_HOME -Dwebapp.path=target/beige-accounting-web/
+
+java -jar $ANDROID_HOME/build-tools/23.0.3/lib/dx.jar --dex --output=beige-accounting-android.jar classes/ lib/
+
+svn co https://svn.apache.org/repos/asf/tomcat/taglibs/trunks apache-taglibs
+
+tomcat build:
+$ANT_HOME/bin/ant clean clean-depend
+$ANT_HOME/bin/ant -Dno.build.dbcp=true
+
+Linux:
+alt-r bash history
+//replace string
+find . -type f -name "*.java" -exec sed -i "s/packagesPersistable/classesPersistable/g" {} +
+//print files with text:
+grep --include=*.java -rwl '.' -e "SQLITE_NAME"
+//print files and lines with text:
+grep --include=*.xml -rnw '.' -e "TO-DO"
+find . -type f -name "*.java" -exec sed -i "s/ADocumentWithTaxes/ADocWithTaxes/g" {} +
+find . -type f -not -name "*.jar" -exec sed -i "s/java\.beans/beans/g" {} +
+find . -type f -name "*.java" -exec sed -i "s/java\.beans/beans/g" {} +
+find . -type f -name "*.java" -exec sed -i "s/ctxt\.getClassLoader()/ctxt\.getClass()\.getClassLoader()/g" {} +
+find . -type f -name "pom.xml" -exec sed -i "s/1\.0\.9-SNAPSHOT/1\.1\.0-SNAPSHOT/g" {} +
+grep -F --include=*.jsp -rw '.' -e 'getMsg("$'
+//list files with extension
+find . -type f -name "*.in"
+
+Maven:
+mvnDebug tomcat7:run -P sqlite
+mvn clean install tomcat7:run -P webtest
+mvn dependency:list
+mvn dependency:sources
+mvn dependency:resolve -Dclassifier=sources
+mvn dependency:resolve -Dclassifier=javadoc
+mvn -Dmaven.surefire.debug test  //The tests will automatically pause and await a remote debugger on port 5005
+
+Android:
+android avd
+adb logcat
+adb logcat -s "Jetty"
+adb forward tcp:1044 jdwp:8823
+adb pull /data/data/org.beigesoft.androidtest/beigedbtest
+mvn android:run
+mvn android:deploy
+mvn android:redeploy
+mvn android:instrument
+adb root
+adp push/pull <surce> <dest>  !!! as root!!!
+adb push ~/beige-accounting-ajetty/bobs-pizza.sqlite /sdcard/BeigeAccountingBackup/bobs-pizza080916.sqlite
+adb pull /sdcard/BeigeAccountingBackup/beige-accounting.sqlite bablnssterr.sqlite
+adb shell - ls to list AVD filesistem
+adb shell pm list packages
+adb shell pm path org.mortbay.ijetty
+adb pull /data/app/org.mortbay.ijetty-1.apk
+adb devices
+adb connect localhost:5554 -not work!!!
+                                                      mkdir /mnt/auserdata-qemu
+root@debian21323:/home/yury/.android/avd/nexus_4.avd# mount userdata-qemu.img -o loop /mnt/auserdata-qemu
+android-sdk-linux/tools$ adb shell
+generic_x86:/ $ su
+127|generic_x86:/ # ls
+acct    default.prop      init                 init.usb.rc       root            service_contexts    ueventd.rc 
+cache   dev               init.environ.rc      init.zygote32.rc  sbin            storage             vendor     
+charger etc               init.goldfish.rc     mnt               sdcard          sys                 
+config  file_contexts.bin init.ranchu.rc       oem               seapp_contexts  system              
+d       fstab.goldfish    init.rc              proc              selinux_version ueventd.goldfish.rc 
+data    fstab.ranchu      init.usb.configfs.rc property_contexts sepolicy        ueventd.ranchu.rc   
+generic_x86:/ # cd data
+generic_x86:/data # cd app
+generic_x86:/data/app # ls
+ApiDemos           GestureBuilder SmokeTestApp WidgetPreview          bobs-pizza.sqlite              
+CubeLiveWallpapers SmokeTest      SoftKeyboard beigeaccounting.sqlite org.beigesoft.android.ajetty-1 
+generic_x86:/data/app # cp bobs-pizza.sqlite /sdcard/BeigeAccountingBackup/bobs-pizza.sqlite
+generic_x86:/data/app # cd /sdcard/BeigeAccountingBackup                                                                             
+generic_x86:/sdcard/BeigeAccountingBackup # ls
+
+JDB:
+stop at org.beigesoft.orm.test.TestSimple:80
+eval srvOrm.retrieveEntityWithConditions(org.beigesoft.persistable.RoleJetty.class, "where ITSNAME='user'")
+stop at org.beigesoft.android.sqlite.service.SrvDatabase:247
+jdb -attach localhost:1044 -sourcepath ~/git/beige-software/beige-orm/src/main/java:~/git/beige-software/beige-android/src/main/java
+jdb -attach 5005 -sourcepath ~/git/beige-software/beige-orm/src/main/java:~/git/beige-software/beige-orm/src/test/java
+jdb -attach 5005 -sourcepath ~/git/beige-software/beige-settings/src/main/java
+org.beigesoft.settings.MngSettings:371 326
+stop at org.beigesoft.orm.service.TestH2:48
+stop at org.beigesoft.orm.service.ASrvOrm:804
+jdb -attach 8000 -sourcepath ~/git/beige-software/beige-web/src/main/java:~/git/beige-software/beige-orm/src/main/java:~/git/beige-software/beige-jdbc/src/main/java
+stop at org.beigesoft.web.service.SrvEntity:134
+jdb -attach localhost:8000 -sourcepath ~/git/beige-software/beige-accounting/src/main/java:~/git/beige-software/beige-web-jar/src/main/java
+stop at org.beigesoft.accounting.service.ASrvDrawItemEntry:242
+stop at org.beigesoft.accounting.service.SrvBalanceStd:234
+eval datePeriodStartFor.getTime() > lazyGetBalanceAtAllDirtyCheck().getCurrentBalanceDate().getTime() || lazyGetBalanceAtAllDirtyCheck().getLeastAccountingEntryDate().getTime() < lazyGetBalanceAtAllDirtyCheck().getCurrentBalanceDate().getTime()
+stop at org.beigesoft.web.service.SrvWebEntity:692
+help
+cont
+next
+eval quantityToLeaveRst
+stop at org.beigesoft.accounting.service.ASrvDrawItemEntry:265
+cont
+
+SQL:
+CREATE TABLE "UserJetty" (
+"itsName" TEXT NOT NULL,
+"itsId" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT);
+ 
+UPDATE "UserJetty" SET 
+"itsName"='user22' WHERE "itsId"=2;
+
+SELECT * FROM "UserJetty";
+
+BEGIN TRANSACTION;
+INSERT INTO "UserJetty" ("itsName") VALUES ('user1');
+SAVEPOINT INSUS2;
+INSERT INTO "UserJetty" ("itsName") VALUES ('user2');
+ROLLBACK TRANSACTION TO SAVEPOINT INSUS2;
+COMMIT TRANSACTION;
+
+H2:
+
+CREATE TABLE "UserJetty" (
+"itsName" TEXT NOT NULL,
+"itsId" IDENTITY NOT NULL PRIMARY KEY);
+
+drop table DATABASEINFO ;
+drop table PERSISTABLELINE ;
+drop table PERSISTABLEHEAD ;
+drop table DEPARTMENT ;
+drop table GOODVERSIONTIME  ;
+
+drop table USERROLETOMCAT ;
+drop table USERTOMCAT ;
+drop table USERROLEJETTY ;
+drop table USERJETTY ;
+drop table ROLEJETTY ;
+
+drop table WAREHOUSEMOVEMENT  ;
+drop table WAREHOUSEREST ;
+drop table SUPPLIERINVOICELINE ;
+drop table SUPPLIERINVOICE ;
+drop table CUSTOMERINVOICELINE ;
+drop table CUSTOMERINVOICE ;
+drop table ACCOUNT;
+drop table PRODUCT;
+drop table PRODUCTCATEGORY ;
+drop table DEBTORCREDITOR ;
+drop table WAREHOUSEPLACE ;
+drop table WAREHOUSE ;
+
+TODO different classloaders for non-embedded A-Jetty:
+java.util.MissingResourceException: Can't find resource for bundle 'MessagesBundle_en_US', key ''
+W/System.err( 9957): 	at java.util.ResourceBundle.missingResourceException(ResourceBundle.java:238)
+W/System.err( 9957): 	at java.util.ResourceBundle.getBundle(ResourceBundle.java:230)
+W/System.err( 9957): 	at java.util.ResourceBundle.getBundle(ResourceBundle.java:159)
+W/System.err( 9957): 	at org.beigesoft.service.SrvI18n.<init>(SrvI18n.java:36)
+
+***tax description percent
+***manufacture rounding error -0.0004 - this is simple rounding error 40.2907 / 12 = 3.357558333 -> 3.3576 * 12 = 40.2912 (-0.0005 RE)
+***check out reverse
+***BalanceAt inventory/cogs pizza  hasn't calculated after sales return reverse until change period **** reverse didn't call srvBalance for event date***
+***prevent delete for initially inserted:
+    ***currencies
+    ***InvItemType
+***pickers filters for:
+  ***purchase invoice - prepayments
+  ***payments - purchase invoice 
+  ***purchase return - purchase invoice
+  ***sales invoice - prepayments
+  ***payments - sales invoice
+  ***manufacturing product in progress 
+  ***manufacture finished product
+  ***manufacture m-process
+  ***m.proc add cost acc expense
+***theRest in list 100
+***check filters/orders for:
+  ***ID <> order
+  ***String like(use%)+ eq+ order+
+  ***Date >+ and <! "fltordMorderBy=subaccCash&fltordMitsIdOpr1=disabled&fltordMitsIdOpr2=disabled&fltordMitsDateOpr1=gt&flt!!!!!!!!!!!PrepaymentToitsDateOpr2=lt&fltordMsubaccCashOpr1=disabled&fltordMitsTotalOpr1=disabled&fltordMitsTotalOpr2=disabled&fltordMpurchaseInvoiceIdOpr1=disabled&fltordMpurchaseInvoiceIdOpr2=disabled&fltordMdescriptionOpr1=disabled&fltordMhasMadeAccEntriesVal=null&fltordMorderByDesc=on&nameRenderer=listJson&nameEntity=PrepaymentTo&page=1&javascript=clearChangesAndCloseDialog('lstMainPlaceFltOrd')&mobile=&fltordMvendorValId=&fltordMvendorOpr=eq&fltordMaccCashValId=&fltordMaccCashOpr=eq&fltordMitsDateVal1=1467320400000&fltPrepaymentToitsDateVal2=1470085200000"
+      itsDate={orderPrintForm=10, orderShowList=1, wdgReverseForm=inputDateTimeReadOnly, orderPrintList=2, wdgOrder=orderStd, wdgDeleteForm=inputDisabledDateTime, orderShowForm=2, wdgToCellDetail=wdgToCellDetail, wdgFilter=filterDate, wdgInputWrapper=wdgInputWrapper, orderPrintfullForm=2, orderPrintfullList=2, wdgNewForm=inputDateTime, wdgEditForm=inputDateTime, wdgToString=toStrDateTime, orderShowPicker=1, wdgToCellHeader=wdgToCellHeader}
+      stop at org.beigesoft.web.service.SrvWebEntity:807
+  ***boolean filter+ order disabled
+  ***owned entity filter eq+ STRING ID+ order disabled
+  ***enum ++
+***cancel to close
+***current year print short
+***print sales invoice and others order for all
+***add address and phone into debtor/creditor
+***too much rounding error in balance it was cost precision for sales taxes
+***view entity picker appearance width full  
+***row hover high-lite
+***filter form
+***filter-order disable for
+  ***debtcred category
+  ***item type
+  ***purchaseInvoiceLine, all IOwned
+***check filter-order for pickers
+  ***item
+  ***debtor/credtor
+***m.proc add cost acc expense NOT NULL subaccExpense
+***inputs to mobile
+***filters to mobile
+***for lists to mobile
+***css
+***js
+
+**subaccount not null in documents:
+  ***prepayment to
+  **prepayment from
+  ***payment to
+  **payment from
+***input accounting entries subacc required after copy bug
+***android service into new thread
+**check out rounding for document line itsOwner total select:
+  **purchase invoice line
+  **purchase return line
+  **sales invoice line
+  **sales return line
+  **goods loss line
+  **wage line
+  **wage tax line
+**expenses remove filter/order
+** EmployeeCategory rem filt/ord
+** WageType rem flt/ord, WageTaxTable
+***item price/cost/quantity round:
+  ***sal inv/ret ln
+  ***purch inv/ret ln
+  ***goods loss
+  *** use material line
+***js redone rounding .toFixed([precision])
+***COGS entry reverse doesn't set reversedId for negate (die[s!!!].getItsId())
+***item tax category allow delete tax
+***line tax description wrong non from tax category:
+  ***purchase inv/ret
+  ***sal inv/ret
+***remove logic subtotal=price*quantity:
+  ***purchase inv
+  ***sales inv
+**SrvWageTaxPercentageTable wage line tax precision
+*wage tax line order
+*wage employee first
+
+SQL where ['string'] filter string, entity with id string redo, optimize as different wdgFilter and their srvWebEntity decoder.
+sales return to acc-receivable
+purchase return to acc-payable
+precision appearance 2 or 4
+*JS total=price*quantity make switcher on/off
+transfer data between DB
+replace dateformatter and other Utl services by interfaces
+UVD form fields in 4 columns
+android App.factory release memory after N minutes of idle.
+edit form close after save for non-having lines?
+
+++++++***************************
+I/SrvBalanceStd( 2727): SrvBalanceStd: recalculating balances from start Mon Feb 01 00:00:00 GMT+03:00 2016 <- Fri Jan 01 00:00:00 GMT+03:00 2016
+D/        (29244): RIL_onMultiClientUnsolicitedResponse:
+E/        (29244): unsupported multiclient unsolicited response code 1012
+D/dalvikvm( 2727): GC_CONCURRENT freed 1999K, 28% free 10377K/14272K, paused 4ms+11ms, total 168ms
+D/dalvikvm( 2727): WAIT_FOR_CONCURRENT_GC blocked 113ms
+I/SrvBalanceStd( 2727): SrvBalanceStd: last stored balance date Thu Sep 01 00:00:00 GMT+03:00 2016, date for Fri Sep 02 08:46:00 GMT+03:00 2016
+W/System.err( 2727): org.beigesoft.exception.ExceptionWithCode: It should be 1 row updated but it was 0, query:
+W/System.err( 2727): update BALANCEATALLDIRTYCHECK set 
+W/System.err( 2727): BALANCESTOREPERIOD=3, ISPERIODCHANGED=0, CURRENTBALANCEDATE=1472795160000, LEASTACCOUNTINGENTRYDATE=1472795160000, DATEBALANCESTORESTART=1451595600000 where ITSID=1;
+W/System.err( 2727): 	at org.beigesoft.orm.service.ASrvOrm.updateEntity(ASrvOrm.java:304)
+W/System.err( 2727): 	at org.beigesoft.accounting.service.SrvBalanceStd.recalculateAll(SrvBalanceStd.java:337)
+W/System.err( 2727): 	at org.beigesoft.accounting.service.SrvBalanceStd.recalculateAllIfNeed(SrvBalanceStd.java:222)
+W/System.err( 2727): 	at org.beigesoft.accounting.service.SrvBalanceStd.retrieveTrialBalance(SrvBalanceStd.java:354)
+W/System.err( 2727): 	at org.beigesoft.accounting.servlet.WBalance.doGet(WBalance.java:89)
+------
+BALANCEATALLDIRTYCHECK not inserted!!!
+reason - after database change SrvBalance hold old proxy BALANCEATALLDIRTYCHECK;
+decision - release beans by factory after database changed is best solution forever.
+***************************
+
+git:
+git config --global user.name "Your Name"
+git config --global user.email "your_email@whatever.com"
+git config --global core.autocrlf input
+git config --global core.safecrlf true
+git init
+git add .
+git commit -m "First Commit"
+git clone https://github.com/demidenko05/a-javabeans.git
+git remote add origin https://github.com/demidenko05/beige-uml.git
+git remote -v
+git add .
+git commit -m 'second commit'
+git push origin master
+git status
+
+git init
+git add README.md
+git commit -m "first commit"
+git remote add origin https://github.com/demidenko05/a-tomcat-all.git
+git push -u origin master

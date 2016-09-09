@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+  <properties>
+    <title>Beigesoftware, BeigeAccounting</title>
+   </properties>
+
+  <body>
+
+    <section name="BeigeAccounting Bob's pizza example.">
+
+      <h4>Topics:</h4>      
+      
+      <h5>
+        <a href="acc-settings.html">Software installation, accounting settings, chart of accounts, started capital.</a>
+      </h5>
+      
+      <h5>
+        <a href="acc-property.html">Accounting of property.</a>
+      </h5>
+
+      <h5>
+        <a href="acc-rent.html">Accounting of rent, electricity etc.</a>
+      </h5>
+
+      <h5>
+        <a href="acc-purchase.html">Accounting of purchase, prepayments, payments tracking.</a>
+      </h5>
+
+      <h5>
+        <a href="acc-purchase-return.html">Accounting of purchase returns.</a>
+      </h5>
+
+      <h5>
+        <a href="acc-employment.html">Accounting of employment (payroll).</a>
+      </h5>
+
+      <h5>
+        <a href="acc-manufacturing.html">Accounting of manufacturing (producing).</a>
+      </h5>
+
+      <h5>
+        <a href="acc-selling.html">Accounting of sales, prepayments, payments tracking.</a>
+      </h5>
+
+      <h5>
+        <a href="acc-sales-return.html">Accounting of sales returns.</a>
+      </h5>
+
+      <h5>
+        <a href="acc-loss.html">Accounting of goods loss/broke/stole.</a>
+      </h5>
+
+      <h5>
+        <a href="acc-bad-debts.html">Accounting of bad debts.</a>
+      </h5>
+
+      <h5>
+        <a href="acc-bobs-taxes.html">Accounting of business owner taxes, retained earnings.</a>
+      </h5>
+
+      <h5>
+        <a href="acc-android.html">BeigeAccounting on Android.</a>
+      </h5>
+
+    </section>
+
+  </body>
+
+</document>

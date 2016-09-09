@@ -1,0 +1,106 @@
+package org.beigesoft.accounting.persistable;
+
+/*
+ * Beigesoft ™
+ *
+ * Licensed under the Apache License, Version 2.0
+ *
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+
+import java.util.Date;
+import java.math.BigDecimal;
+
+import org.beigesoft.model.IHasId;
+import org.beigesoft.model.IHasTypeCode;
+
+/**
+ * <pre>
+ * Abstract model of entity that makes warehouse entry load(put)
+ * or withdrawal, e.g. PurchaseInvoiceLine, SalesInvoiceLine, Manufacture.
+ * </pre>
+ *
+ * @author Yury Demidenko
+ */
+public interface IMakingWarehouseEntry extends IHasId<Long>, IHasTypeCode {
+
+  /**
+   * <p>Geter for invItem.</p>
+   * @return InvItem
+   **/
+  InvItem getInvItem();
+
+  /**
+   * <p>Setter for invItem.</p>
+   * @param pInvItem reference
+   **/
+  void setInvItem(InvItem pInvItem);
+
+  /**
+   * <p>Geter for unitOfMeasure.</p>
+   * @return UnitOfMeasure
+   **/
+  UnitOfMeasure getUnitOfMeasure();
+
+  /**
+   * <p>Setter for unitOfMeasure.</p>
+   * @param pUnitOfMeasure reference
+   **/
+  void setUnitOfMeasure(UnitOfMeasure pUnitOfMeasure);
+
+  /**
+   * <p>Geter for itsQuantity.</p>
+   * @return BigDecimal
+   **/
+  BigDecimal getItsQuantity();
+
+  /**
+   * <p>Setter for itsQuantity.</p>
+   * @param pItsQuantity reference
+   **/
+  void setItsQuantity(BigDecimal pItsQuantity);
+
+  /**
+   * <p>Geter for reversedId.</p>
+   * @return Long
+   **/
+  Long getReversedId();
+
+  /**
+   * <p>Setter for reversedId.</p>
+   * @param pReversedId reference
+   **/
+  void setReversedId(Long pReversedId);
+
+  /**
+   * <p>Get for owner's ID if exist e.g. PurchaseInvoice ID.</p>
+   * @return Long
+   **/
+  Long getOwnerId();
+
+  /**
+   * <p>Get Owner Type if exist  e.g. PurchaseInvoice 1.</p>
+   * @return Integer
+   **/
+  Integer getOwnerType();
+
+  /**
+   * <p>Get for document Date.</p>
+   * @return Date
+   **/
+  Date getDocumentDate();
+
+  /**
+   * <p>Getter for description.</p>
+   * @return String
+   **/
+  String getDescription();
+
+  /**
+   * <p>Setter for description.</p>
+   * @param pDescription reference
+   **/
+  void setDescription(String pDescription);
+}

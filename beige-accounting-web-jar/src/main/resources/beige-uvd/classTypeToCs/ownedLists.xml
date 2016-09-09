@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Beigesoft ™
+  Licensed under the Apache License, Version 2.0
+ 
+  You may obtain a copy of the License at
+ 
+  http://www.apache.org/licenses/LICENSE-2.0
+ -->
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Correspondence of Java types to services that explain about property. ORDER is essential, the LAST value will be used.</comment>
+<entry key="org.beigesoft.accounting.persistable.PurchaseInvoice">org.beigesoft.accounting.persistable.PurchaseInvoiceLine,
+  org.beigesoft.accounting.persistable.PurchaseInvoiceTaxLine</entry>
+<entry key="org.beigesoft.accounting.persistable.SalesInvoice">org.beigesoft.accounting.persistable.SalesInvoiceLine,
+  org.beigesoft.accounting.persistable.SalesInvoiceTaxLine</entry>
+<entry key="org.beigesoft.accounting.persistable.AccountingEntries">org.beigesoft.accounting.persistable.AccountingEntry</entry>
+<entry key="org.beigesoft.accounting.persistable.InvItemTaxCategory">org.beigesoft.accounting.persistable.InvItemTaxCategoryLine</entry>
+<entry key="org.beigesoft.accounting.persistable.Employee">org.beigesoft.accounting.persistable.EmployeeYearWage</entry>
+<entry key="org.beigesoft.accounting.persistable.ManufacturingProcess">org.beigesoft.accounting.persistable.UsedMaterialLine,
+  org.beigesoft.accounting.persistable.AdditionCostLine</entry>
+<entry key="org.beigesoft.accounting.persistable.AccSettings">org.beigesoft.accounting.persistable.AccEntriesSourcesLine,
+  org.beigesoft.accounting.persistable.AccEntriesSourcesLine,
+  org.beigesoft.accounting.persistable.CogsItemSourcesLine,
+  org.beigesoft.accounting.persistable.DrawMaterialSourcesLine</entry>
+<entry key="org.beigesoft.accounting.persistable.Wage">org.beigesoft.accounting.persistable.WageLine,
+  org.beigesoft.accounting.persistable.WageTaxLine</entry>
+<entry key="org.beigesoft.accounting.persistable.WageTaxTable">org.beigesoft.accounting.persistable.WageTaxTableLine,
+  org.beigesoft.accounting.persistable.WageTaxTableEmployee,org.beigesoft.accounting.persistable.WageTaxTableType</entry>
+<entry key="org.beigesoft.accounting.persistable.Account">org.beigesoft.accounting.persistable.SubaccountLine</entry>
+<entry key="org.beigesoft.accounting.persistable.GoodsLoss">org.beigesoft.accounting.persistable.GoodsLossLine</entry>
+<entry key="org.beigesoft.accounting.persistable.SalesReturn">org.beigesoft.accounting.persistable.SalesReturnLine,
+  org.beigesoft.accounting.persistable.SalesReturnTaxLine</entry>
+<entry key="org.beigesoft.accounting.persistable.PurchaseReturn">org.beigesoft.accounting.persistable.PurchaseReturnLine,
+  org.beigesoft.accounting.persistable.PurchaseReturnTaxLine</entry>
+</properties>

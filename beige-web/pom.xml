@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.beigesoft</groupId>
+    <artifactId>beige-software</artifactId>
+    <version>1.1.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>beige-web</artifactId>
+  <packaging>war</packaging>
+  <name>Beige WEB interface</name>
+  <description>Supply universal renderer based on standard JEE MVC servlet, JSP, JSTL.
+    It renders forms and lists of any entity according XML settings. 
+  </description>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+  
+  <profiles>
+    <profile>
+      <id>webtest</id>
+      <dependencies>
+        <dependency>
+          <groupId>org.beigesoft</groupId>
+          <artifactId>beige-settings</artifactId>
+          <version>${beige.version}</version>
+          <type>test-jar</type>
+        </dependency>
+        <dependency>
+          <groupId>org.beigesoft</groupId>
+          <artifactId>beige-orm</artifactId>
+          <version>${beige.version}</version>
+          <type>test-jar</type>
+        </dependency>
+        <dependency>
+          <groupId>org.beigesoft</groupId>
+          <artifactId>beige-web-jar</artifactId>
+          <version>${beige.version}</version>
+          <type>test-jar</type>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.tomcat.maven</groupId>
+            <artifactId>tomcat7-maven-plugin</artifactId>
+            <version>2.2</version>
+            <dependencies>
+              <dependency>
+                <groupId>org.xerial</groupId>
+                <artifactId>sqlite-jdbc</artifactId>
+                <version>${sqlite.version}</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+        <resources>
+          <resource>
+            <directory>../beige-orm/src/main/resources</directory>
+          </resource>
+          <resource>
+            <directory>../beige-orm/src/test/resources</directory>
+          </resource>
+          <resource>
+            <directory>../beige-web-jar/src/main/resources</directory>
+          </resource>
+          <resource>
+            <directory>../beige-web-jar/src/test/resources</directory>
+          </resource>
+        </resources>
+      </build>
+    </profile>
+  </profiles>
+      
+  <dependencies>
+    <dependency>
+      <groupId>org.beigesoft</groupId>
+      <artifactId>beige-web-jar</artifactId>
+      <version>${beige.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.taglibs</groupId>
+      <artifactId>taglibs-standard-spec</artifactId>
+      <version>1.2.5</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.taglibs</groupId>
+      <artifactId>taglibs-standard-impl</artifactId>
+      <version>1.2.5</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-war-plugin</artifactId>
+        <version>2.6</version>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

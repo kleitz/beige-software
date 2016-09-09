@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Beigesoft ™
+  Licensed under the Apache License, Version 2.0
+ 
+  You may obtain a copy of the License at
+ 
+  http://www.apache.org/licenses/LICENSE-2.0
+ -->
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Base ORM properties</comment>
+<entry key="useSubFolder">sqlite</entry>
+<entry key="classes">
+  org.beigesoft.persistable.DatabaseInfo,
+  org.beigesoft.persistable.UserJetty,
+  org.beigesoft.persistable.RoleJetty,
+  org.beigesoft.persistable.UserRoleJetty,
+  org.beigesoft.test.persistable.Department,
+  org.beigesoft.test.persistable.GoodVersionTime,
+  org.beigesoft.test.persistable.PersistableHead,
+  org.beigesoft.test.persistable.PersistableLine,
+  org.beigesoft.persistable.UserTomcat,
+  org.beigesoft.persistable.UserRoleTomcat</entry>
+<entry key="settingsKeysForClasses">idName, idDefinitionForeign, constraintAdd, constraint, isFullDefinedInXml, excludeFields, versionAlgorithm</entry>
+<entry key="settingsKeysForFields">definition, isNullable, foreignEntity</entry>
+<entry key="excludeFields">isNew, tmpDescription, persistableLines</entry>
+</properties>

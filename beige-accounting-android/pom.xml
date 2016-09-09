@@ -1,0 +1,108 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.beigesoft</groupId>
+    <artifactId>beige-software</artifactId>
+    <version>1.1.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>beige-accounting-android</artifactId>
+  <packaging>apk</packaging>
+
+  <name>Beige Accounting on embedded A-Jetty for Android</name>
+  <description>Beige Accounting on embedded A-Jetty for Android.</description>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+        
+  <dependencies>
+    <dependency>
+      <groupId>org.beigesoft</groupId>
+      <artifactId>beige-android-jar</artifactId>
+      <version>${beige.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.beigesoft</groupId>
+      <artifactId>beige-accounting-ajetty</artifactId>
+      <version>${beige.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.xerial</groupId>
+          <artifactId>sqlite-jdbc</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-api</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>com.zaxxer</groupId>
+          <artifactId>HikariCP</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.beigesoft</groupId>
+          <artifactId>beige-jdbc</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.google.android</groupId>
+      <artifactId>android</artifactId>
+      <version>4.1.1.4</version>
+      <scope>provided</scope>
+    </dependency>
+    <!--You have to download by [sdk-tool]android this library
+      then copy it into local Maven repository-->
+    <dependency>
+      <groupId>com.android.support</groupId>
+      <artifactId>support-v4</artifactId>
+      <version>24.0.0</version>
+      <type>aar</type>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.simpligility.maven.plugins</groupId>
+        <artifactId>android-maven-plugin</artifactId>
+        <version>4.4.2</version>
+        <configuration>
+          <run>
+            <debug>true</debug>
+          </run>
+          <sdk>
+            <platform>24</platform>
+          </sdk>
+          <undeployBeforeDeploy>true</undeployBeforeDeploy>
+          <extractDuplicates>true</extractDuplicates>
+          <lint>
+            <skip>false</skip>
+            <classpath>${project.build.outputDirectory}</classpath>
+          </lint>
+        </configuration>
+        <extensions>true</extensions>
+      </plugin>
+    </plugins>
+    <resources>
+      <resource>
+        <directory>../beige-orm/src/main/resources</directory>
+      </resource>
+      <resource>
+        <directory>../beige-web-jar/src/main/resources</directory>
+      </resource>
+      <resource>
+        <directory>../beige-accounting/src/main/resources</directory>
+      </resource>
+      <resource>
+        <directory>../beige-accounting-web-jar/src/main/resources</directory>
+      </resource>
+    </resources>
+  </build>
+
+</project>

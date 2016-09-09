@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+  <properties>
+    <title>Beigesoft-settings specification version #2</title>
+  </properties>
+
+  <body>
+
+    <!-- The body of the document contains a number of sections -->
+    <section name="Beigesoft-settings version #1">
+    It helps to quickly make settings for class and its fields of with properties XML.
+    Instead of create a lot of files to describe every class and its fields it use describing by type, by name.
+    E.g. setting "java.lang.Integer"-"inputString" will be assigned fo every field of this type.
+    Of course it can be overriden by settings for field name and so on.
+    It is used by beige-web to describe how to render an entity and convert from HTML value.
+    It do with:
+    <ul>
+      <li>application settings - Map&lt;String, String&gt;, e.g. "title"-"Beige ERP"</li>
+      <li>classes settings Map&lt;String, Map&lt;String, String&gt;&gt;, 
+        e.g. "org.mode.Customer"-["defaultOrder"-"ITSNAME", "wdgFilterOrder"-"filterOrderStd"]</li>
+      <li>fields settings Map&lt;String, Map&lt;String, Map&lt;String, String&gt;&gt;&gt;,
+        e.g. "org.mode.Customer"-["itsId"["wdgNew"-"null", "wdgFilter"-"filterNumber"]]</li>
+    </ul>
+      <p>It's used standard Properties XML cause UTF-8 support. 
+      Array values uses <b>comma delimeter</b> and it's allowed new lines, leading and trailing spaces.
+      Even complex property values used comma delimeted string arrays. E.g. "widgetBaseNames"-"itsId, inputNumberReadOnly, itsTotal, inputPriceQuantityTotal".</p>
+      <p>Do not fill properties with empty values! Just omit them.</p>
+      <p>NULL value is constant string <b>null</b>!</p>
+      
+      <h4>Base settings folder.</h4>
+      <p>It located in the application class root directory</p>
+      <p>It has any name, e.g. settings-orm</p>
+      <p>It consist of base configuration file</p>
+      
+      <h4>Base configuration file.</h4>
+      <p>It has any name, e.g. settings-orm/base.xml</p>
+      <p>It contains of:
+        <ul>
+          <li>All application settings e.g. "title"-"Beige ORM", "jdbcDriverClass"-"org.sqlite.JDBC"</li>
+          <li>key "useSubFolder" - use folder for settings files in the base dir e.g. "settings-orm/sqlite" for ORM sqlite-oriented settings.
+          It can be ommit</li>
+          <li>key "classes" - array of classes names(name include package same as getClass().getCanonicalName()) that
+            should be described.</li>
+          <li>key "settingsKeysForClases" - array of settings names for classes. E.g. "defaultOrder, wdgFilterOrder"</li>
+          <li>key "settingsKeysForFields" - array of settings names for fields. E.g. "wdgNewForm, wdgEditForm, wdgDeleteForm,
+            wdgToHtmlVal, cnvFromHtmlVal, wdgToString, dependingFieldName"</li>
+          <li>key "excludeFields" - array of excluded fields for all classes e.g. <b>isNew</b>.</li>
+        </ul>
+      </p>
+
+      <h3>Application settings file:</h3>
+      <p>Only app-settings.xml</p>
+
+      <h3>Class settings and their members(fields/properties) settings.</h3>
+      <p>Any class has members that are classes too. So to separate settings for Class and settings for their member/s
+        following names rules are applied:
+        <ul>
+          <li>Class Type name - classType</li>
+          <li>Member type - fieldType</li>
+        </ul>
+      </p>
+      
+      <h3>Classess settings files:</h3>
+      
+      <h4>Configuration file <b>classTypeToCs/[settingName].xml</b> to fill classes settings 1 round.</h4>
+      <p>It contains properties "classType"-"settingValue".</p>
+      <p>E.g. file classTypeToCs/orderByDefault.xml contains:
+        <pre>
+           "org.beigesoft.model.IHasId"-"itsId";
+           "org.beigesoft.model.IHasName"-"itsName";
+       </pre>
+      </p>
+      
+      <h4>Configuration file <b>forClassToCs/[getClass().getSimpleName()].xml</b> to final fill classes settings.</h4>
+      <p>It seems to be useless but sometimes it's more comfortable to full define all class properties in a single file</p>
+      <p>It contains properties "settingsKey"-"settingValue".</p>
+      <p>E.g. file forClassToCs/UserRoleTomcat.xml contains:
+        <pre>
+          "idName"-"itsUser"
+          "constraint"-"primary key (ITSUSER, ITSROLE),
+  foreign key (ITSUSER)
+      references USERTOMCAT (ITSNAME)";
+       </pre>
+      </p>
+      
+      <h3>Fields settings files:</h3>
+      
+      <h4>Configuration file <b>fieldTypeToFs/[settingName].xml</b> to fill fields settings 1 round.</h4>
+      <p>It contains properties "fieldType"-"settingValue".</p>
+      <p>E.g. file fieldTypeToFs/sqlDef.xml contains:
+        <pre>
+           "java.lang.Long"-"integer";
+           "java.lang.String"-"varchar(25)";
+       </pre>
+      </p>
+      
+      <h4>Configuration file <b>fieldNameToFs/[settingName].xml</b> to customize settings for field by name 2 round.</h4>
+      <p>It contains properties "fieldName"-"settingValue".</p>
+      <p>E.g. file fieldNameToFs/wdgNewForm.xml contains:
+        <pre>
+          "itsId"-"null";
+          "organization"-"inputEntityDepending";
+          "organizationBankAccount"-"inputEntityDependent";
+        </pre>
+      </p>
+      
+      <h4>Configuration file <b>fieldNameFieldTypeToFs/[fieldName][settingName].xml</b> to customize fields settings 3 round.</h4>
+      <p>It contains properties "fieldType"-"settingValue".</p>
+      <p>E.g. file fieldNameFieldTypeToFs/itsIdsqlDef.xml contains:
+        <pre>
+           "java.lang.Long"-"identity not null primary key";
+           "java.lang.String"-"varchar(25) not null primary key";
+        </pre>
+      </p>
+      
+      <h4>Configuration file <b>fieldNameClassTypeToFs/[fieldName][settingName].xml</b> to customize fields settings 4 round.</h4>
+      <p>It contains properties "classType"-"settingValue".</p>
+      <p>E.g. file fieldNameClassTypeToFs/itsIdsqlDef.xml contains:
+        <pre>
+           "org.beigesoft.persistable.AHasIdLong"-"integer not null primary key";
+        </pre>
+      </p>
+      
+      <h4>Configuration file <b>forClassToFs/[getClass().getSimpleName()].xml</b> is to final customize fields settings.</h4>
+      <p>It contains the final customization properties.</p>
+      <p>Fields keys consist of field name + settingName ([fieldName][settingName]) for example:
+        forClassToFs/PersistableLine.xml
+        <pre>
+          "itsTotalwdgNewForm"-"null";
+          "itsTotalwdgEditForm"-"null";
+          "itsQuantitywdgNewForm"-"null";
+          "itsQuantitywdgEditForm"-"null";
+          "itsPricewdgNewForm"-"inputPriceQuantityTotal";
+          "itsPricewdgEditForm"-"inputPriceQuantityTotal";
+        </pre>
+      </p>
+      
+      <h4>Fields of enumeration type</h4>
+      <p>It's automatically added useful property "enumValues" that consist of enum values for every field of Enum type.</p>
+
+      <h5>Exceptions throw ExceptionWithCode:</h5>
+      <ul>
+        <li>1003 - Configuration mistake</li>
+      </ul>
+    </section>
+
+  </body>
+
+</document>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Beigesoft ™
+  Licensed under the Apache License, Version 2.0
+ 
+  You may obtain a copy of the License at
+ 
+  http://www.apache.org/licenses/LICENSE-2.0
+ -->
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Correspondence of field name to field setting.</comment>
+<entry key="currentAccYear">inputDate</entry>
+<entry key="itsId">null</entry>
+<entry key="theRest">null</entry>
+<entry key="itsVersion">null</entry>
+<entry key="hasMadeAccEntries">inputBooleanDisabled</entry>
+<entry key="idDatabaseBirth">inputHidden</entry>
+<entry key="sourceDatabaseBirth">inputHidden</entry>
+<entry key="sourceType">inputHidden</entry>
+<entry key="sourceId">inputHidden</entry>
+<entry key="isCreatedByUser">inputReadOnly</entry>
+<entry key="idBirth">null</entry>
+<entry key="isNew">inputHidden</entry>
+<entry key="reversedId">null</entry>
+<entry key="dateHire">inputDate</entry>
+<entry key="currentYearStart">inputDate</entry>
+<entry key="itsPassword">inputPassword</entry>
+<entry key="itsTotal">null</entry>
+<entry key="itsQuantity">null</entry>
+<entry key="itsPrice">inputPriceQuantityTotal</entry>
+<entry key="itsCost">inputCostQuantityTotal</entry>
+<entry key="totalTaxes">inputReadOnly</entry>
+<entry key="totalDebit">inputReadOnly</entry>
+<entry key="totalCredit">inputReadOnly</entry>
+<entry key="subtotal">inputReadOnly</entry>
+<entry key="subaccType">inputSubaccType</entry>
+<entry key="taxesDescription">inputReadOnly</entry>
+<entry key="itsOwner">inputEntityHasIdHidden</entry>
+<entry key="description">inputText</entry>
+</properties>

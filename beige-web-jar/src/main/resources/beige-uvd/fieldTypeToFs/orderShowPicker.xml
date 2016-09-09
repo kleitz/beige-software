@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Beigesoft ™
+  Licensed under the Apache License, Version 2.0
+ 
+  You may obtain a copy of the License at
+ 
+  http://www.apache.org/licenses/LICENSE-2.0
+ -->
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Correspondence of Java types to services that explain about property. ORDER is essential, the LAST value will be used.
+          (minus-1 no show, 1, 4... - order)</comment>
+<entry key="java.lang.Object">-1</entry>
+<entry key="java.lang.Long">1</entry><!--Entity ID-->
+<entry key="java.util.Date">100</entry><!--Doc Date-->
+<entry key="org.beigesoft.model.IHasId">200</entry><!--e.g. Customer-->
+<entry key="java.lang.Enum">300</entry><!--e.g. sales tax-->
+<entry key="java.math.BigDecimal">400</entry><!--e.g. itsTotal-->
+<entry key="java.lang.String">-1</entry><!--e.g. description-->
+<entry key="java.lang.Boolean">1100</entry><!--e.g. is accounted-->
+</properties>

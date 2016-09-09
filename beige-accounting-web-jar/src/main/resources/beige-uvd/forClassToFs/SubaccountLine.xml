@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Beigesoft ™
+  Licensed under the Apache License, Version 2.0
+ 
+  You may obtain a copy of the License at
+ 
+  http://www.apache.org/licenses/LICENSE-2.0
+ -->
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Explicit final definition.</comment>
+<entry key="subaccTypewdgNewForm">null</entry>
+<entry key="subaccTypewdgEditForm">null</entry>
+<entry key="subaccIdwdgNewForm">null</entry>
+<entry key="subaccIdwdgEditForm">null</entry>
+<entry key="subaccNamewdgNewForm">inputSubaccLine</entry>
+<entry key="subaccNamewdgEditForm">inputSubaccLine</entry>
+<entry key="subaccTypeorderShowPicker">-1</entry>
+<entry key="subaccIdorderShowPicker">-1</entry>
+<entry key="itsOwnerorderPrintfullList">99</entry>
+<entry key="itsOwnerwdgFilter">filterEntity</entry>
+</properties>

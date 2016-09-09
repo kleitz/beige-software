@@ -1,0 +1,26 @@
+<html>
+<head>    
+  <title>Beige WEB login</title>
+  <link rel="stylesheet" href="../static/css/beige.common.css">
+  <link rel="shortcut icon" href="../static/img/favicon.png">
+</head>
+<body>
+    
+    <div class="form-std form-33-33">
+      <div class="dialog-title">
+        Authorization
+      </div>
+      <form id="formLogin" action="j_security_check" method="post">
+        <label>User</label>
+        <input type="text" name="j_username"/>
+        <label>Password</label>
+        <input type="password" name="j_password"/>
+        <div class="form-actions">
+          <input type="submit" value="Login"/>
+          <a href="../">Cancel</a>
+        </div>
+      </form>
+    </div>
+  
+</body>
+</html>

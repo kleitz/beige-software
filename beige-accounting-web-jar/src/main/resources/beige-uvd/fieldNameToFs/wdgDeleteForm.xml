@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Beigesoft ™
+  Licensed under the Apache License, Version 2.0
+ 
+  You may obtain a copy of the License at
+ 
+  http://www.apache.org/licenses/LICENSE-2.0
+ -->
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Correspondence of field name to field setting.</comment>
+<entry key="reversedId">null</entry>
+<entry key="itsId">inputReadOnly</entry>
+<entry key="itsVersion">inputHidden</entry>
+<entry key="idDatabaseBirth">inputHidden</entry>
+<entry key="idBirth">inputHidden</entry>
+<entry key="isNew">inputHidden</entry>
+<entry key="itsOwner">inputEntityHasIdHidden</entry>
+</properties>

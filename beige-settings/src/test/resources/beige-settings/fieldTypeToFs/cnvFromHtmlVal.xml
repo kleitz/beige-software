@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Beigesoft ™
+  Licensed under the Apache License, Version 2.0
+ 
+  You may obtain a copy of the License at
+ 
+  http://www.apache.org/licenses/LICENSE-2.0
+ -->
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Correspondence of Java types to converters from HTML value (used by servlet).</comment>
+<entry key="java.lang.Integer">org.beigesoft.converter.ConverterStringInteger</entry>
+<entry key="java.lang.Long">org.beigesoft.converter.ConverterStringLong</entry>
+<entry key="java.lang.Float">org.beigesoft.converter.ConverterStringFloat</entry>
+<entry key="java.lang.Double">org.beigesoft.converter.ConverterStringDouble</entry>
+<entry key="java.lang.String">org.beigesoft.converter.ConverterStub</entry>
+<entry key="java.util.Date">org.beigesoft.converter.ConverterStringDate</entry>
+<entry key="java.math.BigDecimal">org.beigesoft.converter.ConverterStringBigDecimal</entry>
+<entry key="org.beigesoft.model.IHasId">org.beigesoft.orm.converter.ConverterStringEntity</entry>
+</properties>

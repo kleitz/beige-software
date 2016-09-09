@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Beigesoft ™
+  Licensed under the Apache License, Version 2.0
+ 
+  You may obtain a copy of the License at
+ 
+  http://www.apache.org/licenses/LICENSE-2.0
+ -->
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Correspondence of class types to id definition. ORDER is essential, the LAST value will be used.</comment>
+<entry key="org.beigesoft.persistable.AHasIdLong">bigint not null primary key</entry>
+<entry key="org.beigesoft.accounting.persistable.SubaccountLine">bigserial not null primary key</entry>
+<entry key="org.beigesoft.accounting.persistable.BalanceAt">bigserial not null primary key</entry>
+</properties>
