@@ -41,7 +41,7 @@
       <version>${sqlite.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.eclipse.ajetty</groupId>
+      <groupId>com.github.demidenko05</groupId>
       <artifactId>a-jetty-base</artifactId>
       <version>1.0.1-SNAPSHOT</version>
     </dependency>
