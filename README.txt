@@ -1,3 +1,5 @@
+site: http://www.beigesoft.org
+
 1.1.0-SNAPSHOT - A lot of mistakes was fixed (price/cost rounding, etc.).
 
 30 Aug 2016 - 2 Sept 2016: Fixed bugs on Android version. It's checked on Android 7, 6, 5.5.1, 5.0.1, 4.2.2

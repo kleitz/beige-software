@@ -1,1 +1,1 @@
-java.exe -jar beige-accounting-ajetty.jar port=8080
+java.exe -jar beige-accounting-ajetty-jar-with-dependencies.jar port=8080
