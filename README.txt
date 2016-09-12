@@ -8,8 +8,6 @@ so restart server and immediately switch to desired database (this bug will be f
 
 
 Files overview.
-
-beige-software-[VERSION]-src.tar.bz2 - source of:
 * Beige-Common Java library. It contains common abstractions, some implementations, some models, e.g. IFactory, IDelegate, Srvi18N, APersistableBase.
 * Beige-Settings library. It helps to quickly make settings for class and its fields of with properties XML.
     Instead of create a lot of files to describe every class and its fields it use describing by type, by name,
@@ -29,19 +27,13 @@ beige-software-[VERSION]-src.tar.bz2 - source of:
 * Beige-Android-Test tests of Beige-ORM for Android platform.
 * Beige-Accounting-Android is Beige Accounting on embedded A-Jetty for Android.
 
-beige-accounting-ajetty.zip - precompiled web-application with embedded A-Jetty for standard Java (*NIX, MS Windows, MAC) (required Google Chrome browser, JRE7+, SQLite).
+There are dependencies:
 
-beige-accounting-android.apk - precompiled web-application with embedded A-Jetty for Android (required Google Chrome browser).
+https://github.com/demidenko05/a-javabeans - sources of OpenJDK7 javabeans adapted for Android (a-tomcat and a-jetty use it).
 
-bobs-pizza.sqlite - demo database
+https://github.com/demidenko05/a-tomcat-all - source of Apache Tomcat to precompile JSP/JSTL for A-Jetty.
 
-There are dependencies at folder 29June2016:
-
-a-javabeans-1.0.0-SNAPSHOT-src.tar.bz2 - sources of OpenJDK7 javabeans adapted for Android (a-tomcat and a-jetty use it).
-
-a-tomcat-all-1.0.3-SNAPSHOT-src.tar.bz2 - source of Apache Tomcat to precompile JSP/JSTL for A-Jetty.
-
-a-jetty-all-1.0.1-SNAPSHOT-src.tar.bz2 -source of A-Jetty is Jetty 9.2 adapted for Android
+https://github.com/demidenko05/a-jetty-all - source of A-Jetty is Jetty 9.2 adapted for Android
 
 Prerequisites for building from source:
 * JDK7.
@@ -60,7 +52,7 @@ or just copy war file inside a JEE server, also copy sqlite-jdbc-3.8.11.2.jar an
 
 You can make your own JEE(JSP/JSTL) web-app to run on embedded A-Jetty for Standard Java or Android.
 To do this:
-1. install all maven projects (a-javabeans, a-tomcat, a-jetty, beige-software).
+1. install all maven projects (a-javabeans, a-tomcat, a-jetty).
 2. copy a-tomcat-all/a-apache-jspc/target/a-apache-jspc-jar-with-dependencies.jar into folder a-apache-tomcat
 3. copy a-tomcat-all/a-apache-jspc/src/main/resources/catalina-tasks.xml into folder a-apache-tomcat
 4. add path a-apache-tomcat to environment variables as TOMCATA_HOME
