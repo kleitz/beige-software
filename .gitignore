@@ -12,3 +12,4 @@ release.properties
 beigeaccountingtest.h2.db
 beigeaccountingtest.sqlite
 beige-accounting-web/bobs-pizza.sqlite
+*/findbug-exclude.xml

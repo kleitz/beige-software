@@ -1,4 +1,4 @@
-package org.beigesoft.android.ajetty;
+package org.beigesoft.accounting.android;
 
 /*
  * Beigesoft ™
@@ -16,7 +16,9 @@ import java.io.OutputStream;
 import java.io.BufferedOutputStream;
 import java.io.FileOutputStream;
 import java.util.Map;
+import java.lang.reflect.Method;
 
+import android.content.ContextWrapper;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.AssetManager;
@@ -32,11 +34,8 @@ import android.widget.Toast;
 import android.net.Uri;
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.app.ActivityCompat;
 
 import org.beigesoft.ajetty.FactoryAppBeansEmbedded;
-import org.beigesoft.android.app.ApplicationPlus;
 import org.beigesoft.ajetty.BootStrapEmbedded;
 
 /**
@@ -51,8 +50,8 @@ public class BeigeAccounting extends Activity implements OnClickListener {
    **/
   public static final String APP_BASE = "webapp";
 
-    /**
-   * <p>APP BASE dir.</p>
+  /**
+   * <p>Permissions request.</p>
    **/
   public static final int PERMISSIONS_REQUESTS = 2415;
 
@@ -104,7 +103,34 @@ public class BeigeAccounting extends Activity implements OnClickListener {
   @Override
   public final void onCreate(final Bundle pSavedInstanceState) {
     super.onCreate(pSavedInstanceState);
-    setContentView(R.layout.ajetty);
+    //Only way to publish this project in central Maven repository
+    //cause missing Google dependencies:
+    if (android.os.Build.VERSION.SDK_INT >= 23) {
+      try {
+        Class[] argTypes = new Class[] {String.class};
+        Method checkSelfPermission = ContextWrapper.class
+          .getDeclaredMethod("checkSelfPermission", argTypes);
+        Object result = checkSelfPermission.invoke(getApplicationContext(),
+          Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        Integer chSlfPer = (Integer) result;
+        if (chSlfPer != PackageManager.PERMISSION_GRANTED) {
+          argTypes = new Class[] {String[].class, Integer.TYPE};
+          Method requestPermissions = Activity.class
+            .getDeclaredMethod("requestPermissions", argTypes);
+          String[] args = new String[]
+            {Manifest.permission.READ_EXTERNAL_STORAGE,
+              Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.INTERNET};
+          requestPermissions.invoke(this, (Object) args,
+            PERMISSIONS_REQUESTS);
+        }
+      } catch (Exception x) {
+          x.printStackTrace();
+      }
+    }
+    ApplicationPlus appPlus = (ApplicationPlus) getApplicationContext();
+    this.beansMap = appPlus.getBeansMap();
+    setContentView(R.layout.beigeaccounting);
     this.tvStatus = (TextView) findViewById(R.id.tvStatus);
     this.etPort = (EditText) findViewById(R.id.etPort);
     this.btnStart = (Button) findViewById(R.id.btnStart);
@@ -138,16 +164,6 @@ public class BeigeAccounting extends Activity implements OnClickListener {
           "Beige Accounting directory was successfully created!",
             Toast.LENGTH_SHORT).show();
       }
-    }
-    ApplicationPlus appPlus = (ApplicationPlus) getApplicationContext();
-    this.beansMap = appPlus.getBeansMap();
-    if (ContextCompat.checkSelfPermission(this,
-      Manifest.permission.WRITE_EXTERNAL_STORAGE)
-        != PackageManager.PERMISSION_GRANTED) {
-      ActivityCompat.requestPermissions(this, new String[]
-        {Manifest.permission.READ_EXTERNAL_STORAGE,
-          Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.INTERNET}, PERMISSIONS_REQUESTS);
     }
   }
 
@@ -261,8 +277,10 @@ public class BeigeAccounting extends Activity implements OnClickListener {
       } catch (Exception e) {
         e.printStackTrace();
       }
-      this.beansMap
-        .put(BootStrapEmbedded.class.getCanonicalName(), bootStrap);
+      synchronized (this.beansMap) {
+        this.beansMap
+          .put(BootStrapEmbedded.class.getCanonicalName(), bootStrap);
+      }
     }
     return bootStrap;
   }

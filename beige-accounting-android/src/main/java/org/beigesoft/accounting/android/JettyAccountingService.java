@@ -1,4 +1,4 @@
-package org.beigesoft.android.ajetty;
+package org.beigesoft.accounting.android;
 
 /*
  * Beigesoft ™
@@ -15,9 +15,7 @@ import java.util.Map;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-import android.widget.Toast;
 
-import org.beigesoft.android.app.ApplicationPlus;
 import org.beigesoft.ajetty.BootStrapEmbedded;
 
 /**
@@ -31,13 +29,13 @@ public class JettyAccountingService extends Service {
    * <p>Action start.</p>
    **/
   public static final String ACTION_START =
-    "org.beigesoft.android.ajetty.START_ACC";
+    "org.beigesoft.accounting.android.START";
 
   /**
    * <p>Action stop.</p>
    **/
   public static final String ACTION_STOP
-    = "org.beigesoft.android.ajetty.STOP_ACC";
+    = "org.beigesoft.accounting.android.STOP";
 
   /**
    * <p>Application beans map reference to lock.</p>
@@ -135,8 +133,7 @@ public class JettyAccountingService extends Service {
     if (bootStrapO != null) {
       bootStrap = (BootStrapEmbedded) bootStrapO;
     } else {
-      Toast.makeText(getApplicationContext(),
-        "BootStap not initialized!", Toast.LENGTH_SHORT).show();
+      //already stopped
       stopSelf();
     }
     return bootStrap;
@@ -154,8 +151,6 @@ public class JettyAccountingService extends Service {
         if (bootStrap != null && !bootStrap.getIsStarted()) {
           try {
             bootStrap.startServer();
-            Toast.makeText(getApplicationContext(),
-              "A-Jetty has been started!", Toast.LENGTH_SHORT).show();
           } catch (Exception e) {
             e.printStackTrace();
           }
@@ -180,8 +175,6 @@ public class JettyAccountingService extends Service {
         if (bootStrap != null && bootStrap.getIsStarted()) {
           try {
             bootStrap.stopServer();
-            Toast.makeText(getApplicationContext(),
-              "A-Jetty has been stopped!", Toast.LENGTH_SHORT).show();
             bootStrap = null;
             JettyAccountingService.this.beansMap
               .remove(BootStrapEmbedded.class.getCanonicalName());

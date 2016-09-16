@@ -6,7 +6,7 @@
   <packaging>pom</packaging>
   
   <name>Beigesoft software</name>  
-  <description>Enterprise recource planning WEB application. Target both to standalone Android I-Jetty and ordinal WEB application.</description>
+  <description>Contains of BeigeAccounting, BeigeORM, BeigeSettings for standard Java and Android.</description>
   <url>http://www.beigesoft.org</url>
 
   <properties>
@@ -292,7 +292,7 @@
     <url>http://www.beigesoft.org</url>
   </organization>
   
-  <inceptionYear>2015</inceptionYear>
+  <inceptionYear>2016</inceptionYear>
   
   <developers>
     <developer>

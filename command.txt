@@ -20,7 +20,8 @@ alt-r bash history
 //replace string
 find . -type f -name "*.java" -exec sed -i "s/packagesPersistable/classesPersistable/g" {} +
 //print files with text:
-grep --include=*.java -rwl '.' -e "SQLITE_NAME"
+grep --include=*.java -rw '.' -e "@author"
+grep --include=pom.xml -rw '.' -e "a-javabeans"
 //print files and lines with text:
 grep --include=*.xml -rnw '.' -e "TO-DO"
 find . -type f -name "*.java" -exec sed -i "s/ADocumentWithTaxes/ADocWithTaxes/g" {} +
@@ -30,7 +31,7 @@ find . -type f -name "*.java" -exec sed -i "s/ctxt\.getClassLoader()/ctxt\.getCl
 find . -type f -name "pom.xml" -exec sed -i "s/1\.0\.9-SNAPSHOT/1\.1\.0-SNAPSHOT/g" {} +
 grep -F --include=*.jsp -rw '.' -e 'getMsg("$'
 //list files with extension
-find . -type f -name "*.in"
+find . -type f -name "*.keystore"
 
 Maven:
 mvnDebug tomcat7:run -P sqlite
@@ -53,7 +54,8 @@ mvn android:redeploy
 mvn android:instrument
 adb root
 adp push/pull <surce> <dest>  !!! as root!!!
-adb push ~/beige-accounting-ajetty/bobs-pizza.sqlite /sdcard/BeigeAccountingBackup/bobs-pizza080916.sqlite
+adb push ~/beige-accounting-ajetty/bobs-pizza.sqlite /sdcard/BeigeAccountingBackup/bobs-pizza.sqlite
+adb push ~/git/a-jetty-all/a-jetty/target/a-jetty.apk /sdcard/a-jetty.apk
 adb pull /sdcard/BeigeAccountingBackup/beige-accounting.sqlite bablnssterr.sqlite
 adb shell - ls to list AVD filesistem
 adb shell pm list packages
@@ -61,6 +63,17 @@ adb shell pm path org.mortbay.ijetty
 adb pull /data/app/org.mortbay.ijetty-1.apk
 adb devices
 adb connect localhost:5554 -not work!!!
+$ANDROID_HOME/tools/lint --html target/lint.html --sources src/main --classpath target .
+//fix AVD start error:
+emulator -avd Nexus_10_v7_2 -use-system-libs
+
+keytool -genkey -v -keystore beigesoft.keystore -alias bs-key -keyalg RSA -keysize 2048 -validity 10000
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore beigesoft.keystore pom.xml bs-key
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 beige-accounting-android.apk bs-key
+jarsigner -verify -verbose -certs beige-accounting-android.apk
+./zipalign -v 4 beige-accounting-android.apk beige-accounting-android-l.apk
+mvn clean install -P sign -Dsignpass=******
+
                                                       mkdir /mnt/auserdata-qemu
 root@debian21323:/home/yury/.android/avd/nexus_4.avd# mount userdata-qemu.img -o loop /mnt/auserdata-qemu
 android-sdk-linux/tools$ adb shell

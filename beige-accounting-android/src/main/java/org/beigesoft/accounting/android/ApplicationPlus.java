@@ -1,4 +1,4 @@
-package org.beigesoft.android.app;
+package org.beigesoft.accounting.android;
 
 /*
  * Beigesoft ™

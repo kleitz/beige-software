@@ -8,9 +8,18 @@
     <version>1.1.0-SNAPSHOT</version>
   </parent>
   <artifactId>beige-accounting-web-jar</artifactId>
+
   <name>Beige Accounting WEB Java code.</name>
   <description>Beige Accounting WEB Java code.</description>
+  <url>http://www.beigesoft.org</url>
 
+  <developers>
+    <developer>
+      <id>demidenko05</id>
+      <name>Yury Demidenko</name>
+    </developer>
+  </developers>
+  
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>

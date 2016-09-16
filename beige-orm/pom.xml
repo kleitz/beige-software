@@ -16,6 +16,14 @@
   It's configurable with standard Java Properties XML files.
   Standard SQL queries both DML(e.g. SELECT) and DDL(e.g. CREATE) 
   are automatically generated and could be modified/replaced by Properties XML.</description>
+  <url>http://www.beigesoft.org</url>
+
+  <developers>
+    <developer>
+      <id>demidenko05</id>
+      <name>Yury Demidenko</name>
+    </developer>
+  </developers>
   
   <licenses>
     <license>

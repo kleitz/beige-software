@@ -8,11 +8,20 @@
     <version>1.1.0-SNAPSHOT</version>
   </parent>
   <artifactId>beige-web-jar</artifactId>
+
   <name>Beige WEB interface Java code</name>
   <description>Supply universal renderer based on standard JEE MVC servlet, JSP, JSTL.
     It renders forms and lists of any entity according XML settings. 
   </description>
+  <url>http://www.beigesoft.org</url>
 
+  <developers>
+    <developer>
+      <id>demidenko05</id>
+      <name>Yury Demidenko</name>
+    </developer>
+  </developers>
+  
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>

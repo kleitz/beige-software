@@ -9,7 +9,7 @@
  */
 
 /**
- * <p>A-Jetty package.</p>
+ * <p>BeigeAccounting for Android package.</p>
  * @author Yury Demidenko
  */
-package org.beigesoft.android.ajetty;
+package org.beigesoft.accounting.android;

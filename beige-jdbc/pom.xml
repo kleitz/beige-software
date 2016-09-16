@@ -11,7 +11,15 @@
   
   <name>Beigesoft JDBC library.</name>
   <description>Contains of JDBC implementation of database service.</description>
-  
+  <url>http://www.beigesoft.org</url>
+
+  <developers>
+    <developer>
+      <id>demidenko05</id>
+      <name>Yury Demidenko</name>
+    </developer>
+  </developers>
+    
   <licenses>
     <license>
       <name>The Apache Software License, Version 2.0</name>
