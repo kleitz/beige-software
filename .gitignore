@@ -11,5 +11,5 @@ release.properties
 /maven-central-deploy.sh~
 beigeaccountingtest.h2.db
 beigeaccountingtest.sqlite
-beige-accounting-web/bobs-pizza.sqlite
+beige-accounting-web/*.sqlite
 */findbug-exclude.xml

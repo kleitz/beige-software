@@ -195,12 +195,18 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jxr-plugin</artifactId>
-        <version>2.6</version>
+        <version>2.5</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-pmd-plugin</artifactId>
         <version>3.6</version>
+        <configuration>
+          <printFailingErrors>true</printFailingErrors>
+          <excludes>
+            <exclude>**/apache/**</exclude>
+          </excludes>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -208,8 +214,8 @@
         <version>2.17</version>
         <configuration>
           <suppressionsLocation>checkstyle-suppressions.xml</suppressionsLocation>
-          <excludes>**/R.java,**/BuildConfig.java,**/androidtest/**,**/tomcat/**</excludes>
-         </configuration>
+          <excludes>**/R.java,**/BuildConfig.java,**/androidtest/**,**/apache/**</excludes>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>

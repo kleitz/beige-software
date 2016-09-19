@@ -1,11 +1,5 @@
-site: http://www.beigesoft.org
-
-1.1.0-SNAPSHOT - A lot of mistakes was fixed (price/cost rounding, etc.).
-
-30 Aug 2016 - 2 Sept 2016: Fixed bugs on Android version. It's checked on Android 7, 6, 5.5.1, 5.0.1, 4.2.2
-For standalone version (A-Jetty, Android) when you already use a database and switch into another you can get error on balance or ledger report,
-so restart server and immediately switch to desired database (this bug will be fixed).
-
+site: https://www.beigesoft.org
+or https://sites.google.com/site/beigesoftware
 
 Files overview.
 * Beige-Common Java library. It contains common abstractions, some implementations, some models, e.g. IFactory, IDelegate, Srvi18N, APersistableBase.
@@ -67,3 +61,5 @@ To do this:
 11. copy directory server from source anywhere and copy there your jar with dependences
 12. start your jar with dependences "java -jar [your jar]"
 13. to make your webapp working on embedded A-Jetty on Android see example beige-accounting-android.
+
+mvn site:site gives you same content as from http://www.beigesoft.org

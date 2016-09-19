@@ -320,7 +320,7 @@ public class SrvWarehouseEntry<RS> implements ISrvWarehouseEntry {
         + wms.getItsId());
       getSrvOrm().insertEntity(wm);
       makeWarehouseRest(pAddParam, pEntity, wm.getWarehouseSiteFrom(),
-        pEntity.getItsQuantity().negate());
+        wms.getItsQuantity());
       wms.setReversedId(wm.getItsId());
       wms.setDescription(wms.getDescription() + " reversing entry ID: "
         + wm.getItsId());

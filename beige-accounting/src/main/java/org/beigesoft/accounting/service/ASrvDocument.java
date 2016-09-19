@@ -197,11 +197,12 @@ public abstract class ASrvDocument<RS, T extends IDoc>
       }
       entity.setReversedId(Long.valueOf(pId.toString()));
       entity.setItsTotal(entity.getItsTotal().negate());
+      entity.setItsDate(new Date(entity.getItsDate().getTime() + 1));
     } else {
       entity.setItsTotal(new BigDecimal("0.00"));
+      entity.setItsDate(new Date());
     }
     entity.setIdDatabaseBirth(getSrvOrm().getIdDatabase());
-    entity.setItsDate(new Date());
     entity.setIsNew(true);
     entity.setHasMadeAccEntries(false);
     makeAddPrepareForCopy(pAddParam, entity);

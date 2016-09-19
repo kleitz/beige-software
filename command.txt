@@ -289,6 +289,12 @@ BALANCEATALLDIRTYCHECK not inserted!!!
 reason - after database change SrvBalance hold old proxy BALANCEATALLDIRTYCHECK;
 decision - release beans by factory after database changed is best solution forever.
 ***************************
+********??
+balances not recalculated or not readable for android AVD N10_7 for DB ???
+********
+***reversed date error
+**warehouse rests after full reversing still remain, WH entries OK WH rest wrong, manufacturing process twice reverse
+ change pEntity.getItsQuantity() -> wms.getItsQuantity() in reversedraw in srvWarehEntry
 
 git:
 git config --global user.name "Your Name"
