@@ -71,28 +71,14 @@ keytool -genkey -v -keystore beigesoft.keystore -alias bs-key -keyalg RSA -keysi
 jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore beigesoft.keystore pom.xml bs-key
 jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 beige-accounting-android.apk bs-key
 jarsigner -verify -verbose -certs beige-accounting-android.apk
-./zipalign -v 4 beige-accounting-android.apk beige-accounting-android-l.apk
-mvn clean install -P sign -Dsignpass=******
+./zipalign -v 4 beige-accounting-android-nl.apk beige-accounting-android.apk
+./aapt list -v -a beige-accounting-android.apk
+mvn clean install -P sign -Dandroid.release=true -Dsignpass=******
 
                                                       mkdir /mnt/auserdata-qemu
 root@debian21323:/home/yury/.android/avd/nexus_4.avd# mount userdata-qemu.img -o loop /mnt/auserdata-qemu
 android-sdk-linux/tools$ adb shell
 generic_x86:/ $ su
-127|generic_x86:/ # ls
-acct    default.prop      init                 init.usb.rc       root            service_contexts    ueventd.rc 
-cache   dev               init.environ.rc      init.zygote32.rc  sbin            storage             vendor     
-charger etc               init.goldfish.rc     mnt               sdcard          sys                 
-config  file_contexts.bin init.ranchu.rc       oem               seapp_contexts  system              
-d       fstab.goldfish    init.rc              proc              selinux_version ueventd.goldfish.rc 
-data    fstab.ranchu      init.usb.configfs.rc property_contexts sepolicy        ueventd.ranchu.rc   
-generic_x86:/ # cd data
-generic_x86:/data # cd app
-generic_x86:/data/app # ls
-ApiDemos           GestureBuilder SmokeTestApp WidgetPreview          bobs-pizza.sqlite              
-CubeLiveWallpapers SmokeTest      SoftKeyboard beigeaccounting.sqlite org.beigesoft.android.ajetty-1 
-generic_x86:/data/app # cp bobs-pizza.sqlite /sdcard/BeigeAccountingBackup/bobs-pizza.sqlite
-generic_x86:/data/app # cd /sdcard/BeigeAccountingBackup                                                                             
-generic_x86:/sdcard/BeigeAccountingBackup # ls
 
 JDB:
 stop at org.beigesoft.orm.test.TestSimple:80

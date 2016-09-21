@@ -16,7 +16,7 @@
 
       <h4>BeigeAccounting</h4>
             
-      <p>BeigeAccounting is JEE-WEB based Accounting software.</p>
+      <p>Beige Accounting is JEE-WEB based Accounting software.</p>
       <p>
         It works as:
         <ul>
@@ -25,6 +25,7 @@
           <li>Standard JEE web-application on any JEE server (cloud).</li>
         </ul>
       </p>
+      <p>It require Google Chrome browser!</p>
       <p>
         Features:
         <ul>
@@ -41,16 +42,28 @@
         </ul>
       </p>
       <p>
-        <a href="bobs-pizzahtml">BeigeAccounting Bob's Pizza example.</a>
+        <a href="bobs-pizzahtml">See BeigeAccounting Bob's Pizza example.</a>
       </p>
       <p>
-        Source of BeigeAccounting you can find at <a href="https://sourceforge.net/projects/beige-accounting/">https://sourceforge.net/projects/beige-accounting/</a>
+        BeigeAccounting for MS Windows/Mac/*Nix  - <b>beige-accounting-ajetty.zip</b> you can find in <a href="https://sourceforge.net/projects/beige-accounting/">https://sourceforge.net/projects/beige-accounting/</a>
       </p>
-
+      <p>Beige Accounting for Android you can find in Google Play Store (search "Beige Accounting").</p>
+      <p>
+        Source code of BeigeAccounting you can find at <a href="https://github.com/demidenko05/beige-software">https://github.com/demidenko05/beige-software</a>
+      </p>
+      <p>Releases you can find in <a href="https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.beigesoft%22">Central Maven Repository: search org.beigesoft.</a></p>
+      <p>
+        Licenses:
+        <ul>
+          <li>GNU General Public License version 2 - http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html</li>
+          <li>The Eclipse Public License, Version 1.0 - http://www.eclipse.org/legal/epl-v10.html</li>
+          <li>The Apache Software License, Version 2.0 - http://www.apache.org/licenses/LICENSE-2.0.txt</li>
+        </ul>
+      </p>
       <h4>A-Jetty</h4>
       <p>A-Jetty is Jetty 9.2 adapted for Android, it can run precompiled JSP/JSTL.</p>
       <p>Features:
-        <ul>
+          <ul>
           <li>It can run on Android Java as well as on standard Java 7+.</li>
           <li>It can perform precompiled by A-Tomcat JSP/JSTL.</li>
         </ul>
@@ -65,8 +78,9 @@
         The best way of using A-Jetty is use it as embedded server in standalone WEB-application.
       </p>
       <p>
-        Source of A-Jetty, A-Tomcat you can find at <a href="https://sourceforge.net/projects/beige-accounting/">https://sourceforge.net/projects/beige-accounting/</a>
+        Source code of A-Jetty, A-Tomcat and their dependence A-Javabeans you can find in <a href="https://github.com/demidenko05">https://github.com/demidenko05</a>
       </p>
+      <p>Releases of A-Jetty, A-Tomcat and A-Javabeans you can find in <a href="https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.github.demidenko05%22">Central Maven Repository: search com.github.demidenko05.</a></p>
       
       <h4>BeigeORM</h4>
       <p>BeigeORM is lightweight multiplatform (Android Java and standard Java 7+) ORM library.
@@ -74,23 +88,34 @@
       <p>It supports Postgresql, H2 and SQlite.</p>
       <p>For mapping it use standard Java XML properties files.</p>
       <p>It has implemented optimistic locking by version (autoincrement and last changed time).</p>
-      <p>For updating entity with complex ID you have to make WHERE clause with this ID by hand, but it take no time or problems.</p>
+      <p>For updating (not inserting) entity with complex ID you have to make WHERE clause with this ID by hand, but it take no time or problems e.g. WarehouseRest with complex ID {itemId, siteId, unitOfMeasureId}:
+        <pre style="white-space: pre-wrap;">
+    if (wr.getIsNew()) {
+      getSrvOrm().insertEntity(wr);
+    } else {
+      String where = "INVITEM=" + wr.getInvItem().getItsId()
+        + " and WAREHOUSESITE=" + wr.getWarehouseSite().getItsId()
+           + " and UNITOFMEASURE=" + wr.getUnitOfMeasure().getItsId();
+      getSrvOrm().updateEntityWhere(wr, where);
+    }
+        </pre>
+      </p>
       <p>
         It retrieve almost full model through 2 level. E.g. an retrieved Invoice has already retrieved Customer(1st level),
         but in this Customer CustomerCategory  (2-nd level) has only ID.
       </p>
       <p>It hasn't implemented refresh owned entity by invoke getter. So you have to invoke explicitly ORM refresh e.g.:
         <pre style="white-space: pre-wrap;">
-          customerInvoice.getCustomer().setCustomerCategory(getSrvOrm()
-            .retrieveEntity(customerInvoice.getCustomer().getCustomerCategory()));
+    customerInvoice.getCustomer().setCustomerCategory(getSrvOrm()
+      .retrieveEntity(customerInvoice.getCustomer().getCustomerCategory()));
         </pre>
       </p>
       <p>
         It never retrieved owned entities-list, e.g. InvoiceLines, you should do it explicitly:
         <pre style="white-space: pre-wrap;">
-          customerInvoice.setItsLines(getSrvOrm()
-            .retrieveEntityOwnedlist(CustomerInvoiceLine.class,
-              CustomerInvoice.class, customerInvoice.getItsId()));
+    customerInvoice.setItsLines(getSrvOrm()
+      .retrieveEntityOwnedlist(CustomerInvoiceLine.class,
+        CustomerInvoice.class, customerInvoice.getItsId()));
         </pre>
         These lines is retrieved also through 2 level by big SQL query.
       </p>
@@ -102,9 +127,9 @@
         big SQL queries that returns a lot of data.
         SQL queries without joins is bad practice that hit performance e.g.:
         <pre style="white-space: pre-wrap;">
-select SALESINVOICE.ITSDATE, DEBTORCREDITOR.ITSNAME 
-from SALESINVOICE, DEBTORCREDITOR
-where SALESINVOICE.ITSID=1 and DEBTORCREDITOR.ITSID=SALESINVOICE.CUSTOMER
+    select SALESINVOICE.ITSDATE, DEBTORCREDITOR.ITSNAME 
+    from SALESINVOICE, DEBTORCREDITOR
+    where SALESINVOICE.ITSID=1 and DEBTORCREDITOR.ITSID=SALESINVOICE.CUSTOMER
         </pre>
       </p>
       <p>
@@ -113,18 +138,19 @@ where SALESINVOICE.ITSID=1 and DEBTORCREDITOR.ITSID=SALESINVOICE.CUSTOMER
         Upgrade script can upgrade tables (alters, insert, updates...) and must set new database version. So task "add DebtorCreditor.spetialCategory, not null"
         is trivial for BeigeORM, not for standard ORM:
         <pre style="white-space: pre-wrap;">
-          alter table DebtorCreditor add column specialCategory integer;
-          insert into CPECIALCATEGORY  values (1, 'cat A');
-          ...
-          update DebtorCreditor [for specialCategory]
-          ...
-          alter table DebtorCreditor add column spetialCategory integer not null;
-          update DATABASEINFO set DATABASEVERSION=[new_version], DESCRIPTION='database upgraded' where DATABASEID=[DB_ID];          
+    alter table DebtorCreditor add column specialCategory integer;
+    insert into CPECIALCATEGORY  values (1, 'cat A');
+    ...
+    update DebtorCreditor [for specialCategory]
+    ...
+    alter table DebtorCreditor add column spetialCategory integer not null;
+    update DATABASEINFO set DATABASEVERSION=[new_version], DESCRIPTION='database upgraded' where DATABASEID=[DB_ID];          
         </pre>
       </p>
       <p>
-        Source of BeigeORM you can find at <a href="https://sourceforge.net/projects/beige-accounting/">https://sourceforge.net/projects/beige-accounting/</a>
+        Source code of BeigeORM you can find at <a href="https://github.com/demidenko05/beige-software">https://github.com/demidenko05/beige-software</a>
       </p>
+      <p>Releases you can find in <a href="https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.beigesoft%22">Central Maven Repository: search org.beigesoft.</a></p>
 
       <h4>BeigeWEB.</h4>
       <p>BeigeWEB is CRUD WEB-application based on JSP, JSTL, JSON, AJAX.</p>
@@ -132,48 +158,49 @@ where SALESINVOICE.ITSID=1 and DEBTORCREDITOR.ITSID=SALESINVOICE.CUSTOMER
         It renders forms (include entity pickers) and lists of any entity according XML settings. BeigeAccounting use it.</p>
       <p>It uses BeigeSettings to describe how to render an entity and its fields, e.g. beige-uvd/fieldTypeToFs/wdgNewForm.xml:
         <pre style="white-space: pre-wrap;">
-          &lt;?xml version="1.0" encoding="UTF-8"?&gt;
-          &lt;!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd"&gt;
-          &lt;properties&gt;
-          &lt;comment&gt;Correspondence of Java types to widget base names. ORDER is essential, the LAST value will be used&lt;/comment&gt;
-          &lt;entry key="java.lang.Integer"&gt;inputNumber&lt;/entry&gt;
-          &lt;entry key="java.lang.Long"&gt;inputNumber&lt;/entry&gt;
-          &lt;entry key="java.lang.Float"&gt;inputReal&lt;/entry&gt;
-          &lt;entry key="java.lang.Double"&gt;inputReal&lt;/entry&gt;
-          &lt;entry key="java.lang.String"&gt;inputString&lt;/entry&gt;
-          &lt;entry key="java.lang.Boolean"&gt;inputBoolean&lt;/entry&gt;
-          &lt;entry key="java.util.Date"&gt;inputDateTime&lt;/entry&gt;
-          &lt;entry key="java.math.BigDecimal"&gt;inputPrice&lt;/entry&gt;
-          &lt;entry key="java.lang.Enum"&gt;inputEnum&lt;/entry&gt;
-          &lt;entry key="org.beigesoft.model.IHasName"&gt;inputEntityHasName&lt;/entry&gt;
-          &lt;entry key="org.beigesoft.accounting.persistable.Account"&gt;inputAccount&lt;/entry&gt;
-          &lt;entry key="org.beigesoft.accounting.persistable.IDoc"&gt;inputDocument&lt;/entry&gt;
-          &lt;/properties&gt;
+    &lt;?xml version="1.0" encoding="UTF-8"?&gt;
+    &lt;!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd"&gt;
+    &lt;properties&gt;
+    &lt;comment&gt;Correspondence of Java types to widget base names. ORDER is essential, the LAST value will be used&lt;/comment&gt;
+    &lt;entry key="java.lang.Integer"&gt;inputNumber&lt;/entry&gt;
+    &lt;entry key="java.lang.Long"&gt;inputNumber&lt;/entry&gt;
+    &lt;entry key="java.lang.Float"&gt;inputReal&lt;/entry&gt;
+    &lt;entry key="java.lang.Double"&gt;inputReal&lt;/entry&gt;
+    &lt;entry key="java.lang.String"&gt;inputString&lt;/entry&gt;
+    &lt;entry key="java.lang.Boolean"&gt;inputBoolean&lt;/entry&gt;
+    &lt;entry key="java.util.Date"&gt;inputDateTime&lt;/entry&gt;
+    &lt;entry key="java.math.BigDecimal"&gt;inputPrice&lt;/entry&gt;
+    &lt;entry key="java.lang.Enum"&gt;inputEnum&lt;/entry&gt;
+    &lt;entry key="org.beigesoft.model.IHasName"&gt;inputEntityHasName&lt;/entry&gt;
+    &lt;entry key="org.beigesoft.accounting.persistable.Account"&gt;inputAccount&lt;/entry&gt;
+    &lt;entry key="org.beigesoft.accounting.persistable.IDoc"&gt;inputDocument&lt;/entry&gt;
+    &lt;/properties&gt;
         </pre>
       </p>
       <p>It use cheap JSON multi-target responses created by JSP, for example after document was accounted:
         <pre style="white-space: pre-wrap;">
-&lt;%@ page language="java" contentType="application/json; charset=UTF-8" pageEncoding="UTF-8"%&gt;
-&lt;%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %&gt;
-&lt;c:set var="namePlaceForm" value="frmMainPlace" scope="request"/&gt;
-{"multiTargetResponse":
-  [{"nameTarget": "${namePlaceForm}", "content": "",
-    "nameTargetParent": null, "javascript": null},
-&lt;c:set var="fltOrdPrefix" value="fltordM" scope="request"/&gt;
-&lt;c:set var="namePlace" value="lstMainPlace" scope="request"/&gt;
-&lt;c:set var="showSuccess" value="showSuccess(MSGS['account_successful']);"/&gt;
-&lt;c:set var="nameRendererList" value="listJson" scope="request"/&gt;
-&lt;c:import url="/WEB-INF/jsp/list.jsp" varReader="rdEntities" charEncoding="UTF-8"&gt;
-   {"nameTarget": "${namePlace}list", "content": "${utlJsp.toJsonStringAndClose(rdEntities)}",
-    "nameTargetParent": null, "javascript": "${utlJsp.toJsonString(showSuccess)}"}]
-}
-&lt;/c:import&gt;  
+    &lt;%@ page language="java" contentType="application/json; charset=UTF-8" pageEncoding="UTF-8"%&gt;
+    &lt;%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %&gt;
+    &lt;c:set var="namePlaceForm" value="frmMainPlace" scope="request"/&gt;
+    {"multiTargetResponse":
+      [{"nameTarget": "${namePlaceForm}", "content": "",
+        "nameTargetParent": null, "javascript": null},
+    &lt;c:set var="fltOrdPrefix" value="fltordM" scope="request"/&gt;
+    &lt;c:set var="namePlace" value="lstMainPlace" scope="request"/&gt;
+    &lt;c:set var="showSuccess" value="showSuccess(MSGS['account_successful']);"/&gt;
+    &lt;c:set var="nameRendererList" value="listJson" scope="request"/&gt;
+    &lt;c:import url="/WEB-INF/jsp/list.jsp" varReader="rdEntities" charEncoding="UTF-8"&gt;
+       {"nameTarget": "${namePlace}list", "content": "${utlJsp.toJsonStringAndClose(rdEntities)}",
+        "nameTargetParent": null, "javascript": "${utlJsp.toJsonString(showSuccess)}"}]
+    }
+    &lt;/c:import&gt;  
         </pre>
         This response clear entity form, refresh entity list and show successful message.
       </p>
       <p>
-        Source of BeigeWEB you can find at <a href="https://sourceforge.net/projects/beige-accounting/">https://sourceforge.net/projects/beige-accounting/</a>
+        Source code of BeigeWEB you can find at <a href="https://github.com/demidenko05/beige-software">https://github.com/demidenko05/beige-software</a>
       </p>
+      <p>Releases you can find in <a href="https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.beigesoft%22">Central Maven Repository: search org.beigesoft.</a></p>
       
     </section>
 

@@ -1521,8 +1521,8 @@ Bob has read <a href="https://www.irs.gov/pub/irs-pdf/p583.pdf">IRS 583 Starting
 
 <h4>Install BeigeAccounting on Android.</h4>
 SQlite and Java are already installed on Android. You should install Google Chrome and start it.
-Then you can install last version of <b>beige-accounting-android.apk</b> from <a href="https://sourceforge.net/projects/beige-accounting/">https://sourceforge.net/projects/beige-accounting/</a>.
-And start it, then push button "Start" to start A-Jetty server. Then push button "http://localhost:8080", chrome browser will be
+Then you can install Beige Accounting from Google Play Store (search "Beige Accounting")
+and start it, then push button "Start" to start A-Jetty server, then push button "http://localhost:8080", chrome browser will be
 opened this address. If you can't set chrome as default browser, then type this address by hand in it.
     </section>
 
