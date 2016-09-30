@@ -71,10 +71,33 @@ public class ExceptionWithCode extends Exception {
   /**
    * <p>Constructor useful.</p>
    * @param pCode Code
+   * @param pCause parent exception
+   **/
+  public ExceptionWithCode(final int pCode, final Throwable pCause) {
+    super(pCause);
+    this.code = pCode;
+  }
+
+  /**
+   * <p>Constructor useful.</p>
+   * @param pCode Code
    * @param pMsg message
    **/
   public ExceptionWithCode(final int pCode, final String pMsg) {
     super(pMsg);
+    this.code = pCode;
+    this.shortMessage = pMsg;
+  }
+
+  /**
+   * <p>Constructor useful.</p>
+   * @param pCode Code
+   * @param pMsg message
+   * @param pCause parent exception
+   **/
+  public ExceptionWithCode(final int pCode, final String pMsg,
+    final Throwable pCause) {
+    super(pMsg, pCause);
     this.code = pCode;
     this.shortMessage = pMsg;
   }

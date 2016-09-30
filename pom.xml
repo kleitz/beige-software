@@ -12,7 +12,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.version>1.7</java.version>
-    <beige.version>1.1.0-SNAPSHOT</beige.version>
+    <beige.version>1.1.1-SNAPSHOT</beige.version>
     <sqlite.version>3.8.11.2</sqlite.version>
     <postgresql.version>9.4-1206-jdbc4</postgresql.version>
     <jsp.version>2.2</jsp.version>
@@ -99,6 +99,7 @@
               <exclude>command.txt</exclude>
               <exclude>**/apache/**</exclude>
               <exclude>maven-central-deploy.sh</exclude>
+              <exclude>maven-central-deploy.log</exclude>
               <exclude>checkstyle-suppressions.xml</exclude>
               <exclude>assembly.xml</exclude>
               <exclude>findbug-exclude.xml</exclude>
@@ -121,6 +122,7 @@
               <exclude>**/*.sqlite</exclude>
               <exclude>**/*.html</exclude>
               <exclude>**/*.sql</exclude>
+              <exclude>**/*.tst.xml</exclude>
               <exclude>**/.directory</exclude>
             </excludes>
             </configuration>
@@ -244,7 +246,9 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <version>2.19.1</version>
         <configuration>
+          <!--redo odd default values:-->
           <useFile>false</useFile>
+          <trimStackTrace>false</trimStackTrace>
         </configuration>
       </plugin>
       <plugin>
@@ -348,6 +352,7 @@
     <module>beige-settings</module>
     <module>beige-orm</module>
     <module>beige-jdbc</module>
+    <module>beige-replicator</module>
     <module>beige-web-jar</module>
     <module>beige-web</module>
     <module>beige-accounting</module>

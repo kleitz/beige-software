@@ -15,7 +15,9 @@ import java.util.Date;
 import java.text.SimpleDateFormat;
 
 /**
- * <p>JSP utilities.</p>
+ * <p>JSP utilities.
+ * TODO replace with services (interfaces).
+ * </p>
  *
  * @author Yury Demidenko
  */
@@ -243,7 +245,7 @@ public class UtlJsp {
       return "%20";
     } else if (pChar == ',') {
       return "%2C";
-    }
+    } //TODO all chars
     return String.valueOf(pChar);
   }
 }

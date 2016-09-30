@@ -13,3 +13,4 @@ beigeaccountingtest.h2.db
 beigeaccountingtest.sqlite
 beige-accounting-web/*.sqlite
 */findbug-exclude.xml
+*/*.tst.xml

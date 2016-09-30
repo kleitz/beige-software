@@ -34,6 +34,7 @@
         <include>org.beigesoft:beige-settings</include>
         <include>org.beigesoft:beige-orm</include>
         <include>org.beigesoft:beige-jdbc</include>
+        <include>org.beigesoft:beige-replicator</include>
         <include>org.beigesoft:beige-web-jar</include>
         <include>org.beigesoft:beige-web</include>
         <include>org.beigesoft:beige-accounting</include>

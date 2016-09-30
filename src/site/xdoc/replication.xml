@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+  <properties>
+    <title>Beige Replicator specification #1.</title>
+  </properties>
+
+  <body>
+
+    <!-- The body of the document contains a number of sections -->
+    <section name="Beige Replicator specification #1.">
+      <h4>Main features:</h4>
+      <p>* Beige Replicator is designed for big data.</p>
+      <p>* For usability reasons it must be a persistence service to store/retrieve data from/to a file.
+        In case HTTP-connection this stored/retrieved file from/to remotely storage.</p>
+      <p>* It must not touch replicated/persisted beans by using annotations, i.e. must be configurable through standard XML properties.</p>
+      <p>* It should use either XML or JSON (or other) formats to convert data.</p>
+      <p>* There is two ways for replication/persisting - either by using in a local file (and send it for replication)
+        or through HTTP (or other network protocols).</p>
+      <p>* For replication/persisting trough HTTP it must be used a Servlet.</p>
+      <p>* Replicator is represented as either a WEB-application with HTTP-base authentication for cloud version (high load)
+        or it's contained by standalone WEB-app based on A-Jetty without authentication.</p>
+      <p>* This is one-way replicator, i.e. it get (receive, not send) data (replicated beans) from a source.</p>
+      <p>* Partially replication is implemented by using request parameters, e.g. request for replicate all descriptions of all customer invoices
+        for given period.</p>
+      
+      <h4>Beige Replicator use BeigeSettings to describe entities and their fields replications rules.</h4>
+      <p>There are field settings:
+        <ul>
+          <li>isEnabled - boolean if field is replicable/persistable</li>
+          <li>ISrvFieldWriter - name of service that write field value e.g. SrvFieldWriterXmlStd, srvWriteOwnedEntity, srvWriteDateAsLong, srvWriteOwnedList ...</li>
+          <li>ISrvEntityFieldFiller - name of service that fill field value e.g. SrvEntityFieldFillerStd, srvReadOwnedEntity, srvReadDateFromLong,  srvReadOwnedList ...</li>
+        </ul>
+      </p>
+      
+      <h4>Replication delete action</h4>
+      <p>An entity to be deleted should had special attribute IS_DELETED="true" in data.</p>
+      
+      <h4>XML based implementation.</h4>
+      <p>XML is widely used and reliable way to do this job.
+        To boost performance (big data) here used these approaches:
+        <ul>
+          <li>Any entity starts exactly with &lt;entity class="[class_canonical_name]", no spaces allowed between start character and entity word</li>
+          <li>Any entity ends exactly with /&gt;entity, no spaces allowed between back slash and end character</li>
+          <li>To reduce data size standard fields are stored as entity attributes e.g.: itsName="Theodora" itsProduct="1201" itsCategory="NULL"
+          itsLines="12,34,4565,23323", values are exactly quoted (no apostrophe), no spaces allowed between field name and equals char</li>
+          <li>Null value represented as "NULL" string.</li>
+          <li>Owned entities stored as ID - itsProduct="1201" itsLines="12,34,4565,23323"</li>
+          <li>Enumeration is stored as index of enum constant.</li>
+          <li>java.util.Date is stored as long milliseconds</li>
+        </ul>
+      </p>
+    </section>
+
+  </body>
+
+</document>
