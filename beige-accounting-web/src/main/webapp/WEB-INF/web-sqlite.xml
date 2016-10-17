@@ -66,6 +66,30 @@
     <url-pattern>/secure/entityList/*</url-pattern>
   </servlet-mapping>
   <servlet>
+    <servlet-name>sendDatabaseCopy</servlet-name>
+    <servlet-class>
+      org.beigesoft.web.servlet.WSendDatabaseCopy
+    </servlet-class>
+    <init-param>
+      <param-name>contentType</param-name>
+      <param-value>text/xml;</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>sendDatabaseCopy</servlet-name>
+    <url-pattern>/secure/sendDatabaseCopy/*</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>getDatabaseCopyResult</servlet-name>
+    <servlet-class>
+      org.beigesoft.web.servlet.WGetDatabaseCopyResult
+    </servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>getDatabaseCopyResult</servlet-name>
+    <url-pattern>/secure/getDatabaseCopyResult/*</url-pattern>
+  </servlet-mapping>
+  <servlet>
     <servlet-name>entity</servlet-name>
     <servlet-class>
       org.beigesoft.web.servlet.WEntity

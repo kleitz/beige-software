@@ -1,8 +1,12 @@
 This software requires:
 
-* Java - JRE7+ .
-* SqlLite last version.
+* Java - JRE7+.
+* SqlLite last version. ?
 * Google Chrome browser (html5-dialog ready).
+
+To start application:
+1. in terminal run startup.bat for MS Windows or startup.sh for Mac/*Nix or run "java -jar beige-accounting-ajetty-jar-with-dependencies.jar port=8080". Port may be 8081, 8082...
+2. open Google Chrome and type "http://localhost:8080"
 
 licenses:
 GNU General Public License version 2 - http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html

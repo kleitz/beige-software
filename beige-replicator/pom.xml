@@ -8,7 +8,7 @@
   </parent>
   <artifactId>beige-replicator</artifactId>
 
-  <name>Beige WEB replicator/persister</name>
+  <name>Beige replicator/persister</name>
   <description>It replicate/persist any entity according XML settings and user request through a file or network (HTTP). 
   </description>
   <url>http://www.beigesoft.org</url>
@@ -31,15 +31,8 @@
   <dependencies>
     <dependency>
       <groupId>org.beigesoft</groupId>
-      <artifactId>beige-settings</artifactId>
-      <version>${beige.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.beigesoft</groupId>
       <artifactId>beige-orm</artifactId>
       <version>${beige.version}</version>
-      <type>test-jar</type>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.beigesoft</groupId>

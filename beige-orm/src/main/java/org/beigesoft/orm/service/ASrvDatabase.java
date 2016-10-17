@@ -26,6 +26,16 @@ import org.beigesoft.log.ILogger;
 public abstract class ASrvDatabase<RS> implements ISrvDatabase<RS> {
 
   /**
+   * <p>Database ID.</p>
+   **/
+  private int idDatabase = 0;
+
+  /**
+   * <p>Database version.</p>
+   **/
+  private int versionDatabase = 0;
+
+  /**
    * <p>Logger.</p>
    **/
   private ILogger logger;
@@ -172,26 +182,29 @@ public abstract class ASrvDatabase<RS> implements ISrvDatabase<RS> {
    * @return ID database
    **/
   @Override
-  public final int getIdDatabase() {
-    try {
-      String query = "select count(*) as TOTALROWS from " + DatabaseInfo.class
-        .getSimpleName().toUpperCase() + ";";
-      Integer rowCount = evalIntegerResult(query, "TOTALROWS");
-      if (rowCount != 1) {
-        throw new ExceptionWithCode(ExceptionWithCode.CONFIGURATION_MISTAKE,
-          "database_info_config_error");
+  public final synchronized int getIdDatabase() {
+    if (this.idDatabase == 0) {
+      try {
+        String query = "select count(*) as TOTALROWS from " + DatabaseInfo.class
+          .getSimpleName().toUpperCase() + ";";
+        Integer rowCount = evalIntegerResult(query, "TOTALROWS");
+        if (rowCount != 1) {
+          throw new ExceptionWithCode(ExceptionWithCode.CONFIGURATION_MISTAKE,
+            "database_info_config_error");
+        }
+        query = "select DATABASEID from " + DatabaseInfo.class
+          .getSimpleName().toUpperCase() + ";";
+        Integer databaseId = evalIntegerResult(query, "DATABASEID");
+        if (databaseId == null) {
+          throw new ExceptionWithCode(ExceptionWithCode.CONFIGURATION_MISTAKE,
+            "database_info_config_error");
+        }
+        this.idDatabase = databaseId;
+      } catch (Exception e) {
+        throw new RuntimeException(e);
       }
-      query = "select DATABASEID from " + DatabaseInfo.class
-        .getSimpleName().toUpperCase() + ";";
-      Integer databaseId = evalIntegerResult(query, "DATABASEID");
-      if (databaseId == null) {
-        throw new ExceptionWithCode(ExceptionWithCode.CONFIGURATION_MISTAKE,
-          "database_info_config_error");
-      }
-      return databaseId;
-    } catch (Exception e) {
-      throw new RuntimeException(e);
     }
+    return this.idDatabase;
   }
 
   /**
@@ -199,26 +212,29 @@ public abstract class ASrvDatabase<RS> implements ISrvDatabase<RS> {
    * @return database version
    **/
   @Override
-  public final int getVersionDatabase() {
-    try {
-      String query = "select count(*) as TOTALROWS from " + DatabaseInfo.class
-        .getSimpleName().toUpperCase() + ";";
-      Integer rowCount = evalIntegerResult(query, "TOTALROWS");
-      if (rowCount != 1) {
-        throw new ExceptionWithCode(ExceptionWithCode.CONFIGURATION_MISTAKE,
-          "database_info_config_error");
+  public final synchronized int getVersionDatabase() {
+    if (this.versionDatabase == 0) {
+      try {
+        String query = "select count(*) as TOTALROWS from " + DatabaseInfo.class
+          .getSimpleName().toUpperCase() + ";";
+        Integer rowCount = evalIntegerResult(query, "TOTALROWS");
+        if (rowCount != 1) {
+          throw new ExceptionWithCode(ExceptionWithCode.CONFIGURATION_MISTAKE,
+            "database_info_config_error");
+        }
+        query = "select DATABASEVERSION from " + DatabaseInfo.class
+          .getSimpleName().toUpperCase() + ";";
+        Integer databaseVersion = evalIntegerResult(query, "DATABASEVERSION");
+        if (databaseVersion == null) {
+          throw new ExceptionWithCode(ExceptionWithCode.CONFIGURATION_MISTAKE,
+            "database_info_config_error");
+        }
+        this.versionDatabase = databaseVersion;
+      } catch (Exception e) {
+        throw new RuntimeException(e);
       }
-      query = "select DATABASEVERSION from " + DatabaseInfo.class
-        .getSimpleName().toUpperCase() + ";";
-      Integer databaseVersion = evalIntegerResult(query, "DATABASEVERSION");
-      if (databaseVersion == null) {
-        throw new ExceptionWithCode(ExceptionWithCode.CONFIGURATION_MISTAKE,
-          "database_info_config_error");
-      }
-      return databaseVersion;
-    } catch (Exception e) {
-      throw new RuntimeException(e);
     }
+    return this.versionDatabase;
   }
 
   /**

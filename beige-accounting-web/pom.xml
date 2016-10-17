@@ -52,6 +52,15 @@
         </plugins>
         <resources>
           <resource>
+            <directory>../beige-orm/src/main/resources</directory>
+          </resource>
+          <resource>
+            <directory>../beige-web-jar/src/main/resources</directory>
+          </resource>
+          <resource>
+            <directory>../beige-accounting/src/main/resources</directory>
+          </resource>
+          <resource>
             <directory>../beige-accounting-web-jar/src/main/resources</directory>
           </resource>
         </resources>
@@ -79,6 +88,15 @@
           </plugin>
         </plugins>
         <resources>
+          <resource>
+            <directory>../beige-orm/src/main/resources</directory>
+          </resource>
+          <resource>
+            <directory>../beige-web-jar/src/main/resources</directory>
+          </resource>
+          <resource>
+            <directory>../beige-accounting/src/main/resources</directory>
+          </resource>
           <resource>
             <directory>../beige-accounting-web-jar/src/main/resources</directory>
           </resource>

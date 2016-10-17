@@ -32,6 +32,7 @@ import org.beigesoft.orm.model.ColumnsValues;
 import org.beigesoft.orm.model.PropertiesBase;
 import org.beigesoft.orm.model.TableSql;
 import org.beigesoft.orm.model.FieldSql;
+import org.beigesoft.persistable.DatabaseInfo;
 import org.beigesoft.persistable.APersistableBase;
 import org.beigesoft.log.ILogger;
 
@@ -1341,6 +1342,12 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
       }
       if (ifAllTablesCreated) {
         getLogger().info(ASrvOrm.class, "all tables has been created.");
+        DatabaseInfo databaseInfo = new DatabaseInfo();
+        databaseInfo.setDatabaseVersion(1);
+        Double randomDbl = Math.random() * 1000000000;
+        databaseInfo.setDatabaseId(randomDbl.intValue());
+        databaseInfo.setDescription("a database");
+        insertEntity(databaseInfo);
         String insertSql = loadString(dirPath + "insert.sql");
         if (insertSql != null) {
           getLogger().info(ASrvOrm.class, dirPath

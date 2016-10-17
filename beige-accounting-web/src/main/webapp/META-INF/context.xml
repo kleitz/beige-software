@@ -30,4 +30,13 @@
     <!--
     <Valve className="org.apache.catalina.valves.CometConnectionManagerValve" />
     -->
+
+  <Realm className="org.apache.catalina.realm.JDBCRealm" 
+    connectionURL="jdbc:postgresql:beigeaccounting?user=beigeaccounting&amp;password=beigeaccounting"
+    driverName="org.postgresql.Driver"
+    roleNameCol="itsrole"
+    userCredCol="itspassword"
+    userNameCol="itsuser"
+    userRoleTable="userroletomcat"
+    userTable="usertomcat"/>  
 </Context>

@@ -20,7 +20,8 @@ import org.beigesoft.service.UtlReflection;
 
 /**
  * <p>Service to fill a owned entity of replicable entity.
- * Only for database replication!!!</p>
+ * Only for database replication!!! For restoring from file it must be a filler
+ * that will find out owned entity from list of already read entities.</p>
  *
  * @author Yury Demidenko
  */

@@ -22,7 +22,6 @@
   <title>Beige WEB</title>
 </head>
 <body>
-
   <div class="navbar">
     <a class="navbar-brand" href="secure/main.jsp">Main</a>
     <a class="navbar-brand" href="secure/mainMobile.jsp">Main mobile</a>

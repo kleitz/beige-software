@@ -18,5 +18,9 @@
   <suppress checks="MagicNumberCheck"
     files="BalanceAtAllDirtyCheck|SrvBalanceStd|GoodsLoss|GoodsLossLine|SalesReturn|SalesReturnLine|PurchaseReturn|PurchaseReturnLine|AFactoryAppBeans"/>
   <suppress checks="MagicNumberCheck"
-    files="SrvEntityReaderXml"/>
+    files="UtilXml|ASrvOrm|ClearDbThenGetAnotherCopyXmlHttp"/>
+  <suppress checks="LineLength"
+    files="WGetDatabaseCopyResult"/>
+  <suppress checks="EmptyBlock"
+    files="ClearDbThenGetAnotherCopyXmlHttp"/>
 </suppressions>

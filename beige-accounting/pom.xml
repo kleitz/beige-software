@@ -32,6 +32,11 @@
   <dependencies>
     <dependency>
       <groupId>org.beigesoft</groupId>
+      <artifactId>beige-replicator</artifactId>
+      <version>${beige.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.beigesoft</groupId>
       <artifactId>beige-orm</artifactId>
       <version>${beige.version}</version>
     </dependency>

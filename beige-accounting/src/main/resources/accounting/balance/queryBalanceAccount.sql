@@ -8,7 +8,7 @@ from
     select ACC, SUBACC, SUBACCID, sum(DEBIT) as DEBIT, sum(CREDIT) as CREDIT
     from 
       (
-        select ITSACCOUNT as ACC, SUBACCOUNT as SUBACC,  SUBACCID,
+        select ITSACCOUNT as ACC, SUBACCOUNT as SUBACC, SUBACCID,
         case when ACCOUNTIN.NORMALBALANCETYPE = 0 then ITSBALANCE
         else 0 end as DEBIT,
         case when ACCOUNTIN.NORMALBALANCETYPE = 1 then ITSBALANCE
@@ -30,7 +30,7 @@ from
         from  ACCOUNTINGENTRY 
         where ACCCREDIT = :ACCID and SUBACCCREDITID = 1 and ITSDATE >= :DATE1 and ITSDATE <= :DATE2
         group by ACC, SUBACC, SUBACCID
-      )
+      ) as UNION_RECORDS
     group by ACC, SUBACC, SUBACCID
   ) as ALL_RECORDS
 join ACCOUNT on ALL_RECORDS.ACC = ACCOUNT.ITSID

@@ -28,7 +28,7 @@ import static org.junit.Assert.assertNull;
 import org.junit.Test;
 
 import org.beigesoft.log.LoggerSimple;
-import org.beigesoft.xml.service.SrvXmlEscape;
+import org.beigesoft.service.UtilXml;
 import org.beigesoft.service.UtlReflection;
 import org.beigesoft.settings.MngSettings;
 
@@ -51,7 +51,7 @@ public class SrvEntityReaderXmlTest {
 
   SrvEntityReaderXml srvEntityReaderXml;
   
-  SrvXmlEscape srvXmlEscape;
+  UtilXml utilXml;
   
   SrvEntityFieldFillerStd srvEntityFieldFillerStd;
   
@@ -69,9 +69,10 @@ public class SrvEntityReaderXmlTest {
 
   public SrvEntityReaderXmlTest() throws Exception {
     this.logger = new LoggerSimple();
+    this.logger.info(SrvEntityReaderXmlTest.class, new Date().toString());
     this.srvEntityReaderXml = new SrvEntityReaderXml();
-    this.srvXmlEscape = new SrvXmlEscape();
-    this.srvEntityReaderXml.setSrvXmpEscape(srvXmlEscape);
+    this.utilXml = new UtilXml();
+    this.srvEntityReaderXml.setUtilXml(utilXml);
     this.srvEntityFieldFillerStd = new SrvEntityFieldFillerStd();
     this.utlReflection = new UtlReflection();
     this.srvEntityFieldFillerStd.setUtlReflection(this.utlReflection);
@@ -88,9 +89,9 @@ public class SrvEntityReaderXmlTest {
     this.srvEntityReaderXml.setMngSettings(this.mngSettings);
     this.srvEntityWriterXml = new SrvEntityWriterXml();
     this.srvFieldWriterXmlStd = new SrvFieldWriterXmlStd();
-    this.srvFieldWriterXmlStd.setSrvXmpEscape(this.srvXmlEscape);
+    this.srvFieldWriterXmlStd.setUtilXml(this.utilXml);
     this.srvFieldHasIdWriterXml = new SrvFieldHasIdWriterXml();
-    this.srvFieldHasIdWriterXml.setSrvXmpEscape(this.srvXmlEscape);
+    this.srvFieldHasIdWriterXml.setUtilXml(this.utilXml);
     this.srvEntityWriterXml.setMngSettings(this.mngSettings);
     this.srvEntityWriterXml.setUtlReflection(this.utlReflection);
     Map<String, ISrvFieldWriter> fieldsWritersMap = new HashMap<String, ISrvFieldWriter>();
@@ -101,7 +102,7 @@ public class SrvEntityReaderXmlTest {
 
   @Test
   public void testRead1() throws Exception {
-    System.out.println(this.srvXmlEscape.unescapeXml(this.strXmlDepartment));
+    System.out.println(this.utilXml.unescapeXml(this.strXmlDepartment));
     StringReader reader = new StringReader(this.strXmlDepartment);
     Map<String, String> attributesMap = this.srvEntityReaderXml.readAttributes(reader, null);
     assertEquals("org.beigesoft.test.persistable.Department", attributesMap.get("class")); 
@@ -119,14 +120,22 @@ public class SrvEntityReaderXmlTest {
 
   @Test
   public void testRead3() throws Exception {
-    System.out.println(this.srvXmlEscape.unescapeXml(this.strXmlPersHead));
+    System.out.println(this.utilXml.unescapeXml(this.strXmlPersHead));
     StringReader reader = new StringReader(this.strXmlPersHead);
     PersistableHead persHead = (PersistableHead) this.srvEntityReaderXml.read(reader, null);
     assertEquals(new Date(1475156484845L), persHead.getItsDate()); 
     assertNull(persHead.getItsInteger()); 
     assertEquals(EStatus.STATUS_A, persHead.getItsStatus()); 
     assertEquals(new Boolean(true), persHead.getIsClosed()); 
-    assertEquals(new BigDecimal("523.66"), persHead.getItsTotal()); 
+    assertEquals(new BigDecimal("523.66"), persHead.getItsTotal());
+    Double randomDbl1 = Math.random() * 1000000000;
+    int databaseIdGenerated1 = randomDbl1.intValue();
+    System.out.println("randomDbl1/int1: " + randomDbl1 + "/"
+      + databaseIdGenerated1);
+    Double randomDbl2 = Math.random() * 1000000000;
+    int databaseIdGenerated2 = randomDbl2.intValue();
+    System.out.println("randomDbl2/int2: " + randomDbl2 + "/"
+      + databaseIdGenerated2);
   }
 
   @Test
@@ -140,6 +149,7 @@ public class SrvEntityReaderXmlTest {
     persHeadOrigin.setItsStatus(EStatus.STATUS_A);
     persHeadOrigin.setItsTotal(new BigDecimal("523.66"));
     persHeadOrigin.setItsDepartment(departmentOr);
+    persHeadOrigin.setTmpDescription(" List<String> lst = \"alfa\" & b=a \n nstr");
     File persHeadFile = new File("persistableHead.tst.xml");
     OutputStreamWriter writer = new OutputStreamWriter(
       new FileOutputStream(persHeadFile),
@@ -161,12 +171,12 @@ public class SrvEntityReaderXmlTest {
     PersistableHead persHead = null;
     Department department = null;
     try {
-      readUntilStart(reader, "data");
+      this.utilXml.readUntilStart(reader, "data");
       Map<String, String> attributesMap = this.srvEntityReaderXml.readAttributes(reader, null);
       assertEquals("127", attributesMap.get("sourceId")); 
-      readUntilStart(reader, "entity");
+      this.utilXml.readUntilStart(reader, "entity");
       department = (Department) this.srvEntityReaderXml.read(reader, null);
-      readUntilStart(reader, "entity");
+      this.utilXml.readUntilStart(reader, "entity");
       persHead = (PersistableHead) this.srvEntityReaderXml.read(reader, null);
     } finally {
       if (reader != null) {
@@ -179,47 +189,8 @@ public class SrvEntityReaderXmlTest {
     assertEquals(persHeadOrigin.getIsClosed(), persHead.getIsClosed()); 
     assertEquals(persHeadOrigin.getItsTotal(), persHead.getItsTotal()); 
     assertEquals(persHeadOrigin.getItsDepartment().getItsId(), persHead.getItsDepartment().getItsId()); 
+    assertEquals(persHeadOrigin.getTmpDescription(), persHeadOrigin.getTmpDescription()); 
     assertEquals(departmentOr.getItsId(), department.getItsId()); 
     assertEquals(departmentOr.getItsName(), department.getItsName()); 
-  }
-
-
-  /**
-   * <p>
-   * Read stream until start given element.
-   * </p>
-   * @param pReader reader.
-   * @param pElement element
-   * @throws Exception - an exception
-   **/
-  public final void readUntilStart(final Reader pReader,
-    final String pElement) throws Exception {
-    Map<String, String> attributesMap = new HashMap<String, String>();
-    StringBuffer sb = new StringBuffer();
-    int chi;
-    boolean isLtOccured = false;
-    while ((chi = pReader.read()) != -1) {
-      char ch = (char) chi;
-      if (isLtOccured) {
-        if (ch ==  '>' || ch == '\n' || ch == '\\' || ch == '"' || ch == '\r'
-          || ch == '\t') {
-          isLtOccured = false;
-          sb.delete(0, sb.length());
-          continue;
-        }
-        sb.append(ch);
-        String readedStr = sb.toString();
-        if (readedStr.length() > pElement.length()) {
-          isLtOccured = false;
-          sb.delete(0, sb.length());
-          continue;
-        }
-        if (pElement.equals(readedStr)) {
-          break;
-        }
-      } else if (ch == '<') {
-        isLtOccured = true;
-      }
-    }
   }
 }

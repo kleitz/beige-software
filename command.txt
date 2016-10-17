@@ -15,16 +15,16 @@ tomcat build:
 $ANT_HOME/bin/ant clean clean-depend
 $ANT_HOME/bin/ant -Dno.build.dbcp=true
 
-Linux:
+
 alt-r bash history
 //replace string
 find . -type f -name "*.java" -exec sed -i "s/packagesPersistable/classesPersistable/g" {} +
 //print files with text:
-grep --include=*.java -rw '.' -e "@author"
+grep --include=*.java -r '.' -e "SrvXmlEscape"
 grep --include=pom.xml -rw '.' -e "a-javabeans"
 //print files and lines with text:
 grep --include=*.xml -rnw '.' -e "TO-DO"
-find . -type f -name "*.java" -exec sed -i "s/ADocumentWithTaxes/ADocWithTaxes/g" {} +
+find . -type f -name "*.java" -exec sed -i "s/org\.beigesoft\.xml\.service\.IUtilXml/org\.beigesoft\.service\.IUtilXml/g" {} +
 find . -type f -not -name "*.jar" -exec sed -i "s/java\.beans/beans/g" {} +
 find . -type f -name "*.java" -exec sed -i "s/java\.beans/beans/g" {} +
 find . -type f -name "*.java" -exec sed -i "s/ctxt\.getClassLoader()/ctxt\.getClass()\.getClassLoader()/g" {} +
@@ -32,6 +32,11 @@ find . -type f -name "pom.xml" -exec sed -i "s/1\.0\.9-SNAPSHOT/1\.1\.0-SNAPSHOT
 grep -F --include=*.jsp -rw '.' -e 'getMsg("$'
 //list files with extension
 find . -type f -name "*.keystore"
+//list files modified before after on <minutes> ego:
+find . -cmin +<minutes>
+find . -cmin -<minutes>
+find . -cmin  <minutes>
+
 
 Maven:
 mvnDebug tomcat7:run -P sqlite
@@ -279,8 +284,11 @@ decision - release beans by factory after database changed is best solution fore
 balances not recalculated or not readable for android AVD N10_7 for DB ???
 ********
 ***reversed date error
-**warehouse rests after full reversing still remain, WH entries OK WH rest wrong, manufacturing process twice reverse
+***warehouse rests after full reversing still remain, WH entries OK WH rest wrong, manufacturing process twice reverse
  change pEntity.getItsQuantity() -> wms.getItsQuantity() in reversedraw in srvWarehEntry
+
+
+*  Map<String, ?> -> Map<String, Object>
 
 git:
 git config --global user.name "Your Name"
@@ -294,7 +302,7 @@ git clone https://github.com/demidenko05/a-javabeans.git
 git remote add origin https://github.com/demidenko05/beige-uml.git
 git remote -v
 git add .
-git commit -m 'second commit'
+git commit -m 'import DB with WEB service has been added'
 git push origin master
 git status
 

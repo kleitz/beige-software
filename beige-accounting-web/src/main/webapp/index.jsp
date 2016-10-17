@@ -28,6 +28,7 @@
     <a class="navbar-brand" href="secure/main.jsp">${pageContext.servletContext.getAttribute("srvI18n").getMsg("Standard")}</a>
     <a class="navbar-brand" href="secure/mainMobile.jsp">${pageContext.servletContext.getAttribute("srvI18n").getMsg("Mobile")}</a>
     <a class="navbar-brand" href="mngSoftware/?nameRenderer=mngSoftware">Software management</a>
+    <a class="navbar-brand" href="secure/getDatabaseCopyForm.jsp">${pageContext.servletContext.getAttribute("srvI18n").getMsg("clear_db_and_get_copy")}</a>
     <div class="nav-right">
       <a href="http://www.beigesoft.org/" target="_blank">Beigesoft ™</a>
     </div>

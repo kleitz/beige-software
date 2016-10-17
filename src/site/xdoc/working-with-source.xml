@@ -13,11 +13,13 @@
     
       <h4>Preparation</h4>
     
-      <p>1. Install JDK. In Debian as root invoke "apt-get install openjdk-7-jdk"</p>
+      <p>1. Install JDK. In Debian as root invoke "dnf install openjdk-7-jdk"</p>
       <p>2. <a target="#blank" href="http://maven.apache.org/download.html">Download Maven</a> e.g. Maven-3.3.9 then 
         unpack it into folder "$HOME/programmer/java/apache-maven-3.3.9" and add into PATH (see below)</p>
       <p>3. Download Android SDK tools without studio from <a href="http://developer.android.com/sdk/index.html#Other">http://developer.android.com/sdk/index.html#Other</a>. Unpack it into $HOME/programmer/android-sdk-linux. Add it into environment variables (see below).
       Launch $ANDROID-SDK-HOME/tools/android and choose last and 19 version of Android platform and download them.</p>
+      <p>4. In Fedora 64-bit add 32-bit compatibility: 
+      dnf install glibc.i686 glibc-devel.i686 libstdc++.i686 zlib-devel.i686 ncurses-devel.i686 libX11-devel.i686 libXrender.i686 libXrandr.i686</p>
       <p>4. Add system variable JAVA_HOME, ANDROID_HOME and Maven bin directory and Android tools directory into PATH variable. For example in Linux add into .bashrc:
       <pre>
 JAVA_HOME=/usr/lib/jvm/java-7-openjdk-i386/bin
@@ -25,15 +27,22 @@ export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-i386
 export ANDROID_HOME=$HOME/programmer/android-sdk-linux
 export PATH=$PATH:$HOME/programmer/java/apache-maven-3.3.9/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools
       </pre>
+      Command <b>source ~/.bashrc</b> will reload settings.
       </p>
       <p>4. Install Postgesql 9+</p>
-      <p>In linux open root terminal and run "apt-get install postgresql postgresql-contrib postgresql-doc postgresql-client"</p>
-      <p>Then login as "postgres" (It doesn't need password for postgres user when you login from root") - run "su postgres"</p>
+      <p>In Fedora open root terminal and run "dnf install postgresql-server postgresql-contrib"</p>
+      <p>Turn it on on startup: "systemctl enable postgresql"</p>
+      <p>Initialize database: "postgresql-setup --initdb --unit postgresql"</p>
+      <p>Start it manually: "systemctl start postgresql"</p>
+      <p>Then login as "postgres" (It doesn't need password for postgres user when you login from root") - run "su - postgres"</p>
       <p>As user "postgres" run "psql"</p>
       <p>In <b>psql</b> add user beigeaccounting: "CREATE USER beigeaccounting WITH PASSWORD 'beigeaccounting';"</p>
       <p>Then add database beigeaccounting: "CREATE DATABASE beigeaccounting OWNER beigeaccounting;"</p>
       <p>Then add database beigeaccountingtest: "CREATE DATABASE beigeaccountingtest OWNER beigeaccounting;"</p>
+      <p>You can change postgres user password: "\password postgres"</p>
       <p>Type "\q" to exit from <b>psql</b></p>
+      <p>Change authentication (trust means no password required): "nano /var/lib/pgsql/data/pg_hba.conf"</p>
+      <p>To restart run: "service postgresql restart"</p>
       <p>Get last source from <a href="https://github.com/demidenko05/beige-software">https://github.com/demidenko05/beige-software</a> (zip archive or git clone) into folder [HOME]/git/beige-software</p>
       <p>Beige UML is Maven project that contains Android code. But right now there is no decent android-maven plugin and Android Developer Tools for Eclipse. This is not a problem.
       It is easy to compile, deploy, run with debug mode from command line. Any way Eclipse is the best option to change code and debug Java and Android application.
@@ -102,25 +111,45 @@ export PATH=$PATH:$HOME/programmer/java/apache-maven-3.3.9/bin:$ANDROID_HOME/pla
         To generate getters and setters install <b>gawk</b> and create script <b>genGetSet.sh</b>:
         <pre>
 #!/bin/bash
-
-# takes a single filename of a .java file and generates a default getter/setter stub for each private variable
+   
+# It generates simple getters and setters for given .java file.
+# You have to respect checkstyle, e.g. "No tabs"
 echo "  //Simple getters and setters:"
-cat $1 | grep private | awk '{
-varName=substr($3, 1, length($3));
-print "" ;
-print "  public " $2 " get" toupper(substr(varName,1,1)) substr(varName, 2) "()";
-print "  {";
-print "    return " varName ";";
-print "  }";
-print "" ;
-print "  public void set" toupper(substr(varName,1,1)) substr(varName, 2) "( " $2 " " varName " )";
-print "  {";
-print "    this." varName " = " varName ";";
-print "  }";
+cat $1 | grep private | awk 'BEGIN { FS = "  | |;" }
+{
+  varType = "1"
+  varName = ""
+  for (i = 1; i &lt;= NF; i++) if ($i != "" &amp;&amp; $i != "private") {
+    if (varType == "1") varType = $i;
+    else {
+      if (index($i, ",") &gt; 0 || index($i, "&gt;") &gt; 0) varType = varType " " $i;
+      else { varName = $i; break; }
+    }
+  }
+  if (varName != "") {
+    print "" ;
+    print "  /**" ;
+    print "   * &lt;p&gt;Getter for " varName ".&lt;/p&gt;" ;
+    print "   * @return " varType;
+    print "   **/" ;
+    print "  public final " varType " get" toupper(substr(varName,1,1)) substr(varName, 2) "() {";
+    print "    return this." varName ";";
+    print "  }";
+    print "" ;
+    print "  /**" ;
+    print "   * &lt;p&gt;Setter for " varName ".&lt;/p&gt;" ;
+    print "   * @param p" toupper(substr(varName,1,1)) substr(varName, 2) " reference";
+    print "   **/" ;
+    print "  public final void set" toupper(substr(varName,1,1)) substr(varName, 2) "(final " varType " p" toupper(substr(varName,1,1)) substr(varName, 2) ") {";
+    print "    this." varName " = p" toupper(substr(varName,1,1)) substr(varName, 2) ";";
+    print "  }";
+  }
 }'
 $SHELL
         </pre>
-        Make it executable. In XFCE launch file manager right click on java file and choose "open with". Switch tab "custom command line" then press "browse" and choose this script then type name "genGetSet" then press "OK" to run script on java file.
+        Make it executable. In PCManFM file manager right click on java file and choose "open with". Switch tab "custom command line"
+        then press "browse" and choose this script, check "execute in terminal" and "keep terminal window open" then type name "genGetSet"
+        then press "OK" to run script on java file.
         Terminal window with text of generated getter ans setters will appeared. Select entries then copy and paste them into java file. 
       </p>
       

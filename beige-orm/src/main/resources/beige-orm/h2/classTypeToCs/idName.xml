@@ -11,6 +11,7 @@
 <comment>Correspondence of Java types to services that explain about property. ORDER is essential, the LAST value will be used.</comment>
 <entry key="java.lang.Object">itsId</entry>
 <entry key="org.beigesoft.persistable.UserTomcat">itsUser</entry>
+<entry key="org.beigesoft.persistable.DatabaseInfo">databaseId</entry>
 <entry key="org.beigesoft.persistable.UserRoleTomcat">null</entry>
 <entry key="org.beigesoft.persistable.UserRoleJetty">null</entry>
 </properties>

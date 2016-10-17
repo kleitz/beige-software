@@ -15,6 +15,7 @@ import javax.sql.DataSource;
 
 import com.zaxxer.hikari.HikariDataSource;
 
+import org.beigesoft.replicator.service.PrepareDbAfterGetCopy;
 import org.beigesoft.orm.service.SrvOrmSqlite;
 import org.beigesoft.web.service.MngDatabaseSqlite;
 
@@ -27,6 +28,11 @@ import org.beigesoft.web.service.MngDatabaseSqlite;
  * @author Yury Demidenko
  */
 public class FactoryAppBeansSqlite extends AFactoryAppBeansJdbc {
+
+  /**
+   * <p>Service that  release AppFactory beans.</p>
+   */
+  private PrepareDbAfterGetCopy prepareDbAfterGetCopy;
 
   /**
    * <p>Data Source.</p>
@@ -58,6 +64,7 @@ public class FactoryAppBeansSqlite extends AFactoryAppBeansJdbc {
       }
       this.dataSource = null;
     }
+    this.prepareDbAfterGetCopy = null;
     this.mngDatabaseSqlite = null;
     setLogger(null);
     setSrvDatabase(null);
@@ -73,6 +80,10 @@ public class FactoryAppBeansSqlite extends AFactoryAppBeansJdbc {
     setSrvOrm(null);
     setSrvWebMvc(null);
     setHlpInsertUpdate(null);
+    setClearDbThenGetAnotherCopyXmlHttp(null);
+    setDatabaseWriter(null);
+    setMngSettingsGetDbCopy(null);
+    setUtilXml(null);
     getEntitiesMap().clear();
     getBeansMap().clear();
   }
@@ -89,9 +100,10 @@ public class FactoryAppBeansSqlite extends AFactoryAppBeansJdbc {
     final String pBeanName) throws Exception {
     if ("IMngDatabase".equals(pBeanName)) {
       return lazyGetMngDatabaseSqlite();
-    } else {
-      return null;
+    } else if ("prepareDbAfterGetAnotherCopy".equals(pBeanName)) {
+      return lazyGetPrepareDbAfterGetCopy();
     }
+    return null;
   }
 
   /**
@@ -113,7 +125,7 @@ public class FactoryAppBeansSqlite extends AFactoryAppBeansJdbc {
       this.dataSource = new HikariDataSource();
       this.dataSource.setJdbcUrl(getDatabaseName());
       this.dataSource.setDriverClassName("org.sqlite.JDBC");
-      lazyGetLogger().info(AFactoryAppBeans.class,
+      lazyGetLogger().info(FactoryAppBeansSqlite.class,
         "HikariDataSource has been created.");
     }
     return this.dataSource;
@@ -129,8 +141,27 @@ public class FactoryAppBeansSqlite extends AFactoryAppBeansJdbc {
     if (this.mngDatabaseSqlite == null) {
       this.mngDatabaseSqlite = new MngDatabaseSqlite();
       this.mngDatabaseSqlite.setFactoryAppBeansSqlite(this);
+      lazyGetLogger().info(FactoryAppBeansSqlite.class,
+        "MngDatabaseSqlite has been created.");
     }
     return this.mngDatabaseSqlite;
+  }
+
+  /**
+   * <p>Get PrepareDbAfterGetCopy in lazy mode.</p>
+   * @return PrepareDbAfterGetCopy - PrepareDbAfterGetCopy
+   * @throws Exception - an exception
+   */
+  public final synchronized PrepareDbAfterGetCopy
+    lazyGetPrepareDbAfterGetCopy() throws Exception {
+    if (this.prepareDbAfterGetCopy == null) {
+      this.prepareDbAfterGetCopy = new PrepareDbAfterGetCopy();
+      this.prepareDbAfterGetCopy.setLogger(lazyGetLogger());
+      this.prepareDbAfterGetCopy.setFactoryAppBeans(this);
+      lazyGetLogger().info(FactoryAppBeansSqlite.class,
+        "PrepareDbAfterGetCopy has been created.");
+    }
+    return this.prepareDbAfterGetCopy;
   }
 
   /**

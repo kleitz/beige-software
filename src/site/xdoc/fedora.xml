@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+  <properties>
+    <title>Use Fedora Linux</title>
+   </properties>
+
+  <body>
+
+    <section name="Install Fedora">
+      <p>Right now stable Debian Jessie consist of too old software. For example Network Manager(0.9.10.0-7) can make neither DSL connection nor WIFI Hotspot.
+        Debian Stretch for testing (it works really stable) consist of even experimental versions of software(e.g. GnuPg).
+        So Fedora is reliable alternative.
+        In my experience KDE(last plasma) is extremely unstable.
+        Gnome get rid useful hierarchical menu, task bar, system tray.
+        XFCE - you are not able to move applications tags inside task bar. LXDE is the most user friendly and stable interface.
+      </p>
+      <h4>Install from Live DVD</h4>
+      <p>
+        1. Get Live ISO (amd64 1Gb) from <a href="https://spins.fedoraproject.org/en/lxde/">https://spins.fedoraproject.org/en/lxde/</a><br></br>
+      </p>
+      <p>
+        2. Burn DVD, or better copy it into flash. In Linux make sure what is your USB drive name (sdb or sdc).
+        In root terminal type "df" to list mounted devices. Hard drive (HDD) is always "/dev/sda".
+        Insert USB flash and list devices again. USB flash usually appears as "dev/sdb". Unmount flash e.g. "umount /dev/sdb1" then "sync".
+        Copy ISO image into flash with "cp Fedora-LXDE-Live-x86_64-24-1.2.iso /dev/sdb".
+      </p>
+      <p>Boot from live DVD/USB-SD then install.</p>
+      <h4>After installation make it better.</h4>
+      <p>1. Web-browser Midori doesn't works, and many applications are useless, so remove them:</p>
+        <pre>
+          dnf remove midori
+          dnf remove abiword        
+          dnf remove lxmusic
+          dnf remove gnumeric
+          dnf remove osmo
+          dnf remove sylpheed
+          dnf remove xpad
+          dnf remove gigolo
+        </pre>
+        Install useful software:
+        <pre>
+          dnf install mc //terminal file manager
+          dnf install chromium
+          dnf install libreoffice
+          rpm -ivh http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-stable.noarch.rpm
+          dnf install vlc //best multimedia player (can take photo/video from webcam)
+          dnf install goldendict (use external program: cvlc) //dictionary
+          dnf install gimp //same as photoshop 
+          dnf install inkscape //graphics vector editor
+          dnf install geany //fast and useful editor with IDE features
+          dnf install geany-plugins-spellcheck
+          dnf install scrot //it takes screenshots
+        </pre>
+        If you are traveling then to change time zone use:
+        <ul>
+          <li>Get list of time zones in terminal: timedatectl list-timezones</li>
+          <li>Set current time zone: timedatectl set-timezone Europe/Moscow</li>
+        </ul>
+        To add a layout (language) add applet <b>keyboard layout handler</b> in the LXDE panel then add layout in it.
+      </p>
+      <p>
+        PCManFM - preferences - Advanced:
+        <ul>
+          <li>Terminal emulator - lxterminal -e %s</li>
+        </ul> 
+        PCManFM unstable. It's often crashed:
+        <pre>
+dnf remove pcmanfm
+dnf install glib2-devel
+dnf install pcmanfm
+        </pre>
+        After re-install it works stable.
+      </p>
+
+      <h4>Change look:</h4>
+      <p>Open "menu-preferences-Customize Look and Feel". For rendering fonts switch to "Font" tab and choose "Enable hinting" to "medium".
+        I suggest this theme:
+        <ul>
+          <li>Tab "Widget" - clearlooks</li>
+          <li>Tab "Icon theme" - adwaita</li>
+          <li>Tab "Window border" - clearlooks-3.4</li>
+        </ul>
+        Open "menu-preferences-Openbox Configuration Manager" and choose theme "bear2".
+      </p>
+
+      <h4>Screen-saver:</h4>
+      <p>Fix problem that xscreensaver can't show Caps Lock status and keyboard layout:
+        <ul>
+          <li>dnf remove xscreensaver-base //or xscreensaver</li>
+          <li>get xsecurelock source from <a href="https://github.com/google/xsecurelock">https://github.com/google/xsecurelock</a>
+          RELEASE V0.5(on Sep 2, 2014)! Last version doesn't works!</li>
+          <li>add header <b>#include &lt;X11/XKBlib.h&gt;</b> and change function <b>display_string</b> in file <b>helpers/auth_pam_x11.c</b> like this:
+      <pre>
+  ...
+  if (region_w == 0 || region_h == 0) {
+    XClearWindow(display, window);
+  }
+
+  <b>//Reveal current keyboard ledmask and layout:
+  XKeyboardState xkbs;
+  XGetKeyboardControl(display, &amp;xkbs);
+  char ledMaskStr[43];
+  ledMaskStr[0] = 'L';
+  ledMaskStr[1] = 'e';
+  ledMaskStr[2] = 'd';
+  ledMaskStr[3] = ' ';
+  ledMaskStr[4] = 'm';
+  ledMaskStr[5] = 'a';
+  ledMaskStr[6] = 's';
+  ledMaskStr[7] = 'k';
+  ledMaskStr[8] = ':';
+  ledMaskStr[9] = ' ';
+  ledMaskStr[42] = '\0';
+  unsigned long unsLngMsk = 0x80000000ul;
+  for (int i = 10; i &lt; 42; i++) {
+    ledMaskStr[i] = ((xkbs.led_mask &amp; unsLngMsk) == unsLngMsk) ? '1' : '0';
+    unsLngMsk &gt;&gt;= 1;
+  }
+  int lenLedMaskStr = 42;
+  int twLedMaskStr = XTextWidth(font, ledMaskStr, lenLedMaskStr);
+  XkbDescRec* kbdDescPtr = XkbAllocKeyboard();
+  XkbGetControls(display, XkbAllControlsMask, kbdDescPtr);
+  XkbGetNames(display, XkbSymbolsNameMask, kbdDescPtr);
+  XkbGetNames(display, XkbGroupNamesMask, kbdDescPtr);
+  XkbStateRec xkbState;
+  XkbGetState(display, XkbUseCoreKbd, &amp;xkbState);
+  int currentGroupNum = xkbState.group;
+  const Atom* groupSource = kbdDescPtr-&gt;names-&gt;groups;
+  char kbrLayoutStr[] = "Layout: ";
+  Atom curGroupAtom = groupSource[currentGroupNum];
+  strcat(kbrLayoutStr, XGetAtomName(display, curGroupAtom));
+  int lenKbrLayoutStr = strlen(kbrLayoutStr);
+  int twKbrLayoutStr = XTextWidth(font, kbrLayoutStr, lenKbrLayoutStr);</b>
+  
+  int i;
+  for (i = 0; i &lt; screens; ++i) {
+    int cx = (w * i) / screens + (w / screens) / 2;
+    int cy = h / 2;
+
+    // Clear the region last written to.
+    if (region_w != 0 &amp;&amp; region_h != 0) {
+      XClearArea(display, window, cx + region_x, cy + region_y, region_w,
+                 region_h, False);
+    }
+
+    <b>//Print keyboard ledmask
+    XDrawString(display, window, gc, cx - twLedMaskStr / 2,
+                cy - font-&gt;max_bounds.descent - 40, ledMaskStr, lenLedMaskStr);
+
+    //Print keyboard layout
+    XDrawString(display, window, gc, cx - twKbrLayoutStr / 2,
+                cy - font-&gt;max_bounds.descent - 24, kbrLayoutStr, lenKbrLayoutStr);</b>
+
+    XDrawString(display, window, gc, cx - tw_title / 2,
+                cy - font-&gt;max_bounds.descent - 8, title, len_title);
+
+    XDrawString(display, window, gc, cx - tw_str / 2,
+                cy + font-&gt;max_bounds.ascent + 8, str, len_str);
+  }
+
+  // Remember the region we just wrote to, relative to cx and cy.
+  <b>if (twLedMaskStr &gt; tw_str) {//Clear also keyboard ledmask and layout
+    region_x = -twLedMaskStr / 2;
+    region_w = twLedMaskStr;
+  } else {
+    region_x = -tw_str / 2;
+    region_w = tw_str;
+  }
+  region_y = -font-&gt;max_bounds.descent - 40 - font-&gt;max_bounds.ascent;//Clear also keyboard ledmask and layout -8 -&gt; -40
+  region_h = 4 * (font-&gt;max_bounds.ascent + font-&gt;max_bounds.descent + 8);//Clear also keyboard ledmask and layout 2* -&gt; 4*
+  </b>
+  ...
+      </pre>
+          </li>
+          <li>install xsecurelock dependencies:
+            <ul>
+              <li>dnf install automake</li>
+              <li>dnf install pam-devel</li>
+              <li>libX11-devel.x86_64</li>
+              <li>?libXext-dev?</li>
+            </ul>
+          </li>
+          <li>install xsecurelock from source:
+<pre>
+  sh autogen.sh
+  ./configure --with-pam-service-name=system-auth
+  make
+  make install
+</pre>
+          </li>
+          <li>make sure that xss-lock is installed, it will invokes xsecurelock on events like suspend</li>
+          <li>Create file [home]/xsslock.sh, add entries:
+            <pre>
+#!/bin/bash
+xss-lock xsecurelock auth_pam_x11 saver_blank
+            </pre>
+          </li>
+          <li>Open Applications Menu - Preferences - Default applications for LXSession then choose Autostart and add <b>@~/xsslock.sh</b></li>
+        </ul>
+        It will be blank screen with password input and current led mask and keyboard layout e.g.
+        <pre>
+          Led mask: 000000000000000000000010
+          Layout: English (US)
+          Password
+          *******
+        </pre> 
+      </p>
+      
+      <h4>Other.</h4>
+      <p>To resize/move a window when its head is "gone away" press Alt-Space - icon menu for manipulate this window will appeared.</p>
+      
+      <p>
+        Add into .bashrc entry "export HISTCONTROL=ignoreboth:erasedups" to avoid duplications in command line history.
+      </p>
+
+      <p>
+        Make settings to take screenshot: edit file "~/.config/openbox/lxde-rc.xml".
+        Change print-screen entries:
+        <pre>
+          &lt;!-- Launch full screen screenshot when PrintScreen is pressed --&gt;
+          &lt;keybind key="Print"&gt;
+            &lt;action name="Execute"&gt;
+              &lt;command&gt;scrot&lt;/command&gt;
+            &lt;/action&gt;
+          &lt;/keybind&gt;
+          &lt;!-- Launch current window screenshot when Ctrl-PrintScreen is pressed --&gt;
+          &lt;keybind key="C-Print"&gt;
+            &lt;action name="Execute"&gt;
+              &lt;command&gt;scrot -u -b&lt;/command&gt;
+            &lt;/action&gt;
+          &lt;/keybind&gt;        
+        </pre>
+        You will find your screenshots in home directory.
+      </p>
+
+      <h4>Add/edit menu:</h4>
+      <p>
+        Open file manager and go to location "/usr/share/applications". You can open read only any .desktop link with leafpad. To edit/add click menu "Tools - Open current folder in terminal".
+        Type "su" and root password. For example create link for Eclipse by typing "leafpad eclipse-jee-kepler-SR2.desktop" then add these entries:
+        <pre>
+[Desktop Entry]
+Name=eclipse-jee-kepler-SR2
+Icon=/home/yury/programmer/java/eclipse-jee-kepler-SR2/icon.xpm
+Exec=/home/yury/programmer/java/eclipse-jee-kepler-SR2/eclipse
+Type=Application
+Terminal=false
+Categories=GTK;Development;IDE;
+        </pre> 
+      </p>
+    </section>
+    
+  </body>
+
+</document>

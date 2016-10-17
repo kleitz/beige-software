@@ -33,6 +33,21 @@ import org.beigesoft.web.service.MngSoftware;
 import org.beigesoft.settings.MngSettings;
 import org.beigesoft.log.ILogger;
 import org.beigesoft.web.service.UtlJsp;
+import org.beigesoft.service.UtilXml;
+import org.beigesoft.replicator.service.ClearDbThenGetAnotherCopyXmlHttp;
+import org.beigesoft.replicator.service.DatabaseWriterXml;
+import org.beigesoft.replicator.service.DatabaseReaderIdenticalXml;
+import org.beigesoft.replicator.service.SrvEntityReaderXml;
+import org.beigesoft.replicator.service.ISrvEntityFieldFiller;
+import org.beigesoft.replicator.service.ISrvFieldWriter;
+import org.beigesoft.replicator.service.SrvEntityFieldPersistableBaseRepl;
+import org.beigesoft.replicator.service.SrvEntityFieldUserTomcatRepl;
+import org.beigesoft.replicator.service.SrvEntityFieldHasIdStringRepl;
+import org.beigesoft.replicator.service.SrvEntityFieldHasIdLongRepl;
+import org.beigesoft.replicator.service.SrvEntityFieldFillerStd;
+import org.beigesoft.replicator.service.SrvEntityWriterXml;
+import org.beigesoft.replicator.service.SrvFieldWriterXmlStd;
+import org.beigesoft.replicator.service.SrvFieldHasIdWriterXml;
 
 /**
  * <p>Application beans factory for any RDBMS.
@@ -126,6 +141,26 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
   private HlpInsertUpdate hlpInsertUpdate;
 
   /**
+   * <p>Service that read database from XML message.</p>
+   **/
+  private ClearDbThenGetAnotherCopyXmlHttp<RS> srvGetDbCopyXml;
+
+  /**
+   * <p>Service that read database from XML message.</p>
+   **/
+  private DatabaseWriterXml<RS> databaseWriter;
+
+  /**
+   * <p>Manager Replicator settings.</p>
+   **/
+  private MngSettings mngSettingsGetDbCopy;
+
+  /**
+   * <p>Service escape XML.</p>
+   **/
+  private UtilXml utilXml;
+
+  /**
    * <p>Entities map "EntitySimpleName"-"Class".</p>
    **/
   private Map<String, Class<?>> entitiesMap;
@@ -179,6 +214,12 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
     setLastRequestTime(new Date().getTime());
     if ("ISrvOrm".equals(pBeanName)) {
       return lazyGetSrvOrm();
+    } else if ("clearDbThenGetAnotherCopyHttp".equals(pBeanName)) {
+      return lazyGetClearDbThenGetAnotherCopyXmlHttp();
+    } else if ("IDatabaseWriter".equals(pBeanName)) {
+      return lazyGetDatabaseWriter();
+    } else if ("IUtilXml".equals(pBeanName)) {
+      return lazyGetUtilXml();
     } else if ("ILogger".equals(pBeanName)) {
       return lazyGetLogger();
     } else if ("IMngSoftware".equals(pBeanName)) {
@@ -222,7 +263,9 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
           return bean;
         }
       }
-      throw new Exception("There is no bean for name " + pBeanName);
+      lazyGetLogger().info(AFactoryAppBeans.class,
+        "There is no bean for name " + pBeanName);
+      return null;
     }
   }
 
@@ -303,6 +346,132 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
    */
   public final synchronized void handleDatabaseChanged() throws Exception {
     releaseBeans();
+  }
+
+  /**
+   * <p>Get ClearDbThenGetAnotherCopyXmlHttp in lazy mode.</p>
+   * @return ClearDbThenGetAnotherCopyXmlHttp - ClearDbThenGetAnotherCopyXmlHttp
+   * @throws Exception - an exception
+   */
+  public final synchronized ClearDbThenGetAnotherCopyXmlHttp<RS>
+    lazyGetClearDbThenGetAnotherCopyXmlHttp() throws Exception {
+    if (this.srvGetDbCopyXml == null) {
+      this.srvGetDbCopyXml = new ClearDbThenGetAnotherCopyXmlHttp<RS>();
+      SrvEntityReaderXml srvEntityReaderXml = new SrvEntityReaderXml();
+      srvEntityReaderXml.setUtilXml(lazyGetUtilXml());
+      SrvEntityFieldFillerStd srvEntityFieldFillerStd =
+        new SrvEntityFieldFillerStd();
+      srvEntityFieldFillerStd.setUtlReflection(lazyGetUtlReflection());
+      SrvEntityFieldPersistableBaseRepl srvEntityFieldPersistableBaseRepl =
+        new SrvEntityFieldPersistableBaseRepl();
+      srvEntityFieldPersistableBaseRepl
+        .setUtlReflection(lazyGetUtlReflection());
+      SrvEntityFieldHasIdStringRepl srvEntityFieldHasIdStringRepl =
+        new SrvEntityFieldHasIdStringRepl();
+      srvEntityFieldHasIdStringRepl
+        .setUtlReflection(lazyGetUtlReflection());
+      SrvEntityFieldHasIdLongRepl srvEntityFieldHasIdLongRepl =
+        new SrvEntityFieldHasIdLongRepl();
+      srvEntityFieldHasIdLongRepl
+        .setUtlReflection(lazyGetUtlReflection());
+      SrvEntityFieldUserTomcatRepl srvEntityFieldUserTomcatRepl =
+        new SrvEntityFieldUserTomcatRepl();
+      Map<String, ISrvEntityFieldFiller> fieldsFillersMap =
+        new HashMap<String, ISrvEntityFieldFiller>();
+      fieldsFillersMap.put("SrvEntityFieldFillerStd",
+        srvEntityFieldFillerStd);
+      fieldsFillersMap.put("SrvEntityFieldPersistableBaseRepl",
+        srvEntityFieldPersistableBaseRepl);
+      fieldsFillersMap.put("SrvEntityFieldHasIdStringRepl",
+        srvEntityFieldHasIdStringRepl);
+      fieldsFillersMap.put("SrvEntityFieldHasIdLongRepl",
+        srvEntityFieldHasIdLongRepl);
+      fieldsFillersMap.put("SrvEntityFieldUserTomcatRepl",
+        srvEntityFieldUserTomcatRepl);
+      srvEntityReaderXml.setFieldsFillersMap(fieldsFillersMap);
+      srvEntityReaderXml.setMngSettings(lazyGetMngSettingsGetDbCopy());
+      DatabaseReaderIdenticalXml<RS> databaseReaderIdenticalXml =
+       new DatabaseReaderIdenticalXml<RS>();
+      databaseReaderIdenticalXml.setUtilXml(lazyGetUtilXml());
+      databaseReaderIdenticalXml.setSrvEntityReader(srvEntityReaderXml);
+      databaseReaderIdenticalXml.setSrvDatabase(lazyGetSrvDatabase());
+      databaseReaderIdenticalXml.setSrvOrm(lazyGetSrvOrm());
+      databaseReaderIdenticalXml.setLogger(lazyGetLogger());
+      this.srvGetDbCopyXml.setUtilXml(lazyGetUtilXml());
+      this.srvGetDbCopyXml.setSrvEntityReaderXml(srvEntityReaderXml);
+      this.srvGetDbCopyXml.setMngSettings(lazyGetMngSettingsGetDbCopy());
+      this.srvGetDbCopyXml.setSrvDatabase(lazyGetSrvDatabase());
+      this.srvGetDbCopyXml.setDatabaseReader(databaseReaderIdenticalXml);
+      this.srvGetDbCopyXml.setLogger(lazyGetLogger());
+      lazyGetLogger().info(AFactoryAppBeans.class,
+        "ClearDbThenGetAnotherCopyXmlHttp has been created.");
+    }
+    return this.srvGetDbCopyXml;
+  }
+
+  /**
+   * <p>Get DatabaseWriterXml in lazy mode.</p>
+   * @return DatabaseWriterXml - DatabaseWriterXml
+   * @throws Exception - an exception
+   */
+  public final synchronized DatabaseWriterXml<RS> lazyGetDatabaseWriter(
+    ) throws Exception {
+    if (this.databaseWriter == null) {
+      this.databaseWriter = new DatabaseWriterXml<RS>();
+      SrvEntityWriterXml srvEntityWriterXml = new SrvEntityWriterXml();
+      SrvFieldWriterXmlStd srvFieldWriterXmlStd = new SrvFieldWriterXmlStd();
+      srvFieldWriterXmlStd.setUtilXml(lazyGetUtilXml());
+      SrvFieldHasIdWriterXml srvFieldHasIdWriterXml =
+        new SrvFieldHasIdWriterXml();
+      srvFieldHasIdWriterXml.setUtilXml(lazyGetUtilXml());
+      srvEntityWriterXml.setMngSettings(lazyGetMngSettingsGetDbCopy());
+      srvEntityWriterXml.setUtlReflection(lazyGetUtlReflection());
+      Map<String, ISrvFieldWriter> fieldsWritersMap =
+        new HashMap<String, ISrvFieldWriter>();
+      fieldsWritersMap.put("SrvFieldWriterXmlStd", srvFieldWriterXmlStd);
+      fieldsWritersMap.put("SrvFieldHasIdWriterXml", srvFieldHasIdWriterXml);
+      srvEntityWriterXml.setFieldsWritersMap(fieldsWritersMap);
+      this.databaseWriter.setLogger(lazyGetLogger());
+      this.databaseWriter.setSrvEntityWriter(srvEntityWriterXml);
+      this.databaseWriter.setSrvDatabase(lazyGetSrvDatabase());
+      this.databaseWriter.setSrvOrm(lazyGetSrvOrm());
+      lazyGetLogger().info(AFactoryAppBeans.class,
+        "DatabaseWriterXml has been created.");
+    }
+    return this.databaseWriter;
+  }
+
+  /**
+   * <p>Get MngSettings for replicator in lazy mode.</p>
+   * @return MngSettings - MngSettings replicator
+   * @throws Exception - an exception
+   */
+  public final synchronized MngSettings lazyGetMngSettingsGetDbCopy(
+    ) throws Exception {
+    if (this.mngSettingsGetDbCopy == null) {
+      this.mngSettingsGetDbCopy = new MngSettings();
+      this.mngSettingsGetDbCopy.setLogger(lazyGetLogger());
+      this.mngSettingsGetDbCopy
+        .loadConfiguration("beige-get-db-copy", "base.xml");
+      lazyGetLogger().info(AFactoryAppBeans.class,
+        "MngSettings replicator has been created.");
+    }
+    return this.mngSettingsGetDbCopy;
+  }
+
+  /**
+   * <p>Get UtilXml in lazy mode.</p>
+   * @return UtilXml - UtilXml
+   * @throws Exception - an exception
+   */
+  public final synchronized UtilXml lazyGetUtilXml(
+    ) throws Exception {
+    if (this.utilXml == null) {
+      this.utilXml = new UtilXml();
+      lazyGetLogger().info(AFactoryAppBeans.class,
+        "UtilXml has been created.");
+    }
+    return this.utilXml;
   }
 
   /**
@@ -641,6 +810,42 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
     this.factoryOverBeans = pFactoryOverBeans;
   }
 
+  /**
+   * <p>Setter for srvGetDbCopyXml.</p>
+   * @param pClearDbThenGetAnotherCopyXmlHttp reference
+   **/
+  public final synchronized void setClearDbThenGetAnotherCopyXmlHttp(
+    final ClearDbThenGetAnotherCopyXmlHttp<RS>
+      pClearDbThenGetAnotherCopyXmlHttp) {
+    this.srvGetDbCopyXml = pClearDbThenGetAnotherCopyXmlHttp;
+  }
+
+  /**
+   * <p>Setter for databaseWriter.</p>
+   * @param pDatabaseWriter reference
+   **/
+  public final synchronized void setDatabaseWriter(
+    final DatabaseWriterXml<RS> pDatabaseWriter) {
+    this.databaseWriter = pDatabaseWriter;
+  }
+
+  /**
+   * <p>Setter for mngSettingsGetDbCopy.</p>
+   * @param pMngSettingsGetDbCopy reference
+   **/
+  public final synchronized void setMngSettingsGetDbCopy(
+    final MngSettings pMngSettingsGetDbCopy) {
+    this.mngSettingsGetDbCopy = pMngSettingsGetDbCopy;
+  }
+
+  /**
+   * <p>Setter for utilXml.</p>
+   * @param pUtilXml reference
+   **/
+  public final synchronized void setUtilXml(
+    final UtilXml pUtilXml) {
+    this.utilXml = pUtilXml;
+  }
   //Simple getters and setters:
   /**
    * <p>Getter for minutesOfIdle.</p>

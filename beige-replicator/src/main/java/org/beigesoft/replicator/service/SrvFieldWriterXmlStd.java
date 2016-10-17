@@ -14,7 +14,7 @@ import java.util.Date;
 import java.util.Map;
 import java.io.Writer;
 
-import org.beigesoft.xml.service.ISrvXmlEscape;
+import org.beigesoft.service.IUtilXml;
 
 /**
  * <p>Service to write a standard (toString()) field
@@ -27,9 +27,9 @@ import org.beigesoft.xml.service.ISrvXmlEscape;
 public class SrvFieldWriterXmlStd implements ISrvFieldWriter {
 
   /**
-   * <p>XML Escape service.</p>
+   * <p>XML service.</p>
    **/
-  private ISrvXmlEscape srvXmpEscape;
+  private IUtilXml utilXml;
 
   /**
    * <p>
@@ -55,7 +55,7 @@ public class SrvFieldWriterXmlStd implements ISrvFieldWriter {
     } else {
       fieldValue = pField.toString();
       if (pField instanceof String) {
-        fieldValue = getSrvXmpEscape().escapeXml(fieldValue);
+        fieldValue = getUtilXml().escapeXml(fieldValue);
       }
     }
     pWriter.write(" " + pFieldName + "=\"" + fieldValue
@@ -64,18 +64,18 @@ public class SrvFieldWriterXmlStd implements ISrvFieldWriter {
 
   //Simple getters and setters:
   /**
-   * <p>Getter for srvXmpEscape.</p>
-   * @return ISrvXmlEscape
+   * <p>Getter for utilXml.</p>
+   * @return IUtilXml
    **/
-  public final ISrvXmlEscape getSrvXmpEscape() {
-    return this.srvXmpEscape;
+  public final IUtilXml getUtilXml() {
+    return this.utilXml;
   }
 
   /**
-   * <p>Setter for srvXmpEscape.</p>
-   * @param pSrvXmpEscape reference
+   * <p>Setter for utilXml.</p>
+   * @param pUtilXml reference
    **/
-  public final void setSrvXmpEscape(final ISrvXmlEscape pSrvXmpEscape) {
-    this.srvXmpEscape = pSrvXmpEscape;
+  public final void setUtilXml(final IUtilXml pUtilXml) {
+    this.utilXml = pUtilXml;
   }
 }

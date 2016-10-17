@@ -1,4 +1,4 @@
-package org.beigesoft.xml.service;
+package org.beigesoft.service;
 
 /*
  * Beigesoft ™
@@ -10,13 +10,15 @@ package org.beigesoft.xml.service;
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
+import java.io.Reader;
+import java.util.Map;
 
 /**
  * <p>Service that escape XML.</p>
  *
  * @author Yury Demidenko
  */
-public interface ISrvXmlEscape {
+public interface IUtilXml {
 
   /**
    * <p>
@@ -57,4 +59,30 @@ public interface ISrvXmlEscape {
    * @throws Exception - an exception
    **/
   char xmlUnescape(String pEscaped) throws Exception;
+
+  /**
+   * <p>
+   * Read attributes from stream. Start the XML element
+   * must be read out.
+   * </p>
+   * @param pReader reader.
+   * @param pAddParam additional params
+   * @return attributes map
+   * @throws Exception - an exception
+   **/
+  Map<String, String> readAttributes(Reader pReader,
+    Map<String, ?> pAddParam) throws Exception;
+
+
+  /**
+   * <p>
+   * Read stream until start given element e.g. &lt;message.
+   * </p>
+   * @param pReader reader.
+   * @param pElement element
+   * @return true if start element is happen, false if end of stream
+   * @throws Exception - an exception
+   **/
+  boolean readUntilStart(Reader pReader,
+    String pElement) throws Exception;
 }

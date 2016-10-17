@@ -13,12 +13,13 @@ package org.beigesoft.web.factory;
 import java.util.Properties;
 
 import javax.sql.DataSource;
+import java.sql.ResultSet;
 
 import com.zaxxer.hikari.HikariDataSource;
 import com.zaxxer.hikari.HikariConfig;
 
 import org.beigesoft.orm.service.SrvOrmPostgresql;
-import java.sql.ResultSet;
+import org.beigesoft.replicator.service.PrepareDbAfterGetCopyPostgresql;
 
 /**
  * <p>Application beans factory for Postgresql RDBMS.
@@ -29,6 +30,14 @@ import java.sql.ResultSet;
  * @author Yury Demidenko
  */
 public class FactoryAppBeansPostgresql extends AFactoryAppBeansJdbc {
+
+  /**
+   * <p>Service that reset auto-incremented ID sequences (APersistableBase)
+   * after identical copy of another database
+   * and release AppFactory beans.</p>
+   */
+  private PrepareDbAfterGetCopyPostgresql<ResultSet>
+    prepareDbAfterGetCopyPostgresql;
 
   /**
    * <p>Data Source.</p>
@@ -55,6 +64,7 @@ public class FactoryAppBeansPostgresql extends AFactoryAppBeansJdbc {
       }
       this.dataSource = null;
     }
+    this.prepareDbAfterGetCopyPostgresql = null;
     setLogger(null);
     setSrvDatabase(null);
     setSrvRecordRetriever(null);
@@ -69,6 +79,10 @@ public class FactoryAppBeansPostgresql extends AFactoryAppBeansJdbc {
     setSrvOrm(null);
     setSrvWebMvc(null);
     setHlpInsertUpdate(null);
+    setClearDbThenGetAnotherCopyXmlHttp(null);
+    setDatabaseWriter(null);
+    setMngSettingsGetDbCopy(null);
+    setUtilXml(null);
     getEntitiesMap().clear();
     getBeansMap().clear();
   }
@@ -83,6 +97,9 @@ public class FactoryAppBeansPostgresql extends AFactoryAppBeansJdbc {
   @Override
   public final synchronized Object lazyGetOtherRdbmsBean(
     final String pBeanName) throws Exception {
+    if ("prepareDbAfterGetAnotherCopy".equals(pBeanName)) {
+      return lazyGetPrepareDbAfterGetCopyPostgresql();
+    }
     return null;
   }
 
@@ -111,7 +128,30 @@ public class FactoryAppBeansPostgresql extends AFactoryAppBeansJdbc {
       props.setProperty("dataSource.databaseName", getDatabaseName());
       HikariConfig config = new HikariConfig(props);
       this.dataSource = new HikariDataSource(config);
+      lazyGetLogger().info(FactoryAppBeansPostgresql.class,
+        "DataSource has been created.");
     }
     return this.dataSource;
+  }
+
+  /**
+   * <p>Get PrepareDbAfterGetCopyPostgresql in lazy mode.</p>
+   * @return PrepareDbAfterGetCopyPostgresql - PrepareDbAfterGetCopyPostgresql
+   * @throws Exception - an exception
+   */
+  public final synchronized PrepareDbAfterGetCopyPostgresql<ResultSet>
+    lazyGetPrepareDbAfterGetCopyPostgresql() throws Exception {
+    if (this.prepareDbAfterGetCopyPostgresql == null) {
+      this.prepareDbAfterGetCopyPostgresql =
+        new PrepareDbAfterGetCopyPostgresql<ResultSet>();
+      this.prepareDbAfterGetCopyPostgresql
+        .setClasses(lazyGetMngSettingsGetDbCopy().getClasses());
+      this.prepareDbAfterGetCopyPostgresql.setLogger(lazyGetLogger());
+      this.prepareDbAfterGetCopyPostgresql.setSrvDatabase(lazyGetSrvDatabase());
+      this.prepareDbAfterGetCopyPostgresql.setFactoryAppBeans(this);
+      lazyGetLogger().info(FactoryAppBeansPostgresql.class,
+        "PrepareDbAfterGetCopyPostgresql has been created.");
+    }
+    return this.prepareDbAfterGetCopyPostgresql;
   }
 }

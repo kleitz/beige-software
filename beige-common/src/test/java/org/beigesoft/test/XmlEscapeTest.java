@@ -13,7 +13,7 @@ package org.beigesoft.test;
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
-import org.beigesoft.xml.service.SrvXmlEscape;
+import org.beigesoft.service.UtilXml;
 
 /**
  * <p>Service XML Escape Test.
@@ -23,15 +23,15 @@ import org.beigesoft.xml.service.SrvXmlEscape;
  */
 public class XmlEscapeTest {
   
-  SrvXmlEscape srvXmlEscape = new SrvXmlEscape();
+  UtilXml utilXml = new UtilXml();
 
   @Test
   public void test1() throws Exception {
     String strXmlUnescaped1 = "a=\"b-2\" & c > 1 and b<=5 'j' ";
     String strXmlEscaped1 = "a=&quot;b-2&quot; &amp; c &gt; 1 and b&lt;=5 &apos;j&apos; ";
-    System.out.println(srvXmlEscape.escapeXml(strXmlUnescaped1));
-    System.out.println(srvXmlEscape.unescapeXml(strXmlEscaped1));
-    assertEquals(srvXmlEscape.escapeXml(strXmlUnescaped1), strXmlEscaped1); 
-    assertEquals(srvXmlEscape.unescapeXml(strXmlEscaped1), strXmlUnescaped1); 
+    System.out.println(utilXml.escapeXml(strXmlUnescaped1));
+    System.out.println(utilXml.unescapeXml(strXmlEscaped1));
+    assertEquals(utilXml.escapeXml(strXmlUnescaped1), strXmlEscaped1); 
+    assertEquals(utilXml.unescapeXml(strXmlEscaped1), strXmlUnescaped1); 
   }
 }

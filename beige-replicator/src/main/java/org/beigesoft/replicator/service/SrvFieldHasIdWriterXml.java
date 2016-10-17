@@ -15,7 +15,7 @@ import java.io.Writer;
 
 import org.beigesoft.model.IHasId;
 import org.beigesoft.exception.ExceptionWithCode;
-import org.beigesoft.xml.service.ISrvXmlEscape;
+import org.beigesoft.service.IUtilXml;
 
 /**
  * <p>Service to write owned entity as ID.
@@ -26,9 +26,9 @@ import org.beigesoft.xml.service.ISrvXmlEscape;
 public class SrvFieldHasIdWriterXml implements ISrvFieldWriter {
 
   /**
-   * <p>XML Escape service.</p>
+   * <p>XML service.</p>
    **/
-  private ISrvXmlEscape srvXmpEscape;
+  private IUtilXml utilXml;
 
   /**
    * <p>
@@ -61,18 +61,18 @@ public class SrvFieldHasIdWriterXml implements ISrvFieldWriter {
 
   //Simple getters and setters:
   /**
-   * <p>Getter for srvXmpEscape.</p>
-   * @return ISrvXmlEscape
+   * <p>Getter for utilXml.</p>
+   * @return IUtilXml
    **/
-  public final ISrvXmlEscape getSrvXmpEscape() {
-    return this.srvXmpEscape;
+  public final IUtilXml getUtilXml() {
+    return this.utilXml;
   }
 
   /**
-   * <p>Setter for srvXmpEscape.</p>
-   * @param pSrvXmpEscape reference
+   * <p>Setter for utilXml.</p>
+   * @param pUtilXml reference
    **/
-  public final void setSrvXmpEscape(final ISrvXmlEscape pSrvXmpEscape) {
-    this.srvXmpEscape = pSrvXmpEscape;
+  public final void setUtilXml(final IUtilXml pUtilXml) {
+    this.utilXml = pUtilXml;
   }
 }

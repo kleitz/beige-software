@@ -30,7 +30,7 @@ from
         from  ACCOUNTINGENTRY 
         where ITSDATE >= :DATE1 and ITSDATE <= :DATE2
         group by ACC, SUBACC, SUBACCID
-      )
+      ) as UNION_RECORDS
     group by ACC, SUBACC, SUBACCID
   ) as ALL_RECORDS
 join ACCOUNT on ALL_RECORDS.ACC = ACCOUNT.ITSID

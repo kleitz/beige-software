@@ -11,6 +11,7 @@
 <comment>Correspondence of Java types to field filler service. ORDER is essential, the LAST value will be used.</comment>
 <entry key="java.lang.Object">SrvEntityFieldFillerStd</entry>
 <entry key="org.beigesoft.persistable.AHasIdString">SrvEntityFieldHasIdStringRepl</entry>
+<entry key="org.beigesoft.persistable.UserTomcat">SrvEntityFieldUserTomcatRepl</entry>
 <entry key="org.beigesoft.persistable.APersistableBase">SrvEntityFieldPersistableBaseRepl</entry>
 <entry key="org.beigesoft.persistable.AHasIdLong">SrvEntityFieldHasIdLongRepl</entry>
 </properties>

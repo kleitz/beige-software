@@ -17,6 +17,7 @@ import javax.sql.DataSource;
 import com.zaxxer.hikari.HikariDataSource;
 import com.zaxxer.hikari.HikariConfig;
 
+import org.beigesoft.replicator.service.PrepareDbAfterGetCopy;
 import org.beigesoft.orm.service.SrvOrmH2;
 import java.sql.ResultSet;
 
@@ -29,6 +30,11 @@ import java.sql.ResultSet;
  * @author Yury Demidenko
  */
 public class FactoryAppBeansH2 extends AFactoryAppBeansJdbc {
+
+  /**
+   * <p>Service that  release AppFactory beans.</p>
+   */
+  private PrepareDbAfterGetCopy prepareDbAfterGetCopy;
 
   /**
    * <p>Data Source.</p>
@@ -55,6 +61,7 @@ public class FactoryAppBeansH2 extends AFactoryAppBeansJdbc {
       }
       this.dataSource = null;
     }
+    this.prepareDbAfterGetCopy = null;
     setLogger(null);
     setSrvRecordRetriever(null);
     setSrvDatabase(null);
@@ -69,6 +76,10 @@ public class FactoryAppBeansH2 extends AFactoryAppBeansJdbc {
     setSrvOrm(null);
     setSrvWebMvc(null);
     setHlpInsertUpdate(null);
+    setClearDbThenGetAnotherCopyXmlHttp(null);
+    setDatabaseWriter(null);
+    setMngSettingsGetDbCopy(null);
+    setUtilXml(null);
     getEntitiesMap().clear();
     getBeansMap().clear();
   }
@@ -83,6 +94,9 @@ public class FactoryAppBeansH2 extends AFactoryAppBeansJdbc {
   @Override
   public final synchronized Object lazyGetOtherRdbmsBean(
     final String pBeanName) throws Exception {
+    if ("prepareDbAfterGetAnotherCopy".equals(pBeanName)) {
+      return lazyGetPrepareDbAfterGetCopy();
+    }
     return null;
   }
 
@@ -111,8 +125,27 @@ public class FactoryAppBeansH2 extends AFactoryAppBeansJdbc {
       props.setProperty("dataSource.Url", getDatabaseName());
       HikariConfig config = new HikariConfig(props);
       this.dataSource = new HikariDataSource(config);
+      lazyGetLogger().info(FactoryAppBeansH2.class,
+        "HikariDataSource has been created.");
     }
     return this.dataSource;
+  }
+
+  /**
+   * <p>Get PrepareDbAfterGetCopy in lazy mode.</p>
+   * @return PrepareDbAfterGetCopy - PrepareDbAfterGetCopy
+   * @throws Exception - an exception
+   */
+  public final synchronized PrepareDbAfterGetCopy
+    lazyGetPrepareDbAfterGetCopy() throws Exception {
+    if (this.prepareDbAfterGetCopy == null) {
+      this.prepareDbAfterGetCopy = new PrepareDbAfterGetCopy();
+      this.prepareDbAfterGetCopy.setLogger(lazyGetLogger());
+      this.prepareDbAfterGetCopy.setFactoryAppBeans(this);
+      lazyGetLogger().info(FactoryAppBeansH2.class,
+        "PrepareDbAfterGetCopy has been created.");
+    }
+    return this.prepareDbAfterGetCopy;
   }
 
   //Simple setters to replace services during runtime:

@@ -126,8 +126,20 @@
       <p>Entities with complex ID are inserted in usual way, but they retrieved and updated with manually WHERE clause. 
       See Beige-Accounting WarehouseRest in SrvPurchaseInvoiceLine for example</p>
 
+      <h5>Database Info persistable model</h5>
+      <p>Persistable model org.beigesoft.persistable.DatabaseInfo consist of:
+        <ul>
+          <li>databaseId - Integer, not null primary key and database ID</li>
+          <li>databaseVersion - Integer, not null database version</li>
+          <li>description - String</li>
+        </ul>
+        This is only row existed in table. If database has been just created then only entry DatabaseInfo
+        will be inserted, databaseId is randomly generated, databaseVersion=1 of course, description="a database".
+        You can change database description (only!!!) by hand.
+      </p>
+
       <h4>Creating tables.</h4>
-      <p>You hove to invoke method createTablesIfNeed(). Beige-ORM will create tables that not existed.
+      <p>You have to invoke method ASrvOrm.initializeDatabase() at ORM start time. Beige-ORM will create tables that not existed.
       It never alter tables so you have to make script upgrade_[new_version].sql script. If all tables has been created
       then insert.sql will be invoked if it exist.</p>
       
@@ -135,16 +147,6 @@
       <p>The most task of upgrade do not only upgrade tables definition, they also do inserts and update data, triggers, views.
         So database must has version. When it's need to upgrade database then make script upgrade_[new version].sql
         and BeigeORM start it in single transaction. This script should update database version itself.
-      </p>
-
-      <h5>Database Info persistable model</h5>
-      <p>Persistable model DatabaseInfo consist of:
-        <ul>
-          <li>databaseId - Integer, not null primary key and database ID</li>
-          <li>databaseVersion - Integer, not null database version</li>
-          <li>description - String</li>
-        </ul>
-        This is only row existed in table.
       </p>
 
       <h4>Transaction management</h4>

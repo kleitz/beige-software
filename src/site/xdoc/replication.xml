@@ -17,9 +17,9 @@
         In case HTTP-connection this stored/retrieved file from/to remotely storage.</p>
       <p>* It must not touch replicated/persisted beans by using annotations, i.e. must be configurable through standard XML properties.</p>
       <p>* It should use either XML or JSON (or other) formats to convert data.</p>
-      <p>* There is two ways for replication/persisting - either by using in a local file (and send it for replication)
-        or through HTTP (or other network protocols).</p>
-      <p>* For replication/persisting trough HTTP it must be used a Servlet.</p>
+      <p>* There is two ways for replication/persisting - either by using in a file (and send it for replication)
+        or through network connection (HTTP or other network protocols).</p>
+      <p>* For replication/persisting trough HTTP it used a Servlet.</p>
       <p>* Replicator is represented as either a WEB-application with HTTP-base authentication for cloud version (high load)
         or it's contained by standalone WEB-app based on A-Jetty without authentication.</p>
       <p>* This is one-way replicator, i.e. it get (receive, not send) data (replicated beans) from a source.</p>
@@ -36,7 +36,7 @@
       </p>
       
       <h4>Replication delete action</h4>
-      <p>An entity to be deleted should had special attribute IS_DELETED="true" in data.</p>
+      <p>An entity to be deleted should has special attribute IS_DELETED="true" in the message.</p>
       
       <h4>XML based implementation.</h4>
       <p>XML is widely used and reliable way to do this job.
@@ -51,6 +51,39 @@
           <li>Enumeration is stored as index of enum constant.</li>
           <li>java.util.Date is stored as long milliseconds</li>
         </ul>
+      </p>
+      
+      <h4>Replication of databases.</h4>
+      <p>Message body is "message" element that contains of replicated entities.
+      It has all 3 attributes of source database org.beigesoft.persistable.DatabaseInfo e.g. and entities count - entitiesCount:
+      <pre>
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;message databaseId="127" databaseVersion="2" description="database#3" entitiesCount="2"&gt;
+&lt;entity class="org.beigesoft.test.persistable.Department"
+ idDatabaseBirth="127"
+ itsName="ICT"
+ itsId="1"
+ idBirth="NULL"
+/&gt;
+&lt;entity class="org.beigesoft.test.persistable.PersistableHead"
+ itsLong="NULL"
+ itsStatus="0"
+ itsDate="1475156484845"
+ itsDouble="NULL"
+ itsId="1"
+ itsVersion="1"
+ idDatabaseBirth="127"
+ tmpDescription="NULL"
+ waitingTime="NULL"
+ itsInteger="NULL"
+ itsDepartment="1"
+ itsFloat="NULL"
+ idBirth="NULL"
+ isClosed="true"
+ itsTotal="523.66"
+/&gt;
+&lt;/message&gt;
+      </pre>
       </p>
     </section>
 

@@ -11,11 +11,10 @@ package org.beigesoft.replicator.service;
  */
 
 import java.util.Map;
-import java.util.HashMap;
 import java.io.Reader;
 import java.lang.reflect.Constructor;
 
-import org.beigesoft.xml.service.ISrvXmlEscape;
+import org.beigesoft.service.IUtilXml;
 import org.beigesoft.exception.ExceptionWithCode;
 import org.beigesoft.settings.IMngSettings;
 
@@ -38,9 +37,9 @@ public class SrvEntityReaderXml implements ISrvEntityReader {
   private Map<String, ISrvEntityFieldFiller> fieldsFillersMap;
 
   /**
-   * <p>XML Escape service.</p>
+   * <p>XML service.</p>
    **/
-  private ISrvXmlEscape srvXmpEscape;
+  private IUtilXml utilXml;
 
   /**
    * <p>
@@ -98,61 +97,7 @@ public class SrvEntityReaderXml implements ISrvEntityReader {
   @Override
   public final Map<String, String> readAttributes(final Reader pReader,
     final Map<String, ?> pAddParam) throws Exception {
-    Map<String, String> attributesMap = new HashMap<String, String>();
-    StringBuffer sb = new StringBuffer();
-    int chi;
-    while ((chi = pReader.read()) != -1) {
-      char ch = (char) chi;
-      if (ch == '>') {
-        break;
-      }
-      switch (ch) {
-        case '\\':
-          sb.append("\\");
-          break;
-        case '"':
-          sb.append("\"");
-          break;
-        case '\n':
-          sb.append("\n");
-          break;
-        case '\r':
-          sb.append("\r");
-          break;
-        case '\t':
-          sb.append("\t");
-          break;
-        default:
-          sb.append(ch);
-          break;
-      }
-      evalAttributes(sb, attributesMap);
-    }
-    return attributesMap;
-  }
-
-  /**
-   * <p>Try to eval content of string buffer if it's an attribute
-   * with value then fill map and clear buffer.</p>
-   * @param pSb StringBuffer
-   * @param pAttributesMap Attributes Map
-   * @throws Exception - an exception
-   **/
-  public final void evalAttributes(final StringBuffer pSb,
-    final Map<String, String> pAttributesMap) throws Exception {
-    String str = pSb.toString().trim();
-    if (str.length() > 3 //minimum is a=""
-      && str.endsWith("\"") && str.indexOf("\"") != str.length() - 1) {
-      int equalsIdx = str.indexOf("=");
-      if (equalsIdx == -1) {
-        throw new ExceptionWithCode(ExceptionWithCode
-          .SOMETHING_WRONG, "There is no equals character in " + str);
-      }
-      String attrName = str.substring(0, equalsIdx);
-      String attrVal = str.substring(str.indexOf("\"") + 1, str.length() - 1);
-      pAttributesMap.put(attrName, attrVal);
-      pSb.delete(0, pSb.length());
-    }
+    return this.utilXml.readAttributes(pReader, pAddParam);
   }
 
   //Simple getters and setters:
@@ -190,18 +135,18 @@ public class SrvEntityReaderXml implements ISrvEntityReader {
   }
 
   /**
-   * <p>Getter for srvXmpEscape.</p>
-   * @return ISrvXmlEscape
+   * <p>Getter for utilXml.</p>
+   * @return IUtilXml
    **/
-  public final ISrvXmlEscape getSrvXmpEscape() {
-    return this.srvXmpEscape;
+  public final IUtilXml getUtilXml() {
+    return this.utilXml;
   }
 
   /**
-   * <p>Setter for srvXmpEscape.</p>
-   * @param pSrvXmpEscape reference
+   * <p>Setter for utilXml.</p>
+   * @param pUtilXml reference
    **/
-  public final void setSrvXmpEscape(final ISrvXmlEscape pSrvXmpEscape) {
-    this.srvXmpEscape = pSrvXmpEscape;
+  public final void setUtilXml(final IUtilXml pUtilXml) {
+    this.utilXml = pUtilXml;
   }
 }

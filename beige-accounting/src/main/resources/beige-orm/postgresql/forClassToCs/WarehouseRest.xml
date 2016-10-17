@@ -18,6 +18,7 @@
       references INVITEM (ITSID),
   constraint therestgteq0 check (THEREST &gt;= 0)
   </entry>
+<entry key="idName">null</entry>
 <entry key="excludeFields">itsId</entry>
 <entry key="isFullDefinedInXml">true</entry>
 </properties>

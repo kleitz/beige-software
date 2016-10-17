@@ -627,7 +627,7 @@ select *
 from
   (
     :SOURCEALL
-  )
+  ) as UNION_RECORDS
 order by ITSDATE;
         </pre>
         materials to draw source LIFO: trade/drawItemLifoSourceM1S.sql:
@@ -636,7 +636,7 @@ select *
 from
   (
     :SOURCEALL
-  )
+  ) as UNION_RECORDS
 order by ITSDATE desc;
         </pre>
         :SOURCEALL is set of SQL queries:<br></br>
@@ -1426,7 +1426,7 @@ from
         from  ACCOUNTINGENTRY 
         where ACCCREDIT=:ACCID and SUBACCCREDITID=1 and ITSDATE &gt;=:DATE1 and ITSDATE&lt;=:DATE2
         group by ACC,  SUBACC, SUBACCID
-      )
+      ) as UNION_RECORDS
     group by ACC, SUBACC, SUBACCID
   ) as ALL_RECORDS
 join ACCOUNT on ALL_RECORDS.ACC = ACCOUNT.ITSID
@@ -1478,7 +1478,7 @@ from
         from  ACCOUNTINGENTRY 
         where ITSDATE &gt;= :DATE1 and ITSDATE &lt;= :DATE2
         group by ACC,  SUBACC, SUBACCID
-      )
+      ) as UNION_RECORDS
     group by ACC, SUBACC, SUBACCID
   ) as ALL_RECORDS
 join ACCOUNT on ALL_RECORDS.ACC = ACCOUNT.ITSID
@@ -1521,7 +1521,7 @@ from
         from  ACCOUNTINGENTRY 
         where ACCOUNTINGENTRY.ACCCREDIT=:ACCID :SUBACCCREDIT and ITSDATE&gt;=:DATEBALANCE and ITSDATE&lt;=:DATE1
         group by ACC, SUBACC
-      )
+      ) as UNION_PREVIOUS
     group by ACC, SUBACC
 ) as ALL_RECORDS
 join ACCOUNT on ALL_RECORDS.ACC=ACCOUNT.ITSID
@@ -1545,10 +1545,17 @@ ACCDEBIT as CORACC, ACCOUNT.ITSNAME as CORACCNAME, ACCOUNT.ITSNUMBER as CORACCNU
 from ACCOUNTINGENTRY 
 join ACCOUNT on ACCOUNTINGENTRY.ACCDEBIT = ACCOUNT.ITSID
 where ACCCREDIT=:ACCID :SUBACCCREDIT and ITSDATE &gt;=:DATE1 and ITSDATE&lt;=:DATE2
-)
+) as UNION_DETAIL
 order by ITSDATE;
 </pre>
 
+      <h5>Database replication, duplicate database to another RDBMS.</h5>
+      <p>The goal is receive full copy of database for another RDBMS e.g. from SQLite database to high load Postgresql.
+        So all tables include DatabaseInfo should be copied. The requesting database must has no any accounting/warehouse entry,
+        any other tables (products, organization ...) will be emptied before inserting.
+        Requesting WEB-app makes series of queries for every entity (they must be listed in replicator/base.xml) ordered according
+        that list.
+      </p>
 
       <h5>Exceptions throw ExceptionWithCode:</h5>
       <ul>

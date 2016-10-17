@@ -34,7 +34,7 @@ Prerequisites for building from source:
 * last of Apache Maven and Ant.
 * Postgresql 9.4+ with registered user/password "beigeaccounting/beigeaccounting" and created databases "beigeaccounting" and "beigeaccountingtest".
 * SqlLite last version.
-* Android SDK without Studio, loaded last version and 19 API. It requred some libs for 64bit Linux (apt-get install lib32z1 lib32ncurses5 lib32stdc++6)
+* Android SDK without Studio, loaded last version and 19 API. It requires some 32bit libs for 64bit Fedora (dnf install glibc.i686 glibc-devel.i686 libstdc++.i686 zlib-devel.i686 ncurses-devel.i686 libX11-devel.i686 libXrender.i686 libXrandr.i686)
 * Google Chrome browser (html5-dialog ready).
 
 Installation:

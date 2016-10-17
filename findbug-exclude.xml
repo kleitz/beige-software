@@ -28,4 +28,14 @@
      <Class name="~.*\.R\$.*" />
      <Bug pattern="NM_FIELD_NAMING_CONVENTION" />
   </Match>
+  <!--Service either return entity (even not filled) or throws exception: -->
+  <Match>
+     <Class name="org.beigesoft.replicator.service.DatabaseReaderIdenticalXml" />
+     <Bug pattern="UWF_UNWRITTEN_FIELD" />
+  </Match>
+  <!--Nothing to worry about: -->
+  <Match>
+     <Class name="org.beigesoft.web.servlet.WGetDatabaseCopyResult" />
+     <Bug pattern="XSS_REQUEST_PARAMETER_TO_SERVLET_WRITER" />
+  </Match>
 </FindBugsFilter>
