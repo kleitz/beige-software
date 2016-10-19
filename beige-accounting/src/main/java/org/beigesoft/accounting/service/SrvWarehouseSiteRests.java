@@ -62,7 +62,7 @@ public class SrvWarehouseSiteRests<RS> implements ISrvWarehouseSiteRests {
    **/
   @Override
   public final List<WarehouseSiteRestLine> retrieveWarehouseSiteRests(
-    final Map<String, ?> pAddParam) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     List<WarehouseSiteRestLine> result = new ArrayList<WarehouseSiteRestLine>();
     if (this.queryMain == null) {
       String flName = File.separator + "accounting" + File.separator

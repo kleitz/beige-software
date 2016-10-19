@@ -112,7 +112,7 @@ public class SrvPurchaseReturnLine<RS>
    **/
   @Override
   public final PurchaseReturnLine createEntity(
-    final Map<String, ?> pAddParam) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     PurchaseReturnLine entity = new PurchaseReturnLine();
     entity.setIdDatabaseBirth(getSrvOrm().getIdDatabase());
     entity.setIsNew(true);
@@ -131,7 +131,7 @@ public class SrvPurchaseReturnLine<RS>
    **/
   @Override
   public final PurchaseReturnLine retrieveCopyEntity(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pId) throws Exception {
     PurchaseReturnLine entity = getSrvOrm().retrieveCopyEntity(
       PurchaseReturnLine.class, pId);
@@ -171,7 +171,7 @@ public class SrvPurchaseReturnLine<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void saveEntity(final Map<String, ?> pAddParam,
+  public final void saveEntity(final Map<String, Object> pAddParam,
     final PurchaseReturnLine pEntity,
       final boolean isEntityDetached) throws Exception {
     if (pEntity.getIsNew()) {
@@ -303,7 +303,7 @@ public class SrvPurchaseReturnLine<RS>
    **/
   @Override
   public final PurchaseReturnLine createEntityWithOwnerById(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pIdEntityItsOwner) throws Exception {
     PurchaseReturnLine entity = new PurchaseReturnLine();
     entity.setIdDatabaseBirth(getSrvOrm().getIdDatabase());
@@ -326,7 +326,7 @@ public class SrvPurchaseReturnLine<RS>
    **/
   @Override
   public final PurchaseReturnLine createEntityWithOwner(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final PurchaseReturn pEntityItsOwner) throws Exception {
     PurchaseReturnLine entity = new PurchaseReturnLine();
     entity.setIsNew(true);
@@ -348,7 +348,7 @@ public class SrvPurchaseReturnLine<RS>
    */
   @Override
   public final List<PurchaseReturnLine> retrieveOwnedListById(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pIdEntityItsOwner) throws Exception {
     return getSrvOrm().retrieveEntityOwnedlist(PurchaseReturnLine.class,
       PurchaseReturn.class, pIdEntityItsOwner);
@@ -364,7 +364,7 @@ public class SrvPurchaseReturnLine<RS>
    */
   @Override
   public final List<PurchaseReturnLine> retrieveOwnedList(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final PurchaseReturn pEntityItsOwner) throws Exception {
     return getSrvOrm().retrieveEntityOwnedlist(PurchaseReturnLine.class,
       PurchaseReturn.class, pEntityItsOwner.getItsId());

@@ -29,7 +29,7 @@ public interface ISrvAccEntry {
    * @param pEntity a document
    * @throws Exception - an exception
    **/
-  void makeEntries(Map<String, ?> pAddParam,
+  void makeEntries(Map<String, Object> pAddParam,
     IDoc pEntity) throws Exception;
 
   /**
@@ -39,7 +39,7 @@ public interface ISrvAccEntry {
    * @param pReversed a reversed document
    * @throws Exception - an exception
    **/
-  void reverseEntries(Map<String, ?> pAddParam,
+  void reverseEntries(Map<String, Object> pAddParam,
     IDoc pReversing, IDoc pReversed) throws Exception;
 
   /**
@@ -49,7 +49,7 @@ public interface ISrvAccEntry {
    * @return accounting entries made by this document
    * @throws Exception - an exception
    **/
-  List<AccountingEntry> retrieveAccEntriesFor(Map<String, ?> pAddParam,
+  List<AccountingEntry> retrieveAccEntriesFor(Map<String, Object> pAddParam,
     IDoc pEntity) throws Exception;
 
 
@@ -61,5 +61,5 @@ public interface ISrvAccEntry {
    * @param pAddParam additional param
    * @throws Exception - an exception
    **/
-  void makeEntriesAll(Map<String, ?> pAddParam) throws Exception;
+  void makeEntriesAll(Map<String, Object> pAddParam) throws Exception;
 }

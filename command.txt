@@ -4,6 +4,20 @@
 Postrgesql:
 delete all tables, triggers, views etc owned by:
 drop owned by beigeaccounting;
+//where is DB files in psql:
+show data_directory; //
+//stop server (it required DB location), see pg_ctl --help
+pg_ctl stop -D /var/lib/pgsql/data
+//make copy as root:
+tar -cf backup.tar /var/lib/pgsql/data
+//start by Linux:
+systemctl start postgresql
+//backup with SQL file (but it doesn't work on working Postgresql and Web-app):
+su postgres
+cd /var/lib/pgsql/data/
+pg_dump beigeaccounting > outfile.bak
+//restore as postgres
+psql beigeaccounting < outfile.bak
 
 $ANT_HOME/bin/ant -Dtomcat.home=$TOMCATA_HOME -Dwebapp.path=target/beige-accounting-web/
 
@@ -31,12 +45,11 @@ find . -type f -name "*.java" -exec sed -i "s/ctxt\.getClassLoader()/ctxt\.getCl
 find . -type f -name "pom.xml" -exec sed -i "s/1\.0\.9-SNAPSHOT/1\.1\.0-SNAPSHOT/g" {} +
 grep -F --include=*.jsp -rw '.' -e 'getMsg("$'
 //list files with extension
-find . -type f -name "*.keystore"
+find . -type f -name "mtp\:host*"
 //list files modified before after on <minutes> ego:
 find . -cmin +<minutes>
 find . -cmin -<minutes>
 find . -cmin  <minutes>
-
 
 Maven:
 mvnDebug tomcat7:run -P sqlite
@@ -288,7 +301,9 @@ balances not recalculated or not readable for android AVD N10_7 for DB ???
  change pEntity.getItsQuantity() -> wms.getItsQuantity() in reversedraw in srvWarehEntry
 
 
-*  Map<String, ?> -> Map<String, Object>
+*** Map<String, ?> -> Map<String, Object>
+*** XML import apos -> ' -> Carlo&amp;apos;s grocery.
+    unescapeXml never invoked
 
 git:
 git config --global user.name "Your Name"

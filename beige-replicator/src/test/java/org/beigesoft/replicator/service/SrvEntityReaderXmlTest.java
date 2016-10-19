@@ -76,6 +76,7 @@ public class SrvEntityReaderXmlTest {
     this.srvEntityFieldFillerStd = new SrvEntityFieldFillerStd();
     this.utlReflection = new UtlReflection();
     this.srvEntityFieldFillerStd.setUtlReflection(this.utlReflection);
+    this.srvEntityFieldFillerStd.setUtilXml(this.utilXml);
     this.srvEntityFieldPersistableBaseRepl = new SrvEntityFieldPersistableBaseRepl();
     this.srvEntityFieldPersistableBaseRepl.setUtlReflection(this.utlReflection);
     Map<String, ISrvEntityFieldFiller> fieldsFillersMap =
@@ -149,7 +150,7 @@ public class SrvEntityReaderXmlTest {
     persHeadOrigin.setItsStatus(EStatus.STATUS_A);
     persHeadOrigin.setItsTotal(new BigDecimal("523.66"));
     persHeadOrigin.setItsDepartment(departmentOr);
-    persHeadOrigin.setTmpDescription(" List<String> lst = \"alfa\" & b=a \n nstr");
+    persHeadOrigin.setTmpDescription(" Bob's pizza List<String> lst = \"alfa\" & b=a \n nstr");
     File persHeadFile = new File("persistableHead.tst.xml");
     OutputStreamWriter writer = new OutputStreamWriter(
       new FileOutputStream(persHeadFile),
@@ -188,8 +189,9 @@ public class SrvEntityReaderXmlTest {
     assertEquals(persHeadOrigin.getItsStatus(), persHead.getItsStatus()); 
     assertEquals(persHeadOrigin.getIsClosed(), persHead.getIsClosed()); 
     assertEquals(persHeadOrigin.getItsTotal(), persHead.getItsTotal()); 
-    assertEquals(persHeadOrigin.getItsDepartment().getItsId(), persHead.getItsDepartment().getItsId()); 
-    assertEquals(persHeadOrigin.getTmpDescription(), persHeadOrigin.getTmpDescription()); 
+    assertEquals(persHeadOrigin.getItsDepartment().getItsId(), persHead.getItsDepartment().getItsId());
+    System.out.println(persHead.getTmpDescription());
+    assertEquals(persHeadOrigin.getTmpDescription(), persHead.getTmpDescription()); 
     assertEquals(departmentOr.getItsId(), department.getItsId()); 
     assertEquals(departmentOr.getItsName(), department.getItsName()); 
   }

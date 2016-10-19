@@ -88,7 +88,7 @@ public class SrvPurchaseInvoice<RS>
    **/
   @Override
   public final PurchaseInvoice createEntity(
-    final Map<String, ?> pAddParam) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     PurchaseInvoice entity = new PurchaseInvoice();
     entity.setIdDatabaseBirth(getSrvOrm().getIdDatabase());
     entity.setItsDate(new Date());
@@ -104,7 +104,7 @@ public class SrvPurchaseInvoice<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void makeAddPrepareForCopy(final Map<String, ?> pAddParam,
+  public final void makeAddPrepareForCopy(final Map<String, Object> pAddParam,
     final PurchaseInvoice pEntity) throws Exception {
     pEntity.setTotalTaxes(BigDecimal.ZERO);
     pEntity.setSubtotal(BigDecimal.ZERO);
@@ -122,7 +122,7 @@ public class SrvPurchaseInvoice<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void makeOtherEntries(final Map<String, ?> pAddParam,
+  public final void makeOtherEntries(final Map<String, Object> pAddParam,
     final PurchaseInvoice pEntity, final boolean pIsNew) throws Exception {
     @SuppressWarnings("unchecked")
     Map<String, String[]> parameterMap = (Map<String, String[]>) pAddParam.
@@ -211,8 +211,9 @@ public class SrvPurchaseInvoice<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void addCheckIsReadyToAccount(final Map<String, ?> pAddParam,
-    final PurchaseInvoice pEntity) throws Exception {
+  public final void addCheckIsReadyToAccount(
+    final Map<String, Object> pAddParam,
+      final PurchaseInvoice pEntity) throws Exception {
     //nothing
   }
 
@@ -225,7 +226,7 @@ public class SrvPurchaseInvoice<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void checkOtherFraudUpdate(final Map<String, ?> pAddParam,
+  public final void checkOtherFraudUpdate(final Map<String, Object> pAddParam,
     final PurchaseInvoice pEntity,
       final PurchaseInvoice pOldEntity) throws Exception {
     //nothing
@@ -238,7 +239,7 @@ public class SrvPurchaseInvoice<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void makeFirstPrepareForSave(final Map<String, ?> pAddParam,
+  public final void makeFirstPrepareForSave(final Map<String, Object> pAddParam,
     final PurchaseInvoice pEntity) throws Exception {
     if (pEntity.getPrepaymentTo() != null) {
       pEntity.setPrepaymentTo(getSrvOrm().retrieveEntity(pEntity

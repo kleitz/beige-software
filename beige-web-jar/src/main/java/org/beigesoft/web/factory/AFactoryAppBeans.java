@@ -361,6 +361,7 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
       srvEntityReaderXml.setUtilXml(lazyGetUtilXml());
       SrvEntityFieldFillerStd srvEntityFieldFillerStd =
         new SrvEntityFieldFillerStd();
+      srvEntityFieldFillerStd.setUtilXml(lazyGetUtilXml());
       srvEntityFieldFillerStd.setUtlReflection(lazyGetUtlReflection());
       SrvEntityFieldPersistableBaseRepl srvEntityFieldPersistableBaseRepl =
         new SrvEntityFieldPersistableBaseRepl();

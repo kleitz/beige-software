@@ -165,7 +165,8 @@ public class SrvWebMvc<RS> implements ISrvWebMvc {
       pField.set(pEntity, valBd);
     } else if (pField.getType() == Date.class) {
       Date valDt = null;
-      if (valStr.length() > 0 && !"null".equals(valStr)) {
+      if (valStr.length() > 0 && !("null".equals(valStr)
+        || "NaN".equals(valStr))) {
         Long valLn = Long.valueOf(valStr);
         valDt = new Date(valLn);
       }

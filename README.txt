@@ -30,7 +30,7 @@ https://github.com/demidenko05/a-tomcat-all - source of Apache Tomcat to precomp
 https://github.com/demidenko05/a-jetty-all - source of A-Jetty is Jetty 9.2 adapted for Android
 
 Prerequisites for building from source:
-* JDK7.
+* JDK7 (not 8).
 * last of Apache Maven and Ant.
 * Postgresql 9.4+ with registered user/password "beigeaccounting/beigeaccounting" and created databases "beigeaccounting" and "beigeaccountingtest".
 * SqlLite last version.
@@ -62,4 +62,6 @@ To do this:
 12. start your jar with dependences "java -jar [your jar]"
 13. to make your webapp working on embedded A-Jetty on Android see example beige-accounting-android.
 
-mvn site:site gives you same content as from http://www.beigesoft.org
+version 1.1.1.
+Added import full database copy with WEB-service (from SQlite to Postgresql).
+Added payByDate to sales/purchase invoices and report invoices list with payByDate conditions. 

@@ -118,7 +118,7 @@ public abstract class ASrvDrawItemEntry<T extends ADrawItemEntry, RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void withdrawal(final Map<String, ?> pAddParam,
+  public final void withdrawal(final Map<String, Object> pAddParam,
     final IMakingWarehouseEntry pEntity, final Date pDateAccount,
       final Long pDrawingOwnerId) throws Exception {
     String queryMain = lazyGetQuery(srvAccSettings.lazyGetAccSettings().
@@ -213,7 +213,7 @@ public abstract class ASrvDrawItemEntry<T extends ADrawItemEntry, RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void withdrawalFrom(final Map<String, ?> pAddParam,
+  public final void withdrawalFrom(final Map<String, Object> pAddParam,
     final IMakingWarehouseEntry pEntity, final IDrawItemSource pSource,
         final BigDecimal pQuantityToDraw) throws Exception {
     T die = createDrawItemEntry();
@@ -250,7 +250,7 @@ public abstract class ASrvDrawItemEntry<T extends ADrawItemEntry, RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void reverseDraw(final Map<String, ?> pAddParam,
+  public final void reverseDraw(final Map<String, Object> pAddParam,
     final IMakingWarehouseEntry pEntity, final Date pDateAccount,
       final Long pDrawingOwnerId) throws Exception {
     List<T> diel = getSrvOrm().retrieveListWithConditions(
@@ -314,7 +314,7 @@ public abstract class ASrvDrawItemEntry<T extends ADrawItemEntry, RS>
    **/
   @Override
   public final List<T> retrieveEntriesFor(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final IDocWarehouse pEntity) throws Exception {
     String where = null;
     if (pEntity instanceof IDrawItemSource) {

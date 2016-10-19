@@ -13,7 +13,8 @@
     
       <h4>Preparation</h4>
     
-      <p>1. Install JDK. In Debian as root invoke "dnf install openjdk-7-jdk"</p>
+      <p>1. Get old OpenJdk7 from <a href="https://bintray.com/hgomez/obuildfactory-fedora19-x86-64/jdk-1.7.0-openjdk-x86_64/1.7.0.u72.b30-1.fc19#files">https://bintray.com/hgomez/obuildfactory-fedora19-x86-64/jdk-1.7.0-openjdk-x86_64/1.7.0.u72.b30-1.fc19#files</a>
+        which made by project <a href="https://github.com/hgomez/obuildfactory">https://github.com/hgomez/obuildfactory</a>. Install it.</p>
       <p>2. <a target="#blank" href="http://maven.apache.org/download.html">Download Maven</a> e.g. Maven-3.3.9 then 
         unpack it into folder "$HOME/programmer/java/apache-maven-3.3.9" and add into PATH (see below)</p>
       <p>3. Download Android SDK tools without studio from <a href="http://developer.android.com/sdk/index.html#Other">http://developer.android.com/sdk/index.html#Other</a>. Unpack it into $HOME/programmer/android-sdk-linux. Add it into environment variables (see below).
@@ -22,8 +23,7 @@
       dnf install glibc.i686 glibc-devel.i686 libstdc++.i686 zlib-devel.i686 ncurses-devel.i686 libX11-devel.i686 libXrender.i686 libXrandr.i686</p>
       <p>4. Add system variable JAVA_HOME, ANDROID_HOME and Maven bin directory and Android tools directory into PATH variable. For example in Linux add into .bashrc:
       <pre>
-JAVA_HOME=/usr/lib/jvm/java-7-openjdk-i386/bin
-export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-i386
+export JAVA_HOME=/opt/obuildfactory/jdk-1.7.0-openjdk-x86_64
 export ANDROID_HOME=$HOME/programmer/android-sdk-linux
 export PATH=$PATH:$HOME/programmer/java/apache-maven-3.3.9/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools
       </pre>

@@ -70,11 +70,11 @@ public class HttpURLConnectionTest {
     params.put("authUserName", "j_username");
     params.put("authUserPass", "j_password");
     params.put("urlSource", urlSource);
-    //tstAuthGet(url, params, cookieManager); //either Get or Post for test allowed
+    tstAuthGet(url, params, cookieManager); //either Get or Post for test allowed
     urlSource = "http://localhost:8080/beige-accounting-web/secure/sendDatabaseCopy";
     params.put("urlSource", urlSource);
-    url = new URL(urlSource);
-    tstAuthPost(url, params, cookieManager);
+    //url = new URL(urlSource);
+    //tstAuthPost(url, params, cookieManager);
   }
 
   /**
@@ -137,7 +137,10 @@ public class HttpURLConnectionTest {
       //j_username=admin&j_password=admin - length=33
       reader = new BufferedReader(new InputStreamReader(urlConnection
           .getInputStream(), Charset.forName("UTF-8").newDecoder()));
-      this.utilXml.readUntilStart(reader, "kkkkkkkkkkkkklok"); //just read out
+      while (reader.read() != -1) { //NOPMD
+        //just read out
+      }
+//      this.utilXml.readUntilStart(reader, "kkkkkkkkkkkkklok"); //just read out
     } finally {
       if (reader != null) {
         try {
@@ -195,13 +198,16 @@ public class HttpURLConnectionTest {
       if (HttpURLConnection.HTTP_OK == urlConnection.getResponseCode()) {
         reader = new BufferedReader(new InputStreamReader(urlConnection
             .getInputStream(), Charset.forName("UTF-8").newDecoder()));
-        boolean isAuthForm = this.utilXml.readUntilStart(reader, "form");
+        while (reader.read() != -1) { //NOPMD
+          //just read out
+        }
+       /* boolean isAuthForm = this.utilXml.readUntilStart(reader, "form");
         assertTrue(isAuthForm);
         this.utilXml.readUntilStart(reader, "kkkkkkkkkkkkklok"); //just read out
         for (HttpCookie cookie : pCookieManager.getCookieStore().getCookies()) {
           this.logger.info(HttpURLConnectionTest.class,
             "tstAuthGet after read: " + cookie.getName() + " - " + cookie.getValue());
-        }
+        }*/
       } else {
         throw new ExceptionWithCode(ExceptionWithCode.SOMETHING_WRONG,
           "tstAuthGet Can't receive data!!! Response code=" + urlConnection

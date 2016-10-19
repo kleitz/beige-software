@@ -4,13 +4,13 @@
   xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
 
   <properties>
-    <title>Beigesoft ORM specification version #2</title>
+    <title>Beigesoft ORM specification version #3</title>
   </properties>
 
   <body>
 
     <!-- The body of the document contains a number of sections -->
-    <section name="Specification Beige-ORM version #1">
+    <section name="Specification Beige-ORM version #3">
       <p>It use Reflection API to generate SQL queries (DDL and DML).</p>
       <p>It use standard Beige-Settings to describe ORM configuration with standard Properties XML.
       All <b>current</b> configuration files are located in <b>beige-orm</b> folder.</p>
@@ -52,6 +52,8 @@
       <p>excludeFields - array of non-persistable fields names for all classes, e.g. <b>isNew</b>.</p>
       
       <h4>Application settings file <b>[RDBMS]/app-settings.xml</b> consist of:</h4>
+      <p>databaseVersion - current database version to create new database, must be equals with DataInfo</p>
+      <p>useSubFolder - e.g. sqlite</p>
       <p>jdbcDriverClass - SQL driver class name.</p>
       <p>databaseUrl - a database url of the form jdbc:subprotocol:subname.</p>
       <p>userName - RDBMS user name.</p>
@@ -138,15 +140,18 @@
         You can change database description (only!!!) by hand.
       </p>
 
-      <h4>Creating tables.</h4>
-      <p>You have to invoke method ASrvOrm.initializeDatabase() at ORM start time. Beige-ORM will create tables that not existed.
-      It never alter tables so you have to make script upgrade_[new_version].sql script. If all tables has been created
-      then insert.sql will be invoked if it exist.</p>
+      <h4>Initializing DB, creating tables.</h4>
+      <p>You have to invoke method ASrvOrm.initializeDatabase() at ORM start time. At first it
+      invoke [beige-orm]/[useSubFolder]/init.sql if it exist (for SQlite it turn on foreign key constraints).
+      Then Beige-ORM will create tables that not existed (all or new). If all tables has been created
+      then [beige-orm]/insert.sql will be invoked if it exist.</p>
       
       <h4>Upgrade database.</h4>
-      <p>The most task of upgrade do not only upgrade tables definition, they also do inserts and update data, triggers, views.
+      <p>The most tasks of upgrade do not only upgrade tables definition, they also do inserts and update data, triggers, views.
         So database must has version. When it's need to upgrade database then make script upgrade_[new version].sql
         and BeigeORM start it in single transaction. This script should update database version itself.
+        Cause SQL standard doesn't include fields type definition and many more things, upgrade_[new version].sql is RDDBMS
+        dependent. So it's placed into [beige-orm]/[useSubFolder] folder.
       </p>
 
       <h4>Transaction management</h4>

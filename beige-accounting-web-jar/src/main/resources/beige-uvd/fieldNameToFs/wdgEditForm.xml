@@ -10,6 +10,7 @@
 <properties>
 <comment>Correspondence of field name to field setting.</comment>
 <entry key="currentAccYear">inputDate</entry>
+<entry key="payByDate">inputDate</entry>
 <entry key="reversedId">null</entry>
 <entry key="theRest">null</entry>
 <entry key="hasMadeAccEntries">inputBooleanDisabled</entry>

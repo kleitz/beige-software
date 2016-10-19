@@ -41,7 +41,7 @@ public interface ISrvEntityOwned<T extends IHasId<?>, O extends IHasId<?>>
    * @return entity instance
    * @throws Exception - an exception
    **/
-  T createEntityWithOwnerById(Map<String, ?> pAddParam,
+  T createEntityWithOwnerById(Map<String, Object> pAddParam,
     Object pIdEntityOwner) throws Exception;
 
   /**
@@ -52,7 +52,7 @@ public interface ISrvEntityOwned<T extends IHasId<?>, O extends IHasId<?>>
    * @return entity instance
    * @throws Exception - an exception
    **/
-  T createEntityWithOwner(Map<String, ?> pAddParam,
+  T createEntityWithOwner(Map<String, Object> pAddParam,
     O pEntityOwner) throws Exception;
 
   /**
@@ -63,7 +63,7 @@ public interface ISrvEntityOwned<T extends IHasId<?>, O extends IHasId<?>>
    * @return owned list of business objects
    * @throws Exception - an exception
    */
-  List<T> retrieveOwnedListById(Map<String, ?> pAddParam,
+  List<T> retrieveOwnedListById(Map<String, Object> pAddParam,
     Object pIdEntityOwner) throws Exception;
 
   /**
@@ -74,6 +74,6 @@ public interface ISrvEntityOwned<T extends IHasId<?>, O extends IHasId<?>>
    * @return owned list of business objects
    * @throws Exception - an exception
    */
-  List<T> retrieveOwnedList(Map<String, ?> pAddParam,
+  List<T> retrieveOwnedList(Map<String, Object> pAddParam,
     O pEntityOwner) throws Exception;
 }

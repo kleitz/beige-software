@@ -69,7 +69,7 @@ public class SrvAccEntityOwnedSimple<T extends IHasId<?>, O extends IHasId<?>>
    * @throws Exception - an exception
    **/
   @Override
-  public final T createEntityWithOwnerById(final Map<String, ?> pAddParam,
+  public final T createEntityWithOwnerById(final Map<String, Object> pAddParam,
     final Object pIdEntityOwner) throws Exception {
     T entity = getSrvOrm().createEntityWithOwner(getEntityClass(),
       this.ownerClass, pIdEntityOwner);
@@ -87,7 +87,7 @@ public class SrvAccEntityOwnedSimple<T extends IHasId<?>, O extends IHasId<?>>
    * @throws Exception - an exception
    **/
   @Override
-  public final T createEntityWithOwner(final Map<String, ?> pAddParam,
+  public final T createEntityWithOwner(final Map<String, Object> pAddParam,
     final O pEntityOwner) throws Exception {
     T entity = getSrvOrm().createEntityWithOwner(getEntityClass(),
       this.ownerClass, pEntityOwner.getItsId());
@@ -105,8 +105,9 @@ public class SrvAccEntityOwnedSimple<T extends IHasId<?>, O extends IHasId<?>>
    * @throws Exception - an exception
    */
   @Override
-  public final List<T> retrieveOwnedListById(final Map<String, ?> pAddParam,
-    final Object pIdEntityOwner) throws Exception {
+  public final List<T> retrieveOwnedListById(
+    final Map<String, Object> pAddParam,
+      final Object pIdEntityOwner) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
     return getSrvOrm().retrieveEntityOwnedlist(getEntityClass(),
       this.ownerClass, pIdEntityOwner);
@@ -121,7 +122,7 @@ public class SrvAccEntityOwnedSimple<T extends IHasId<?>, O extends IHasId<?>>
    * @throws Exception - an exception
    */
   @Override
-  public final List<T> retrieveOwnedList(final Map<String, ?> pAddParam,
+  public final List<T> retrieveOwnedList(final Map<String, Object> pAddParam,
     final O pEntityOwner) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
     return getSrvOrm().retrieveEntityOwnedlist(getEntityClass(),

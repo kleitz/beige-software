@@ -33,7 +33,7 @@ public interface ISrvWarehouseEntry {
    * @param pWhSiteTo Site To
    * @throws Exception - an exception
    **/
-  void load(Map<String, ?> pAddParam,
+  void load(Map<String, Object> pAddParam,
     IMakingWarehouseEntry pEntity,
       WarehouseSite pWhSiteTo) throws Exception;
 
@@ -45,7 +45,7 @@ public interface ISrvWarehouseEntry {
    * @param pWhSiteTo Site To
    * @throws Exception - an exception
    **/
-  void move(Map<String, ?> pAddParam,
+  void move(Map<String, Object> pAddParam,
     IMakingWarehouseEntry pEntity, WarehouseSite pWhSiteFrom,
       WarehouseSite pWhSiteTo) throws Exception;
 
@@ -57,7 +57,7 @@ public interface ISrvWarehouseEntry {
    * @param pQuantity Quantity
    * @throws Exception - an exception
    **/
-  void makeWarehouseRest(final Map<String, ?> pAddParam,
+  void makeWarehouseRest(final Map<String, Object> pAddParam,
     IMakingWarehouseEntry pEntity, WarehouseSite pWhSite,
         BigDecimal pQuantity) throws Exception;
 
@@ -67,7 +67,7 @@ public interface ISrvWarehouseEntry {
    * @param pEntity movement
    * @throws Exception - an exception
    **/
-  void withdrawal(Map<String, ?> pAddParam,
+  void withdrawal(Map<String, Object> pAddParam,
     IMakingWarehouseEntry pEntity) throws Exception;
 
   /**
@@ -76,7 +76,7 @@ public interface ISrvWarehouseEntry {
    * @param pEntity movement
    * @throws Exception - an exception
    **/
-  void reverseDraw(Map<String, ?> pAddParam,
+  void reverseDraw(Map<String, Object> pAddParam,
     IMakingWarehouseEntry pEntity) throws Exception;
 
   /**
@@ -86,6 +86,6 @@ public interface ISrvWarehouseEntry {
    * @return warehouse entries made by this document
    * @throws Exception - an exception
    **/
-  List<WarehouseEntry> retrieveEntriesFor(Map<String, ?> pAddParam,
+  List<WarehouseEntry> retrieveEntriesFor(Map<String, Object> pAddParam,
     IDocWarehouse pEntity) throws Exception;
 }

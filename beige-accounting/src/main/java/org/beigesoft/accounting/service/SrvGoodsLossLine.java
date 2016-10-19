@@ -80,7 +80,7 @@ public class SrvGoodsLossLine<RS>
    **/
   @Override
   public final GoodsLossLine createEntity(
-    final Map<String, ?> pAddParam) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     GoodsLossLine entity = new GoodsLossLine();
     entity.setIdDatabaseBirth(getSrvOrm().getIdDatabase());
     entity.setIsNew(true);
@@ -99,7 +99,7 @@ public class SrvGoodsLossLine<RS>
    **/
   @Override
   public final GoodsLossLine retrieveCopyEntity(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pId) throws Exception {
     GoodsLossLine entity = getSrvOrm().retrieveCopyEntity(
       GoodsLossLine.class, pId);
@@ -130,7 +130,7 @@ public class SrvGoodsLossLine<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void saveEntity(final Map<String, ?> pAddParam,
+  public final void saveEntity(final Map<String, Object> pAddParam,
     final GoodsLossLine pEntity,
       final boolean isEntityDetached) throws Exception {
     if (pEntity.getIsNew()) {
@@ -194,7 +194,7 @@ public class SrvGoodsLossLine<RS>
    **/
   @Override
   public final GoodsLossLine createEntityWithOwnerById(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pIdEntityItsOwner) throws Exception {
     GoodsLossLine entity = new GoodsLossLine();
     entity.setIdDatabaseBirth(getSrvOrm().getIdDatabase());
@@ -216,7 +216,7 @@ public class SrvGoodsLossLine<RS>
    **/
   @Override
   public final GoodsLossLine createEntityWithOwner(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final GoodsLoss pEntityItsOwner) throws Exception {
     GoodsLossLine entity = new GoodsLossLine();
     entity.setIsNew(true);
@@ -235,7 +235,7 @@ public class SrvGoodsLossLine<RS>
    */
   @Override
   public final List<GoodsLossLine> retrieveOwnedListById(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pIdEntityItsOwner) throws Exception {
     return getSrvOrm().retrieveEntityOwnedlist(GoodsLossLine.class,
       GoodsLoss.class, pIdEntityItsOwner);
@@ -251,7 +251,7 @@ public class SrvGoodsLossLine<RS>
    */
   @Override
   public final List<GoodsLossLine> retrieveOwnedList(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final GoodsLoss pEntityItsOwner) throws Exception {
     return getSrvOrm().retrieveEntityOwnedlist(GoodsLossLine.class,
       GoodsLoss.class, pEntityItsOwner.getItsId());

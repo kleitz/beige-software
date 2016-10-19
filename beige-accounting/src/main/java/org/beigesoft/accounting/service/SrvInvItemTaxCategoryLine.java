@@ -55,7 +55,7 @@ public class SrvInvItemTaxCategoryLine<RS>
    **/
   @Override
   public final InvItemTaxCategoryLine createEntity(
-    final Map<String, ?> pAddParam) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     InvItemTaxCategoryLine entity = new InvItemTaxCategoryLine();
     entity.setIdDatabaseBirth(getSrvOrm().getIdDatabase());
     entity.setIsNew(true);
@@ -74,7 +74,7 @@ public class SrvInvItemTaxCategoryLine<RS>
    **/
   @Override
   public final InvItemTaxCategoryLine retrieveEntityById(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pId) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
     return getSrvOrm().retrieveEntityById(getEntityClass(), pId);
@@ -88,7 +88,7 @@ public class SrvInvItemTaxCategoryLine<RS>
    **/
   @Override
   public final InvItemTaxCategoryLine retrieveEntity(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final InvItemTaxCategoryLine pEntity) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
     return getSrvOrm().retrieveEntityById(getEntityClass(), pEntity.getItsId());
@@ -103,7 +103,7 @@ public class SrvInvItemTaxCategoryLine<RS>
    **/
   @Override
   public final InvItemTaxCategoryLine retrieveCopyEntity(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pId) throws Exception {
     InvItemTaxCategoryLine entity = getSrvOrm().retrieveCopyEntity(
       InvItemTaxCategoryLine.class, pId);
@@ -121,7 +121,7 @@ public class SrvInvItemTaxCategoryLine<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void saveEntity(final Map<String, ?> pAddParam,
+  public final void saveEntity(final Map<String, Object> pAddParam,
     final InvItemTaxCategoryLine pEntity,
       final boolean isEntityDetached) throws Exception {
     if (pEntity.getItsPercentage().doubleValue() <= 0) {
@@ -153,7 +153,7 @@ public class SrvInvItemTaxCategoryLine<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void deleteEntity(final Map<String, ?> pAddParam,
+  public final void deleteEntity(final Map<String, Object> pAddParam,
     final InvItemTaxCategoryLine pEntity) throws Exception {
     getSrvOrm().deleteEntity(getEntityClass(), pEntity.getItsId());
     updateInvItemTaxCategory(pAddParam, pEntity.getItsOwner().getItsId());
@@ -167,7 +167,7 @@ public class SrvInvItemTaxCategoryLine<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void deleteEntity(final Map<String, ?> pAddParam,
+  public final void deleteEntity(final Map<String, Object> pAddParam,
     final Object pId) throws Exception {
     InvItemTaxCategoryLine entity = getSrvOrm()
       .retrieveEntityById(getEntityClass(), pId);
@@ -184,7 +184,7 @@ public class SrvInvItemTaxCategoryLine<RS>
    **/
   @Override
   public final InvItemTaxCategoryLine createEntityWithOwnerById(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pIdEntityItsOwner) throws Exception {
     InvItemTaxCategoryLine entity = new InvItemTaxCategoryLine();
     entity.setIdDatabaseBirth(getSrvOrm().getIdDatabase());
@@ -206,7 +206,7 @@ public class SrvInvItemTaxCategoryLine<RS>
    **/
   @Override
   public final InvItemTaxCategoryLine createEntityWithOwner(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final InvItemTaxCategory pEntityItsOwner) throws Exception {
     InvItemTaxCategoryLine entity = new InvItemTaxCategoryLine();
     entity.setIsNew(true);
@@ -226,7 +226,7 @@ public class SrvInvItemTaxCategoryLine<RS>
    */
   @Override
   public final List<InvItemTaxCategoryLine> retrieveOwnedListById(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pIdEntityItsOwner) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
     return getSrvOrm().retrieveEntityOwnedlist(InvItemTaxCategoryLine.class,
@@ -243,7 +243,7 @@ public class SrvInvItemTaxCategoryLine<RS>
    */
   @Override
   public final List<InvItemTaxCategoryLine> retrieveOwnedList(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final InvItemTaxCategory pEntityItsOwner) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
     return getSrvOrm().retrieveEntityOwnedlist(InvItemTaxCategoryLine.class,
@@ -258,7 +258,7 @@ public class SrvInvItemTaxCategoryLine<RS>
    * @throws Exception - an exception
    **/
   public final void updateInvItemTaxCategory(
-    final Map<String, ?> pAddParam, final Long pId) throws Exception {
+    final Map<String, Object> pAddParam, final Long pId) throws Exception {
     List<InvItemTaxCategoryLine> ptl = getSrvOrm()
       .retrieveEntityOwnedlist(InvItemTaxCategoryLine.class,
         InvItemTaxCategory.class, pId);

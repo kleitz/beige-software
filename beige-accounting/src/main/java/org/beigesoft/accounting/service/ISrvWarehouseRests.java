@@ -29,5 +29,5 @@ public interface ISrvWarehouseRests {
    * @throws Exception - an exception
    **/
   List<WarehouseRestLine> retrieveWarehouseRests(
-    Map<String, ?> pAddParam) throws Exception;
+    Map<String, Object> pAddParam) throws Exception;
 }

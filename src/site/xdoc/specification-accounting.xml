@@ -108,7 +108,7 @@
       <p>SQL queries from document described in accounting/[document name].xml.<br></br>
         XML entry is: Key is SQL file name, value is DEBIT/DEBITCREDIT/CREDIT, true/false if used in current method.
         For example accounting/SalesInvoice.xml:
-        <pre>
+        <pre style="white-space: pre-wrap;">
           &lt;entry key="accRecDebCustInvCust2"&gt;DEBIT, true&lt;/entry&gt;
           &lt;entry key="salesCreCustInvProdCat2"&gt;CREDIT, true&lt;/entry&gt;
           &lt;entry key="salTaxPayAccuralCreCustInv2"&gt;CREDIT, true&lt;/entry&gt;
@@ -414,6 +414,7 @@
           <li>paymentTo - PrepaymentTo</li>
           <li>paymentTotal - BigDecimal, Not Null, Payment total (prepayment and afterpayment)</li>
           <li>paymentDescription - String, Not Null, Payment description, read only</li>
+          <li>payByDate - Date, nullable, should pay by this date</li>
           <li>itsLines - List&lt;PurchaseInvoiceLine&gt;</li>
         </ul>
         constTypeCode() = 1
@@ -438,7 +439,7 @@
       Method "PurInvInvCatPayDbtCrdt":
       "PurchaseInvoice , Debit Inventory per InvItemCategory, Credit AccPayable per DebtorCreditor."
       Accounting entries source: accounting/journalEntries/PurInvInvCatPayDbtCrdt.sql:
-      <pre>
+      <pre style="white-space: pre-wrap;">
 select 1 as SOURCETYPE, PURCHASEINVOICE.ITSID as SOURCEID, PURCHASEINVOICE.ITSDATE,
 'Inventory' as ACCDEBIT, 2001 as SUBACCDEBITTYPE, INVITEMCATEGORY.ITSID as SUBACCDEBITID, INVITEMCATEGORY.ITSNAME as SUBACCDEBIT, sum(PURCHASEINVOICELINE.SUBTOTAL) as DEBIT,
 'AccPayable' as ACCCREDIT, 2004 as SUBACCCREDITTYPE, DEBTORCREDITOR.ITSID as SUBACCCREDITID, DEBTORCREDITOR.ITSNAME as SUBACCCREDIT, sum(PURCHASEINVOICELINE.ITSTOTAL) as CREDIT
@@ -457,7 +458,7 @@ group by SOURCETYPE, SOURCEID, ITSDATE, ACCDEBIT, SUBACCDEBITTYPE, SUBACCDEBITID
       Method "PurInvAccPayDbtPrepayToCrdt":
       "PurchaseInvoice , If prepaid Debit AccPayable per DebtorCreditor, Credit PrepaymentsTo per DebtorCreditor."
       Accounting entries source: accounting/journalEntries/PurInvAccPayDbtPrepayToCrdt.sql:
-      <pre>
+      <pre style="white-space: pre-wrap;">
 select 1 as SOURCETYPE, PURCHASEINVOICE.ITSID as SOURCEID, PURCHASEINVOICE.ITSDATE as ITSDATE,
 'AccPayable' as ACCDEBIT, 2004 as SUBACCDEBITTYPE, DEBTORCREDITOR.ITSID as SUBACCDEBITID, DEBTORCREDITOR.ITSNAME as SUBACCDEBIT, 
 case when PURCHASEINVOICE.ITSTOTAL &lt; PREPAYMENTTO.ITSTOTAL then PURCHASEINVOICE.ITSTOTAL else PREPAYMENTTO.ITSTOTAL end as DEBIT,
@@ -494,7 +495,7 @@ group by SOURCETYPE, SOURCEID, PURCHASEINVOICE.ITSDATE, ACCDEBIT, SUBACCDEBITTYP
       Method "PrepaymentToDbtAccCashCrdt":
       "PrepaymentTo, Debit PrepaymentsTo per DebtorCreditor, Credit [AccCash]."
       Accounting entries source: accounting/journalEntries/PrepaymentToDbtAccCashCrdt.sql:
-      <pre>
+      <pre style="white-space: pre-wrap;">
 select 7 as SOURCETYPE, PREPAYMENTTO.ITSID as SOURCEID, PREPAYMENTTO.ITSDATE, 'PrepaymentsTo' as ACCDEBIT,
 2004 as SUBACCDEBITTYPE, DEBTORCREDITOR.ITSID as SUBACCDEBITID, DEBTORCREDITOR.ITSNAME as SUBACCDEBIT, PREPAYMENTTO.ITSTOTAL as DEBIT,
 PREPAYMENTTO.ACCCASH as ACCCREDIT, SUBACCCASHTYPE  as SUBACCCREDITTYPE, SUBACCCASHID  as SUBACCCREDITID, SUBACCCASH as SUBACCCREDIT, PREPAYMENTTO.ITSTOTAL as CREDIT
@@ -517,7 +518,7 @@ group by SOURCETYPE, SOURCEID, ITSDATE, ACCDEBIT, SUBACCDEBITTYPE, SUBACCDEBITID
       Method "PaymentToAccPayDbtAccCashCrdt":
       "PaymentTo, Debit AccPayable per DebtorCreditor, Credit [AccCash]."
       Accounting entries source: accounting/journalEntries/PaymentToAccPayDbtAccCashCrdt.sql:
-      <pre>
+      <pre style="white-space: pre-wrap;">
 select 8 as SOURCETYPE, PAYMENTTO.ITSID as SOURCEID, PAYMENTTO.ITSDATE, 'AccPayable' as ACCDEBIT,
 2004 as SUBACCDEBITTYPE, DEBTORCREDITOR.ITSID as SUBACCDEBITID, DEBTORCREDITOR.ITSNAME as SUBACCDEBIT, PAYMENTTO.ITSTOTAL as DEBIT,
 PAYMENTTO.ACCCASH as ACCCREDIT, SUBACCCASHTYPE  as SUBACCCREDITTYPE, SUBACCCASHID  as SUBACCCREDITID, SUBACCCASH as SUBACCCREDIT, PAYMENTTO.ITSTOTAL as CREDIT
@@ -578,7 +579,7 @@ group by SOURCETYPE, SOURCEID, PAYMENTTO.ITSDATE, ACCDEBIT, SUBACCDEBITTYPE, SUB
       Method "ManufacturingUsedMaterialProductInvCat":
       "ManufacturingProcess , Used material, Debit Inventory per InvItemCategory (from head), Credit Inventory per InvItemCategory (from lines)."
       Accounting entries source: accounting/journalEntries/ManufacturingUsedMaterialProductInvCat.sql:
-      <pre>
+      <pre style="white-space: pre-wrap;">
 select 4 as SOURCETYPE, MANUFACTURINGPROCESS.ITSID as SOURCEID, MANUFACTURINGPROCESS.ITSDATE,
 'Inventory' as ACCDEBIT, 2001 as SUBACCDEBITTYPE, INVITEMCATEGORYPR.ITSID as SUBACCDEBITID, INVITEMCATEGORYPR.ITSNAME as SUBACCDEBIT, sum(USEDMATERIALLINE.ITSTOTAL) as DEBIT,
 'Inventory' as ACCCREDIT, 2001 as SUBACCCREDITTYPE, INVITEMCATEGORYMAT.ITSID as SUBACCCREDITID, INVITEMCATEGORYMAT.ITSNAME as SUBACCCREDIT, sum(USEDMATERIALLINE.ITSTOTAL) as CREDIT
@@ -594,7 +595,7 @@ group by SOURCETYPE, SOURCEID, MANUFACTURINGPROCESS.ITSDATE, ACCDEBIT, SUBACCDEB
       Method "ManufacturingAdditionCostInvCat":
       "ManufacturingProcess , addition cost, Debit Inventory per InvItemCategory (from head), Credit accExpense per subAccccExpense (from lines)."
       Accounting entries source: accounting/journalEntries/ManufacturingAdditionCostInvCat.sql:
-      <pre>
+      <pre style="white-space: pre-wrap;">
 select 4 as SOURCETYPE, MANUFACTURINGPROCESS.ITSID as SOURCEID, MANUFACTURINGPROCESS.ITSDATE,
 'Inventory' as ACCDEBIT, 2001 as SUBACCDEBITTYPE, INVITEMCATEGORYPR.ITSID as SUBACCDEBITID, INVITEMCATEGORYPR.ITSNAME as SUBACCDEBIT, sum(ADDITIONCOSTLINE.ITSTOTAL) as DEBIT,
 ACCEXPENSE  as ACCCREDIT, SUBACCEXPENSETYPE  as SUBACCCREDITTYPE, SUBACCEXPENSEID  as SUBACCCREDITID, SUBACCEXPENSE  as SUBACCCREDIT, sum(ADDITIONCOSTLINE.ITSTOTAL) as CREDIT
@@ -622,7 +623,7 @@ group by SOURCETYPE, SOURCEID, MANUFACTURINGPROCESS.ITSDATE, ACCDEBIT, SUBACCDEB
       </p>
       <p>Service SrvUseMaterialEntry implements ISrvUseMaterialEntry use SQL query to reveal material source by FIFO/LIFO:<br></br>
         materials to draw source FIFO: trade/drawItemFifoSourceM1S.sql:
-        <pre>
+        <pre style="white-space: pre-wrap;">
 select *
 from
   (
@@ -631,7 +632,7 @@ from
 order by ITSDATE;
         </pre>
         materials to draw source LIFO: trade/drawItemLifoSourceM1S.sql:
-        <pre>
+        <pre style="white-space: pre-wrap;">
 select *
 from
   (
@@ -642,7 +643,7 @@ order by ITSDATE desc;
         :SOURCEALL is set of SQL queries:<br></br>
         Method "DRAWPURCHASELINEM1": "source of material/product/merchandise from PurchaseInvoiceLine"
         Accounting entries source: trade/drawPurchaseLineM1.sql:
-        <pre>
+        <pre style="white-space: pre-wrap;">
 select 1001 as SOURCETYPE, PURCHASEINVOICELINE.ITSID as SOURCEID, 1 as SOURCEOWNERTYPE, PURCHASEINVOICE.ITSID as SOURCEOWNERID, PURCHASEINVOICE.ITSDATE, THEREST
 from PURCHASEINVOICELINE
 join PURCHASEINVOICE on PURCHASEINVOICE.ITSID = PURCHASEINVOICELINE.ITSOWNER
@@ -667,7 +668,7 @@ where PURCHASEINVOICELINE.REVERSEDID is null and THEREST>0 and INVITEM=:INVITEM 
       Method "ManufactureProductInvCat":
       "Manufacture, Debit Inventory per InvItemCategory (from manufacture), Credit Inventory per InvItemCategory (from manufacturing process)."
       Accounting entries source: accounting/journalEntries/ManufactureProductInvCat.sql:
-      <pre>
+      <pre style="white-space: pre-wrap;">
 select 5 as SOURCETYPE, MANUFACTURE.ITSID as SOURCEID, MANUFACTURE.ITSDATE,
 'Inventory' as ACCDEBIT, 2001 as SUBACCDEBITTYPE, INVITEMCATEGORYM.ITSID as SUBACCDEBITID, INVITEMCATEGORYM.ITSNAME as SUBACCDEBIT, sum(MANUFACTURE.ITSTOTAL) as DEBIT,
 'Inventory' as ACCCREDIT, 2001 as SUBACCCREDITTYPE, INVITEMCATEGORYMP.ITSID as SUBACCCREDITID, INVITEMCATEGORYMP.ITSNAME as SUBACCCREDIT, sum(MANUFACTURE.ITSTOTAL) as CREDIT
@@ -704,7 +705,7 @@ group by SOURCETYPE, SOURCEID, MANUFACTURE.ITSDATE, ACCDEBIT, SUBACCDEBITTYPE, S
       </p>
       Method "SalInvInvCatRecDbtCrdt": "SalesInvoice, AccReceivable.DebtorCreditor Credit Sales.InvItemCategory"
       Accounting entries source: accounting/journalEntries/SalInvNoTaxInvCatRecDbtCrdt.sql:
-      <pre>
+      <pre style="white-space: pre-wrap;">
 select 2 as SOURCETYPE, SALESINVOICE.ITSID as SOURCEID, SALESINVOICE.ITSDATE,
 'AccReceivable' as ACCDEBIT, 2004 as SUBACCDEBITTYPE, DEBTORCREDITOR.ITSID as SUBACCDEBITID, DEBTORCREDITOR.ITSNAME as SUBACCDEBIT, sum(SALESINVOICELINE.ITSTOTAL) as DEBIT,
 'Sales' as ACCCREDIT, 2001 as SUBACCCREDITTYPE, INVITEMCATEGORY.ITSID as SUBACCCREDITID, INVITEMCATEGORY.ITSNAME as SUBACCCREDIT, sum(SALESINVOICELINE.SUBTOTAL) as CREDIT
@@ -741,7 +742,7 @@ group by SOURCETYPE, SOURCEID, ITSDATE, ACCDEBIT, SUBACCDEBITTYPE, SUBACCDEBITID
       Method "PrepaymentFromCrtAccCashDbt":
       "PrepaymentFrom, Debit [AccCash], Credit PrepaymentsFrom per DebtorCreditor."
       Accounting entries source: accounting/journalEntries/PrepaymentFromCrtAccCashDbt.sql:
-      <pre>
+      <pre style="white-space: pre-wrap;">
 select 9 as SOURCETYPE, PREPAYMENTFROM.ITSID as SOURCEID, PREPAYMENTFROM.ITSDATE, PREPAYMENTFROM.ACCCASH as ACCDEBIT,
 SUBACCCASHTYPE as SUBACCDEBITTYPE, SUBACCCASHID as SUBACCDEBITID, SUBACCCASH as SUBACCDEBIT, PREPAYMENTFROM.ITSTOTAL as DEBIT,
 'PrepaymentsFrom' as ACCCREDIT, 2004 as SUBACCCREDITTYPE, DEBTORCREDITOR.ITSID as SUBACCCREDITID, DEBTORCREDITOR.ITSNAME as SUBACCCREDIT, PREPAYMENTFROM.ITSTOTAL as CREDIT
@@ -754,7 +755,7 @@ group by SOURCETYPE, SOURCEID, ITSDATE, ACCDEBIT, SUBACCDEBITTYPE, SUBACCDEBITID
       Method "SalInvPrepayFromDbtAccRecievCrdt":
       "SalesInvoice , If prepaid Debit PrepaymentsFrom per DebtorCreditor, Credit AccReceivable per DebtorCreditor."
       Accounting entries source: accounting/journalEntries/SalInvPrepayFromDbtAccRecievCrdt.sql:
-      <pre>
+      <pre style="white-space: pre-wrap;">
 select 2 as SOURCETYPE, SALESINVOICE.ITSID as SOURCEID, SALESINVOICE.ITSDATE as ITSDATE,
 'PrepaymentsFrom' as ACCDEBIT, 2004 as SUBACCDEBITTYPE, DEBTORCREDITOR.ITSID as SUBACCDEBITID, DEBTORCREDITOR.ITSNAME as SUBACCDEBIT, 
 case when SALESINVOICE.ITSTOTAL &lt; PREPAYMENTFROM.ITSTOTAL then SALESINVOICE.ITSTOTAL else PREPAYMENTFROM.ITSTOTAL end as DEBIT,
@@ -781,7 +782,7 @@ group by SOURCETYPE, SOURCEID, SALESINVOICE.ITSDATE, ACCDEBIT, SUBACCDEBITTYPE, 
       Method "PaymentFromCashDbtAccRecievCrdt":
       "PaymentFrom, Debit [AccCash], Credit AccReceivable per DebtorCreditor."
       Accounting entries source: accounting/journalEntries/PaymentFromCashDbtAccRecievCrdt.sql:
-      <pre>
+      <pre style="white-space: pre-wrap;">
 select 10 as SOURCETYPE, PAYMENTFROM.ITSID as SOURCEID, PAYMENTFROM.ITSDATE, PAYMENTFROM.ACCCASH as ACCDEBIT,
 SUBACCCASHTYPE as SUBACCDEBITTYPE, SUBACCCASHID as SUBACCDEBITID, SUBACCCASH as SUBACCDEBIT, PAYMENTFROM.ITSTOTAL as DEBIT,
 'AccReceivable' as ACCCREDIT, 2004  as SUBACCCREDITTYPE, DEBTORCREDITOR.ITSID as SUBACCCREDITID, DEBTORCREDITOR.ITSNAME as SUBACCCREDIT, PAYMENTFROM.ITSTOTAL as CREDIT
@@ -863,7 +864,7 @@ group by SOURCETYPE, SOURCEID, PAYMENTFROM.ITSDATE, ACCDEBIT, SUBACCDEBITTYPE, S
         </ul>
       </p>
       Method "accounting/trade/purchaseInvoiceLineTaxes.sql" that calculate purchase taxes:
-      <pre>
+      <pre style="white-space: pre-wrap;">
 select TAX as TAXID,  sum(SUBTOTAL * ITSPERCENTAGE / 100) as TOTALTAX
 from PURCHASEINVOICELINE 
 join INVITEM on INVITEM.ITSID = PURCHASEINVOICELINE.INVITEM
@@ -875,7 +876,7 @@ group by TAX;
       Method "PurInvSalTaxSelfDeductingDbtAccrual":
       "PurchaseInvoice, Debit SalesTaxFromPurchase per Tax."
       Accounting entries source: accounting/journalEntries/PurInvSalTaxSelfDeductingDbtAccrual.sql:
-      <pre>
+      <pre style="white-space: pre-wrap;">
 select 1 as SOURCETYPE, PURCHASEINVOICE.ITSID as SOURCEID, PURCHASEINVOICE.ITSDATE,
 'SalesTaxFromPurchase' as ACCDEBIT, 2003 as SUBACCDEBITTYPE, TAX.ITSID as SUBACCDEBITID, TAX.ITSNAME as SUBACCDEBIT, sum(PURCHASEINVOICETAXLINE.ITSTOTAL) as DEBIT,
 null as ACCCREDIT, null as SUBACCCREDITTYPE, null as SUBACCCREDITID, null as SUBACCCREDIT, 0 as CREDIT
@@ -893,7 +894,7 @@ group by SOURCETYPE, SOURCEID, ITSDATE, ACCDEBIT, SUBACCDEBITTYPE, SUBACCDEBITID
         </ul>
       </p>
       Method "accounting/trade/salesInvoiceLineTaxes.sql" that calculate sales taxes:
-      <pre>
+      <pre style="white-space: pre-wrap;">
 select TAX as TAXID,  sum(SUBTOTAL * ITSPERCENTAGE / 100) as TOTALTAX
 from SALESINVOICELINE 
 join INVITEM on INVITEM.ITSID = SALESINVOICELINE.INVITEM
@@ -905,7 +906,7 @@ group by TAX;
       Method "SalInvSalTaxPayCrdtAccrual":
       "SalesInvoice, Credit SalesTaxPay per Tax."
       Accounting entries source: accounting/journalEntries/SalInvSalTaxPayCrdtAccrual.sql:
-      <pre>
+      <pre style="white-space: pre-wrap;">
 select 2 as SOURCETYPE, SALESINVOICE.ITSID as SOURCEID, SALESINVOICE.ITSDATE,
 null as ACCDEBIT, null as SUBACCDEBITTYPE, null as SUBACCDEBITID, null as SUBACCDEBIT, 0 as DEBIT,
 'SalesTaxPay' as ACCCREDIT, 2003 as SUBACCCREDITTYPE, TAX.ITSID as SUBACCCREDITID, TAX.ITSNAME as SUBACCCREDIT, sum(SALESINVOICETAXLINE.ITSTOTAL) as CREDIT
@@ -925,7 +926,7 @@ group by SOURCETYPE, SOURCEID, ITSDATE, ACCDEBIT, SUBACCDEBITTYPE, SUBACCDEBITID
       Method "DRAWPURCHASELINEM1":  trade/drawPurchaseLineM1.sql.<br></br>
       Method "DRAWMANUFACTUREM1": "source of product from Manufacture"
       Accounting entries source: trade/drawItemManufactureM1.sql:
-      <pre>
+      <pre style="white-space: pre-wrap;">
 select 5 as SOURCETYPE, MANUFACTURE.ITSID as SOURCEID, null as SOURCEOWNERTYPE, null as SOURCEOWNERID, MANUFACTURE.ITSDATE, THEREST
 from MANUFACTURE
 where REVERSEDID is null and THEREST>0 and INVITEM=:INVITEM and UNITOFMEASURE=:UNITOFMEASURE
@@ -938,7 +939,7 @@ where REVERSEDID is null and THEREST>0 and INVITEM=:INVITEM and UNITOFMEASURE=:U
       </p>
       Method "SalesInvCogsFifoLifoInvCat" for both FIFO/LIFO: "SalesInvoice, COGS FIFO/LIFO, Debit COGS.InvItemCategory Credit Inventory.InvItemCategory"
       Accounting entries source: accounting/journalEntries/SalesInvCogsFifoLifoInvCat.sql:
-      <pre>
+      <pre style="white-space: pre-wrap;">
 select 2 as SOURCETYPE, DRAWINGOWNERID as SOURCEID, ITSDATE,
 'COGS' as ACCDEBIT, 2001 as SUBACCDEBITTYPE, INVITEMCATEGORY.ITSID as SUBACCDEBITID, INVITEMCATEGORY.ITSNAME as SUBACCDEBIT, sum(ITSTOTAL) as DEBIT,
 'Inventory' as ACCCREDIT, 2001 as SUBACCCREDITTYPE, INVITEMCATEGORY.ITSID as SUBACCCREDITID, INVITEMCATEGORY.ITSNAME as SUBACCCREDIT, sum(ITSTOTAL) as CREDIT
@@ -971,7 +972,7 @@ group by SOURCETYPE, SOURCEID, ITSDATE, ACCDEBIT, SUBACCDEBITTYPE, SUBACCDEBITID
       </p>
       Method "GdLossCoglFifoLifoInvCat" for both FIFO/LIFO: "GoodsLoss, COGL FIFO/LIFO, Debit COGL.InvItemCategory Credit Inventory.InvItemCategory"
       Accounting entries source: accounting/journalEntries/GdLossCoglFifoLifoInvCat.sql:
-      <pre>
+      <pre style="white-space: pre-wrap;">
 select 11 as SOURCETYPE, DRAWINGOWNERID as SOURCEID, ITSDATE,
 'COGL' as ACCDEBIT, 2001 as SUBACCDEBITTYPE, INVITEMCATEGORY.ITSID as SUBACCDEBITID, INVITEMCATEGORY.ITSNAME as SUBACCDEBIT, sum(ITSTOTAL) as DEBIT,
 'Inventory' as ACCCREDIT, 2001 as SUBACCCREDITTYPE, INVITEMCATEGORY.ITSID as SUBACCCREDITID, INVITEMCATEGORY.ITSNAME as SUBACCCREDIT, sum(ITSTOTAL) as CREDIT
@@ -1016,7 +1017,7 @@ group by SOURCETYPE, SOURCEID, ITSDATE, ACCDEBIT, SUBACCDEBITTYPE, SUBACCDEBITID
       </p>
       Method "SalesReturnsDbtReturnPayCrdt": "SalesReturn, Debit SalesReturns.InvItemCategory Credit ReturnsPayable.DebtorCreditor"
       Accounting entries source: accounting/journalEntries/SalesReturnsDbtReturnPayCrdt.sql:
-      <pre>
+      <pre style="white-space: pre-wrap;">
 select 12 as SOURCETYPE, SALESRETURN.ITSID as SOURCEID, SALESRETURN.ITSDATE,
 'SalesReturns' as ACCDEBIT, 2001 as SUBACCDEBITTYPE, INVITEMCATEGORY.ITSID as SUBACCDEBITID, INVITEMCATEGORY.ITSNAME as SUBACCDEBIT, sum(SALESRETURNLINE.SUBTOTAL) as DEBIT,
 'ReturnsPayable' as ACCCREDIT, 2004 as SUBACCCREDITTYPE, DEBTORCREDITOR.ITSID as SUBACCCREDITID, DEBTORCREDITOR.ITSNAME as SUBACCCREDIT, sum(SALESRETURNLINE.ITSTOTAL) as CREDIT
@@ -1030,7 +1031,7 @@ group by SOURCETYPE, SOURCEID, ITSDATE, ACCDEBIT, SUBACCDEBITTYPE, SUBACCDEBITID
       </pre>
       Method "SalesRetInvCatDbtCogsCrdt": "SalesReturn, Debit Inventory.InvItemCategory Credit COGS.InvItemCategory"
       Accounting entries source: accounting/journalEntries/SalesRetInvCatDbtCogsCrdt.sql:
-      <pre>
+      <pre style="white-space: pre-wrap;">
 select 12 as SOURCETYPE, SALESRETURN.ITSID as SOURCEID, SALESRETURN.ITSDATE,
 'Inventory' as ACCDEBIT, 2001 as SUBACCDEBITTYPE, INVITEMCATEGORY.ITSID as SUBACCDEBITID, INVITEMCATEGORY.ITSNAME as SUBACCDEBIT, sum(SALESRETURNLINE.ITSCOST) as DEBIT,
 'COGS' as ACCCREDIT, 2001 as SUBACCCREDITTYPE, INVITEMCATEGORY.ITSID as SUBACCCREDITID, INVITEMCATEGORY.ITSNAME as SUBACCCREDIT, sum(SALESRETURNLINE.ITSCOST) as CREDIT
@@ -1045,7 +1046,7 @@ group by SOURCETYPE, SOURCEID, ITSDATE, ACCDEBIT, SUBACCDEBITTYPE, SUBACCDEBITID
       Method "SalReturnSalesTaxFromSalReturnsDebitAccrual":
       "SalesReturn, Debit SalesTaxFromSalReturns per Tax."
       Accounting entries source: accounting/journalEntries/SalReturnSalesTaxFromSalReturnsDebitAccrual.sql:
-      <pre>
+      <pre style="white-space: pre-wrap;">
 select 12 as SOURCETYPE, SALESRETURN.ITSID as SOURCEID, SALESRETURN.ITSDATE,
 'SalesTaxFromSalReturns' as ACCDEBIT, 2003 as SUBACCDEBITTYPE, TAX.ITSID as SUBACCDEBITID, TAX.ITSNAME as SUBACCDEBIT, sum(SALESRETURNTAXLINE.ITSTOTAL) as DEBIT,
 null as ACCCREDIT, null as SUBACCCREDITTYPE, null as SUBACCCREDITID, null as SUBACCCREDIT, 0 as CREDIT
@@ -1093,7 +1094,7 @@ group by SOURCETYPE, SOURCEID, ITSDATE, ACCDEBIT, SUBACCDEBITTYPE, SUBACCDEBITID
       </p>
       Method "PurchRetRecievDbtInvCatCrdt": "PurchaseReturn, Debit ReturnsReceivable.DebtorCreditor Credit Inventory.InvItemCategory"
       Accounting entries source: accounting/journalEntries/PurchRetRecievDbtInvCatCrdt.sql:
-      <pre>
+      <pre style="white-space: pre-wrap;">
 select 13 as SOURCETYPE, PURCHASERETURN.ITSID as SOURCEID, PURCHASERETURN.ITSDATE,
 'ReturnsReceivable' as ACCDEBIT, 2004 as SUBACCDEBITTYPE, DEBTORCREDITOR.ITSID as SUBACCDEBITID, DEBTORCREDITOR.ITSNAME as SUBACCDEBIT, sum(PURCHASERETURNLINE.ITSTOTAL) as DEBIT,
 'Inventory' as ACCCREDIT, 2001 as SUBACCCREDITTYPE, INVITEMCATEGORY.ITSID as SUBACCCREDITID, INVITEMCATEGORY.ITSNAME as SUBACCCREDIT, sum(PURCHASERETURNLINE.SUBTOTAL) as CREDIT
@@ -1110,7 +1111,7 @@ group by SOURCETYPE, SOURCEID,  PURCHASERETURN.ITSDATE, ACCDEBIT, SUBACCDEBITTYP
       Method "PurchReturnSalesTaxFromPurchReturnsCreditAccrual":
       "PurchaseReturn, Credit SalesTaxFromPurchReturns per Tax."
       Accounting entries source: accounting/journalEntries/PurchReturnSalesTaxFromPurchReturnsCreditAccrual.sql:
-      <pre>
+      <pre style="white-space: pre-wrap;">
 select 13 as SOURCETYPE, PURCHASERETURN.ITSID as SOURCEID, PURCHASERETURN.ITSDATE,
 null as ACCDEBIT, null as SUBACCDEBITTYPE, null as SUBACCDEBITID, null as SUBACCDEBIT, 0 as DEBIT,
 'SalesTaxFromPurchReturns' as ACCCREDIT, 2003 as SUBACCCREDITTYPE, TAX.ITSID as SUBACCCREDITID, TAX.ITSNAME as SUBACCCREDIT, sum(PURCHASERETURNTAXLINE.ITSTOTAL) as CREDIT
@@ -1210,7 +1211,7 @@ group by SOURCETYPE, SOURCEID, ITSDATE, ACCDEBIT, SUBACCDEBITTYPE, SUBACCDEBITID
       "Wage, EmployeeCategory, Expense, Debit [AccWageExpense].Expense Credit NetWages.EmployeeCategory, and for each tax:
       Debit [AccTaxExpense].Expense Credit EmploymentTaxes.Tax"
       Accounting entries source: accounting/journalEntries/WageEmplCatTaxesExpense.sql:
-      <pre>
+      <pre style="white-space: pre-wrap;">
 select 6 as SOURCETYPE, WAGE.ITSID as SOURCEID, ITSDATE,
 WAGELINE.ACCWAGEEXPENSE as ACCDEBIT, 2009 as SUBACCDEBITTYPE, EXPENSE.ITSID as SUBACCDEBITID, EXPENSE.ITSNAME as SUBACCDEBIT, sum(GROSSWAGE-TAXESEMPLOYEE) as DEBIT,
 'NetWagesPay' as ACCCREDIT, 2007 as SUBACCCREDITTYPE, EMPLOYEECATEGORY.ITSID as SUBACCCREDITID, EMPLOYEECATEGORY.ITSNAME as SUBACCCREDIT, sum(GROSSWAGE-TAXESEMPLOYEE) as CREDIT
@@ -1393,7 +1394,7 @@ group by SOURCETYPE, SOURCEID, ITSDATE, ACCDEBIT, SUBACCDEBITTYPE, SUBACCDEBITID
         and recalculateAll/For/AllIfNeed. So every document to be accounted should wait while they is running.
       </p>
 Balance for given account query accounting/balance/queryBalanceAccount.sql:
-<pre>
+<pre style="white-space: pre-wrap;">
 select ACC as ACCID, ACCOUNT.ITSNUMBER, ACCOUNT.ITSNAME, SUBACC, SUBACCID, SUBACCTYPE,
 case when ACCOUNT.NORMALBALANCETYPE = 0 then ALL_RECORDS.DEBIT - ALL_RECORDS.CREDIT
 else 0 end as DEBIT,
@@ -1436,7 +1437,7 @@ Where DATE2 is date of balance, DATE1 is date of BalanceAt that is nearest to DA
 ACCID - account ID, SUBACCDID - subaccount ID.
 
 <p>SQL query for all accounts and their subaccounts accounting/balance/queryAccounts.sql</p>
-<pre>
+<pre style="white-space: pre-wrap;">
 select ACCOUNT.ITSID, SUBACCOUNTLINE.SUBACCID  
 from ACCOUNT
 left join SUBACCOUNTLINE on SUBACCOUNTLINE.ITSOWNER=ACCOUNT.ITSID 
@@ -1445,7 +1446,7 @@ where ISUSED=1
 
       <h5>Trial balance</h5>
       <p>SQL query accounting/balance/queryBalance.sql:</p>
-      <pre>
+      <pre style="white-space: pre-wrap;">
 select ACC as ACCID, ACCOUNT.ITSNUMBER, ACCOUNT.ITSNAME, SUBACC, SUBACCID, SUBACCTYPE,
 case when ACCOUNT.NORMALBALANCETYPE = 0 then ALL_RECORDS.DEBIT - ALL_RECORDS.CREDIT
 else 0 end as DEBIT,
@@ -1488,7 +1489,7 @@ Where DATE2 is date of balance, DATE1 is date of BalanceAt that is nearest to DA
 
 <h5>General ledger.</h5>
 Account previous total debit/credit SQL query accounting/ledger/queryPrevious.sql:
-<pre>
+<pre style="white-space: pre-wrap;">
 select ACCOUNT.ITSNAME, SUBACC,
 case when ACCOUNT.NORMALBALANCETYPE=0 then ALL_RECORDS.DEBIT - ALL_RECORDS.CREDIT
 else 0 end as DEBIT,
@@ -1529,7 +1530,7 @@ order by SUBACC;
 </pre>
 Where Date1 is date of start ledger, DATEBALANCE is date of nearest BalanceAtStartOf to Date1
 Account detail entries SQL query accounting/ledger/queryDetail.sql:
-<pre>
+<pre style="white-space: pre-wrap;">
 select * from
 (
 select ITSDATE, SOURCEID, SOURCETYPE, ACCDEBIT as ACC, SUBACCDEBIT as SUBACC, DEBIT as ITSTOTAL, 1 as ISDEBIT,

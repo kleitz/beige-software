@@ -37,7 +37,7 @@ public class SrvEntityFieldUserTomcatRepl implements ISrvEntityFieldFiller {
   @Override
   public final void fill(final Object pEntity, final String pFieldName,
     final String pFieldStrValue,
-      final Map<String, ?> pAddParam) throws Exception {
+      final Map<String, Object> pAddParam) throws Exception {
     if (!UserRoleTomcat.class.isAssignableFrom(pEntity.getClass())) {
       throw new ExceptionWithCode(ExceptionWithCode
         .CONFIGURATION_MISTAKE, "It's wrong service to fill that field: "

@@ -90,7 +90,7 @@ public class SrvLedger<RS> implements ISrvLedger {
    **/
   @Override
   public final LedgerPrevious retrievePrevious(
-    final Map<String, ?> pAddParam, final Account pAccount,
+    final Map<String, Object> pAddParam, final Account pAccount,
       final Date pDate1, final String pSubaccName) throws Exception {
     getSrvBalance().recalculateAllIfNeed(pDate1);
     LedgerPrevious result = new LedgerPrevious();
@@ -170,7 +170,7 @@ public class SrvLedger<RS> implements ISrvLedger {
    **/
   @Override
   public final LedgerDetail retrieveDetail(
-    final Map<String, ?> pAddParam, final Account pAccount,
+    final Map<String, Object> pAddParam, final Account pAccount,
       final Date pDate1, final Date pDate2, final String pSubaccName,
         final LedgerPrevious ledgerPrevious) throws Exception {
     LedgerDetail result = new LedgerDetail();

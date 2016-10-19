@@ -50,7 +50,7 @@ public class SrvAccountingEntries<RS>
    **/
   @Override
   public final AccountingEntries createEntity(
-    final Map<String, ?> pAddParam) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     AccountingEntries entity = new AccountingEntries();
     entity.setIdDatabaseBirth(getSrvOrm().getIdDatabase());
     entity.setItsDate(new Date());
@@ -67,7 +67,7 @@ public class SrvAccountingEntries<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void saveEntity(final Map<String, ?> pAddParam,
+  public final void saveEntity(final Map<String, Object> pAddParam,
     final AccountingEntries pEntity,
       final boolean isEntityDetached) throws Exception {
     if (pEntity.getIsNew()) {
@@ -86,7 +86,7 @@ public class SrvAccountingEntries<RS>
    **/
   @Override
   public final AccountingEntries retrieveCopyEntity(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pId) throws Exception {
     AccountingEntries entity = getSrvOrm()
       .retrieveCopyEntity(AccountingEntries.class, pId);

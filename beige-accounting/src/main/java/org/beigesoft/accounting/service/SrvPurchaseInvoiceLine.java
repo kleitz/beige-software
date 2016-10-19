@@ -86,7 +86,7 @@ public class SrvPurchaseInvoiceLine<RS>
    **/
   @Override
   public final PurchaseInvoiceLine createEntity(
-    final Map<String, ?> pAddParam) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     PurchaseInvoiceLine entity = new PurchaseInvoiceLine();
     entity.setIdDatabaseBirth(getSrvOrm().getIdDatabase());
     entity.setIsNew(true);
@@ -105,7 +105,7 @@ public class SrvPurchaseInvoiceLine<RS>
    **/
   @Override
   public final PurchaseInvoiceLine retrieveCopyEntity(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pId) throws Exception {
     PurchaseInvoiceLine entity = getSrvOrm().retrieveCopyEntity(
       PurchaseInvoiceLine.class, pId);
@@ -144,7 +144,7 @@ public class SrvPurchaseInvoiceLine<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void saveEntity(final Map<String, ?> pAddParam,
+  public final void saveEntity(final Map<String, Object> pAddParam,
     final PurchaseInvoiceLine pEntity,
       final boolean isEntityDetached) throws Exception {
     if (pEntity.getIsNew()) {
@@ -269,7 +269,7 @@ public class SrvPurchaseInvoiceLine<RS>
    **/
   @Override
   public final PurchaseInvoiceLine createEntityWithOwnerById(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pIdEntityItsOwner) throws Exception {
     PurchaseInvoiceLine entity = new PurchaseInvoiceLine();
     entity.setIdDatabaseBirth(getSrvOrm().getIdDatabase());
@@ -291,7 +291,7 @@ public class SrvPurchaseInvoiceLine<RS>
    **/
   @Override
   public final PurchaseInvoiceLine createEntityWithOwner(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final PurchaseInvoice pEntityItsOwner) throws Exception {
     PurchaseInvoiceLine entity = new PurchaseInvoiceLine();
     entity.setIsNew(true);
@@ -311,7 +311,7 @@ public class SrvPurchaseInvoiceLine<RS>
    */
   @Override
   public final List<PurchaseInvoiceLine> retrieveOwnedListById(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pIdEntityItsOwner) throws Exception {
     return getSrvOrm().retrieveEntityOwnedlist(PurchaseInvoiceLine.class,
       PurchaseInvoice.class, pIdEntityItsOwner);
@@ -327,7 +327,7 @@ public class SrvPurchaseInvoiceLine<RS>
    */
   @Override
   public final List<PurchaseInvoiceLine> retrieveOwnedList(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final PurchaseInvoice pEntityItsOwner) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
     return getSrvOrm().retrieveEntityOwnedlist(PurchaseInvoiceLine.class,

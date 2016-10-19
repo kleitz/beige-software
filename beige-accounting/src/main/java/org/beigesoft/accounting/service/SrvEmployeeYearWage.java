@@ -54,7 +54,7 @@ public class SrvEmployeeYearWage<RS>
    **/
   @Override
   public final EmployeeYearWage createEntity(
-    final Map<String, ?> pAddParam) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     throw new ExceptionWithCode(ExceptionWithCode.FORBIDDEN,
       "forbidden_operation");
   }
@@ -68,7 +68,7 @@ public class SrvEmployeeYearWage<RS>
    **/
   @Override
   public final EmployeeYearWage retrieveCopyEntity(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pId) throws Exception {
     throw new ExceptionWithCode(ExceptionWithCode.FORBIDDEN,
       "forbidden_operation");
@@ -82,7 +82,7 @@ public class SrvEmployeeYearWage<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void saveEntity(final Map<String, ?> pAddParam,
+  public final void saveEntity(final Map<String, Object> pAddParam,
     final EmployeeYearWage pEntity,
       final boolean isEntityDetached) throws Exception {
     throw new ExceptionWithCode(ExceptionWithCode.FORBIDDEN,
@@ -99,7 +99,7 @@ public class SrvEmployeeYearWage<RS>
    **/
   @Override
   public final EmployeeYearWage createEntityWithOwnerById(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pIdEntityItsOwner) throws Exception {
     throw new ExceptionWithCode(ExceptionWithCode.FORBIDDEN,
       "forbidden_operation");
@@ -115,7 +115,7 @@ public class SrvEmployeeYearWage<RS>
    **/
   @Override
   public final EmployeeYearWage createEntityWithOwner(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Employee pEntityItsOwner) throws Exception {
     throw new ExceptionWithCode(ExceptionWithCode.FORBIDDEN,
       "forbidden_operation");
@@ -131,7 +131,7 @@ public class SrvEmployeeYearWage<RS>
    */
   @Override
   public final List<EmployeeYearWage> retrieveOwnedListById(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pIdEntityItsOwner) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
     return getSrvOrm().retrieveEntityOwnedlist(EmployeeYearWage.class,
@@ -148,7 +148,7 @@ public class SrvEmployeeYearWage<RS>
    */
   @Override
   public final List<EmployeeYearWage> retrieveOwnedList(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Employee pEntityItsOwner) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
     return getSrvOrm().retrieveEntityOwnedlist(EmployeeYearWage.class,

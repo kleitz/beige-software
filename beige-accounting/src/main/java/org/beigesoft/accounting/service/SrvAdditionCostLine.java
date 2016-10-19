@@ -72,7 +72,7 @@ public class SrvAdditionCostLine<RS>
    **/
   @Override
   public final AdditionCostLine createEntity(
-    final Map<String, ?> pAddParam) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     AdditionCostLine entity = new AdditionCostLine();
     entity.setIdDatabaseBirth(getSrvOrm().getIdDatabase());
     entity.setIsNew(true);
@@ -92,7 +92,7 @@ public class SrvAdditionCostLine<RS>
    **/
   @Override
   public final AdditionCostLine retrieveCopyEntity(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pId) throws Exception {
     AdditionCostLine entity = getSrvOrm().retrieveCopyEntity(
       AdditionCostLine.class, pId);
@@ -110,8 +110,9 @@ public class SrvAdditionCostLine<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final AdditionCostLine retrieveEntity(final Map<String, ?> pAddParam,
-    final AdditionCostLine pEntity) throws Exception {
+  public final AdditionCostLine retrieveEntity(
+    final Map<String, Object> pAddParam,
+      final AdditionCostLine pEntity) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
     addTypeCodeIntoAttrs(pAddParam);
     return getSrvOrm().retrieveEntityById(getEntityClass(), pEntity.getItsId());
@@ -126,7 +127,7 @@ public class SrvAdditionCostLine<RS>
    **/
   @Override
   public final AdditionCostLine retrieveEntityById(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pId) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
     addTypeCodeIntoAttrs(pAddParam);
@@ -140,7 +141,7 @@ public class SrvAdditionCostLine<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void deleteEntity(final Map<String, ?> pAddParam,
+  public final void deleteEntity(final Map<String, Object> pAddParam,
     final AdditionCostLine pEntity) throws Exception {
     if (pEntity.getItsOwner().getInvItem() == null) {
       ManufacturingProcess itsOwner = getSrvOrm().retrieveEntityById(
@@ -162,7 +163,7 @@ public class SrvAdditionCostLine<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void deleteEntity(final Map<String, ?> pAddParam,
+  public final void deleteEntity(final Map<String, Object> pAddParam,
     final Object pId) throws Exception {
     AdditionCostLine entity = getSrvOrm()
       .retrieveEntityById(AdditionCostLine.class, pId);
@@ -182,7 +183,7 @@ public class SrvAdditionCostLine<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void saveEntity(final Map<String, ?> pAddParam,
+  public final void saveEntity(final Map<String, Object> pAddParam,
     final AdditionCostLine pEntity,
       final boolean isEntityDetached) throws Exception {
     if (pEntity.getItsTotal().doubleValue() == 0d) {
@@ -214,7 +215,7 @@ public class SrvAdditionCostLine<RS>
    **/
   @Override
   public final AdditionCostLine createEntityWithOwnerById(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pIdEntityItsOwner) throws Exception {
     AdditionCostLine entity = new AdditionCostLine();
     entity.setIdDatabaseBirth(getSrvOrm().getIdDatabase());
@@ -237,7 +238,7 @@ public class SrvAdditionCostLine<RS>
    **/
   @Override
   public final AdditionCostLine createEntityWithOwner(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final ManufacturingProcess pEntityItsOwner) throws Exception {
     AdditionCostLine entity = new AdditionCostLine();
     entity.setIsNew(true);
@@ -258,7 +259,7 @@ public class SrvAdditionCostLine<RS>
    */
   @Override
   public final List<AdditionCostLine> retrieveOwnedListById(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pIdEntityItsOwner) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
     return getSrvOrm().retrieveEntityOwnedlist(AdditionCostLine.class,
@@ -275,7 +276,7 @@ public class SrvAdditionCostLine<RS>
    */
   @Override
   public final List<AdditionCostLine> retrieveOwnedList(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final ManufacturingProcess pEntityItsOwner) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
     return getSrvOrm().retrieveEntityOwnedlist(AdditionCostLine.class,
@@ -310,7 +311,7 @@ public class SrvAdditionCostLine<RS>
    * <p>Added source types.</p>
    * @param pAddParam additional param
    */
-  public final void addTypeCodeIntoAttrs(final Map<String, ?> pAddParam) {
+  public final void addTypeCodeIntoAttrs(final Map<String, Object> pAddParam) {
     IAttributes attributes = (IAttributes) pAddParam.get("attributes");
     attributes.setAttribute("typeCodeSubaccMap", srvTypeCode.getTypeCodeMap());
   }

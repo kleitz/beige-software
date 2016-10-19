@@ -77,7 +77,7 @@ public class SrvAccount implements ISrvEntity<Account> {
    **/
   @Override
   public final Account createEntity(
-    final Map<String, ?> pAddParam) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     Account entity = new Account();
     addTypeCodeIntoAttrs(pAddParam);
     entity.setIsNew(true);
@@ -93,7 +93,7 @@ public class SrvAccount implements ISrvEntity<Account> {
    **/
   @Override
   public final Account retrieveCopyEntity(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pId) throws Exception {
     Account entity = getSrvOrm()
       .retrieveCopyEntity(Account.class, pId);
@@ -111,7 +111,7 @@ public class SrvAccount implements ISrvEntity<Account> {
    * @throws Exception - an exception
    **/
   @Override
-  public final void saveEntity(final Map<String, ?> pAddParam,
+  public final void saveEntity(final Map<String, Object> pAddParam,
     final Account pEntity,
       final boolean isEntityDetached) throws Exception {
     if (pEntity.getIsNew()) {
@@ -151,7 +151,7 @@ public class SrvAccount implements ISrvEntity<Account> {
    * @throws Exception - an exception
    **/
   @Override
-  public final Account retrieveEntity(final Map<String, ?> pAddParam,
+  public final Account retrieveEntity(final Map<String, Object> pAddParam,
     final Account pEntity) throws Exception {
     addTypeCodeIntoAttrs(pAddParam);
     addAccSettingsIntoAttrs(pAddParam);
@@ -166,7 +166,7 @@ public class SrvAccount implements ISrvEntity<Account> {
    * @throws Exception - an exception
    **/
   @Override
-  public final Account retrieveEntityById(final Map<String, ?> pAddParam,
+  public final Account retrieveEntityById(final Map<String, Object> pAddParam,
     final Object pId) throws Exception {
     addTypeCodeIntoAttrs(pAddParam);
     addAccSettingsIntoAttrs(pAddParam);
@@ -180,7 +180,7 @@ public class SrvAccount implements ISrvEntity<Account> {
    * @throws Exception - an exception
    **/
   @Override
-  public final void deleteEntity(final Map<String, ?> pAddParam,
+  public final void deleteEntity(final Map<String, Object> pAddParam,
     final Account pEntity) throws Exception {
     deleteEntity(pAddParam, pEntity.getItsId());
   }
@@ -192,7 +192,7 @@ public class SrvAccount implements ISrvEntity<Account> {
    * @throws Exception - an exception
    **/
   @Override
-  public final void deleteEntity(final Map<String, ?> pAddParam,
+  public final void deleteEntity(final Map<String, Object> pAddParam,
     final Object pId) throws Exception {
       Account oldAcc = getSrvOrm().retrieveEntityById(Account.class, pId);
     if (!oldAcc.getIsCreatedByUser()) {
@@ -210,7 +210,7 @@ public class SrvAccount implements ISrvEntity<Account> {
    */
   @Override
   public final List<Account> retrieveList(
-    final Map<String, ?> pAddParam) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     return getSrvOrm().retrieveList(this.entityClass);
   }
 
@@ -223,7 +223,7 @@ public class SrvAccount implements ISrvEntity<Account> {
    */
   @Override
   public final List<Account> retrieveListWithConditions(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final String pQueryConditions) throws Exception {
     return getSrvOrm().retrieveListWithConditions(this.entityClass,
       pQueryConditions);
@@ -239,7 +239,7 @@ public class SrvAccount implements ISrvEntity<Account> {
    */
   @Override
   public final List<Account> retrievePage(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
         final Integer pFirst, final Integer pPageSize) throws Exception {
     addTypeCodeIntoAttrs(pAddParam);
     addAccSettingsIntoAttrs(pAddParam);
@@ -256,7 +256,7 @@ public class SrvAccount implements ISrvEntity<Account> {
    */
   @Override
   public final List<Account> retrievePageWithConditions(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final String pQueryConditions,
         final Integer pFirst, final Integer pPageSize) throws Exception {
     addTypeCodeIntoAttrs(pAddParam);
@@ -273,7 +273,7 @@ public class SrvAccount implements ISrvEntity<Account> {
    */
   @Override
   public final Integer evalRowCount(
-    final Map<String, ?> pAddParam) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     return getSrvOrm().evalRowCount(this.entityClass);
   }
 
@@ -285,7 +285,7 @@ public class SrvAccount implements ISrvEntity<Account> {
    * @throws Exception - an exception
    */
   @Override
-  public final Integer evalRowCountWhere(final Map<String, ?> pAddParam,
+  public final Integer evalRowCountWhere(final Map<String, Object> pAddParam,
     final String pWhere) throws Exception {
     return getSrvOrm().evalRowCountWhere(this.entityClass, pWhere);
   }
@@ -294,7 +294,7 @@ public class SrvAccount implements ISrvEntity<Account> {
    * <p>Added source types.</p>
    * @param pAddParam additional param
    */
-  public final void addTypeCodeIntoAttrs(final Map<String, ?> pAddParam) {
+  public final void addTypeCodeIntoAttrs(final Map<String, Object> pAddParam) {
     IAttributes attributes = (IAttributes) pAddParam.get("attributes");
     attributes.setAttribute("typeCodeSubaccMap", srvTypeCode.getTypeCodeMap());
   }
@@ -305,7 +305,7 @@ public class SrvAccount implements ISrvEntity<Account> {
    * @throws Exception - an exception
    */
   public final void addAccSettingsIntoAttrs(
-    final Map<String, ?> pAddParam) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     IAttributes attributes = (IAttributes) pAddParam.get("attributes");
     attributes.setAttribute("accSettings", srvAccSettings.lazyGetAccSettings());
   }

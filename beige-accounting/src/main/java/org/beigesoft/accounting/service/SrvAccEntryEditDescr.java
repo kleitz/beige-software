@@ -50,7 +50,7 @@ public class SrvAccEntryEditDescr<RS>
    **/
   @Override
   public final AccountingEntry createEntity(
-    final Map<String, ?> pAddParam) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     AccountingEntry entity = new AccountingEntry();
     entity.setIsNew(true);
     addAccSettingsIntoAttrs(pAddParam);
@@ -65,7 +65,7 @@ public class SrvAccEntryEditDescr<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void saveEntity(final Map<String, ?> pAddParam,
+  public final void saveEntity(final Map<String, Object> pAddParam,
     final AccountingEntry pEntity,
       final boolean isEntityDetached) throws Exception {
     if (pEntity.getIsNew()) {
@@ -87,7 +87,7 @@ public class SrvAccEntryEditDescr<RS>
    **/
   @Override
   public final AccountingEntry retrieveCopyEntity(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pId) throws Exception {
     throw new ExceptionWithCode(ExceptionWithCode.FORBIDDEN,
       "forbidden_operation");

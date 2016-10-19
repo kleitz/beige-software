@@ -53,7 +53,7 @@ public class SrvEntityReaderXml implements ISrvEntityReader {
    **/
   @Override
   public final Object read(final Reader pReader,
-    final Map<String, ?> pAddParam) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     Map<String, String> attributesMap = readAttributes(pReader, pAddParam);
     if (attributesMap.get("class") == null) {
       throw new ExceptionWithCode(ExceptionWithCode
@@ -96,7 +96,7 @@ public class SrvEntityReaderXml implements ISrvEntityReader {
    **/
   @Override
   public final Map<String, String> readAttributes(final Reader pReader,
-    final Map<String, ?> pAddParam) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     return this.utilXml.readAttributes(pReader, pAddParam);
   }
 

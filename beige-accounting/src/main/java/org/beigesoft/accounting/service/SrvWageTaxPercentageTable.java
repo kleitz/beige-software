@@ -81,7 +81,7 @@ public class SrvWageTaxPercentageTable<RS> implements ISrvFillWageLines {
    * @throws Exception - an exception
    **/
   @Override
-  public final void fillWageLines(final Map<String, ?> pAddParam,
+  public final void fillWageLines(final Map<String, Object> pAddParam,
     final Wage pWage) throws Exception {
     List<WageTaxTableEmployee> wttel = getSrvOrm()
       .retrieveListWithConditions(WageTaxTableEmployee.class,

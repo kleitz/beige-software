@@ -64,7 +64,7 @@ public abstract class ASrvDocument<RS, T extends IDoc>
    * @throws Exception - an exception
    **/
   @Override
-  public final T retrieveEntity(final Map<String, ?> pAddParam,
+  public final T retrieveEntity(final Map<String, Object> pAddParam,
     final T pEntity) throws Exception {
     return retrieveEntityById(pAddParam, pEntity.getItsId());
   }
@@ -77,7 +77,7 @@ public abstract class ASrvDocument<RS, T extends IDoc>
    * @throws Exception - an exception
    **/
   @Override
-  public final T retrieveEntityById(final Map<String, ?> pAddParam,
+  public final T retrieveEntityById(final Map<String, Object> pAddParam,
     final Object pId) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
     T entity = getSrvOrm().retrieveEntityById(getEntityClass(), pId);
@@ -102,7 +102,7 @@ public abstract class ASrvDocument<RS, T extends IDoc>
    * @throws Exception - an exception
    **/
   @Override
-  public final void saveEntity(final Map<String, ?> pAddParam,
+  public final void saveEntity(final Map<String, Object> pAddParam,
     final T pEntity,
       final boolean isEntityDetached) throws Exception {
     boolean isNew = pEntity.getIsNew();
@@ -182,7 +182,7 @@ public abstract class ASrvDocument<RS, T extends IDoc>
    **/
   @Override
   public final T retrieveCopyEntity(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pId) throws Exception {
     T entity = getSrvOrm()
       .retrieveCopyEntity(getEntityClass(), pId);
@@ -217,7 +217,7 @@ public abstract class ASrvDocument<RS, T extends IDoc>
    * @throws Exception - an exception
    **/
   @Override
-  public final void deleteEntity(final Map<String, ?> pAddParam,
+  public final void deleteEntity(final Map<String, Object> pAddParam,
     final T pEntity) throws Exception {
     deleteEntity(pAddParam, pEntity.getItsId());
   }
@@ -229,7 +229,7 @@ public abstract class ASrvDocument<RS, T extends IDoc>
    * @throws Exception - an exception
    **/
   @Override
-  public final void deleteEntity(final Map<String, ?> pAddParam,
+  public final void deleteEntity(final Map<String, Object> pAddParam,
     final Object pId) throws Exception {
     T entity = retrieveEntityById(pAddParam, pId);
     if (entity.getHasMadeAccEntries()
@@ -247,7 +247,7 @@ public abstract class ASrvDocument<RS, T extends IDoc>
    * @param pEntity entity
    * @throws Exception - an exception
    **/
-  public abstract void makeFirstPrepareForSave(Map<String, ?> pAddParam,
+  public abstract void makeFirstPrepareForSave(Map<String, Object> pAddParam,
     T pEntity) throws Exception;
 
   /**
@@ -257,7 +257,7 @@ public abstract class ASrvDocument<RS, T extends IDoc>
    * @param pIsNew if entity was new
    * @throws Exception - an exception
    **/
-  public abstract void makeOtherEntries(Map<String, ?> pAddParam,
+  public abstract void makeOtherEntries(Map<String, Object> pAddParam,
     T pEntity, boolean pIsNew) throws Exception;
 
   /**
@@ -268,7 +268,7 @@ public abstract class ASrvDocument<RS, T extends IDoc>
    * @param pOldEntity old saved entity
    * @throws Exception - an exception
    **/
-  public abstract void checkOtherFraudUpdate(Map<String, ?> pAddParam,
+  public abstract void checkOtherFraudUpdate(Map<String, Object> pAddParam,
     T pEntity, T pOldEntity) throws Exception;
 
   /**
@@ -277,7 +277,7 @@ public abstract class ASrvDocument<RS, T extends IDoc>
    * @param pEntity entity
    * @throws Exception - an exception
    **/
-  public abstract void makeAddPrepareForCopy(Map<String, ?> pAddParam,
+  public abstract void makeAddPrepareForCopy(Map<String, Object> pAddParam,
     T pEntity) throws Exception;
 
   /**
@@ -286,7 +286,7 @@ public abstract class ASrvDocument<RS, T extends IDoc>
    * @param pEntity entity
    * @throws Exception - an exception if don't
    **/
-  public abstract void addCheckIsReadyToAccount(Map<String, ?> pAddParam,
+  public abstract void addCheckIsReadyToAccount(Map<String, Object> pAddParam,
     T pEntity) throws Exception;
 
   /**
@@ -295,7 +295,7 @@ public abstract class ASrvDocument<RS, T extends IDoc>
    * @param pEntity entity
    * @throws Exception - an exception
    **/
-  public abstract void retrieveOtherDataFor(Map<String, ?> pAddParam,
+  public abstract void retrieveOtherDataFor(Map<String, Object> pAddParam,
     T pEntity) throws Exception;
 
   //Simple getters and setters:

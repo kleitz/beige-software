@@ -32,5 +32,5 @@ public interface ISrvFieldWriter {
    * @throws Exception - an exception
    **/
   void write(Object pField, String pFieldName, Writer pWriter,
-    Map<String, ?> pAddParam) throws Exception;
+    Map<String, Object> pAddParam) throws Exception;
 }

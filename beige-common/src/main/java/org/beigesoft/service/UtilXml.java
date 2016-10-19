@@ -17,7 +17,9 @@ import java.util.HashMap;
 import org.beigesoft.exception.ExceptionWithCode;
 
 /**
- * <p>Service that escape XML.</p>
+ * <p>Service that escape XML.
+ * For improving performance unescapeXml should invoked
+ * explicitly when it's need (for field like itsName or description).</p>
  *
  * @author Yury Demidenko
  */
@@ -68,6 +70,8 @@ public class UtilXml implements IUtilXml {
   /**
    * <p>
    * Unescape XML for given string.
+   * For improving performance unescapeXml should invoked
+   * explicitly when it's need (for field like itsName or description).
    * </p>
    * @param pSource source
    * @return unescaped string
@@ -135,7 +139,7 @@ public class UtilXml implements IUtilXml {
    **/
   @Override
   public final Map<String, String> readAttributes(final Reader pReader,
-    final Map<String, ?> pAddParam) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     Map<String, String> attributesMap = new HashMap<String, String>();
     StringBuffer sb = new StringBuffer();
     int chi;
@@ -171,7 +175,9 @@ public class UtilXml implements IUtilXml {
 
   /**
    * <p>Try to eval content of string buffer if it's an attribute
-   * with value then fill map and clear buffer.</p>
+   * with value then fill map and clear buffer.
+   * For improving performance unescapeXml should invoked
+   * explicitly when it's need (for field like itsName or description).</p>
    * @param pSb StringBuffer
    * @param pAttributesMap Attributes Map
    * @throws Exception - an exception

@@ -37,7 +37,7 @@ public interface ISrvDrawItemEntry<T extends ADrawItemEntry> {
    * @param pDrawingOwnerId drawing Owner Id if exists
    * @throws Exception - an exception
    **/
-  void withdrawal(Map<String, ?> pAddParam,
+  void withdrawal(Map<String, Object> pAddParam,
     IMakingWarehouseEntry pEntity, Date pDateAccount,
       Long pDrawingOwnerId) throws Exception;
 
@@ -49,8 +49,9 @@ public interface ISrvDrawItemEntry<T extends ADrawItemEntry> {
    * @param pQuantityToDraw quantity to draw
    * @throws Exception - an exception
    **/
-  void withdrawalFrom(Map<String, ?> pAddParam, IMakingWarehouseEntry pEntity,
-    IDrawItemSource pSource, BigDecimal pQuantityToDraw) throws Exception;
+  void withdrawalFrom(Map<String, Object> pAddParam,
+    IMakingWarehouseEntry pEntity,
+      IDrawItemSource pSource, BigDecimal pQuantityToDraw) throws Exception;
 
   /**
    * <p>Reverse a withdrawal material for manufacture product.</p>
@@ -60,7 +61,7 @@ public interface ISrvDrawItemEntry<T extends ADrawItemEntry> {
    * @param pDrawingOwnerId drawing Owner Id if exists
    * @throws Exception - an exception
    **/
-  void reverseDraw(Map<String, ?> pAddParam,
+  void reverseDraw(Map<String, Object> pAddParam,
     IMakingWarehouseEntry pEntity, Date pDateAccount,
       Long pDrawingOwnerId) throws Exception;
 
@@ -71,6 +72,6 @@ public interface ISrvDrawItemEntry<T extends ADrawItemEntry> {
    * @return warehouse entries made by this document
    * @throws Exception - an exception
    **/
-  List<T> retrieveEntriesFor(Map<String, ?> pAddParam,
+  List<T> retrieveEntriesFor(Map<String, Object> pAddParam,
     IDocWarehouse pEntity) throws Exception;
 }

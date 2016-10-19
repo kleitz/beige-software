@@ -65,7 +65,7 @@ public class SrvSubaccountLine<RS>
    **/
   @Override
   public final SubaccountLine createEntity(
-    final Map<String, ?> pAddParam) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     SubaccountLine entity = new SubaccountLine();
     entity.setIsNew(true);
     Account itsOwner = new Account();
@@ -84,7 +84,7 @@ public class SrvSubaccountLine<RS>
    **/
   @Override
   public final SubaccountLine retrieveCopyEntity(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pId) throws Exception {
     SubaccountLine entity = getSrvOrm().retrieveCopyEntity(
       SubaccountLine.class, pId);
@@ -101,8 +101,9 @@ public class SrvSubaccountLine<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final SubaccountLine retrieveEntity(final Map<String, ?> pAddParam,
-    final SubaccountLine pEntity) throws Exception {
+  public final SubaccountLine retrieveEntity(
+    final Map<String, Object> pAddParam,
+      final SubaccountLine pEntity) throws Exception {
     addTypeCodeIntoAttrs(pAddParam);
     addAccSettingsIntoAttrs(pAddParam);
     return getSrvOrm().retrieveEntityById(getEntityClass(), pEntity.getItsId());
@@ -117,7 +118,7 @@ public class SrvSubaccountLine<RS>
    **/
   @Override
   public final SubaccountLine retrieveEntityById(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pId) throws Exception {
     addTypeCodeIntoAttrs(pAddParam);
     addAccSettingsIntoAttrs(pAddParam);
@@ -131,7 +132,7 @@ public class SrvSubaccountLine<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void deleteEntity(final Map<String, ?> pAddParam,
+  public final void deleteEntity(final Map<String, Object> pAddParam,
     final SubaccountLine pEntity) throws Exception {
     getSrvOrm().deleteEntity(SubaccountLine.class, pEntity.getItsId());
   }
@@ -143,7 +144,7 @@ public class SrvSubaccountLine<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void deleteEntity(final Map<String, ?> pAddParam,
+  public final void deleteEntity(final Map<String, Object> pAddParam,
     final Object pId) throws Exception {
     getSrvOrm().deleteEntity(SubaccountLine.class, pId);
   }
@@ -156,7 +157,7 @@ public class SrvSubaccountLine<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void saveEntity(final Map<String, ?> pAddParam,
+  public final void saveEntity(final Map<String, Object> pAddParam,
     final SubaccountLine pEntity,
       final boolean isEntityDetached) throws Exception {
     Account itsOwner = getSrvOrm().retrieveEntityById(
@@ -186,7 +187,7 @@ public class SrvSubaccountLine<RS>
    **/
   @Override
   public final SubaccountLine createEntityWithOwnerById(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pIdOwner) throws Exception {
     SubaccountLine entity = new SubaccountLine();
     entity.setIsNew(true);
@@ -209,7 +210,7 @@ public class SrvSubaccountLine<RS>
    **/
   @Override
   public final SubaccountLine createEntityWithOwner(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Account pEntityItsOwner) throws Exception {
     SubaccountLine entity = new SubaccountLine();
     entity.setIsNew(true);
@@ -229,7 +230,7 @@ public class SrvSubaccountLine<RS>
    */
   @Override
   public final List<SubaccountLine> retrieveOwnedListById(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pIdEntityItsOwner) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
     addTypeCodeIntoAttrs(pAddParam);
@@ -247,7 +248,7 @@ public class SrvSubaccountLine<RS>
    */
   @Override
   public final List<SubaccountLine> retrieveOwnedList(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Account pEntityItsOwner) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
     addTypeCodeIntoAttrs(pAddParam);
@@ -259,7 +260,7 @@ public class SrvSubaccountLine<RS>
    * <p>Added source types.</p>
    * @param pAddParam additional param
    */
-  public final void addTypeCodeIntoAttrs(final Map<String, ?> pAddParam) {
+  public final void addTypeCodeIntoAttrs(final Map<String, Object> pAddParam) {
     IAttributes attributes = (IAttributes) pAddParam.get("attributes");
     attributes.setAttribute("typeCodeSubaccMap",
       this.srvTypeCode.getTypeCodeMap());

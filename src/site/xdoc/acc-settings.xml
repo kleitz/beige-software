@@ -24,10 +24,22 @@ Bob has read <a href="https://www.irs.gov/pub/irs-pdf/p583.pdf">IRS 583 Starting
 <p>
   Bob choose BeigeAccounting because it's free, it does everything that he needs, it's fast and easy to install and use.
   In addition it works as standalone WEB application on notebook and on Android tablet with same SQLite database.
-  Bob can send database from notebook to tablet and vise versa. In future when it's needs Bob can publish his software on cloud, BeigeAccounting is ready for high load job.
+  Bob can send database from notebook to tablet and vise versa.
+  In future when it's needs Bob can publish his software on cloud, BeigeAccounting is ready for high load job.
+  You are able to make full database copy from light weight SQlite database into high load (enterprise ready) Postgresql
+  by using WEB-service.
+</p>
+<p>
   Bob install Java 7, SQLite and Google Chrome on his notebook. 
   Bob download file <b>beige-accounting-ajetty.zip</b> from <a href="https://sourceforge.net/projects/beige-accounting/">https://sourceforge.net/projects/beige-accounting/</a>.
-  He unzip it and launch <b>startup.bat</b> then open address <a href="localhost:8080">localhost:8080</a> in Google Chrome.
+  He unzip it into <b>C:/beige-accounting</b>, then open "Command Prompt Line": click <b>start</b> and type <b>cmd</b> and press Enter
+  (in Linux and Mac it's called "Terminal"). In cmd (terminal) he type command <b>cd C:/beige-accounting</b> then type 
+  <b>startup.bat</b> or <b>java -jar beige-accounting-ajetty-jar-with-dependencies.jar port=8080</b>
+</p>
+  Bob should see window like:
+  <p align="center"><img alt="BeigeAccounting start in terminal" style="max-width: 100%" src="images/start-ajetty.png" /></p>
+<p>
+  Then he open address <a href="localhost:8080">localhost:8080</a> in Google Chrome.
   At first Bob just change organization name in accounting settings:
   <p align="center"><img alt="BeigeAccounting settings" style="max-width: 100%" src="images/acc-settings.png" /></p>
   Bob agree all other settings include cost precision 4 digit places to reduce rounding error.

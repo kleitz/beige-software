@@ -46,7 +46,7 @@ public class SrvEntityFieldHasIdLongRepl implements ISrvEntityFieldFiller {
   @Override
   public final void fill(final Object pEntity, final String pFieldName,
     final String pFieldStrValue,
-      final Map<String, ?> pAddParam) throws Exception {
+      final Map<String, Object> pAddParam) throws Exception {
     Field rField = getUtlReflection().retrieveField(pEntity.getClass(),
       pFieldName);
     rField.setAccessible(true);

@@ -17,8 +17,7 @@
       <item name="Specification Beige-Accounting" href="specification-accounting.html" />
       <item name="Beige Accounting, Bob's pizza example " href="bobs-pizza.html" />
       <item name="Working with source" href="working-with-source.html" />
-      <item name="Using Debian Linux" href="debian.html" />
-      <item name="GPG in Debian Linux" href="debian-gpg.html" />
+      <item name="Fedora Linux" href="fedora.html" />
     </menu>
   </body>
 </project>

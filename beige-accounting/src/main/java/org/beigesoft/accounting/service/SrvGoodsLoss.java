@@ -80,7 +80,7 @@ public class SrvGoodsLoss<RS>
    **/
   @Override
   public final GoodsLoss createEntity(
-    final Map<String, ?> pAddParam) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     GoodsLoss entity = new GoodsLoss();
     entity.setIdDatabaseBirth(getSrvOrm().getIdDatabase());
     entity.setItsDate(new Date());
@@ -97,7 +97,7 @@ public class SrvGoodsLoss<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void makeAddPrepareForCopy(final Map<String, ?> pAddParam,
+  public final void makeAddPrepareForCopy(final Map<String, Object> pAddParam,
     final GoodsLoss pEntity) throws Exception {
     //nothing
   }
@@ -110,7 +110,7 @@ public class SrvGoodsLoss<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void makeOtherEntries(final Map<String, ?> pAddParam,
+  public final void makeOtherEntries(final Map<String, Object> pAddParam,
     final GoodsLoss pEntity, final boolean pIsNew) throws Exception {
     @SuppressWarnings("unchecked")
     Map<String, String[]> parameterMap = (Map<String, String[]>) pAddParam.
@@ -161,8 +161,9 @@ public class SrvGoodsLoss<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void addCheckIsReadyToAccount(final Map<String, ?> pAddParam,
-    final GoodsLoss pEntity) throws Exception {
+  public final void addCheckIsReadyToAccount(
+    final Map<String, Object> pAddParam,
+      final GoodsLoss pEntity) throws Exception {
     //nothing
   }
 
@@ -175,7 +176,7 @@ public class SrvGoodsLoss<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void checkOtherFraudUpdate(final Map<String, ?> pAddParam,
+  public final void checkOtherFraudUpdate(final Map<String, Object> pAddParam,
     final GoodsLoss pEntity,
       final GoodsLoss pOldEntity) throws Exception {
     //nothing
@@ -188,7 +189,7 @@ public class SrvGoodsLoss<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void makeFirstPrepareForSave(final Map<String, ?> pAddParam,
+  public final void makeFirstPrepareForSave(final Map<String, Object> pAddParam,
     final GoodsLoss pEntity) throws Exception {
     //nothing
   }

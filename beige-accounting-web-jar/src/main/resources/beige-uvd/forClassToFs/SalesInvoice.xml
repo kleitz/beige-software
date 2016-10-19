@@ -23,4 +23,6 @@
 <entry key="paymentTotalwdgEditForm">inputReadOnly</entry>
 <entry key="paymentDescriptionwdgNewForm">inputReadOnly</entry>
 <entry key="paymentDescriptionwdgEditForm">inputReadOnly</entry>
+<entry key="payByDateorderShowList">920</entry>
+<entry key="payByDateorderShowForm">920</entry>
 </properties>

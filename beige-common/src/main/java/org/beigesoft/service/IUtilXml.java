@@ -71,7 +71,7 @@ public interface IUtilXml {
    * @throws Exception - an exception
    **/
   Map<String, String> readAttributes(Reader pReader,
-    Map<String, ?> pAddParam) throws Exception;
+    Map<String, Object> pAddParam) throws Exception;
 
 
   /**

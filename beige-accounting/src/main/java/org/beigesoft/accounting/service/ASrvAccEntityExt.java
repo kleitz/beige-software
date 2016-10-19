@@ -55,7 +55,7 @@ public abstract class ASrvAccEntityExt<RS, T extends IHasId<?>>
    * @throws Exception - an exception
    **/
   @Override
-  public final T retrieveEntity(final Map<String, ?> pAddParam,
+  public final T retrieveEntity(final Map<String, Object> pAddParam,
     final T pEntity) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
     return getSrvOrm().retrieveEntityById(getEntityClass(), pEntity.getItsId());
@@ -69,7 +69,7 @@ public abstract class ASrvAccEntityExt<RS, T extends IHasId<?>>
    * @throws Exception - an exception
    **/
   @Override
-  public final T retrieveEntityById(final Map<String, ?> pAddParam,
+  public final T retrieveEntityById(final Map<String, Object> pAddParam,
     final Object pId) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
     return getSrvOrm().retrieveEntityById(getEntityClass(), pId);
@@ -82,7 +82,7 @@ public abstract class ASrvAccEntityExt<RS, T extends IHasId<?>>
    * @throws Exception - an exception
    **/
   @Override
-  public final void deleteEntity(final Map<String, ?> pAddParam,
+  public final void deleteEntity(final Map<String, Object> pAddParam,
     final T pEntity) throws Exception {
     getSrvOrm().deleteEntity(getEntityClass(), pEntity.getItsId());
   }
@@ -94,7 +94,7 @@ public abstract class ASrvAccEntityExt<RS, T extends IHasId<?>>
    * @throws Exception - an exception
    **/
   @Override
-  public final void deleteEntity(final Map<String, ?> pAddParam,
+  public final void deleteEntity(final Map<String, Object> pAddParam,
     final Object pId) throws Exception {
     getSrvOrm().deleteEntity(getEntityClass(), pId);
   }

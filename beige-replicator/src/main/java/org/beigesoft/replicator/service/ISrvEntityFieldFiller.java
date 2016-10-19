@@ -31,5 +31,5 @@ public interface ISrvEntityFieldFiller {
    * @throws Exception - an exception
    **/
   void fill(Object pEntity, String pFieldName, String pFieldStrValue,
-    Map<String, ?> pAddParam) throws Exception;
+    Map<String, Object> pAddParam) throws Exception;
 }

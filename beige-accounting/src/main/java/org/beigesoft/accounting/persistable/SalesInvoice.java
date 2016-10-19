@@ -10,6 +10,7 @@ package org.beigesoft.accounting.persistable;
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
+import java.util.Date;
 import java.util.List;
 import java.math.BigDecimal;
 
@@ -57,6 +58,11 @@ public class SalesInvoice extends ADocWithTaxes
   private String paymentDescription;
 
   /**
+   * <p>Payment done by date, if required.</p>
+   **/
+  private Date payByDate;
+
+  /**
    * <p>OOP friendly Constant of code type 2.</p>
    **/
   @Override
@@ -72,6 +78,30 @@ public class SalesInvoice extends ADocWithTaxes
   @Override
   public final EWarehouseMovementType getLinesWarehouseType() {
     return EWarehouseMovementType.WITHDRAWAL;
+  }
+
+  //Hiding references getters and setters:
+  /**
+   * <p>Getter for payByDate.</p>
+   * @return Date
+   **/
+  public final Date getPayByDate() {
+    if (this.payByDate == null) {
+      return null;
+    }
+    return new Date(this.payByDate.getTime());
+  }
+
+  /**
+   * <p>Setter for payByDate.</p>
+   * @param pPayByDate reference
+   **/
+  public final void setPayByDate(final Date pPayByDate) {
+    if (pPayByDate == null) {
+      this.payByDate = null;
+    } else {
+      this.payByDate = new Date(pPayByDate.getTime());
+    }
   }
 
   //Simple getters and setters:

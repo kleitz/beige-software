@@ -9,11 +9,12 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 <comment>App properties</comment>
+<entry key="databaseVersion">1</entry>
 <entry key="title">Beige ORM</entry>
+<entry key="useSubFolder">sqlite</entry>
 <entry key="jdbcDriverClass">org.sqlite.JDBC</entry>
 <entry key="dataSourceClassName">org.sqlite.SQLiteDataSource</entry>
 <entry key="databaseName">#currentDir#beigeaccounting.sqlite</entry>
 <entry key="databaseUrl">jdbc:sqlite:#currentDir#beigeaccounting.sqlite</entry>
 <entry key="checkTableExist">select * from SQLITE_MASTER where TBL_NAME=':tableName';</entry>
-<entry key="initRdbms">init-sqlite.sql</entry>
 </properties>

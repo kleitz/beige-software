@@ -9,6 +9,8 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 <comment>App properties</comment>
+<entry key="databaseVersion">1</entry>
+<entry key="useSubFolder">h2</entry>
 <entry key="title">Beige ORM</entry>
 <entry key="jdbcDriverClass">org.h2.Driver</entry>
 <entry key="dataSourceClassName">org.h2.jdbcx.JdbcDataSource</entry>

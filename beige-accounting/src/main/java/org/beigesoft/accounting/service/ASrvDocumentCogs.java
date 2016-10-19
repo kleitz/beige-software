@@ -72,7 +72,7 @@ public abstract class ASrvDocumentCogs<RS, T extends IDocWarehouse>
    * @throws Exception - an exception
    **/
   @Override
-  public final void retrieveOtherDataFor(final Map<String, ?> pAddParam,
+  public final void retrieveOtherDataFor(final Map<String, Object> pAddParam,
     final T pEntity) throws Exception {
     IAttributes attributes = (IAttributes) pAddParam.get("attributes");
     attributes.setAttribute("warehouseEntries", srvWarehouseEntry

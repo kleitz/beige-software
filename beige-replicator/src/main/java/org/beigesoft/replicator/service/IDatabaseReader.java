@@ -31,5 +31,5 @@ public interface IDatabaseReader {
    * @throws Exception - an exception
    **/
   void readAndStoreEntities(Reader pReader,
-    Map<String, ?> pAddParam) throws Exception;
+    Map<String, Object> pAddParam) throws Exception;
 }

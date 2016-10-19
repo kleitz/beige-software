@@ -51,7 +51,7 @@ public class SrvEntityWriterXml implements ISrvEntityWriter {
    **/
   @Override
   public final void write(final Object pEntity, final Writer pWriter,
-    final Map<String, ?> pAddParam) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     Map<String, Map<String, String>> fieldsSettingsMap =
       getMngSettings().getFieldsSettings()
         .get(pEntity.getClass().getCanonicalName());

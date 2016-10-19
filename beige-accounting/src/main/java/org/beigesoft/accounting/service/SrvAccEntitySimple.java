@@ -73,7 +73,7 @@ public class SrvAccEntitySimple<T extends IHasId<?>>
    */
   @Override
   public final List<T> retrieveList(
-    final Map<String, ?> pAddParam) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     return getSrvOrm().retrieveList(this.entityClass);
   }
 
@@ -86,7 +86,7 @@ public class SrvAccEntitySimple<T extends IHasId<?>>
    */
   @Override
   public final List<T> retrieveListWithConditions(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final String pQueryConditions) throws Exception {
     return getSrvOrm().retrieveListWithConditions(this.entityClass,
       pQueryConditions);
@@ -101,7 +101,7 @@ public class SrvAccEntitySimple<T extends IHasId<?>>
    * @throws Exception - an exception
    */
   @Override
-  public final List<T> retrievePage(final Map<String, ?> pAddParam,
+  public final List<T> retrievePage(final Map<String, Object> pAddParam,
       final Integer pFirst, final Integer pPageSize) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
     return getSrvOrm().retrievePage(this.entityClass,
@@ -119,7 +119,7 @@ public class SrvAccEntitySimple<T extends IHasId<?>>
    */
   @Override
   public final List<T> retrievePageWithConditions(
-    final Map<String, ?> pAddParam, final String pQueryConditions,
+    final Map<String, Object> pAddParam, final String pQueryConditions,
       final Integer pFirst, final Integer pPageSize) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
     return getSrvOrm().retrievePageWithConditions(this.entityClass,
@@ -135,7 +135,7 @@ public class SrvAccEntitySimple<T extends IHasId<?>>
    */
   @Override
   public final Integer evalRowCount(
-    final Map<String, ?> pAddParam) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     return getSrvOrm().evalRowCount(this.entityClass);
   }
   /**
@@ -146,7 +146,7 @@ public class SrvAccEntitySimple<T extends IHasId<?>>
    * @throws Exception - an exception
    */
   @Override
-  public final Integer evalRowCountWhere(final Map<String, ?> pAddParam,
+  public final Integer evalRowCountWhere(final Map<String, Object> pAddParam,
     final String pWhere) throws Exception {
     return getSrvOrm().evalRowCountWhere(this.entityClass, pWhere);
   }
@@ -158,7 +158,8 @@ public class SrvAccEntitySimple<T extends IHasId<?>>
    * @throws Exception - an exception
    **/
   @Override
-  public final T createEntity(final Map<String, ?> pAddParam) throws Exception {
+  public final T createEntity(
+    final Map<String, Object> pAddParam) throws Exception {
     T entity = getSrvOrm().createEntity(this.entityClass);
     entity.setIsNew(true);
     addAccSettingsIntoAttrs(pAddParam);
@@ -172,7 +173,7 @@ public class SrvAccEntitySimple<T extends IHasId<?>>
    * @throws Exception - an exception
    **/
   @Override
-  public final T retrieveEntity(final Map<String, ?> pAddParam,
+  public final T retrieveEntity(final Map<String, Object> pAddParam,
     final T pEntity) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
     return getSrvOrm().retrieveEntityById(this.entityClass, pEntity.getItsId());
@@ -186,7 +187,7 @@ public class SrvAccEntitySimple<T extends IHasId<?>>
    * @throws Exception - an exception
    **/
   @Override
-  public final T retrieveEntityById(final Map<String, ?> pAddParam,
+  public final T retrieveEntityById(final Map<String, Object> pAddParam,
     final Object pId) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
     return getSrvOrm().retrieveEntityById(this.entityClass, pId);
@@ -200,7 +201,7 @@ public class SrvAccEntitySimple<T extends IHasId<?>>
    * @throws Exception - an exception
    **/
   @Override
-  public final T retrieveCopyEntity(final Map<String, ?> pAddParam,
+  public final T retrieveCopyEntity(final Map<String, Object> pAddParam,
     final Object pId) throws Exception {
     T entity = getSrvOrm().retrieveCopyEntity(this.entityClass, pId);
     entity.setIsNew(true);
@@ -216,8 +217,9 @@ public class SrvAccEntitySimple<T extends IHasId<?>>
    * @throws Exception - an exception
    **/
   @Override
-  public final void saveEntity(final Map<String, ?> pAddParam, final T pEntity,
-    final boolean isEntityDetached) throws Exception {
+  public final void saveEntity(
+    final Map<String, Object> pAddParam, final T pEntity,
+      final boolean isEntityDetached) throws Exception {
     if (pEntity.getIsNew()) {
       getSrvOrm().insertEntity(pEntity);
     } else {
@@ -232,7 +234,7 @@ public class SrvAccEntitySimple<T extends IHasId<?>>
    * @throws Exception - an exception
    **/
   @Override
-  public final void deleteEntity(final Map<String, ?> pAddParam,
+  public final void deleteEntity(final Map<String, Object> pAddParam,
     final T pEntity) throws Exception {
     getSrvOrm().deleteEntity(this.entityClass, pEntity.getItsId());
   }
@@ -244,7 +246,7 @@ public class SrvAccEntitySimple<T extends IHasId<?>>
    * @throws Exception - an exception
    **/
   @Override
-  public final void deleteEntity(final Map<String, ?> pAddParam,
+  public final void deleteEntity(final Map<String, Object> pAddParam,
     final Object pId) throws Exception {
     getSrvOrm().deleteEntity(this.entityClass, pId);
   }
@@ -255,7 +257,7 @@ public class SrvAccEntitySimple<T extends IHasId<?>>
    * @throws Exception - an exception
    */
   public final void addAccSettingsIntoAttrs(
-    final Map<String, ?> pAddParam) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     IAttributes attributes = (IAttributes) pAddParam.get("attributes");
     attributes.setAttribute("accSettings", srvAccSettings.lazyGetAccSettings());
   }

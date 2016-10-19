@@ -43,7 +43,8 @@ public class SrvFieldHasIdWriterXml implements ISrvFieldWriter {
    **/
   @Override
   public final void write(final Object pField, final String pFieldName,
-    final Writer pWriter, final Map<String, ?> pAddParam) throws Exception {
+    final Writer pWriter,
+      final Map<String, Object> pAddParam) throws Exception {
     String fieldValue;
     if (pField == null) {
       fieldValue = "NULL";

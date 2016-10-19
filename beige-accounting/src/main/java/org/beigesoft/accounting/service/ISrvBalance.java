@@ -33,7 +33,7 @@ public interface ISrvBalance {
    * @return Trial Balance Lines
    * @throws Exception - an exception
    **/
-  List<TrialBalanceLine> retrieveTrialBalance(Map<String, ?> pAddParam,
+  List<TrialBalanceLine> retrieveTrialBalance(Map<String, Object> pAddParam,
     Date pDate) throws Exception;
 
   /**

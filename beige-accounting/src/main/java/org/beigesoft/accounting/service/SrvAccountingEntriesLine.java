@@ -96,7 +96,7 @@ public class SrvAccountingEntriesLine<RS>
    **/
   @Override
   public final AccountingEntry createEntity(
-    final Map<String, ?> pAddParam) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     AccountingEntry entity = new AccountingEntry();
     entity.setIdDatabaseBirth(getSrvDatabase().getIdDatabase());
     entity.setIsNew(true);
@@ -114,7 +114,7 @@ public class SrvAccountingEntriesLine<RS>
    **/
   @Override
   public final AccountingEntry retrieveCopyEntity(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pId) throws Exception {
     AccountingEntry entity = getSrvOrm().retrieveCopyEntity(
       AccountingEntry.class, pId);
@@ -131,8 +131,9 @@ public class SrvAccountingEntriesLine<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final AccountingEntry retrieveEntity(final Map<String, ?> pAddParam,
-    final AccountingEntry pEntity) throws Exception {
+  public final AccountingEntry retrieveEntity(
+    final Map<String, Object> pAddParam,
+      final AccountingEntry pEntity) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
     return getSrvOrm().retrieveEntityById(getEntityClass(), pEntity.getItsId());
   }
@@ -146,7 +147,7 @@ public class SrvAccountingEntriesLine<RS>
    **/
   @Override
   public final AccountingEntry retrieveEntityById(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pId) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
     return getSrvOrm().retrieveEntityById(getEntityClass(), pId);
@@ -159,7 +160,7 @@ public class SrvAccountingEntriesLine<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void deleteEntity(final Map<String, ?> pAddParam,
+  public final void deleteEntity(final Map<String, Object> pAddParam,
     final AccountingEntry pEntity) throws Exception {
     throw new ExceptionWithCode(ExceptionWithCode.FORBIDDEN,
       "Attempt to delete line by " + pAddParam.get("user"));
@@ -172,7 +173,7 @@ public class SrvAccountingEntriesLine<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void deleteEntity(final Map<String, ?> pAddParam,
+  public final void deleteEntity(final Map<String, Object> pAddParam,
     final Object pId) throws Exception {
     throw new ExceptionWithCode(ExceptionWithCode.FORBIDDEN,
       "Attempt to delete line by " + pAddParam.get("user"));
@@ -186,7 +187,7 @@ public class SrvAccountingEntriesLine<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void saveEntity(final Map<String, ?> pAddParam,
+  public final void saveEntity(final Map<String, Object> pAddParam,
     final AccountingEntry pEntity,
       final boolean isEntityDetached) throws Exception {
     Calendar calCurrYear = Calendar.getInstance();
@@ -278,7 +279,7 @@ public class SrvAccountingEntriesLine<RS>
    **/
   @Override
   public final AccountingEntry createEntityWithOwnerById(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pIdOwner) throws Exception {
     AccountingEntry entity = new AccountingEntry();
     entity.setIdDatabaseBirth(getSrvDatabase().getIdDatabase());
@@ -305,7 +306,7 @@ public class SrvAccountingEntriesLine<RS>
    **/
   @Override
   public final AccountingEntry createEntityWithOwner(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final AccountingEntries pEntityItsOwner) throws Exception {
     AccountingEntry entity = new AccountingEntry();
     entity.setIsNew(true);
@@ -326,7 +327,7 @@ public class SrvAccountingEntriesLine<RS>
    */
   @Override
   public final List<AccountingEntry> retrieveOwnedListById(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pIdOwner) throws Exception {
     String where = "where SOURCETYPE=" + this.accountingEntriesTypeCode
       + " and SOURCEID=" + pIdOwner;
@@ -345,7 +346,7 @@ public class SrvAccountingEntriesLine<RS>
    */
   @Override
   public final List<AccountingEntry> retrieveOwnedList(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final AccountingEntries pEntityItsOwner) throws Exception {
     return retrieveOwnedListById(pAddParam, pEntityItsOwner.getItsId());
   }

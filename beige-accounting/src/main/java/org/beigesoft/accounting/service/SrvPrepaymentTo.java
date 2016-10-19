@@ -64,7 +64,7 @@ public class SrvPrepaymentTo<RS>
    **/
   @Override
   public final PrepaymentTo createEntity(
-    final Map<String, ?> pAddParam) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     PrepaymentTo entity = new PrepaymentTo();
     entity.setIdDatabaseBirth(getSrvOrm().getIdDatabase());
     entity.setItsDate(new Date());
@@ -81,7 +81,7 @@ public class SrvPrepaymentTo<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void retrieveOtherDataFor(final Map<String, ?> pAddParam,
+  public final void retrieveOtherDataFor(final Map<String, Object> pAddParam,
     final PrepaymentTo pEntity) throws Exception {
     addTypeCodeIntoAttrs(pAddParam);
   }
@@ -93,7 +93,7 @@ public class SrvPrepaymentTo<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void makeAddPrepareForCopy(final Map<String, ?> pAddParam,
+  public final void makeAddPrepareForCopy(final Map<String, Object> pAddParam,
     final PrepaymentTo pEntity) throws Exception {
     pEntity.setPurchaseInvoiceId(null);
     addTypeCodeIntoAttrs(pAddParam);
@@ -107,7 +107,7 @@ public class SrvPrepaymentTo<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void makeOtherEntries(final Map<String, ?> pAddParam,
+  public final void makeOtherEntries(final Map<String, Object> pAddParam,
     final PrepaymentTo pEntity, final boolean pIsNew) throws Exception {
     //nothing
   }
@@ -119,8 +119,9 @@ public class SrvPrepaymentTo<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void addCheckIsReadyToAccount(final Map<String, ?> pAddParam,
-    final PrepaymentTo pEntity) throws Exception {
+  public final void addCheckIsReadyToAccount(
+    final Map<String, Object> pAddParam,
+      final PrepaymentTo pEntity) throws Exception {
     //nothing
   }
 
@@ -133,7 +134,7 @@ public class SrvPrepaymentTo<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void checkOtherFraudUpdate(final Map<String, ?> pAddParam,
+  public final void checkOtherFraudUpdate(final Map<String, Object> pAddParam,
     final PrepaymentTo pEntity,
       final PrepaymentTo pOldEntity) throws Exception {
     //nothing
@@ -146,7 +147,7 @@ public class SrvPrepaymentTo<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void makeFirstPrepareForSave(final Map<String, ?> pAddParam,
+  public final void makeFirstPrepareForSave(final Map<String, Object> pAddParam,
     final PrepaymentTo pEntity) throws Exception {
     //BeigeORM refresh:
     pEntity.setAccCash(getSrvOrm()
@@ -162,7 +163,7 @@ public class SrvPrepaymentTo<RS>
    * <p>Added source types.</p>
    * @param pAddParam additional param
    */
-  public final void addTypeCodeIntoAttrs(final Map<String, ?> pAddParam) {
+  public final void addTypeCodeIntoAttrs(final Map<String, Object> pAddParam) {
     IAttributes attributes = (IAttributes) pAddParam.get("attributes");
     attributes.setAttribute("typeCodeSubaccMap",
       this.srvTypeCode.getTypeCodeMap());

@@ -33,7 +33,7 @@ public interface ISrvLedger {
    * @return LedgerPrevious data
    * @throws Exception - an exception
    **/
-  LedgerPrevious retrievePrevious(Map<String, ?> pAddParam,
+  LedgerPrevious retrievePrevious(Map<String, Object> pAddParam,
     Account pAccount, Date pDate1, String pSubaccName) throws Exception;
 
   /**
@@ -47,7 +47,7 @@ public interface ISrvLedger {
    * @param ledgerPrevious ledger previous
    * @throws Exception - an exception
    **/
-  LedgerDetail retrieveDetail(Map<String, ?> pAddParam,
+  LedgerDetail retrieveDetail(Map<String, Object> pAddParam,
     Account pAccount, Date pDate1, Date pDate2,
       String pSubaccName, LedgerPrevious ledgerPrevious) throws Exception;
 }

@@ -34,7 +34,7 @@ public interface ISrvEntity<T extends IHasId<?>> {
    * @return entity instance
    * @throws Exception - an exception
    **/
-  T createEntity(Map<String, ?> pAddParam) throws Exception;
+  T createEntity(Map<String, Object> pAddParam) throws Exception;
 
   /**
    * <p>Refresh entity from DB by given entity with ID.</p>
@@ -43,7 +43,7 @@ public interface ISrvEntity<T extends IHasId<?>> {
    * @return entity or null
    * @throws Exception - an exception
    **/
-  T retrieveEntity(Map<String, ?> pAddParam, T pEntity) throws Exception;
+  T retrieveEntity(Map<String, Object> pAddParam, T pEntity) throws Exception;
 
   /**
    * <p>Retrieve entity from DB by given ID.</p>
@@ -52,7 +52,7 @@ public interface ISrvEntity<T extends IHasId<?>> {
    * @return entity or null
    * @throws Exception - an exception
    **/
-  T retrieveEntityById(Map<String, ?> pAddParam,
+  T retrieveEntityById(Map<String, Object> pAddParam,
     Object pId) throws Exception;
 
   /**
@@ -62,7 +62,7 @@ public interface ISrvEntity<T extends IHasId<?>> {
    * @return entity or null
    * @throws Exception - an exception
    **/
-  T retrieveCopyEntity(Map<String, ?> pAddParam,
+  T retrieveCopyEntity(Map<String, Object> pAddParam,
     Object pId) throws Exception;
 
   /**
@@ -72,7 +72,7 @@ public interface ISrvEntity<T extends IHasId<?>> {
    * @param isEntityDetached for standard ORM only
    * @throws Exception - an exception
    **/
-  void saveEntity(Map<String, ?> pAddParam, T pEntity,
+  void saveEntity(Map<String, Object> pAddParam, T pEntity,
     boolean isEntityDetached) throws Exception;
 
   /**
@@ -81,7 +81,7 @@ public interface ISrvEntity<T extends IHasId<?>> {
    * @param pEntity entity
    * @throws Exception - an exception
    **/
-  void deleteEntity(Map<String, ?> pAddParam, T pEntity) throws Exception;
+  void deleteEntity(Map<String, Object> pAddParam, T pEntity) throws Exception;
 
   /**
    * <p>Delete entity from DB by given ID.</p>
@@ -89,7 +89,7 @@ public interface ISrvEntity<T extends IHasId<?>> {
    * @param pId ID
    * @throws Exception - an exception
    **/
-  void deleteEntity(Map<String, ?> pAddParam,
+  void deleteEntity(Map<String, Object> pAddParam,
     Object pId) throws Exception;
 
   /**
@@ -98,7 +98,7 @@ public interface ISrvEntity<T extends IHasId<?>> {
    * @return list of all business objects
    * @throws Exception - an exception
    */
-  List<T> retrieveList(Map<String, ?> pAddParam) throws Exception;
+  List<T> retrieveList(Map<String, Object> pAddParam) throws Exception;
 
   /**
    * <p>Retrieve a list of entities.</p>
@@ -107,7 +107,7 @@ public interface ISrvEntity<T extends IHasId<?>> {
    * @return list of business objects
    * @throws Exception - an exception
    */
-  List<T> retrieveListWithConditions(Map<String, ?> pAddParam,
+  List<T> retrieveListWithConditions(Map<String, Object> pAddParam,
     String pQueryConditions) throws Exception;
 
   /**
@@ -118,7 +118,7 @@ public interface ISrvEntity<T extends IHasId<?>> {
    * @return list of business objects
    * @throws Exception - an exception
    */
-  List<T> retrievePage(Map<String, ?> pAddParam,
+  List<T> retrievePage(Map<String, Object> pAddParam,
       Integer pFirst, Integer pPageSize) throws Exception;
 
   /**
@@ -130,7 +130,7 @@ public interface ISrvEntity<T extends IHasId<?>> {
    * @return list of business objects
    * @throws Exception - an exception
    */
-  List<T> retrievePageWithConditions(Map<String, ?> pAddParam,
+  List<T> retrievePageWithConditions(Map<String, Object> pAddParam,
     String pQueryConditions,
       Integer pFirst, Integer pPageSize) throws Exception;
 
@@ -140,7 +140,7 @@ public interface ISrvEntity<T extends IHasId<?>> {
    * @return Integer row count
    * @throws Exception - an exception
    */
-  Integer evalRowCount(Map<String, ?> pAddParam) throws Exception;
+  Integer evalRowCount(Map<String, Object> pAddParam) throws Exception;
 
   /**
    * <p>Calculate total rows for pagination.</p>
@@ -149,6 +149,6 @@ public interface ISrvEntity<T extends IHasId<?>> {
    * @return Integer row count
    * @throws Exception - an exception
    */
-  Integer evalRowCountWhere(Map<String, ?> pAddParam,
+  Integer evalRowCountWhere(Map<String, Object> pAddParam,
     String pWhere) throws Exception;
 }

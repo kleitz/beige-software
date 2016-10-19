@@ -12,6 +12,7 @@
 <entry key="itsVersion">false</entry>
 <entry key="itsName">false</entry>
 <entry key="itsPassword">false</entry>
+<entry key="payByDate">false</entry>
 <entry key="idDatabaseBirth">false</entry>
 <entry key="itsNumber">false</entry>
 <entry key="sourceId">false</entry>
@@ -41,4 +42,5 @@
 <entry key="warehouseSiteFrom">true</entry>
 <entry key="accDebit">true</entry>
 <entry key="accCredit">true</entry>
+<entry key="payByDate">true</entry>
 </properties>

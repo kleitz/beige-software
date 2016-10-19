@@ -30,6 +30,6 @@ public interface ISrvFillWageLines {
    * @param pWage Wage document
    * @throws Exception - an exception
    **/
-  void fillWageLines(Map<String, ?> pAddParam,
+  void fillWageLines(Map<String, Object> pAddParam,
     Wage pWage) throws Exception;
 }

@@ -122,7 +122,7 @@ public class SrvAccEntry<RS> implements ISrvAccEntry {
    * @throws Exception - an exception
    **/
   @Override
-  public final void makeEntries(final Map<String, ?> pAddParam,
+  public final void makeEntries(final Map<String, Object> pAddParam,
     final IDoc pEntity) throws Exception {
     Calendar calCurrYear = Calendar.getInstance();
     calCurrYear.setTime(getSrvAccSettings().lazyGetAccSettings()
@@ -245,7 +245,7 @@ public class SrvAccEntry<RS> implements ISrvAccEntry {
    * @throws Exception - an exception
    **/
   @Override
-  public final void reverseEntries(final Map<String, ?> pAddParam,
+  public final void reverseEntries(final Map<String, Object> pAddParam,
     final IDoc pReversing,
       final IDoc pReversed) throws Exception {
     List<AccountingEntry> sources = getSrvOrm().retrieveListWithConditions(
@@ -308,7 +308,7 @@ public class SrvAccEntry<RS> implements ISrvAccEntry {
    **/
   @Override
   public final List<AccountingEntry> retrieveAccEntriesFor(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final IDoc pEntity) throws Exception {
     List<AccountingEntry> result = getSrvOrm().retrieveListWithConditions(
       AccountingEntry.class, " where SOURCETYPE=" + pEntity.constTypeCode()
@@ -326,7 +326,7 @@ public class SrvAccEntry<RS> implements ISrvAccEntry {
    **/
   @Override
   public final void makeEntriesAll(
-    final Map<String, ?> pAddParam) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     //TODO
   }
 

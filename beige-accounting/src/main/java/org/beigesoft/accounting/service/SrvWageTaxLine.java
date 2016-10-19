@@ -64,7 +64,7 @@ public class SrvWageTaxLine<RS>
    **/
   @Override
   public final WageTaxLine createEntity(
-    final Map<String, ?> pAddParam) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     WageTaxLine entity = new WageTaxLine();
     entity.setIdDatabaseBirth(getSrvOrm().getIdDatabase());
     entity.setIsNew(true);
@@ -83,7 +83,7 @@ public class SrvWageTaxLine<RS>
    **/
   @Override
   public final WageTaxLine retrieveCopyEntity(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pId) throws Exception {
     WageTaxLine entity = getSrvOrm().retrieveCopyEntity(
       WageTaxLine.class, pId);
@@ -100,7 +100,7 @@ public class SrvWageTaxLine<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final WageTaxLine retrieveEntity(final Map<String, ?> pAddParam,
+  public final WageTaxLine retrieveEntity(final Map<String, Object> pAddParam,
     final WageTaxLine pEntity) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
     return getSrvOrm().retrieveEntityById(getEntityClass(), pEntity.getItsId());
@@ -115,7 +115,7 @@ public class SrvWageTaxLine<RS>
    **/
   @Override
   public final WageTaxLine retrieveEntityById(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pId) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
     return getSrvOrm().retrieveEntityById(WageTaxLine.class, pId);
@@ -128,7 +128,7 @@ public class SrvWageTaxLine<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void deleteEntity(final Map<String, ?> pAddParam,
+  public final void deleteEntity(final Map<String, Object> pAddParam,
     final WageTaxLine pEntity) throws Exception {
     if (pEntity.getItsOwner().getHasMadeAccEntries()) {
       throw new ExceptionWithCode(ExceptionWithCode.FORBIDDEN,
@@ -145,7 +145,7 @@ public class SrvWageTaxLine<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void deleteEntity(final Map<String, ?> pAddParam,
+  public final void deleteEntity(final Map<String, Object> pAddParam,
     final Object pId) throws Exception {
     WageTaxLine entity = getSrvOrm()
       .retrieveEntityById(WageTaxLine.class, pId);
@@ -165,7 +165,7 @@ public class SrvWageTaxLine<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void saveEntity(final Map<String, ?> pAddParam,
+  public final void saveEntity(final Map<String, Object> pAddParam,
     final WageTaxLine pEntity,
       final boolean isEntityDetached) throws Exception {
     if (pEntity.getItsTotal().doubleValue() == 0d) {
@@ -212,7 +212,7 @@ public class SrvWageTaxLine<RS>
    **/
   @Override
   public final WageTaxLine createEntityWithOwnerById(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pIdOwner) throws Exception {
     WageTaxLine entity = new WageTaxLine();
     entity.setIdDatabaseBirth(getSrvOrm().getIdDatabase());
@@ -238,7 +238,7 @@ public class SrvWageTaxLine<RS>
    **/
   @Override
   public final WageTaxLine createEntityWithOwner(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Wage pEntityItsOwner) throws Exception {
     WageTaxLine entity = new WageTaxLine();
     entity.setIsNew(true);
@@ -258,7 +258,7 @@ public class SrvWageTaxLine<RS>
    */
   @Override
   public final List<WageTaxLine> retrieveOwnedListById(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pIdEntityItsOwner) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
     return getSrvOrm().retrieveEntityOwnedlist(WageTaxLine.class,
@@ -275,7 +275,7 @@ public class SrvWageTaxLine<RS>
    */
   @Override
   public final List<WageTaxLine> retrieveOwnedList(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Wage pEntityItsOwner) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
     return getSrvOrm().retrieveEntityOwnedlist(WageTaxLine.class,

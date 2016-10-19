@@ -82,7 +82,8 @@ public class SrvAccSettingsLine<T extends IHasId<?>, O extends IHasId<?>>
    * @throws Exception - an exception
    **/
   @Override
-  public final T createEntity(final Map<String, ?> pAddParam) throws Exception {
+  public final T createEntity(
+    final Map<String, Object> pAddParam) throws Exception {
     T entity = this.srvOrm.createEntity(this.entityClass);
     entity.setIsNew(true);
     addAccSettingsIntoAttrs(pAddParam);
@@ -96,7 +97,7 @@ public class SrvAccSettingsLine<T extends IHasId<?>, O extends IHasId<?>>
    * @throws Exception - an exception
    **/
   @Override
-  public final T retrieveEntity(final Map<String, ?> pAddParam,
+  public final T retrieveEntity(final Map<String, Object> pAddParam,
     final T pEntity) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
     return this.srvOrm.retrieveEntityById(this.entityClass, pEntity.getItsId());
@@ -110,7 +111,7 @@ public class SrvAccSettingsLine<T extends IHasId<?>, O extends IHasId<?>>
    * @throws Exception - an exception
    **/
   @Override
-  public final T retrieveEntityById(final Map<String, ?> pAddParam,
+  public final T retrieveEntityById(final Map<String, Object> pAddParam,
     final Object pId) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
     return this.srvOrm.retrieveEntityById(this.entityClass, pId);
@@ -124,7 +125,7 @@ public class SrvAccSettingsLine<T extends IHasId<?>, O extends IHasId<?>>
    * @throws Exception - an exception
    **/
   @Override
-  public final T retrieveCopyEntity(final Map<String, ?> pAddParam,
+  public final T retrieveCopyEntity(final Map<String, Object> pAddParam,
     final Object pId) throws Exception {
     T entity = this.srvOrm.retrieveCopyEntity(this.entityClass, pId);
     entity.setIsNew(true);
@@ -140,8 +141,8 @@ public class SrvAccSettingsLine<T extends IHasId<?>, O extends IHasId<?>>
    * @throws Exception - an exception
    **/
   @Override
-  public final void saveEntity(final Map<String, ?> pAddParam, final T pEntity,
-    final boolean isEntityDetached) throws Exception {
+  public final void saveEntity(final Map<String, Object> pAddParam,
+    final T pEntity, final boolean isEntityDetached) throws Exception {
     if (pEntity.getIsNew()) {
       this.srvOrm.insertEntity(pEntity);
     } else {
@@ -157,7 +158,7 @@ public class SrvAccSettingsLine<T extends IHasId<?>, O extends IHasId<?>>
    * @throws Exception - an exception
    **/
   @Override
-  public final void deleteEntity(final Map<String, ?> pAddParam,
+  public final void deleteEntity(final Map<String, Object> pAddParam,
     final T pEntity) throws Exception {
     this.srvOrm.deleteEntity(this.entityClass, pEntity.getItsId());
   }
@@ -169,7 +170,7 @@ public class SrvAccSettingsLine<T extends IHasId<?>, O extends IHasId<?>>
    * @throws Exception - an exception
    **/
   @Override
-  public final void deleteEntity(final Map<String, ?> pAddParam,
+  public final void deleteEntity(final Map<String, Object> pAddParam,
     final Object pId) throws Exception {
     this.srvOrm.deleteEntity(this.entityClass, pId);
   }
@@ -182,7 +183,7 @@ public class SrvAccSettingsLine<T extends IHasId<?>, O extends IHasId<?>>
    */
   @Override
   public final List<T> retrieveList(
-    final Map<String, ?> pAddParam) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     return this.srvOrm.retrieveList(this.entityClass);
   }
 
@@ -195,7 +196,7 @@ public class SrvAccSettingsLine<T extends IHasId<?>, O extends IHasId<?>>
    */
   @Override
   public final List<T> retrieveListWithConditions(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final String pQueryConditions) throws Exception {
     return this.srvOrm.retrieveListWithConditions(this.entityClass,
       pQueryConditions);
@@ -211,7 +212,7 @@ public class SrvAccSettingsLine<T extends IHasId<?>, O extends IHasId<?>>
    */
   @Override
   public final List<T> retrievePage(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Integer pFirst, final Integer pPageSize) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
     return this.srvOrm.retrievePage(this.entityClass, pFirst, pPageSize);
@@ -225,7 +226,7 @@ public class SrvAccSettingsLine<T extends IHasId<?>, O extends IHasId<?>>
    */
   @Override
   public final Integer evalRowCount(
-    final Map<String, ?> pAddParam) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     return this.srvOrm.evalRowCount(this.entityClass);
   }
 
@@ -240,7 +241,7 @@ public class SrvAccSettingsLine<T extends IHasId<?>, O extends IHasId<?>>
    */
   @Override
   public final List<T> retrievePageWithConditions(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final String pQueryConditions,
         final Integer pFirst, final Integer pPageSize) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
@@ -256,7 +257,7 @@ public class SrvAccSettingsLine<T extends IHasId<?>, O extends IHasId<?>>
    * @throws Exception - an exception
    */
   @Override
-  public final Integer evalRowCountWhere(final Map<String, ?> pAddParam,
+  public final Integer evalRowCountWhere(final Map<String, Object> pAddParam,
     final String pWhere) throws Exception {
     return this.srvOrm.evalRowCountWhere(this.entityClass, pWhere);
   }
@@ -270,7 +271,7 @@ public class SrvAccSettingsLine<T extends IHasId<?>, O extends IHasId<?>>
    * @throws Exception - an exception
    **/
   @Override
-  public final T createEntityWithOwnerById(final Map<String, ?> pAddParam,
+  public final T createEntityWithOwnerById(final Map<String, Object> pAddParam,
     final Object pIdEntityOwner) throws Exception {
     T entity = getSrvOrm().createEntityWithOwner(getEntityClass(),
       this.ownerClass, pIdEntityOwner);
@@ -288,7 +289,7 @@ public class SrvAccSettingsLine<T extends IHasId<?>, O extends IHasId<?>>
    * @throws Exception - an exception
    **/
   @Override
-  public final T createEntityWithOwner(final Map<String, ?> pAddParam,
+  public final T createEntityWithOwner(final Map<String, Object> pAddParam,
     final O pEntityOwner) throws Exception {
     T entity = getSrvOrm().createEntityWithOwner(getEntityClass(),
       this.ownerClass, pEntityOwner.getItsId());
@@ -306,8 +307,9 @@ public class SrvAccSettingsLine<T extends IHasId<?>, O extends IHasId<?>>
    * @throws Exception - an exception
    */
   @Override
-  public final List<T> retrieveOwnedListById(final Map<String, ?> pAddParam,
-    final Object pIdEntityOwner) throws Exception {
+  public final List<T> retrieveOwnedListById(
+    final Map<String, Object> pAddParam,
+      final Object pIdEntityOwner) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
     return getSrvOrm().retrieveEntityOwnedlist(getEntityClass(),
       this.ownerClass, pIdEntityOwner);
@@ -322,7 +324,7 @@ public class SrvAccSettingsLine<T extends IHasId<?>, O extends IHasId<?>>
    * @throws Exception - an exception
    */
   @Override
-  public final List<T> retrieveOwnedList(final Map<String, ?> pAddParam,
+  public final List<T> retrieveOwnedList(final Map<String, Object> pAddParam,
     final O pEntityOwner) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
     return getSrvOrm().retrieveEntityOwnedlist(getEntityClass(),
@@ -336,7 +338,7 @@ public class SrvAccSettingsLine<T extends IHasId<?>, O extends IHasId<?>>
    * @throws Exception - an exception
    */
   public final void addAccSettingsIntoAttrs(
-    final Map<String, ?> pAddParam) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     IAttributes attributes = (IAttributes) pAddParam.get("attributes");
     attributes.setAttribute("accSettings", srvAccSettings.lazyGetAccSettings());
   }

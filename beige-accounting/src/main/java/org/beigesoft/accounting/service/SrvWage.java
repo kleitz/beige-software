@@ -66,7 +66,7 @@ public class SrvWage<RS>
    **/
   @Override
   public final Wage createEntity(
-    final Map<String, ?> pAddParam) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     Wage entity = new Wage();
     entity.setIdDatabaseBirth(getSrvOrm().getIdDatabase());
     entity.setItsDate(new Date());
@@ -82,7 +82,7 @@ public class SrvWage<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void makeAddPrepareForCopy(final Map<String, ?> pAddParam,
+  public final void makeAddPrepareForCopy(final Map<String, Object> pAddParam,
     final Wage pEntity) throws Exception {
     @SuppressWarnings("unchecked")
     Map<String, String[]> parameterMap = (Map<String, String[]>) pAddParam.
@@ -108,7 +108,7 @@ public class SrvWage<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void makeOtherEntries(final Map<String, ?> pAddParam,
+  public final void makeOtherEntries(final Map<String, Object> pAddParam,
     final Wage pEntity, final boolean pIsNew) throws Exception {
     @SuppressWarnings("unchecked")
     Map<String, String[]> parameterMap = (Map<String, String[]>) pAddParam.
@@ -171,7 +171,7 @@ public class SrvWage<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void retrieveOtherDataFor(final Map<String, ?> pAddParam,
+  public final void retrieveOtherDataFor(final Map<String, Object> pAddParam,
     final Wage pEntity) throws Exception {
     //nothing
   }
@@ -183,8 +183,9 @@ public class SrvWage<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void addCheckIsReadyToAccount(final Map<String, ?> pAddParam,
-    final Wage pEntity) throws Exception {
+  public final void addCheckIsReadyToAccount(
+    final Map<String, Object> pAddParam,
+      final Wage pEntity) throws Exception {
     //nothing
   }
 
@@ -197,7 +198,7 @@ public class SrvWage<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void checkOtherFraudUpdate(final Map<String, ?> pAddParam,
+  public final void checkOtherFraudUpdate(final Map<String, Object> pAddParam,
     final Wage pEntity,
       final Wage pOldEntity) throws Exception {
     //nothing
@@ -210,7 +211,7 @@ public class SrvWage<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void makeFirstPrepareForSave(final Map<String, ?> pAddParam,
+  public final void makeFirstPrepareForSave(final Map<String, Object> pAddParam,
     final Wage pEntity) throws Exception {
     //nothing
   }

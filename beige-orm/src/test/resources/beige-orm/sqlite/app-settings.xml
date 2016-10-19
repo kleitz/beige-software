@@ -10,6 +10,8 @@
 <properties>
 <comment>App properties</comment>
 <entry key="title">Beige ORM</entry>
+<entry key="databaseVersion">1</entry>
+<entry key="useSubFolder">sqlite</entry>
 <entry key="jdbcDriverClass">org.sqlite.JDBC</entry>
 <entry key="dataSourceClassName">org.sqlite.SQLiteDataSource</entry>
 <entry key="databaseName">#currentParentDir#beigeaccountingtest.sqlite</entry>

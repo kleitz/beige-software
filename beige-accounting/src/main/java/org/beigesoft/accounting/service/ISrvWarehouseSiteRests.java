@@ -29,5 +29,5 @@ public interface ISrvWarehouseSiteRests {
    * @throws Exception - an exception
    **/
   List<WarehouseSiteRestLine> retrieveWarehouseSiteRests(
-    Map<String, ?> pAddParam) throws Exception;
+    Map<String, Object> pAddParam) throws Exception;
 }

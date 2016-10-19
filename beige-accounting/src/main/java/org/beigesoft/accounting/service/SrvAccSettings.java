@@ -88,7 +88,7 @@ public class SrvAccSettings
    **/
   @Override
   public final AccSettings createEntity(
-    final Map<String, ?> pAddParam) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     AccSettings lAccSettings = new AccSettings();
     lAccSettings.setIsNew(true);
     return lAccSettings;
@@ -103,7 +103,7 @@ public class SrvAccSettings
    **/
   @Override
   public final AccSettings retrieveCopyEntity(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pId) throws Exception {
     throw new ExceptionWithCode(ExceptionWithCode.FORBIDDEN,
       "Attempt to copy accounting settings by " + pAddParam.get("user"));
@@ -117,7 +117,7 @@ public class SrvAccSettings
    * @throws Exception - an exception
    **/
   @Override
-  public final synchronized void saveEntity(final Map<String, ?> pAddParam,
+  public final synchronized void saveEntity(final Map<String, Object> pAddParam,
     final AccSettings pEntity,
       final boolean isEntityDetached) throws Exception {
     if (pEntity.getIsNew()) {
@@ -156,7 +156,7 @@ public class SrvAccSettings
    **/
   @Override
   public final synchronized AccSettings retrieveEntity(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final AccSettings pEntity) throws Exception {
     return lazyGetAccSettings();
   }
@@ -170,7 +170,7 @@ public class SrvAccSettings
    **/
   @Override
   public final synchronized AccSettings retrieveEntityById(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pId) throws Exception {
     return lazyGetAccSettings();
   }
@@ -182,7 +182,7 @@ public class SrvAccSettings
    * @throws Exception - an exception
    **/
   @Override
-  public final void deleteEntity(final Map<String, ?> pAddParam,
+  public final void deleteEntity(final Map<String, Object> pAddParam,
     final AccSettings pEntity) throws Exception {
     throw new ExceptionWithCode(ExceptionWithCode.FORBIDDEN,
       "Attempt to delete line by " + pAddParam.get("user"));
@@ -195,7 +195,7 @@ public class SrvAccSettings
    * @throws Exception - an exception
    **/
   @Override
-  public final void deleteEntity(final Map<String, ?> pAddParam,
+  public final void deleteEntity(final Map<String, Object> pAddParam,
     final Object pId) throws Exception {
     throw new ExceptionWithCode(ExceptionWithCode.FORBIDDEN,
       "Attempt to delete line by " + pAddParam.get("user"));
@@ -209,7 +209,7 @@ public class SrvAccSettings
    */
   @Override
   public final List<AccSettings> retrieveList(
-    final Map<String, ?> pAddParam) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     return getSrvOrm().retrieveList(this.entityClass);
   }
 
@@ -223,7 +223,7 @@ public class SrvAccSettings
    */
   @Override
   public final List<AccSettings> retrieveListWithConditions(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final String pQueryConditions) throws Exception {
     return getSrvOrm()
       .retrieveListWithConditions(this.entityClass, pQueryConditions);
@@ -239,7 +239,7 @@ public class SrvAccSettings
    */
   @Override
   public final List<AccSettings> retrievePage(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Integer pFirst, final Integer pPageSize) throws Exception {
     return getSrvOrm().retrievePage(this.entityClass, pFirst, pPageSize);
   }
@@ -255,7 +255,7 @@ public class SrvAccSettings
    */
   @Override
   public final List<AccSettings> retrievePageWithConditions(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final String pQueryConditions,
         final Integer pFirst, final Integer pPageSize) throws Exception {
     return getSrvOrm().retrievePageWithConditions(this.entityClass,
@@ -269,7 +269,7 @@ public class SrvAccSettings
    */
   @Override
   public final Integer evalRowCount(
-    final Map<String, ?> pAddParam) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     return 1;
   }
   /**
@@ -280,7 +280,7 @@ public class SrvAccSettings
    * @throws Exception - an exception
    */
   @Override
-  public final Integer evalRowCountWhere(final Map<String, ?> pAddParam,
+  public final Integer evalRowCountWhere(final Map<String, Object> pAddParam,
     final String pWhere) throws Exception {
     return 1;
   }

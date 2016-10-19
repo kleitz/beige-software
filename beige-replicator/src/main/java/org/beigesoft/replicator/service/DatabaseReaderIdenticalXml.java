@@ -67,7 +67,7 @@ public class DatabaseReaderIdenticalXml<RS> implements IDatabaseReader {
    **/
   @Override
   public final void readAndStoreEntities(final Reader pReader,
-    final Map<String, ?> pAddParam) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     try {
       this.srvDatabase.setIsAutocommit(false);
       this.srvDatabase.

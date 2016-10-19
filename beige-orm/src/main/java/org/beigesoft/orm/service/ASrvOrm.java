@@ -1325,25 +1325,26 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
         dirPath = File.separator + this.propertiesBase.getDirectory()
           + File.separator;
       }
-      String initRdbms = this.mngSettings.getAppSettings().get("initRdbms");
-      if (initRdbms != null) {
-        String initSql = loadString(dirPath + initRdbms);
-        if (initSql != null) {
-          getLogger().info(ASrvOrm.class, dirPath
-            + initRdbms + " found, try to execute.");
-          for (String initSingle : initSql.split("\n")) {
-            if (initSingle.trim().length() > 1 && !initSingle.startsWith("/")) {
-              srvDatabase.executeQuery(initSingle);
-            }
+      String useSubFolder = this.mngSettings
+        .getAppSettings().get("useSubFolder");
+      String initSql = loadString(dirPath + useSubFolder
+          + File.separator + "init.sql");
+      if (initSql != null) {
+        getLogger().info(ASrvOrm.class, "init.sql found, try to execute.");
+        for (String initSingle : initSql.split("\n")) {
+          if (initSingle.trim().length() > 1 && !initSingle.startsWith("/")) {
+            srvDatabase.executeQuery(initSingle);
           }
-        } else {
-          getLogger().info(ASrvOrm.class, dirPath + initRdbms + " not found.");
         }
+      } else {
+        getLogger().info(ASrvOrm.class, "init.sql not found.");
       }
       if (ifAllTablesCreated) {
         getLogger().info(ASrvOrm.class, "all tables has been created.");
         DatabaseInfo databaseInfo = new DatabaseInfo();
-        databaseInfo.setDatabaseVersion(1);
+        int dbVer = Integer.parseInt(this.mngSettings
+        .getAppSettings().get("databaseVersion"));
+        databaseInfo.setDatabaseVersion(dbVer);
         Double randomDbl = Math.random() * 1000000000;
         databaseInfo.setDatabaseId(randomDbl.intValue());
         databaseInfo.setDescription("a database");
@@ -1367,38 +1368,48 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
         getLogger().info(ASrvOrm.class, "tables already created.");
       }
       if (!ifAllTablesCreated) {
-        Integer nestVersion = srvDatabase.getVersionDatabase() + 1;
-        String upgradeSqlName = "upgrade_" + nestVersion + ".sql";
-        String upgradeSql = loadString(dirPath + upgradeSqlName);
-        if (upgradeSql != null) {
-          getLogger().info(ASrvOrm.class, dirPath
-            + upgradeSqlName + " found, try to execute.");
-          //in single transaction:
-          try {
-            this.srvDatabase.setIsAutocommit(false);
-            this.srvDatabase.setTransactionIsolation(ISrvDatabase
-              .TRANSACTION_READ_UNCOMMITTED);
-            this.srvDatabase.beginTransaction();
-            for (String upgradeSingle : upgradeSql.split("\n")) {
-              if (upgradeSingle.trim().length() > 1
-                && !upgradeSingle.startsWith("/")) {
-                srvDatabase.executeQuery(upgradeSingle);
-              }
-            }
-            this.srvDatabase.commitTransaction();
-          } catch (Exception ex) {
-            this.srvDatabase.rollBackTransaction();
-            throw ex;
-          }
-        } else {
-          getLogger().info(ASrvOrm.class, dirPath
-            + upgradeSqlName + " not found.");
-        }
+        tryUgradeDatabase(dirPath + useSubFolder + File.separator);
       }
     } finally {
       srvDatabase.releaseResources(); //close connection
     }
     return ifCreatedOrAdded;
+  }
+
+  /**
+   * <p>Trying to upgrade database .</p>
+   * @param pUpgradeDir e.g. bs/beige-orm/sqlite
+   * @throws Exception - an exception
+   **/
+  public final void tryUgradeDatabase(
+    final String pUpgradeDir) throws Exception {
+    Integer nextVersion = srvDatabase.getVersionDatabase() + 1;
+    String upgradeSqlName = "upgrade_" + nextVersion + ".sql";
+    String upgradeSql = loadString(pUpgradeDir + upgradeSqlName);
+    while (upgradeSql != null) {
+      getLogger().info(ASrvOrm.class, pUpgradeDir
+        + upgradeSqlName + " found, try to execute.");
+      //in single transaction:
+      try {
+        this.srvDatabase.setIsAutocommit(false);
+        this.srvDatabase.setTransactionIsolation(ISrvDatabase
+          .TRANSACTION_READ_UNCOMMITTED);
+        this.srvDatabase.beginTransaction();
+        for (String upgradeSingle : upgradeSql.split("\n")) {
+          if (upgradeSingle.trim().length() > 1
+            && !upgradeSingle.startsWith("/")) {
+            srvDatabase.executeQuery(upgradeSingle);
+          }
+        }
+        this.srvDatabase.commitTransaction();
+      } catch (Exception ex) {
+        this.srvDatabase.rollBackTransaction();
+        throw ex;
+      }
+      nextVersion = srvDatabase.getVersionDatabase() + 1;
+      upgradeSqlName = "upgrade_" + nextVersion + ".sql";
+      upgradeSql = loadString(pUpgradeDir + upgradeSqlName);
+    }
   }
 
   /**

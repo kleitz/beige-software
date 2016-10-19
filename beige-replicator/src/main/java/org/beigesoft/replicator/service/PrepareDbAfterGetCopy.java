@@ -44,10 +44,10 @@ public class PrepareDbAfterGetCopy
     final Map<String, Object> pAddParam) throws Exception {
     this.factoryAppBeans.releaseBeans();
     pAddParam.put("statusPrepareAfterImport", new Date().toString() + ", "
-      + PrepareDbAfterGetCopyPostgresql.class.getSimpleName()
-        + "App-factory beans has released");
-    this.logger.info(PrepareDbAfterGetCopyPostgresql.class,
-      "App-factory beans has released");
+      + PrepareDbAfterGetCopy.class.getSimpleName()
+        + ", app-factory beans has released");
+    this.logger.info(PrepareDbAfterGetCopy.class,
+      "app-factory beans has released");
   }
 
   //Simple getters and setters:

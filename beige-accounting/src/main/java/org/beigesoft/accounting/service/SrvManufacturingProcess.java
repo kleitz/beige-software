@@ -63,7 +63,7 @@ public class SrvManufacturingProcess<RS>
    **/
   @Override
   public final ManufacturingProcess createEntity(
-    final Map<String, ?> pAddParam) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     ManufacturingProcess entity = new ManufacturingProcess();
     entity.setIdDatabaseBirth(getSrvOrm().getIdDatabase());
     entity.setItsDate(new Date());
@@ -79,7 +79,7 @@ public class SrvManufacturingProcess<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void makeAddPrepareForCopy(final Map<String, ?> pAddParam,
+  public final void makeAddPrepareForCopy(final Map<String, Object> pAddParam,
     final ManufacturingProcess pEntity) throws Exception {
     @SuppressWarnings("unchecked")
     Map<String, String[]> parameterMap = (Map<String, String[]>) pAddParam.
@@ -103,7 +103,7 @@ public class SrvManufacturingProcess<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void makeOtherEntries(final Map<String, ?> pAddParam,
+  public final void makeOtherEntries(final Map<String, Object> pAddParam,
     final ManufacturingProcess pEntity, final boolean pIsNew) throws Exception {
     if (pEntity.getReversedId() != null) {
       pEntity.setTheRest(BigDecimal.ZERO);
@@ -166,8 +166,9 @@ public class SrvManufacturingProcess<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void addCheckIsReadyToAccount(final Map<String, ?> pAddParam,
-    final ManufacturingProcess pEntity) throws Exception {
+  public final void addCheckIsReadyToAccount(
+    final Map<String, Object> pAddParam,
+      final ManufacturingProcess pEntity) throws Exception {
     if (!pEntity.getIsComplete()) {
       throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
         "manufacturing_must_be_completed");
@@ -183,7 +184,7 @@ public class SrvManufacturingProcess<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void checkOtherFraudUpdate(final Map<String, ?> pAddParam,
+  public final void checkOtherFraudUpdate(final Map<String, Object> pAddParam,
     final ManufacturingProcess pEntity,
       final ManufacturingProcess pOldEntity) throws Exception {
     if (pOldEntity.getIsComplete()) {
@@ -199,7 +200,7 @@ public class SrvManufacturingProcess<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void makeFirstPrepareForSave(final Map<String, ?> pAddParam,
+  public final void makeFirstPrepareForSave(final Map<String, Object> pAddParam,
     final ManufacturingProcess pEntity) throws Exception {
     if (pEntity.getItsQuantity().doubleValue() == 0) {
       throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,

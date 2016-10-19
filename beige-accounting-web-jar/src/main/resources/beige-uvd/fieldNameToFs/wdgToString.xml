@@ -13,4 +13,5 @@
 <entry key="subaccType">toStrSubaccType</entry>
 <entry key="paymentTotal">toStrPaymentTotal</entry>
 <entry key="currentAccYear">toStrYear</entry>
+<entry key="payByDate">toStrDate</entry>
 </properties>

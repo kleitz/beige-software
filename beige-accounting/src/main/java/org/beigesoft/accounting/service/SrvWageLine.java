@@ -64,7 +64,7 @@ public class SrvWageLine<RS>
    **/
   @Override
   public final WageLine createEntity(
-    final Map<String, ?> pAddParam) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     WageLine entity = new WageLine();
     entity.setIdDatabaseBirth(getSrvOrm().getIdDatabase());
     entity.setIsNew(true);
@@ -83,7 +83,7 @@ public class SrvWageLine<RS>
    **/
   @Override
   public final WageLine retrieveCopyEntity(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pId) throws Exception {
     WageLine entity = getSrvOrm().retrieveCopyEntity(
       WageLine.class, pId);
@@ -100,7 +100,7 @@ public class SrvWageLine<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final WageLine retrieveEntity(final Map<String, ?> pAddParam,
+  public final WageLine retrieveEntity(final Map<String, Object> pAddParam,
     final WageLine pEntity) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
     return getSrvOrm().retrieveEntityById(getEntityClass(), pEntity.getItsId());
@@ -115,7 +115,7 @@ public class SrvWageLine<RS>
    **/
   @Override
   public final WageLine retrieveEntityById(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pId) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
     return getSrvOrm().retrieveEntityById(WageLine.class, pId);
@@ -128,7 +128,7 @@ public class SrvWageLine<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void deleteEntity(final Map<String, ?> pAddParam,
+  public final void deleteEntity(final Map<String, Object> pAddParam,
     final WageLine pEntity) throws Exception {
     if (pEntity.getItsOwner().getHasMadeAccEntries()) {
       throw new ExceptionWithCode(ExceptionWithCode.FORBIDDEN,
@@ -145,7 +145,7 @@ public class SrvWageLine<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void deleteEntity(final Map<String, ?> pAddParam,
+  public final void deleteEntity(final Map<String, Object> pAddParam,
     final Object pId) throws Exception {
     WageLine entity = getSrvOrm()
       .retrieveEntityById(WageLine.class, pId);
@@ -165,7 +165,7 @@ public class SrvWageLine<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void saveEntity(final Map<String, ?> pAddParam,
+  public final void saveEntity(final Map<String, Object> pAddParam,
     final WageLine pEntity,
       final boolean isEntityDetached) throws Exception {
     if (pEntity.getGrossWage().doubleValue() == 0d) {
@@ -197,7 +197,7 @@ public class SrvWageLine<RS>
    **/
   @Override
   public final WageLine createEntityWithOwnerById(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pIdOwner) throws Exception {
     WageLine entity = new WageLine();
     entity.setIdDatabaseBirth(getSrvOrm().getIdDatabase());
@@ -223,7 +223,7 @@ public class SrvWageLine<RS>
    **/
   @Override
   public final WageLine createEntityWithOwner(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Wage pEntityItsOwner) throws Exception {
     WageLine entity = new WageLine();
     entity.setIsNew(true);
@@ -243,7 +243,7 @@ public class SrvWageLine<RS>
    */
   @Override
   public final List<WageLine> retrieveOwnedListById(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pIdEntityItsOwner) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
     return getSrvOrm().retrieveEntityOwnedlist(WageLine.class,
@@ -260,7 +260,7 @@ public class SrvWageLine<RS>
    */
   @Override
   public final List<WageLine> retrieveOwnedList(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Wage pEntityItsOwner) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
     return getSrvOrm().retrieveEntityOwnedlist(WageLine.class,

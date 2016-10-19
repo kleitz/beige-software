@@ -23,6 +23,7 @@ import java.net.URL;
 import java.net.Authenticator;
 import java.net.PasswordAuthentication;
 import java.net.HttpURLConnection;
+import java.net.CookiePolicy;
 import java.net.CookieManager;
 import java.net.HttpCookie;
 import java.net.CookieHandler;
@@ -112,12 +113,13 @@ public class ClearDbThenGetAnotherCopyXmlHttp<RS>
       } else if ("form".equals(authMethod)) {
         CookieManager cookieManager = new CookieManager();
         CookieHandler.setDefault(cookieManager);
+        cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
         requestCookiesGet(pAddParam);
         authForm(pAddParam, cookieManager);
       }
       makeJob(url, pAddParam);
       String statusString =
-        " Database has been emptied and data has been imported.";
+        ", Database has been emptied and data has been imported.";
       pAddParam.put("statusString", new Date().toString() + ", "
         + ClearDbThenGetAnotherCopyXmlHttp.class.getSimpleName()
           + statusString);

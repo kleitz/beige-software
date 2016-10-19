@@ -81,7 +81,7 @@ public class SrvManufacture<RS>
    **/
   @Override
   public final Manufacture createEntity(
-    final Map<String, ?> pAddParam) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     Manufacture entity = new Manufacture();
     entity.setIdDatabaseBirth(getSrvOrm().getIdDatabase());
     entity.setItsDate(new Date());
@@ -96,7 +96,7 @@ public class SrvManufacture<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void makeAddPrepareForCopy(final Map<String, ?> pAddParam,
+  public final void makeAddPrepareForCopy(final Map<String, Object> pAddParam,
     final Manufacture pEntity) throws Exception {
     @SuppressWarnings("unchecked")
     Map<String, String[]> parameterMap = (Map<String, String[]>) pAddParam.
@@ -118,7 +118,7 @@ public class SrvManufacture<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void makeOtherEntries(final Map<String, ?> pAddParam,
+  public final void makeOtherEntries(final Map<String, Object> pAddParam,
     final Manufacture pEntity, final boolean pIsNew) throws Exception {
     //always new
     ManufactureForDraw manufactureForDraw = new ManufactureForDraw(pEntity);
@@ -147,8 +147,9 @@ public class SrvManufacture<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void addCheckIsReadyToAccount(final Map<String, ?> pAddParam,
-    final Manufacture pEntity) throws Exception {
+  public final void addCheckIsReadyToAccount(
+    final Map<String, Object> pAddParam,
+      final Manufacture pEntity) throws Exception {
     //nothing
   }
 
@@ -161,7 +162,7 @@ public class SrvManufacture<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void checkOtherFraudUpdate(final Map<String, ?> pAddParam,
+  public final void checkOtherFraudUpdate(final Map<String, Object> pAddParam,
     final Manufacture pEntity,
       final Manufacture pOldEntity) throws Exception {
     //never update
@@ -174,7 +175,7 @@ public class SrvManufacture<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void makeFirstPrepareForSave(final Map<String, ?> pAddParam,
+  public final void makeFirstPrepareForSave(final Map<String, Object> pAddParam,
     final Manufacture pEntity) throws Exception {
     ManufacturingProcess mnfProcess = getSrvOrm().retrieveEntityById(
       ManufacturingProcess.class, pEntity.getManufacturingProcess().getItsId());

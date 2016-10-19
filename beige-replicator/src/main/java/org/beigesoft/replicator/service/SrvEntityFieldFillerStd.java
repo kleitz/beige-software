@@ -15,6 +15,7 @@ import java.util.Date;
 import java.math.BigDecimal;
 import java.lang.reflect.Field;
 
+import org.beigesoft.service.IUtilXml;
 import org.beigesoft.exception.ExceptionWithCode;
 import org.beigesoft.service.UtlReflection;
 
@@ -32,6 +33,11 @@ public class SrvEntityFieldFillerStd implements ISrvEntityFieldFiller {
   private UtlReflection utlReflection;
 
   /**
+   * <p>XML service.</p>
+   **/
+  private IUtilXml utilXml;
+
+  /**
    * <p>
    * Fill given field of given entity according value represented as
    * string.
@@ -45,7 +51,7 @@ public class SrvEntityFieldFillerStd implements ISrvEntityFieldFiller {
   @Override
   public final void fill(final Object pEntity, final String pFieldName,
     final String pFieldStrValue,
-      final Map<String, ?> pAddParam) throws Exception {
+      final Map<String, Object> pAddParam) throws Exception {
     Field rField = getUtlReflection().retrieveField(pEntity.getClass(),
       pFieldName);
     rField.setAccessible(true);
@@ -77,7 +83,8 @@ public class SrvEntityFieldFillerStd implements ISrvEntityFieldFiller {
       } else if (Long.class == rField.getType()) {
         rField.set(pEntity, Long.valueOf(pFieldStrValue));
       } else if (String.class == rField.getType()) {
-        rField.set(pEntity, pFieldStrValue);
+        String unescaped = this.utilXml.unescapeXml(pFieldStrValue);
+        rField.set(pEntity, unescaped);
       } else {
         isFilled = false;
       }
@@ -108,5 +115,21 @@ public class SrvEntityFieldFillerStd implements ISrvEntityFieldFiller {
    **/
   public final void setUtlReflection(final UtlReflection pUtlReflection) {
     this.utlReflection = pUtlReflection;
+  }
+
+  /**
+   * <p>Getter for utilXml.</p>
+   * @return IUtilXml
+   **/
+  public final IUtilXml getUtilXml() {
+    return this.utilXml;
+  }
+
+  /**
+   * <p>Setter for utilXml.</p>
+   * @param pUtilXml reference
+   **/
+  public final void setUtilXml(final IUtilXml pUtilXml) {
+    this.utilXml = pUtilXml;
   }
 }

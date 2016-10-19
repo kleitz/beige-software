@@ -60,7 +60,7 @@ public class SrvPurchaseReturn<RS>
    **/
   @Override
   public final PurchaseReturn createEntity(
-    final Map<String, ?> pAddParam) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     PurchaseReturn entity = new PurchaseReturn();
     entity.setIdDatabaseBirth(getSrvOrm().getIdDatabase());
     entity.setItsDate(new Date());
@@ -76,7 +76,7 @@ public class SrvPurchaseReturn<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void makeAddPrepareForCopy(final Map<String, ?> pAddParam,
+  public final void makeAddPrepareForCopy(final Map<String, Object> pAddParam,
     final PurchaseReturn pEntity) throws Exception {
     // nothing
   }
@@ -89,7 +89,7 @@ public class SrvPurchaseReturn<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void makeOtherEntries(final Map<String, ?> pAddParam,
+  public final void makeOtherEntries(final Map<String, Object> pAddParam,
     final PurchaseReturn pEntity, final boolean pIsNew) throws Exception {
     @SuppressWarnings("unchecked")
     Map<String, String[]> parameterMap = (Map<String, String[]>) pAddParam.
@@ -162,8 +162,9 @@ public class SrvPurchaseReturn<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void addCheckIsReadyToAccount(final Map<String, ?> pAddParam,
-    final PurchaseReturn pEntity) throws Exception {
+  public final void addCheckIsReadyToAccount(
+    final Map<String, Object> pAddParam,
+      final PurchaseReturn pEntity) throws Exception {
     //nothing
   }
 
@@ -176,7 +177,7 @@ public class SrvPurchaseReturn<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void checkOtherFraudUpdate(final Map<String, ?> pAddParam,
+  public final void checkOtherFraudUpdate(final Map<String, Object> pAddParam,
     final PurchaseReturn pEntity,
       final PurchaseReturn pOldEntity) throws Exception {
     //nothing
@@ -189,7 +190,7 @@ public class SrvPurchaseReturn<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void makeFirstPrepareForSave(final Map<String, ?> pAddParam,
+  public final void makeFirstPrepareForSave(final Map<String, Object> pAddParam,
     final PurchaseReturn pEntity) throws Exception {
     //nothing
   }

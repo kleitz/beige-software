@@ -84,7 +84,7 @@ public class SrvWarehouseEntry<RS> implements ISrvWarehouseEntry {
    * @throws Exception - an exception
    **/
   @Override
-  public final void load(final Map<String, ?> pAddParam,
+  public final void load(final Map<String, Object> pAddParam,
     final IMakingWarehouseEntry pEntity,
       final WarehouseSite pWhSiteTo) throws Exception {
     WarehouseEntry wms = null;
@@ -135,7 +135,7 @@ public class SrvWarehouseEntry<RS> implements ISrvWarehouseEntry {
    * @throws Exception - an exception
    **/
   @Override
-  public final void move(final Map<String, ?> pAddParam,
+  public final void move(final Map<String, Object> pAddParam,
     final IMakingWarehouseEntry pEntity, final WarehouseSite pWhSiteFrom,
       final WarehouseSite pWhSiteTo) throws Exception {
     WarehouseEntry wms = null;
@@ -183,7 +183,7 @@ public class SrvWarehouseEntry<RS> implements ISrvWarehouseEntry {
    * @throws Exception - an exception
    **/
   @Override
-  public final void makeWarehouseRest(final Map<String, ?> pAddParam,
+  public final void makeWarehouseRest(final Map<String, Object> pAddParam,
     final IMakingWarehouseEntry pEntity,
       final WarehouseSite pWhSite,
         final BigDecimal pQuantity) throws Exception {
@@ -226,7 +226,7 @@ public class SrvWarehouseEntry<RS> implements ISrvWarehouseEntry {
    * @throws Exception - an exception
    **/
   @Override
-  public final void withdrawal(final Map<String, ?> pAddParam,
+  public final void withdrawal(final Map<String, Object> pAddParam,
     final IMakingWarehouseEntry pEntity) throws Exception {
     List<WarehouseRest> wrl = getSrvOrm().retrieveListWithConditions(
       WarehouseRest.class, "where THEREST>0 and INVITEM="
@@ -282,7 +282,7 @@ public class SrvWarehouseEntry<RS> implements ISrvWarehouseEntry {
    * @throws Exception - an exception
    **/
   @Override
-  public final void reverseDraw(final Map<String, ?> pAddParam,
+  public final void reverseDraw(final Map<String, Object> pAddParam,
     final IMakingWarehouseEntry pEntity) throws Exception {
     if (pEntity.getItsQuantity().doubleValue() > 0) {
       throw new ExceptionWithCode(ExceptionWithCode.SOMETHING_WRONG,
@@ -342,7 +342,7 @@ public class SrvWarehouseEntry<RS> implements ISrvWarehouseEntry {
    **/
   @Override
   public final List<WarehouseEntry> retrieveEntriesFor(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final IDocWarehouse pEntity) throws Exception {
     String where = null;
     if (pEntity instanceof IMakingWarehouseEntry) {

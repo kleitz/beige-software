@@ -349,7 +349,7 @@ public class SrvBalanceStd<RS> implements ISrvBalance {
    **/
   @Override
   public final synchronized List<TrialBalanceLine> retrieveTrialBalance(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Date pDate) throws Exception {
     recalculateAllIfNeed(pDate);
     List<TrialBalanceLine> result = new ArrayList<TrialBalanceLine>();

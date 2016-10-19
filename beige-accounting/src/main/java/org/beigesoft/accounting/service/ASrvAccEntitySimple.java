@@ -74,7 +74,7 @@ public abstract class ASrvAccEntitySimple<RS, T extends IHasId<?>>
    */
   @Override
   public final List<T> retrieveList(
-    final Map<String, ?> pAddParam) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     return getSrvOrm().retrieveList(this.entityClass);
   }
 
@@ -87,7 +87,7 @@ public abstract class ASrvAccEntitySimple<RS, T extends IHasId<?>>
    */
   @Override
   public final List<T> retrieveListWithConditions(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final String pQueryConditions) throws Exception {
     return getSrvOrm().retrieveListWithConditions(this.entityClass,
       pQueryConditions);
@@ -102,7 +102,7 @@ public abstract class ASrvAccEntitySimple<RS, T extends IHasId<?>>
    * @throws Exception - an exception
    */
   @Override
-  public final List<T> retrievePage(final Map<String, ?> pAddParam,
+  public final List<T> retrievePage(final Map<String, Object> pAddParam,
       final Integer pFirst, final Integer pPageSize) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
     return getSrvOrm().retrievePage(this.entityClass,
@@ -120,7 +120,7 @@ public abstract class ASrvAccEntitySimple<RS, T extends IHasId<?>>
    */
   @Override
   public final List<T> retrievePageWithConditions(
-    final Map<String, ?> pAddParam, final String pQueryConditions,
+    final Map<String, Object> pAddParam, final String pQueryConditions,
       final Integer pFirst, final Integer pPageSize) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
     return getSrvOrm().retrievePageWithConditions(this.entityClass,
@@ -136,7 +136,7 @@ public abstract class ASrvAccEntitySimple<RS, T extends IHasId<?>>
    */
   @Override
   public final Integer evalRowCount(
-    final Map<String, ?> pAddParam) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     return getSrvOrm().evalRowCount(this.entityClass);
   }
   /**
@@ -147,7 +147,7 @@ public abstract class ASrvAccEntitySimple<RS, T extends IHasId<?>>
    * @throws Exception - an exception
    */
   @Override
-  public final Integer evalRowCountWhere(final Map<String, ?> pAddParam,
+  public final Integer evalRowCountWhere(final Map<String, Object> pAddParam,
     final String pWhere) throws Exception {
     return getSrvOrm().evalRowCountWhere(this.entityClass, pWhere);
   }
@@ -159,7 +159,7 @@ public abstract class ASrvAccEntitySimple<RS, T extends IHasId<?>>
    * @throws Exception - an exception
    */
   public final void addAccSettingsIntoAttrs(
-    final Map<String, ?> pAddParam) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     IAttributes attributes = (IAttributes) pAddParam.get("attributes");
     attributes.setAttribute("accSettings", srvAccSettings.lazyGetAccSettings());
   }

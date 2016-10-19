@@ -85,7 +85,7 @@ public class SrvSalesReturnLine<RS>
    **/
   @Override
   public final SalesReturnLine createEntity(
-    final Map<String, ?> pAddParam) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     SalesReturnLine entity = new SalesReturnLine();
     entity.setIdDatabaseBirth(getSrvOrm().getIdDatabase());
     entity.setIsNew(true);
@@ -104,7 +104,7 @@ public class SrvSalesReturnLine<RS>
    **/
   @Override
   public final SalesReturnLine retrieveCopyEntity(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pId) throws Exception {
     SalesReturnLine entity = getSrvOrm().retrieveCopyEntity(
       SalesReturnLine.class, pId);
@@ -144,7 +144,7 @@ public class SrvSalesReturnLine<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void saveEntity(final Map<String, ?> pAddParam,
+  public final void saveEntity(final Map<String, Object> pAddParam,
     final SalesReturnLine pEntity,
       final boolean isEntityDetached) throws Exception {
     if (pEntity.getIsNew()) {
@@ -270,7 +270,7 @@ public class SrvSalesReturnLine<RS>
    **/
   @Override
   public final SalesReturnLine createEntityWithOwnerById(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pIdEntityItsOwner) throws Exception {
     SalesReturnLine entity = new SalesReturnLine();
     entity.setIdDatabaseBirth(getSrvOrm().getIdDatabase());
@@ -292,7 +292,7 @@ public class SrvSalesReturnLine<RS>
    **/
   @Override
   public final SalesReturnLine createEntityWithOwner(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final SalesReturn pEntityItsOwner) throws Exception {
     SalesReturnLine entity = new SalesReturnLine();
     entity.setIsNew(true);
@@ -312,7 +312,7 @@ public class SrvSalesReturnLine<RS>
    */
   @Override
   public final List<SalesReturnLine> retrieveOwnedListById(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pIdEntityItsOwner) throws Exception {
     return getSrvOrm().retrieveEntityOwnedlist(SalesReturnLine.class,
       SalesReturn.class, pIdEntityItsOwner);
@@ -328,7 +328,7 @@ public class SrvSalesReturnLine<RS>
    */
   @Override
   public final List<SalesReturnLine> retrieveOwnedList(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final SalesReturn pEntityItsOwner) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
     return getSrvOrm().retrieveEntityOwnedlist(SalesReturnLine.class,

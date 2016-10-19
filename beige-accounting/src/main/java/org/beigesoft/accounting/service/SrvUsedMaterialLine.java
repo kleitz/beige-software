@@ -81,7 +81,7 @@ public class SrvUsedMaterialLine<RS>
    **/
   @Override
   public final UsedMaterialLine createEntity(
-    final Map<String, ?> pAddParam) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     UsedMaterialLine entity = new UsedMaterialLine();
     entity.setIdDatabaseBirth(getSrvOrm().getIdDatabase());
     entity.setIsNew(true);
@@ -100,7 +100,7 @@ public class SrvUsedMaterialLine<RS>
    **/
   @Override
   public final UsedMaterialLine retrieveCopyEntity(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pId) throws Exception {
     UsedMaterialLine entity = getSrvOrm().retrieveCopyEntity(
       UsedMaterialLine.class, pId);
@@ -135,7 +135,7 @@ public class SrvUsedMaterialLine<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final void saveEntity(final Map<String, ?> pAddParam,
+  public final void saveEntity(final Map<String, Object> pAddParam,
     final UsedMaterialLine pEntity,
       final boolean isEntityDetached) throws Exception {
     if (pEntity.getIsNew()) {
@@ -230,7 +230,7 @@ public class SrvUsedMaterialLine<RS>
    **/
   @Override
   public final UsedMaterialLine createEntityWithOwnerById(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pIdEntityItsOwner) throws Exception {
     UsedMaterialLine entity = new UsedMaterialLine();
     entity.setIdDatabaseBirth(getSrvOrm().getIdDatabase());
@@ -252,7 +252,7 @@ public class SrvUsedMaterialLine<RS>
    **/
   @Override
   public final UsedMaterialLine createEntityWithOwner(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final ManufacturingProcess pEntityItsOwner) throws Exception {
     UsedMaterialLine entity = new UsedMaterialLine();
     entity.setIsNew(true);
@@ -272,7 +272,7 @@ public class SrvUsedMaterialLine<RS>
    */
   @Override
   public final List<UsedMaterialLine> retrieveOwnedListById(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final Object pIdEntityItsOwner) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
     return getSrvOrm().retrieveEntityOwnedlist(UsedMaterialLine.class,
@@ -289,7 +289,7 @@ public class SrvUsedMaterialLine<RS>
    */
   @Override
   public final List<UsedMaterialLine> retrieveOwnedList(
-    final Map<String, ?> pAddParam,
+    final Map<String, Object> pAddParam,
       final ManufacturingProcess pEntityItsOwner) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
     return getSrvOrm().retrieveEntityOwnedlist(UsedMaterialLine.class,

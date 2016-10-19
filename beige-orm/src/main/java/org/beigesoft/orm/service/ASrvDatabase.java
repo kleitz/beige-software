@@ -31,11 +31,6 @@ public abstract class ASrvDatabase<RS> implements ISrvDatabase<RS> {
   private int idDatabase = 0;
 
   /**
-   * <p>Database version.</p>
-   **/
-  private int versionDatabase = 0;
-
-  /**
    * <p>Logger.</p>
    **/
   private ILogger logger;
@@ -212,29 +207,26 @@ public abstract class ASrvDatabase<RS> implements ISrvDatabase<RS> {
    * @return database version
    **/
   @Override
-  public final synchronized int getVersionDatabase() {
-    if (this.versionDatabase == 0) {
-      try {
-        String query = "select count(*) as TOTALROWS from " + DatabaseInfo.class
-          .getSimpleName().toUpperCase() + ";";
-        Integer rowCount = evalIntegerResult(query, "TOTALROWS");
-        if (rowCount != 1) {
-          throw new ExceptionWithCode(ExceptionWithCode.CONFIGURATION_MISTAKE,
-            "database_info_config_error");
-        }
-        query = "select DATABASEVERSION from " + DatabaseInfo.class
-          .getSimpleName().toUpperCase() + ";";
-        Integer databaseVersion = evalIntegerResult(query, "DATABASEVERSION");
-        if (databaseVersion == null) {
-          throw new ExceptionWithCode(ExceptionWithCode.CONFIGURATION_MISTAKE,
-            "database_info_config_error");
-        }
-        this.versionDatabase = databaseVersion;
-      } catch (Exception e) {
-        throw new RuntimeException(e);
+  public final int getVersionDatabase() {
+    try {
+      String query = "select count(*) as TOTALROWS from " + DatabaseInfo.class
+        .getSimpleName().toUpperCase() + ";";
+      Integer rowCount = evalIntegerResult(query, "TOTALROWS");
+      if (rowCount != 1) {
+        throw new ExceptionWithCode(ExceptionWithCode.CONFIGURATION_MISTAKE,
+          "database_info_config_error");
       }
+      query = "select DATABASEVERSION from " + DatabaseInfo.class
+        .getSimpleName().toUpperCase() + ";";
+      Integer databaseVersion = evalIntegerResult(query, "DATABASEVERSION");
+      if (databaseVersion == null) {
+        throw new ExceptionWithCode(ExceptionWithCode.CONFIGURATION_MISTAKE,
+          "database_info_config_error");
+      }
+      return databaseVersion;
+    } catch (Exception e) {
+      throw new RuntimeException(e);
     }
-    return this.versionDatabase;
   }
 
   /**

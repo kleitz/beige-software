@@ -30,5 +30,5 @@ public interface ISrvEntityWriter {
    * @throws Exception - an exception
    **/
   void write(Object pEntity, Writer pWriter,
-    Map<String, ?> pAddParam) throws Exception;
+    Map<String, Object> pAddParam) throws Exception;
 }
