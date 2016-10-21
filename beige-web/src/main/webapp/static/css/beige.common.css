@@ -106,8 +106,8 @@ textarea {
 
 .btn-sm {
   font-size: small;
-  padding-top: 2px;
-  padding-bottom: 2px;}
+  padding-top: 3px;
+  padding-bottom: 3px;}
 
 .btn:hover, .page:hover, .page-current:hover, .form-actions input:hover, .form-actions a:hover, .form-actions button:hover {
   background-color: #3E6C92;

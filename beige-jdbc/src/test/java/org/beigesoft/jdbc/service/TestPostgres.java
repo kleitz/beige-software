@@ -82,7 +82,7 @@ public class TestPostgres {
     srvDatabase.setDataSource(ds);
   }
 
-  @Test
+  //@Test disabled as it isn't used in accounting
   public void testAll() throws Exception {
     String currDir = System.getProperty("user.dir");
     System.out.println("Start test JDBC  Postgresql");

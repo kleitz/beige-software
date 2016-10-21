@@ -304,6 +304,23 @@ balances not recalculated or not readable for android AVD N10_7 for DB ???
 *** Map<String, ?> -> Map<String, Object>
 *** XML import apos -> ' -> Carlo&amp;apos;s grocery.
     unescapeXml never invoked
+    
+-----
+get error ERROR: UNION types integer and text cannot be matched
+  cause Postgresql bug unresolved since 2011 () https://www.postgresql.org/message-id/201104122018.p3CKIlWR042915@wwwmaster.postgresql.org
+  Postgresql (9.5) required types for null (null::TEXT or null::INTEGER) in query:
+  union all
+
+select 1 as SOURCETYPE, PURCHASEINVOICE.ITSID as SOURCEID, PURCHASEINVOICE.ITSDATE,
+'SalesTaxFromPurchase' as ACCDEBIT, 2003 as SUBACCDEBITTYPE, TAX.ITSID as SUBACCDEBITID, TAX.ITSNAME as SUBACCDEBIT, sum(PURCHASEINVOICETAXLINE.ITSTOTAL) as DEBIT,
+null::TEXT as ACCCREDIT, null::INTEGER as SUBACCCREDITTYPE, null::INTEGER as SUBACCCREDITID, null::TEXT as SUBACCCREDIT, 0 as CREDIT
+from PURCHASEINVOICETAXLINE
+join PURCHASEINVOICE on PURCHASEINVOICE.ITSID = PURCHASEINVOICETAXLINE.ITSOWNER
+join TAX on TAX.ITSID = PURCHASEINVOICETAXLINE.TAX
+where PURCHASEINVOICETAXLINE.REVERSEDID is null and PURCHASEINVOICE.REVERSEDID is null and HASMADEACCENTRIES = 0 and TAX.ITSTYPE in (1,2) and TAX.DUEMETHOD = 0  and PURCHASEINVOICE.ITSID = 2
+group by SOURCETYPE, SOURCEID, ITSDATE, ACCDEBIT, SUBACCDEBITTYPE, SUBACCDEBITID, SUBACCDEBIT, ACCCREDIT, SUBACCCREDITTYPE, SUBACCCREDITID, SUBACCCREDIT
+decision - add MySql support and delete Postgresql from Accounting
+--------
 
 git:
 git config --global user.name "Your Name"

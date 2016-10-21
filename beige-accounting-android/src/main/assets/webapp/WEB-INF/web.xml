@@ -1195,13 +1195,28 @@ description, distributable, and context-param elements.
     </servlet>
 
     <servlet>
+        <servlet-name>org.apache.jsp.WEB_002dINF.jsp.filters.explicitFilterPaymentTotalPurchase_jsp</servlet-name>
+        <servlet-class>org.apache.jsp.WEB_002dINF.jsp.filters.explicitFilterPaymentTotalPurchase_jsp</servlet-class>
+    </servlet>
+
+    <servlet>
         <servlet-name>org.apache.jsp.WEB_002dINF.jsp.filters.filterInteger_jsp</servlet-name>
         <servlet-class>org.apache.jsp.WEB_002dINF.jsp.filters.filterInteger_jsp</servlet-class>
     </servlet>
 
     <servlet>
+        <servlet-name>org.apache.jsp.WEB_002dINF.jsp.filters.explicitFilterPaymentTotalSales_jsp</servlet-name>
+        <servlet-class>org.apache.jsp.WEB_002dINF.jsp.filters.explicitFilterPaymentTotalSales_jsp</servlet-class>
+    </servlet>
+
+    <servlet>
         <servlet-name>org.apache.jsp.WEB_002dINF.jsp.filters.filterCurrency_jsp</servlet-name>
         <servlet-class>org.apache.jsp.WEB_002dINF.jsp.filters.filterCurrency_jsp</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>org.apache.jsp.WEB_002dINF.jsp.filters.explicitFilterPaymentTotalTmpl_jsp</servlet-name>
+        <servlet-class>org.apache.jsp.WEB_002dINF.jsp.filters.explicitFilterPaymentTotalTmpl_jsp</servlet-class>
     </servlet>
 
     <servlet>
@@ -2635,13 +2650,28 @@ description, distributable, and context-param elements.
     </servlet-mapping>
 
     <servlet-mapping>
+        <servlet-name>org.apache.jsp.WEB_002dINF.jsp.filters.explicitFilterPaymentTotalPurchase_jsp</servlet-name>
+        <url-pattern>/WEB-INF/jsp/filters/explicitFilterPaymentTotalPurchase.jsp</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
         <servlet-name>org.apache.jsp.WEB_002dINF.jsp.filters.filterInteger_jsp</servlet-name>
         <url-pattern>/WEB-INF/jsp/filters/filterInteger.jsp</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>
+        <servlet-name>org.apache.jsp.WEB_002dINF.jsp.filters.explicitFilterPaymentTotalSales_jsp</servlet-name>
+        <url-pattern>/WEB-INF/jsp/filters/explicitFilterPaymentTotalSales.jsp</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
         <servlet-name>org.apache.jsp.WEB_002dINF.jsp.filters.filterCurrency_jsp</servlet-name>
         <url-pattern>/WEB-INF/jsp/filters/filterCurrency.jsp</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>org.apache.jsp.WEB_002dINF.jsp.filters.explicitFilterPaymentTotalTmpl_jsp</servlet-name>
+        <url-pattern>/WEB-INF/jsp/filters/explicitFilterPaymentTotalTmpl.jsp</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>

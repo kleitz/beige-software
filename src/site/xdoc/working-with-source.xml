@@ -41,8 +41,23 @@ export PATH=$PATH:$HOME/programmer/java/apache-maven-3.3.9/bin:$ANDROID_HOME/pla
       <p>Then add database beigeaccountingtest: "CREATE DATABASE beigeaccountingtest OWNER beigeaccounting;"</p>
       <p>You can change postgres user password: "\password postgres"</p>
       <p>Type "\q" to exit from <b>psql</b></p>
-      <p>Change authentication (trust means no password required): "nano /var/lib/pgsql/data/pg_hba.conf"</p>
-      <p>To restart run: "service postgresql restart"</p>
+      <p>Change authentication (change ident to password for IPV4): "nano /var/lib/pgsql/data/pg_hba.conf"</p>
+      <p>To restart run: "systemctl restart postgresql"</p>
+      <h4>Install MySql</h4>
+      Login as root:
+      <pre>
+        $ dnf install community-mysql-server
+        $ systemctl start mysqld // or service mysqld start
+        $ systemctl enable mysqld
+        $ mysql
+          >ALTER USER 'root'@'localhost' IDENTIFIED BY 'MyNewPass4!';
+          >SHOW DATABASES;
+          >CREATE DATABASE beigeaccounting;
+          >CREATE DATABASE beigeaccountingtest;
+          >CREATE USER 'beigeaccounting'@'localhost'IDENTIFIED BY 'beigeaccounting';
+          >GRANT ALL ON beigeaccounting.* TO 'beigeaccounting'@'localhost';
+          >GRANT ALL ON beigeaccountingtest.* TO 'beigeaccounting'@'localhost';
+      </pre>
       <p>Get last source from <a href="https://github.com/demidenko05/beige-software">https://github.com/demidenko05/beige-software</a> (zip archive or git clone) into folder [HOME]/git/beige-software</p>
       <p>Beige UML is Maven project that contains Android code. But right now there is no decent android-maven plugin and Android Developer Tools for Eclipse. This is not a problem.
       It is easy to compile, deploy, run with debug mode from command line. Any way Eclipse is the best option to change code and debug Java and Android application.

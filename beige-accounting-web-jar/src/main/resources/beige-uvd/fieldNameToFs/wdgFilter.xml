@@ -12,4 +12,6 @@
 <entry key="itsDate">filterDate</entry>
 <entry key="itsDateTime">filterDateTime</entry>
 <entry key="purchaseInvoice">null</entry>
+<entry key="payByDate">filterDate</entry>
+<entry key="paymentDescription">null</entry>
 </properties>

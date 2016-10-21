@@ -690,24 +690,29 @@ public class SrvWebEntity implements ISrvWebEntity {
     StringBuffer queryWhere = new StringBuffer();
     Map<String, Object> filterMap = new HashMap<String, Object>();
     for (Map.Entry<String, Map<String, String>> entry : fields) {
-      if ("filterEntity".equals(entry.getValue().get("wdgFilter"))) {
-        tryMakeWhereEntity(queryWhere, pReq, nameEntity, entry.getKey(),
-          filterMap);
-      } else if ("filterEntityIdString".equals(entry.getValue()
-        .get("wdgFilter"))) {
-        tryMakeWhereEntityIdString(queryWhere, pReq, nameEntity, entry.getKey(),
-          filterMap);
-      } else if ("filterEnum".equals(entry.getValue().get("wdgFilter"))) {
-        tryMakeWhereEnum(queryWhere, pReq, clazz, entry.getKey(),
-          filterMap);
-      } else if ("filterBoolean".equals(entry.getValue().get("wdgFilter"))) {
-        tryMakeWhereBoolean(queryWhere, pReq, clazz, entry.getKey(),
-          filterMap);
-      } else {
-        tryMakeWhereStd(queryWhere, pReq, nameEntity, entry.getKey(), "1",
-          filterMap);
-        tryMakeWhereStd(queryWhere, pReq, nameEntity, entry.getKey(), "2",
-          filterMap);
+      String wdgFilter = entry.getValue().get("wdgFilter");
+      if (wdgFilter != null) {
+        if ("filterEntity".equals(wdgFilter)) {
+          tryMakeWhereEntity(queryWhere, pReq, nameEntity, entry.getKey(),
+            filterMap);
+        } else if ("filterEntityIdString".equals(wdgFilter)) {
+          tryMakeWhereEntityIdString(queryWhere, pReq, nameEntity,
+            entry.getKey(), filterMap);
+        } else if ("filterEnum".equals(wdgFilter)) {
+          tryMakeWhereEnum(queryWhere, pReq, clazz, entry.getKey(),
+            filterMap);
+        } else if ("filterBoolean".equals(wdgFilter)) {
+          tryMakeWhereBoolean(queryWhere, pReq, clazz, entry.getKey(),
+            filterMap);
+        } else if (wdgFilter.startsWith("explicitFilter")) {
+          tryMakeWhereExplicitFilter(queryWhere, pReq, clazz, entry.getKey(),
+            filterMap);
+        } else {
+          tryMakeWhereStd(queryWhere, pReq, nameEntity, entry.getKey(), "1",
+            filterMap);
+          tryMakeWhereStd(queryWhere, pReq, nameEntity, entry.getKey(), "2",
+            filterMap);
+        }
       }
     }
     //cause settled either from request or from settings
@@ -1052,7 +1057,6 @@ public class SrvWebEntity implements ISrvWebEntity {
       && !valFldOpr.equals("disabled") && !valFldOpr.equals("")) {
       pFilterMap.put(nmFldVal, fltVal);
       pFilterMap.put(nmFldOpr, valFldOpr);
-      pFilterMap.put(nmFldVal, fltVal);
       String nmFldValAppearance = fltOrdPrefix + pFldNm
         + "ValAppearance";
       String fltValAppearance = pReq.getParameter(nmFldValAppearance);
@@ -1065,6 +1069,61 @@ public class SrvWebEntity implements ISrvWebEntity {
           + "." + pFldNm.toUpperCase() + " "
           + toSqlOperator(valFldOpr)
           + " " + val;
+      if (pSbWhere.toString().length() == 0) {
+        pSbWhere.append(cond);
+      } else {
+        pSbWhere.append(" and " + cond);
+      }
+    }
+  }
+
+  /**
+   * <p>Make SQL WHERE clause for filter that
+   * pass explicit escaped "where":
+   * " gteq "is ">="
+   * " lteq "is "<="
+   * " lt "is "<"
+   * " gt "is ">"
+   * " apst "is "'"
+   * " prcnt "is "%"
+   * " undln "is "_"
+   * e.g.:
+   * "DESCRIPTION apst prcnt 200 undln apst and PAYMENTTOTAL/ITSTOTAL gteq 0.05"
+   * is treated as
+   * "DESCRIPTION '%200' and PAYMENTTOTAL/ITSTOTAL >= 0.05".
+   * </p>
+   * @param pSbWhere result clause
+   * @param pReq - servlet request
+   * @param pEntityClass - entity class
+   * @param pFldNm - field name
+   * @param pFilterMap - map to store current filter
+   * @throws Exception - an Exception
+   **/
+  public final void tryMakeWhereExplicitFilter(final StringBuffer pSbWhere,
+    final HttpServletRequest pReq, final Class<?> pEntityClass,
+      final String pFldNm,
+        final Map<String, Object> pFilterMap) throws Exception {
+    String nameRenderer = pReq.getParameter("nameRenderer");
+    String fltOrdPrefix;
+    if (nameRenderer.contains("pickerDub")) {
+      fltOrdPrefix = "fltordPD";
+    } else if (nameRenderer.contains("picker")) {
+      fltOrdPrefix = "fltordP";
+    } else {
+      fltOrdPrefix = "fltordM";
+    }
+    String nmFldVal = fltOrdPrefix + pFldNm + "Val";
+    String fltVal = pReq.getParameter(nmFldVal);
+    if (fltVal != null && fltVal.length() > 0
+      && !fltVal.equals("disabled")) {
+      pFilterMap.put(nmFldVal, fltVal);
+      String cond = fltVal.replace(" gteq ", ">=");
+      cond = cond.replace(" lteq ", "<=");
+      cond = cond.replace(" lt ", "<");
+      cond = cond.replace(" gt ", ">");
+      cond = cond.replace(" apst ", "'");
+      cond = cond.replace(" prcnt ", "%");
+      cond = cond.replace(" undln ", "_");
       if (pSbWhere.toString().length() == 0) {
         pSbWhere.append(cond);
       } else {

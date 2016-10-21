@@ -147,7 +147,8 @@ public class ClearDbThenGetAnotherCopyXmlHttp<RS>
       this.srvDatabase.beginTransaction();
       for (int i = classesArr.size() - 1; i >= 0; i--) {
         Class<?> entityClass = classesArr.get(i);
-        this.srvDatabase.executeDelete(entityClass.getSimpleName(), null);
+        this.srvDatabase.executeDelete(entityClass.getSimpleName()
+          .toUpperCase(), null);
       }
       this.srvDatabase.commitTransaction();
     } catch (Exception ex) {

@@ -10,5 +10,8 @@
 <properties>
 <comment>Correspondence of field name to field setting.</comment>
 <entry key="itsDate">filterDate</entry>
+<entry key="payByDate">filterDate</entry>
 <entry key="itsDateTime">filterDateTime</entry>
+<entry key="paymentDescription">null</entry>
+<entry key="paymentTotal">explicitFilterPaymentTotal</entry>
 </properties>
