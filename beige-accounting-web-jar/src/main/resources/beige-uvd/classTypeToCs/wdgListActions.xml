@@ -13,6 +13,7 @@
 <entry key="org.beigesoft.model.IOwned">lstOwned</entry>
 <entry key="org.beigesoft.accounting.persistable.AccountingEntries">lstActAccEntries</entry>
 <entry key="org.beigesoft.accounting.persistable.AccountingEntry">lstOwnedActCopy</entry>
+<entry key="org.beigesoft.accounting.persistable.MoveItemsLine">lstOwnedActCopy</entry>
 <entry key="org.beigesoft.accounting.persistable.IDoc">lstActDoc</entry>
 <entry key="org.beigesoft.accounting.persistable.AccSettings">lstActPrintEdit</entry>
 <entry key="org.beigesoft.accounting.persistable.AccEntriesSourcesLine">lstOwnedEdit</entry>
@@ -23,6 +24,7 @@
 <entry key="org.beigesoft.accounting.persistable.SalesInvoiceLine">lstActReversableLine</entry>
 <entry key="org.beigesoft.accounting.persistable.PurchaseReturnLine">lstActReversableLine</entry>
 <entry key="org.beigesoft.accounting.persistable.SalesReturnLine">lstActReversableLine</entry>
+<entry key="org.beigesoft.accounting.persistable.BeginningInventoryLine">lstActReversableLine</entry>
 <entry key="org.beigesoft.accounting.persistable.GoodsLossLine">lstActReversableLine</entry>
 <entry key="org.beigesoft.accounting.persistable.UsedMaterialLine">lstActReversableLine</entry>
 <entry key="org.beigesoft.accounting.persistable.EmployeeYearWage">null</entry>

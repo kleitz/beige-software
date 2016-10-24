@@ -32,6 +32,14 @@ public class SalesInvoiceLine extends AInvItemMovementPriceTax
   private SalesInvoice itsOwner;
 
   /**
+   * <p>Warehouse site from (optional).
+   * If it's empty (null) then withdrawal will be from the first
+   * site/s that has the goods, otherwise withdrawal will be exactly
+   * from this site.</p>
+   **/
+  private WarehouseSite warehouseSiteFo;
+
+  /**
    * <p>Reversed line ID (if this reverse it).</p>
    **/
   private Long reversedId;
@@ -129,5 +137,22 @@ public class SalesInvoiceLine extends AInvItemMovementPriceTax
   @Override
   public final void setItsOwner(final SalesInvoice pItsOwner) {
     this.itsOwner = pItsOwner;
+  }
+
+  //Simple getters and setters:
+  /**
+   * <p>Getter for warehouseSiteFo.</p>
+   * @return WarehouseSite
+   **/
+  public final WarehouseSite getWarehouseSiteFo() {
+    return this.warehouseSiteFo;
+  }
+
+  /**
+   * <p>Setter for warehouseSiteFo.</p>
+   * @param pWarehouseSiteFo reference
+   **/
+  public final void setWarehouseSiteFo(final WarehouseSite pWarehouseSiteFo) {
+    this.warehouseSiteFo = pWarehouseSiteFo;
   }
 }

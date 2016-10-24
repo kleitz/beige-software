@@ -106,16 +106,10 @@ function filterOperChanged(inpt, nameInput) {
   document.getElementById(nameInput).disabled = isDisabled;
 };
 
-function filterStringChanged(inpt, nameInput1, nameInput2) {
+function filterStringChanged(inpt, nameInput1) {
   inputHasBeenChanged(inpt);
   var isDisabled = (inpt.options[inpt.selectedIndex].value == "disabled");
   document.getElementById(nameInput1).disabled = isDisabled;
-  document.getElementById(nameInput2).disabled = isDisabled;
-};
-
-function reflectString(inpt, idReflStr) {
-  var reflStr = document.getElementById(idReflStr);
-  reflStr.value = "'" + inpt.value + "'";
 };
 
 function openDlg(idDlg) {

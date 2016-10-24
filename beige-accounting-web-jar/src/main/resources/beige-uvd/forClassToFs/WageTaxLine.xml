@@ -23,4 +23,16 @@
 <entry key="itsPercentageorderShowList">420</entry>
 <entry key="plusAmountorderShowList">430</entry>
 <entry key="itsTotalorderShowList">440</entry>
+<entry key="allowanceorderShowForm">410</entry>
+<entry key="itsPercentageorderShowForm">420</entry>
+<entry key="plusAmountorderShowForm">430</entry>
+<entry key="itsTotalorderShowForm">440</entry>
+<entry key="allowanceorderPrintList">410</entry>
+<entry key="itsPercentageorderPrintList">420</entry>
+<entry key="plusAmountorderPrintList">430</entry>
+<entry key="itsTotalorderPrintList">440</entry>
+<entry key="allowanceorderPrintfullList">410</entry>
+<entry key="itsPercentageorderPrintfullList">420</entry>
+<entry key="plusAmountorderPrintfullList">430</entry>
+<entry key="itsTotalorderPrintfullList">440</entry>
 </properties>

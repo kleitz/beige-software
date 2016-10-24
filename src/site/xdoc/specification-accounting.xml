@@ -429,6 +429,7 @@
       <p>Persistable model PurchaseInvoiceLine implements IDrawItemSource consist of:
         <ul>
           <li>AInvItemMovementPrice fields</li>
+          <li>warehouseSite - WarehouseSite, Not Null, e.g. kitchen</li>
           <li>itsOwner - PurchaseInvoice, Not null</li>
           <li>theRest - BigDecimal, Not Null, The rest, charged by the quantity, draws by sales, loss etc.</li>
           <li>reversedId - Long, ID of reversed/reversing PurchaseInvoiceLine</li>
@@ -468,7 +469,6 @@ from PREPAYMENTTO
 join PURCHASEINVOICE on PREPAYMENTTO.ITSID = PURCHASEINVOICE.PREPAYMENTTO
 join DEBTORCREDITOR on DEBTORCREDITOR.ITSID = PURCHASEINVOICE.VENDOR
 where PREPAYMENTTO.REVERSEDID is null and PURCHASEINVOICE.REVERSEDID is null and PURCHASEINVOICE.HASMADEACCENTRIES = 0 :WHEREADD
-group by SOURCETYPE, SOURCEID, PURCHASEINVOICE.ITSDATE, ACCDEBIT, SUBACCDEBITTYPE, SUBACCDEBITID, SUBACCDEBIT, ACCCREDIT, SUBACCCREDITTYPE, SUBACCCREDITID, SUBACCCREDIT
       </pre>
 
       <h4>Payments to vendors</h4>
@@ -502,7 +502,6 @@ PREPAYMENTTO.ACCCASH as ACCCREDIT, SUBACCCASHTYPE  as SUBACCCREDITTYPE, SUBACCCA
 from PREPAYMENTTO
 join DEBTORCREDITOR on DEBTORCREDITOR.ITSID = PREPAYMENTTO.VENDOR
 where PREPAYMENTTO.REVERSEDID is null and HASMADEACCENTRIES = 0 :WHEREADD
-group by SOURCETYPE, SOURCEID, ITSDATE, ACCDEBIT, SUBACCDEBITTYPE, SUBACCDEBITID, SUBACCDEBIT, ACCCREDIT, SUBACCCREDITTYPE, SUBACCCREDITID, SUBACCCREDIT
       </pre>
       <p>Persistable model PaymentTo consist of:
         <ul>
@@ -526,7 +525,6 @@ from PAYMENTTO
 join PURCHASEINVOICE on PURCHASEINVOICE.ITSID = PAYMENTTO.PURCHASEINVOICE
 join DEBTORCREDITOR on DEBTORCREDITOR.ITSID = PURCHASEINVOICE.VENDOR
 where PAYMENTTO.REVERSEDID is null and PAYMENTTO.HASMADEACCENTRIES = 0 and PURCHASEINVOICE.HASMADEACCENTRIES = 1 :WHEREADD
-group by SOURCETYPE, SOURCEID, PAYMENTTO.ITSDATE, ACCDEBIT, SUBACCDEBITTYPE, SUBACCDEBITID, SUBACCDEBIT, ACCCREDIT, SUBACCCREDITTYPE, SUBACCCREDITID, SUBACCCREDIT
       </pre>
 
       <h4>Manufacturing</h4>
@@ -690,6 +688,8 @@ group by SOURCETYPE, SOURCEID, MANUFACTURE.ITSDATE, ACCDEBIT, SUBACCDEBITTYPE, S
           <li>itsLines - List&lt;SalesInvoiceLine&gt; lines</li>
           <li>taxesLines - List&lt;SalesInvoiceTaxLine&gt; taxes lines</li>
           <li>prepaymentFrom - PrepaymentFrom </li>
+          <li>payByDate - Date, nullable, should pay by this date</li>
+          <li>paymentTotal - BigDecimal, Not Null, Payment total (prepayment and afterpayment)</li>
           <li>paymentTotal - BigDecimal, Not Null, Payment total (prepayment and afterpayment)</li>
           <li>paymentDescription - String, Not Null, Payment description, read only</li>
         </ul>
@@ -699,6 +699,9 @@ group by SOURCETYPE, SOURCEID, MANUFACTURE.ITSDATE, ACCDEBIT, SUBACCDEBITTYPE, S
         <ul>
           <li>AInvItemMovementPriceTax fields</li>
           <li>itsOwner - SalesInvoice, Not null</li>
+          <li>warehouseSiteFo - WarehouseSite, nullable  Warehouse site from.
+          If it's empty (null) then withdrawal will be from the first
+          site/s that has the goods, otherwise withdrawal will be exactly from this site.</li>
           <li>reversedId - Long, ID of reversed/reversing SalesInvoiceLine</li>
         </ul>
         constTypeCode() = 1002
@@ -749,7 +752,6 @@ SUBACCCASHTYPE as SUBACCDEBITTYPE, SUBACCCASHID as SUBACCDEBITID, SUBACCCASH as 
 from PREPAYMENTFROM
 join DEBTORCREDITOR on DEBTORCREDITOR.ITSID = PREPAYMENTFROM.CUSTOMER
 where PREPAYMENTFROM.REVERSEDID is null and HASMADEACCENTRIES = 0 :WHEREADD
-group by SOURCETYPE, SOURCEID, ITSDATE, ACCDEBIT, SUBACCDEBITTYPE, SUBACCDEBITID, SUBACCDEBIT, ACCCREDIT, SUBACCCREDITTYPE, SUBACCCREDITID, SUBACCCREDIT
       </pre>
 
       Method "SalInvPrepayFromDbtAccRecievCrdt":
@@ -765,7 +767,6 @@ from PREPAYMENTFROM
 join SALESINVOICE on PREPAYMENTFROM.ITSID = SALESINVOICE.PREPAYMENTFROM
 join DEBTORCREDITOR on DEBTORCREDITOR.ITSID = SALESINVOICE.CUSTOMER
 where PREPAYMENTFROM.REVERSEDID is null and SALESINVOICE.REVERSEDID is null and SALESINVOICE.HASMADEACCENTRIES = 0 :WHEREADD
-group by SOURCETYPE, SOURCEID, SALESINVOICE.ITSDATE, ACCDEBIT, SUBACCDEBITTYPE, SUBACCDEBITID, SUBACCDEBIT, ACCCREDIT, SUBACCCREDITTYPE, SUBACCCREDITID, SUBACCCREDIT
       </pre>
 
       <p>Persistable model PaymentFrom consist of:
@@ -790,7 +791,6 @@ from PAYMENTFROM
 join SALESINVOICE on SALESINVOICE.ITSID = PAYMENTFROM.SALESINVOICE
 join DEBTORCREDITOR on DEBTORCREDITOR.ITSID = SALESINVOICE.CUSTOMER
 where PAYMENTFROM.REVERSEDID is null and PAYMENTFROM.HASMADEACCENTRIES = 0 and SALESINVOICE.HASMADEACCENTRIES = 1 :WHEREADD
-group by SOURCETYPE, SOURCEID, PAYMENTFROM.ITSDATE, ACCDEBIT, SUBACCDEBITTYPE, SUBACCDEBITID, SUBACCDEBIT, ACCCREDIT, SUBACCCREDITTYPE, SUBACCCREDITID, SUBACCCREDIT
       </pre>
 
       <h5>Method Sales Tax Accrual/Cash.</h5>
@@ -966,6 +966,9 @@ group by SOURCETYPE, SOURCEID, ITSDATE, ACCDEBIT, SUBACCDEBITTYPE, SUBACCDEBITID
         <ul>
           <li>AInvItemMovement fields</li>
           <li>itsOwner - GoodsLoss, Not null</li>
+          <li>warehouseSiteFo - WarehouseSite, nullable  Warehouse site from.
+          If it's empty (null) then withdrawal will be from the first
+          site/s that has the goods, otherwise withdrawal will be exactly from this site.</li>
           <li>reversedId - Long, ID of reversed/reversing GoodsLossLine</li>
         </ul>
         constTypeCode() = 1005
@@ -1322,6 +1325,83 @@ group by SOURCETYPE, SOURCEID, ITSDATE, ACCDEBIT, SUBACCDEBITTYPE, SUBACCDEBITID
         </ul>
       </p>
 
+      <h5>Move items within Warehouse</h5>
+      <p>Persistable model MoveItems move items from one site to another,
+        it makes no accounting entries:
+        <ul>
+          <li>APersistableBase fields, implements IHasTypeCode</li>
+          <li>itsVersion - Version, changed time algorithm cause check dirty of
+            calculated from it (derived) records</li>
+          <li>itsDate - Date, Not Null</li>
+          <li>itsLines - List&lt;MoveItemsLine&gt; lines</li>
+          <li>description - String</li>
+        </ul>
+        constTypeCode() = 14
+      </p>
+      <p>Persistable model MoveItemsLine consist of:
+        <ul>
+          <li>AInvItemMovement fields, implements IMakingWarehouseEntry, IOwned</li>
+          <li>itsOwner - GoodsLoss, Not null</li>
+          <li>warehouseSiteFrom - WarehouseSite, Not null</li>
+          <li>warehouseSiteTo - WarehouseSite, Not null</li>
+          <li>reversedId - Long, not used, for reversing just make another line</li>
+          <li>description - String</li>
+        </ul>
+        constTypeCode() = 1008
+      </p>
+      <p>
+        
+      </p>
+      
+      <h5>Beginning inventory</h5>
+      <p>BeginningInventory is document that makes accounting (Debit Inventory only) entries,
+      and its lines make warehouse load entries. Its lines are sources
+      to draw items (sell or loss) with FIFO LIFO method.
+      This document is used when you start not "from zero", i.e. you are already doing business and have inventory
+      and wont to use this software. If beginning inventory consist of unpaid items then you should
+      make accounting entries by hand (do not use document like PaymentTo).
+      Any way you should make all beginning accounting entries by hand.</p>
+      <p>BeginningInventory:
+        <ul>
+          <li>ADoc fields, implements IDocWarehouse</li>
+          <li>itsLines - List&lt;BeginningInventoryLine&gt; lines</li>
+        </ul>
+        constTypeCode() = 15
+      </p>
+      <p>Persistable model BeginningInventoryLine consist of:
+        <ul>
+          <li>AInvItemMovementCost fields, implements IDrawItemSource, IOwned</li>
+          <li>itsOwner - BeginningInventory, Not null</li>
+          <li>warehouseSite - WarehouseSite, Not null</li>
+          <li>theRest - BigDecimal, Not Null, The rest, charged by the quantity, draws by sales, loss etc.</li>
+          <li>reversedId - Long, ID of reversed/reversing BeginningInventoryLine</li>
+          <li>description - String</li>
+        </ul>
+        constTypeCode() = 1009
+      </p>
+      Accounting method "BeginInvItemCatDbt":
+      "BeginningInventory , Debit Inventory per InvItemCategory."
+      Accounting entries source: accounting/journalEntries/BeginInvItemCatDbt.sql:
+      <pre style="white-space: pre-wrap;">
+select 15 as SOURCETYPE, BEGINNINGINVENTORY.ITSID as SOURCEID, BEGINNINGINVENTORY.ITSDATE,
+'Inventory' as ACCDEBIT, 2001 as SUBACCDEBITTYPE, INVITEMCATEGORY.ITSID as SUBACCDEBITID, INVITEMCATEGORY.ITSNAME as SUBACCDEBIT, sum(BEGINNINGINVENTORYLINE.ITSTOTAL) as DEBIT,
+null as ACCCREDIT, null as SUBACCCREDITTYPE, null as SUBACCCREDITID, null as SUBACCCREDIT, 0 as CREDIT
+from BEGINNINGINVENTORYLINE
+join BEGINNINGINVENTORY on BEGINNINGINVENTORY.ITSID = BEGINNINGINVENTORYLINE.ITSOWNER
+join INVITEM on INVITEM.ITSID = BEGINNINGINVENTORYLINE.INVITEM
+join INVITEMCATEGORY on INVITEMCATEGORY.ITSID = INVITEM.ITSCATEGORY
+where BEGINNINGINVENTORYLINE.REVERSEDID is null and BEGINNINGINVENTORY.REVERSEDID is null and HASMADEACCENTRIES = 0 :WHEREADD
+group by SOURCETYPE, SOURCEID, ITSDATE, ACCDEBIT, SUBACCDEBITTYPE, SUBACCDEBITID, SUBACCDEBIT, ACCCREDIT, SUBACCCREDITTYPE, SUBACCCREDITID, SUBACCCREDIT
+      </pre>
+        Method drawBeginningInventoryLineM1: "source of material/product/merchandise from BeginningInventoryLine"
+        Accounting entries source: trade/drawBeginningInventoryLineM1.sql:
+        <pre style="white-space: pre-wrap;">
+select 1009 as SOURCETYPE, BEGINNINGINVENTORYLINE.ITSID as SOURCEID, 15 as SOURCEOWNERTYPE, BEGINNINGINVENTORY.ITSID as SOURCEOWNERID, BEGINNINGINVENTORY.ITSDATE, THEREST
+from BEGINNINGINVENTORYLINE
+join BEGINNINGINVENTORY on BEGINNINGINVENTORY.ITSID = BEGINNINGINVENTORYLINE.ITSOWNER
+where BEGINNINGINVENTORYLINE.REVERSEDID is null and THEREST>0 and INVITEM=:INVITEM and UNITOFMEASURE=:UNITOFMEASURE
+        </pre>
+
       <h5>Persistable model BalanceAt.</h5>
       <b>For improve performance it store balance at the start of given period (e.g. month),
       it is also model for balance of a account for any date (balance at start of nearest period + debits/credits).</b>
@@ -1556,6 +1636,17 @@ order by ITSDATE;
         any other tables (products, organization ...) will be emptied before inserting.
         Requesting WEB-app makes series of queries for every entity (they must be listed in replicator/base.xml) ordered according
         that list.
+      </p>
+      
+      <h5>RDBMS that support BeigeORM</h5>
+      <p>RDBMS must execute with no error SQL statement like this:
+      <pre>
+select 1, null
+union all
+select null, 2
+      </pre>
+      Postgresql can't do this since 2011 see <a href="https://www.postgresql.org/message-id/201104122018.p3CKIlWR042915@wwwmaster.postgresql.org">https://www.postgresql.org/message-id/201104122018.p3CKIlWR042915@wwwmaster.postgresql.org</a>
+      There (in link) is also information that Oracle can't do it too (2011 year). Postgresql requires non-standard null type e.g. null::TEXT or null::INTEGER.
       </p>
 
       <h5>Exceptions throw ExceptionWithCode:</h5>

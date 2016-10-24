@@ -130,7 +130,8 @@ public class SrvManufacture<RS>
       //reverse acc.entries already done
     } else {
       //draw product in process from warehouse
-      getSrvWarehouseEntry().withdrawal(pAddParam, manufactureForDraw);
+      getSrvWarehouseEntry().withdrawal(pAddParam, manufactureForDraw,
+        pEntity.getWarehouseSiteFo());
       //draw product in process from manufacturing process
       useMaterial(pEntity);
       //it will update this doc:

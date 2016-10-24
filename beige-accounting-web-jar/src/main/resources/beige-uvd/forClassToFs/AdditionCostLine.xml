@@ -15,6 +15,10 @@
 <entry key="subaccExpenseIdwdgEditForm">null</entry>
 <entry key="subaccExpensewdgNewForm">null</entry>
 <entry key="subaccExpensewdgEditForm">null</entry>
+<entry key="subaccExpenseorderShowForm">250</entry>
+<entry key="subaccExpenseorderShowList">250</entry>
+<entry key="subaccExpenseorderPrintList">250</entry>
+<entry key="subaccExpenseorderPrintfullList">250</entry>
 <entry key="itsTotalwdgNewForm">inputCost</entry>
 <entry key="itsTotalwdgEditForm">inputCost</entry>
 <entry key="accExpensewdgNewForm">inputAccountExpense</entry>

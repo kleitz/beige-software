@@ -111,7 +111,7 @@ public class SrvUsedMaterialLine<RS>
       && "reverse".equals(parameterMap.get("actionAdd")[0])) {
       if (entity.getReversedId() != null) {
         throw new ExceptionWithCode(ExceptionWithCode.FORBIDDEN,
-          "Attempt to double reverse" + pAddParam.get("user"));
+          "attempt_to_reverse_reversed::" + pAddParam.get("user"));
       }
       entity.setReversedId(Long.valueOf(pId.toString()));
       entity.setItsQuantity(entity.getItsQuantity().negate());
@@ -139,26 +139,23 @@ public class SrvUsedMaterialLine<RS>
     final UsedMaterialLine pEntity,
       final boolean isEntityDetached) throws Exception {
     if (pEntity.getIsNew()) {
-      if (pEntity.getItsQuantity().doubleValue() == 0) {
+      if (pEntity.getItsQuantity().doubleValue() <= 0
+        && pEntity.getReversedId() == null) {
         throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
-          "Quantity is 0! " + pAddParam.get("user"));
-      }
-      if (pEntity.getItsQuantity().doubleValue() < 0 && pEntity
-        .getReversedId() == null) {
-        throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
-          "Reversed Line is null! " + pAddParam.get("user"));
+          "quantity_less_or_equal_zero::" + pAddParam.get("user"));
       }
       ManufacturingProcess itsOwner = getSrvOrm().retrieveEntityById(
         ManufacturingProcess.class, pEntity.getItsOwner().getItsId());
       if (itsOwner.getIsComplete()) {
         throw new ExceptionWithCode(ExceptionWithCode.FORBIDDEN,
-          "Attempt to update completed manufacture " + pAddParam.get("user"));
+          "attempt_to_change_completed_manufacturing_process::"
+            + pAddParam.get("user"));
       }
       InvItem invItem = getSrvOrm().retrieveEntityById(
           InvItem.class, pEntity.getInvItem().getItsId());
       if (!InvItem.MATERIAL_ID.equals(invItem.getItsType().getItsId())) {
         throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
-          "type_must_be_material");
+          "type_must_be_material::" + pAddParam.get("user"));
       }
       pEntity.setItsQuantity(pEntity.getItsQuantity().setScale(
         getSrvAccSettings().lazyGetAccSettings().getQuantityPrecision(),
@@ -170,7 +167,7 @@ public class SrvUsedMaterialLine<RS>
           UsedMaterialLine.class, pEntity.getReversedId());
         if (reversed.getReversedId() != null) {
           throw new ExceptionWithCode(ExceptionWithCode.FORBIDDEN,
-            "Attempt to double reverse" + pAddParam.get("user"));
+            "attempt_to_reverse_reversed::" + pAddParam.get("user"));
         }
         reversed.setReversedId(pEntity.getItsId());
         getSrvOrm().updateEntity(reversed);
@@ -179,7 +176,8 @@ public class SrvUsedMaterialLine<RS>
           pEntity.getItsOwner().getItsDate(),
             pEntity.getItsOwner().getItsId());
       } else {
-        srvWarehouseEntry.withdrawal(pAddParam, pEntity);
+        srvWarehouseEntry.withdrawal(pAddParam, pEntity,
+          pEntity.getWarehouseSiteFo());
         srvUseMaterialEntry.withdrawal(pAddParam, pEntity,
           pEntity.getItsOwner().getItsDate(),
             pEntity.getItsOwner().getItsId());
@@ -216,7 +214,7 @@ public class SrvUsedMaterialLine<RS>
       getSrvOrm().updateEntity(itsOwner);
     } else {
       throw new ExceptionWithCode(ExceptionWithCode.FORBIDDEN,
-        "Attempt to update used material line by " + pAddParam.get("user"));
+        "edit_not_allowed::" + pAddParam.get("user"));
     }
   }
 

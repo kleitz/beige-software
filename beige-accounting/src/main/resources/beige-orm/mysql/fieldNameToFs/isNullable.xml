@@ -38,8 +38,7 @@
 <entry key="subaccExpenseType">false</entry>
 <entry key="taxCategory">true</entry>
 <entry key="knownCost">true</entry>
-<entry key="warehouseSiteTo">true</entry>
-<entry key="warehouseSiteFrom">true</entry>
+<entry key="warehouseSiteFo">true</entry>
 <entry key="accDebit">true</entry>
 <entry key="accCredit">true</entry>
 <entry key="payByDate">true</entry>

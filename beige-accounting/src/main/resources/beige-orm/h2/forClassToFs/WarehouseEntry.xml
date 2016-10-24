@@ -9,5 +9,6 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 <comment>Explicit final definition.</comment>
-<entry key="constraintAdd">constraint purchaseinvlnprgt0 check (ITSCOST &gt; 0)</entry>
+<entry key="warehouseSiteToisNullable">true</entry>
+<entry key="warehouseSiteFromisNullable">true</entry>
 </properties>

@@ -4,13 +4,13 @@
   xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
 
   <properties>
-    <title>Beigesoft ORM specification version #3</title>
+    <title>Beigesoft ORM specification version #2</title>
   </properties>
 
   <body>
 
     <!-- The body of the document contains a number of sections -->
-    <section name="Specification Beige-ORM version #3">
+    <section name="Specification Beige-ORM version #2">
       <p>It use Reflection API to generate SQL queries (DDL and DML).</p>
       <p>It use standard Beige-Settings to describe ORM configuration with standard Properties XML.
       All <b>current</b> configuration files are located in <b>beige-orm</b> folder.</p>
@@ -70,10 +70,13 @@
       <a href="https://pubs.vmware.com/vfabric5/index.jsp?topic=/com.vmware.vfabric.sqlfire.1.0/reference/language_ref/sql_identifiers.html">SQL identifiers</a>. 
       But not all database services accept names with quotes e.g. Jetty JDBC realm.
       H2, Oracle treated field name without quotes itsId as ITSID, but Postgresql as itsid.
-      So Beige ORM used upper case names. To make SQL queries more redable SQL words are in lower case.
+      So Beige ORM used upper case names of tables and fields.
+      To make SQL queries more readable SQL words are in lower case.
       E.g. <b>create table USERJETTY (ITSID bigserial primary key, ITSNAME text not null).</b>.
-      I recommend very friendly and usefull H2 HTML based console utility. With it you can quickly make huge SQL query as fast as with
-      a visual SQL query builder. It insert upper case table and field name in query string when you click on a table or a field.
+      I recommend very friendly and usefull H2 HTML based console utility.
+      With it you can quickly make huge SQL query as fast as with
+      a visual SQL query builder.
+      It insert upper case table and field name in query string when you click on a table or a field.
       </p>
       <p>It would be better if SQL identifier standard was as Java one.
         In that case SQL queries (generated) will be more readable, e.g. "SELECT itsName FROM InvItem WHERE itsId=2;".

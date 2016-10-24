@@ -19,6 +19,9 @@ pg_dump beigeaccounting > outfile.bak
 //restore as postgres
 psql beigeaccounting < outfile.bak
 
+Mysql:
+tar -cf beigeaccounting.tar /var/lib/mysql/beigeaccounting
+
 $ANT_HOME/bin/ant -Dtomcat.home=$TOMCATA_HOME -Dwebapp.path=target/beige-accounting-web/
 
 java -jar $ANDROID_HOME/build-tools/23.0.3/lib/dx.jar --dex --output=beige-accounting-android.jar classes/ lib/
@@ -198,7 +201,7 @@ W/System.err( 9957): 	at org.beigesoft.service.SrvI18n.<init>(SrvI18n.java:36)
 ***check filters/orders for:
   ***ID <> order
   ***String like(use%)+ eq+ order+
-  ***Date >+ and <! "fltordMorderBy=subaccCash&fltordMitsIdOpr1=disabled&fltordMitsIdOpr2=disabled&fltordMitsDateOpr1=gt&flt!!!!!!!!!!!PrepaymentToitsDateOpr2=lt&fltordMsubaccCashOpr1=disabled&fltordMitsTotalOpr1=disabled&fltordMitsTotalOpr2=disabled&fltordMpurchaseInvoiceIdOpr1=disabled&fltordMpurchaseInvoiceIdOpr2=disabled&fltordMdescriptionOpr1=disabled&fltordMhasMadeAccEntriesVal=null&fltordMorderByDesc=on&nameRenderer=listJson&nameEntity=PrepaymentTo&page=1&javascript=clearChangesAndCloseDialog('lstMainPlaceFltOrd')&mobile=&fltordMvendorValId=&fltordMvendorOpr=eq&fltordMaccCashValId=&fltordMaccCashOpr=eq&fltordMitsDateVal1=1467320400000&fltPrepaymentToitsDateVal2=1470085200000"
+  ***Date >+ and <! "fltordMorderBy=subaccCash&fltordMitsIdOpr1=disabled&fltordMitsIdOpr2=disabled&fltordMitsDateOpr1=gt&flt!!PrepaymentToitsDateOpr2=lt&fltordMsubaccCashOpr1=disabled&fltordMitsTotalOpr1=disabled&fltordMitsTotalOpr2=disabled&fltordMpurchaseInvoiceIdOpr1=disabled&fltordMpurchaseInvoiceIdOpr2=disabled&fltordMdescriptionOpr1=disabled&fltordMhasMadeAccEntriesVal=null&fltordMorderByDesc=on&nameRenderer=listJson&nameEntity=PrepaymentTo&page=1&javascript=clearChangesAndCloseDialog('lstMainPlaceFltOrd')&mobile=&fltordMvendorValId=&fltordMvendorOpr=eq&fltordMaccCashValId=&fltordMaccCashOpr=eq&fltordMitsDateVal1=1467320400000&fltPrepaymentToitsDateVal2=1470085200000"
       itsDate={orderPrintForm=10, orderShowList=1, wdgReverseForm=inputDateTimeReadOnly, orderPrintList=2, wdgOrder=orderStd, wdgDeleteForm=inputDisabledDateTime, orderShowForm=2, wdgToCellDetail=wdgToCellDetail, wdgFilter=filterDate, wdgInputWrapper=wdgInputWrapper, orderPrintfullForm=2, orderPrintfullList=2, wdgNewForm=inputDateTime, wdgEditForm=inputDateTime, wdgToString=toStrDateTime, orderShowPicker=1, wdgToCellHeader=wdgToCellHeader}
       stop at org.beigesoft.web.service.SrvWebEntity:807
   ***boolean filter+ order disabled
@@ -259,15 +262,15 @@ W/System.err( 9957): 	at org.beigesoft.service.SrvI18n.<init>(SrvI18n.java:36)
   ***purchase inv
   ***sales inv
 **SrvWageTaxPercentageTable wage line tax precision
-*wage tax line order
-*wage employee first
+**wage tax line order
+**wage employee first
 
-SQL where ['string'] filter string, entity with id string redo, optimize as different wdgFilter and their srvWebEntity decoder.
+**SQL where ['string'] filter string, entity with id string redo, optimize as different wdgFilter and their srvWebEntity decoder.
 sales return to acc-receivable
 purchase return to acc-payable
-precision appearance 2 or 4
+precision appearance 2 or 4?
 *JS total=price*quantity make switcher on/off
-transfer data between DB
+***transfer data between DB - full copy
 replace dateformatter and other Utl services by interfaces
 UVD form fields in 4 columns
 android App.factory release memory after N minutes of idle.
@@ -305,7 +308,7 @@ balances not recalculated or not readable for android AVD N10_7 for DB ???
 *** XML import apos -> ' -> Carlo&amp;apos;s grocery.
     unescapeXml never invoked
     
------
+++++++++++++
 get error ERROR: UNION types integer and text cannot be matched
   cause Postgresql bug unresolved since 2011 () https://www.postgresql.org/message-id/201104122018.p3CKIlWR042915@wwwmaster.postgresql.org
   Postgresql (9.5) required types for null (null::TEXT or null::INTEGER) in query:
@@ -320,7 +323,11 @@ join TAX on TAX.ITSID = PURCHASEINVOICETAXLINE.TAX
 where PURCHASEINVOICETAXLINE.REVERSEDID is null and PURCHASEINVOICE.REVERSEDID is null and HASMADEACCENTRIES = 0 and TAX.ITSTYPE in (1,2) and TAX.DUEMETHOD = 0  and PURCHASEINVOICE.ITSID = 2
 group by SOURCETYPE, SOURCEID, ITSDATE, ACCDEBIT, SUBACCDEBITTYPE, SUBACCDEBITID, SUBACCDEBIT, ACCCREDIT, SUBACCCREDITTYPE, SUBACCCREDITID, SUBACCCREDIT
 decision - add MySql support and delete Postgresql from Accounting
---------
++++++++++++++
+
+**add draw item from site logic cause wright now srvWarehouseEntry draw the first available 
+
+*beige settings - add checking of settings name is exist in base.xml
 
 git:
 git config --global user.name "Your Name"

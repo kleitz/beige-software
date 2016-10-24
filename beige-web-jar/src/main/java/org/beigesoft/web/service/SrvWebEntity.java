@@ -695,6 +695,9 @@ public class SrvWebEntity implements ISrvWebEntity {
         if ("filterEntity".equals(wdgFilter)) {
           tryMakeWhereEntity(queryWhere, pReq, nameEntity, entry.getKey(),
             filterMap);
+        } else if ("filterString".equals(wdgFilter)) {
+          tryMakeWhereString(queryWhere, pReq, nameEntity,
+            entry.getKey(), filterMap);
         } else if ("filterEntityIdString".equals(wdgFilter)) {
           tryMakeWhereEntityIdString(queryWhere, pReq, nameEntity,
             entry.getKey(), filterMap);
@@ -797,6 +800,60 @@ public class SrvWebEntity implements ISrvWebEntity {
     pReq.setAttribute("srvI18n", this.srvI18n);
     pReq.setAttribute("utlJsp", this.utlJsp);
     pReq.setAttribute("utlReflection", this.utlReflection);
+  }
+
+  /**
+   * <p>Make SQL WHERE clause if need.</p>
+   * @param pSbWhere result clause
+   * @param pReq - servlet request
+   * @param pNameEntity - entity name
+   * @param pFldNm - field name
+   * @param pFilterMap - map to store current filter
+   * @throws Exception - an Exception
+   **/
+  public final void tryMakeWhereString(final StringBuffer pSbWhere,
+    final HttpServletRequest pReq, final String pNameEntity,
+      final String pFldNm,
+        final Map<String, Object> pFilterMap) throws Exception {
+    String nameRenderer = pReq.getParameter("nameRenderer");
+    String fltOrdPrefix;
+    if (nameRenderer != null && nameRenderer.contains("pickerDub")) {
+      fltOrdPrefix = "fltordPD";
+    } else if (nameRenderer != null && nameRenderer.contains("picker")) {
+      fltOrdPrefix = "fltordP";
+    } else {
+      fltOrdPrefix = "fltordM";
+    }
+    String fltforcedName = fltOrdPrefix + "forcedFor";
+    String fltforced = pReq.getParameter(fltforcedName);
+    if (fltforced != null) {
+      pFilterMap.put(fltforcedName, fltforced);
+    }
+    String nmFldVal = fltOrdPrefix + pFldNm + "Val";
+    String fltVal = pReq.getParameter(nmFldVal);
+    String nmFldOpr = fltOrdPrefix + pFldNm + "Opr";
+    String valFldOpr = pReq.getParameter(nmFldOpr);
+    String cond = null;
+    if ("isnotnull".equals(valFldOpr) || "isnull".equals(valFldOpr)) {
+        cond = pNameEntity.toUpperCase()
+            + "." + pFldNm.toUpperCase() + " "
+            + toSqlOperator(valFldOpr);
+    } else if (fltVal != null && valFldOpr != null
+      && !valFldOpr.equals("disabled") && !valFldOpr.equals("")) {
+      cond = pNameEntity.toUpperCase()
+          + "." + pFldNm.toUpperCase() + " "
+          + toSqlOperator(valFldOpr)
+          + " '" + fltVal + "'";
+    }
+    if (cond != null) {
+      pFilterMap.put(nmFldVal, fltVal);
+      pFilterMap.put(nmFldOpr, valFldOpr);
+      if (pSbWhere.toString().length() == 0) {
+        pSbWhere.append(cond);
+      } else {
+        pSbWhere.append(" and " + cond);
+      }
+    }
   }
 
   /**

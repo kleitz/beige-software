@@ -31,7 +31,7 @@ package org.beigesoft.accounting.model;
   WITHDRAWAL,
 
   /**
-   * <p>If Owner's equity.</p>
+   * <p>If move within/between warehouse/s.</p>
    **/
   MOVE,
 }

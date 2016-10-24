@@ -65,10 +65,11 @@ public interface ISrvWarehouseEntry {
    * <p>Withdrawal warehouse item to outside (or use/loss).</p>
    * @param pAddParam additional param
    * @param pEntity movement
+   * @param pWhSiteFrom Site From, if null - automatically find sites
    * @throws Exception - an exception
    **/
   void withdrawal(Map<String, Object> pAddParam,
-    IMakingWarehouseEntry pEntity) throws Exception;
+    IMakingWarehouseEntry pEntity, WarehouseSite pWhSiteFrom) throws Exception;
 
   /**
    * <p>Reverse a withdrawal warehouse.</p>

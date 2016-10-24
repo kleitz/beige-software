@@ -116,7 +116,7 @@ public class SrvPurchaseInvoiceLine<RS>
       && "reverse".equals(parameterMap.get("actionAdd")[0])) {
       if (entity.getReversedId() != null) {
         throw new ExceptionWithCode(ExceptionWithCode.FORBIDDEN,
-          "Attempt to double reverse" + pAddParam.get("user"));
+          "attempt_to_reverse_reversed::" + pAddParam.get("user"));
       }
       entity.setReversedId(Long.valueOf(pId.toString()));
       entity.setItsQuantity(entity.getItsQuantity().negate());
@@ -148,18 +148,14 @@ public class SrvPurchaseInvoiceLine<RS>
     final PurchaseInvoiceLine pEntity,
       final boolean isEntityDetached) throws Exception {
     if (pEntity.getIsNew()) {
-      if (pEntity.getItsQuantity().doubleValue() == 0) {
-        throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
-          "Quantity is 0! " + pAddParam.get("user"));
-      }
-      if (pEntity.getItsQuantity().doubleValue() < 0
+      if (pEntity.getItsQuantity().doubleValue() <= 0
         && pEntity.getReversedId() == null) {
         throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
-          "Reversed Line is null! " + pAddParam.get("user"));
+          "quantity_less_or_equal_zero::" + pAddParam.get("user"));
       }
       if (pEntity.getItsCost().doubleValue() <= 0) {
         throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
-          "Cost <= 0! " + pAddParam.get("user"));
+          "cost_less_or_eq_zero::" + pAddParam.get("user"));
       }
       //SQL refresh:
       pEntity.setInvItem(getSrvOrm().retrieveEntity(pEntity.getInvItem()));
@@ -167,7 +163,7 @@ public class SrvPurchaseInvoiceLine<RS>
         .getItsId()) || InvItem.MERCHANDISE_ID.equals(pEntity.getInvItem()
           .getItsType().getItsId()))) {
         throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
-          "Type must be material or merchandise!");
+          "type_must_be_material_or_merchandise::" + pAddParam.get("user"));
       }
       PurchaseInvoice itsOwner = getSrvOrm().retrieveEntityById(
         PurchaseInvoice.class, pEntity.getItsOwner().getItsId());
@@ -224,11 +220,12 @@ public class SrvPurchaseInvoiceLine<RS>
           PurchaseInvoiceLine.class, pEntity.getReversedId());
         if (reversed.getReversedId() != null) {
           throw new ExceptionWithCode(ExceptionWithCode.FORBIDDEN,
-            "Attempt to double reverse" + pAddParam.get("user"));
+            "attempt_to_reverse_reversed::" + pAddParam.get("user"));
         }
         if (!reversed.getItsQuantity().equals(reversed.getTheRest())) {
           throw new ExceptionWithCode(ExceptionWithCode
-            .WRONG_PARAMETER, "where_is_withdrawals_from_this_source");
+            .WRONG_PARAMETER, "where_is_withdrawals_from_this_source::"
+              + pAddParam.get("user"));
         }
         reversed.setTheRest(BigDecimal.ZERO);
         reversed.setReversedId(pEntity.getItsId());
@@ -255,7 +252,7 @@ public class SrvPurchaseInvoiceLine<RS>
       }
     } else {
       throw new ExceptionWithCode(ExceptionWithCode.FORBIDDEN,
-        "Attempt to update purchase invoice line by " + pAddParam.get("user"));
+        "edit_not_allowed::" + pAddParam.get("user"));
     }
   }
 

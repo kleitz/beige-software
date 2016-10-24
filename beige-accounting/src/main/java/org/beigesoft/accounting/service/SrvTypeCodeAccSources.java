@@ -23,12 +23,16 @@ import org.beigesoft.accounting.persistable.Wage;
 import org.beigesoft.accounting.persistable.PrepaymentTo;
 import org.beigesoft.accounting.persistable.PaymentTo;
 import org.beigesoft.accounting.persistable.PrepaymentFrom;
+import org.beigesoft.accounting.persistable.MoveItems;
+import org.beigesoft.accounting.persistable.MoveItemsLine;
 import org.beigesoft.accounting.persistable.GoodsLoss;
 import org.beigesoft.accounting.persistable.GoodsLossLine;
 import org.beigesoft.accounting.persistable.SalesReturn;
 import org.beigesoft.accounting.persistable.SalesReturnLine;
 import org.beigesoft.accounting.persistable.PurchaseReturn;
 import org.beigesoft.accounting.persistable.PurchaseReturnLine;
+import org.beigesoft.accounting.persistable.BeginningInventory;
+import org.beigesoft.accounting.persistable.BeginningInventoryLine;
 
 
 /**
@@ -74,6 +78,10 @@ public class SrvTypeCodeAccSources implements ISrvTypeCode {
       GoodsLoss.class);
     typeCodeMap.put(new GoodsLossLine().constTypeCode(),
       GoodsLossLine.class);
+    typeCodeMap.put(new MoveItems().constTypeCode(),
+      MoveItems.class);
+    typeCodeMap.put(new MoveItemsLine().constTypeCode(),
+      MoveItemsLine.class);
     typeCodeMap.put(new SalesReturn().constTypeCode(),
       SalesReturn.class);
     typeCodeMap.put(new SalesReturnLine().constTypeCode(),
@@ -82,6 +90,10 @@ public class SrvTypeCodeAccSources implements ISrvTypeCode {
       PurchaseReturn.class);
     typeCodeMap.put(new PurchaseReturnLine().constTypeCode(),
       PurchaseReturnLine.class);
+    typeCodeMap.put(new BeginningInventory().constTypeCode(),
+      BeginningInventory.class);
+    typeCodeMap.put(new BeginningInventoryLine().constTypeCode(),
+      BeginningInventoryLine.class);
   }
 
   /**

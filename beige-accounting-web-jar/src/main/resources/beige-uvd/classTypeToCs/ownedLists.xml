@@ -28,6 +28,8 @@
   org.beigesoft.accounting.persistable.WageTaxTableEmployee,org.beigesoft.accounting.persistable.WageTaxTableType</entry>
 <entry key="org.beigesoft.accounting.persistable.Account">org.beigesoft.accounting.persistable.SubaccountLine</entry>
 <entry key="org.beigesoft.accounting.persistable.GoodsLoss">org.beigesoft.accounting.persistable.GoodsLossLine</entry>
+<entry key="org.beigesoft.accounting.persistable.MoveItems">org.beigesoft.accounting.persistable.MoveItemsLine</entry>
+<entry key="org.beigesoft.accounting.persistable.BeginningInventory">org.beigesoft.accounting.persistable.BeginningInventoryLine</entry>
 <entry key="org.beigesoft.accounting.persistable.SalesReturn">org.beigesoft.accounting.persistable.SalesReturnLine,
   org.beigesoft.accounting.persistable.SalesReturnTaxLine</entry>
 <entry key="org.beigesoft.accounting.persistable.PurchaseReturn">org.beigesoft.accounting.persistable.PurchaseReturnLine,

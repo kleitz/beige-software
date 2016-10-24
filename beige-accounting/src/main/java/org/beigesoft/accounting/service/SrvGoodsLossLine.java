@@ -110,7 +110,7 @@ public class SrvGoodsLossLine<RS>
       && "reverse".equals(parameterMap.get("actionAdd")[0])) {
       if (entity.getReversedId() != null) {
         throw new ExceptionWithCode(ExceptionWithCode.FORBIDDEN,
-          "Attempt to double reverse" + pAddParam.get("user"));
+          "attempt_to_reverse_reversed::" + pAddParam.get("user"));
       }
       entity.setReversedId(Long.valueOf(pId.toString()));
       entity.setItsQuantity(entity.getItsQuantity().negate());
@@ -134,14 +134,10 @@ public class SrvGoodsLossLine<RS>
     final GoodsLossLine pEntity,
       final boolean isEntityDetached) throws Exception {
     if (pEntity.getIsNew()) {
-      if (pEntity.getItsQuantity().doubleValue() == 0) {
-        throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
-          "Quantity is 0!" + pAddParam.get("user"));
-      }
-      if (pEntity.getItsQuantity().doubleValue() < 0
+      if (pEntity.getItsQuantity().doubleValue() <= 0
         && pEntity.getReversedId() == null) {
         throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
-          "Reversed Line is null!" + pAddParam.get("user"));
+          "quantity_less_or_equal_zero::" + pAddParam.get("user"));
       }
       pEntity.setItsQuantity(pEntity.getItsQuantity().setScale(
         getSrvAccSettings().lazyGetAccSettings().getQuantityPrecision(),
@@ -155,7 +151,7 @@ public class SrvGoodsLossLine<RS>
           GoodsLossLine.class, pEntity.getReversedId());
         if (reversed.getReversedId() != null) {
           throw new ExceptionWithCode(ExceptionWithCode.FORBIDDEN,
-            "Attempt to double reverse" + pAddParam.get("user"));
+            "attempt_to_reverse_reversed::" + pAddParam.get("user"));
         }
         reversed.setReversedId(pEntity.getItsId());
         getSrvOrm().updateEntity(reversed);
@@ -164,7 +160,8 @@ public class SrvGoodsLossLine<RS>
           pEntity.getItsOwner().getItsDate(),
             pEntity.getItsOwner().getItsId());
       } else {
-        srvWarehouseEntry.withdrawal(pAddParam, pEntity);
+        srvWarehouseEntry.withdrawal(pAddParam, pEntity,
+          pEntity.getWarehouseSiteFo());
         srvCogsEntry.withdrawal(pAddParam, pEntity,
           pEntity.getItsOwner().getItsDate(),
             pEntity.getItsOwner().getItsId());
@@ -180,7 +177,7 @@ public class SrvGoodsLossLine<RS>
       getSrvOrm().updateEntity(itsOwner);
     } else {
       throw new ExceptionWithCode(ExceptionWithCode.FORBIDDEN,
-        "Attempt to update sales invoice line by " + pAddParam.get("user"));
+        "edit_not_allowed::" + pAddParam.get("user"));
     }
   }
 

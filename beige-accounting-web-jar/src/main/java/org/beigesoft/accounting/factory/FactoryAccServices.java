@@ -84,8 +84,15 @@ import org.beigesoft.accounting.persistable.EmployeeYearWage;
 import org.beigesoft.accounting.service.SrvEmployeeYearWage;
 import org.beigesoft.accounting.persistable.GoodsLoss;
 import org.beigesoft.accounting.persistable.GoodsLossLine;
+import org.beigesoft.accounting.persistable.MoveItems;
+import org.beigesoft.accounting.persistable.MoveItemsLine;
 import org.beigesoft.accounting.service.SrvGoodsLoss;
 import org.beigesoft.accounting.service.SrvGoodsLossLine;
+import org.beigesoft.accounting.service.SrvMoveItemsLine;
+import org.beigesoft.accounting.persistable.BeginningInventory;
+import org.beigesoft.accounting.persistable.BeginningInventoryLine;
+import org.beigesoft.accounting.service.SrvBeginningInventory;
+import org.beigesoft.accounting.service.SrvBeginningInventoryLine;
 import org.beigesoft.accounting.persistable.SalesReturn;
 import org.beigesoft.accounting.persistable.SalesReturnLine;
 import org.beigesoft.accounting.persistable.SalesReturnTaxLine;
@@ -280,10 +287,14 @@ public class FactoryAccServices<RS> implements IFactoryAppBeans {
           srvEntity = createSrvSalesInvoice(pSrvName);
         } else if (entityClass == GoodsLoss.class) {
           srvEntity = createSrvGoodsLoss(pSrvName);
+        } else if (entityClass == MoveItems.class) {
+          srvEntity = createSrvMoveItems(pSrvName);
         } else if (entityClass == PurchaseReturn.class) {
           srvEntity = createSrvPurchaseReturn(pSrvName);
         } else if (entityClass == SalesReturn.class) {
           srvEntity = createSrvSalesReturn(pSrvName);
+        } else if (entityClass == BeginningInventory.class) {
+          srvEntity = createSrvBeginningInventory(pSrvName);
         } else if (entityClass == InvItemTaxCategory.class) {
           srvEntity = createSrvInvItemTaxCat(pSrvName);
         } else if (entityClass == Wage.class) {
@@ -429,6 +440,26 @@ public class FactoryAccServices<RS> implements IFactoryAppBeans {
   }
 
   /**
+   * <p>Create MoveItems service.</p>
+   * @param pSrvName Service Name
+   * @return SrvAccEntitySimple<MoveItems> MoveItems service
+   * @throws Exception - an exception
+   */
+  public final synchronized SrvAccEntitySimple<MoveItems>
+    createSrvMoveItems(final String pSrvName) throws Exception {
+    SrvAccEntitySimple<MoveItems> srvEntity =
+      new SrvAccEntitySimple<MoveItems>(MoveItems.class,
+        factoryAppBeans.lazyGetSrvOrm(), lazyGetSrvAccSettings());
+    factoryAppBeans.getBeansMap().put(pSrvName, srvEntity);
+    Object srvMoveItemsLine =
+      new SrvMoveItemsLine<RS>(factoryAppBeans.lazyGetSrvOrm(),
+        lazyGetSrvAccSettings(), lazyGetSrvWarehouseEntry());
+    factoryAppBeans.getBeansMap().put("srv" + MoveItemsLine
+      .class.getSimpleName(), srvMoveItemsLine);
+    return srvEntity;
+  }
+
+  /**
    * <p>Create wage service.</p>
    * @param pSrvName Service Name
    * @return SrvWage wage service
@@ -450,6 +481,29 @@ public class FactoryAccServices<RS> implements IFactoryAppBeans {
         factoryAppBeans.lazyGetSrvDatabase(), lazyGetSrvAccSettings());
     factoryAppBeans.getBeansMap().put("srv" + WageLine.class
       .getSimpleName(), srvWageLine);
+    return srvEntity;
+  }
+
+  /**
+   * <p>Create Beginning Inventory service.</p>
+   * @param pSrvName Service Name
+   * @return SrvBeginningInventory Beginning Inventory service
+   * @throws Exception - an exception
+   */
+  public final synchronized SrvBeginningInventory<RS>
+    createSrvBeginningInventory(final String pSrvName) throws Exception {
+    SrvBeginningInventory<RS> srvEntity =
+      new SrvBeginningInventory<RS>(factoryAppBeans.lazyGetSrvOrm(),
+        lazyGetSrvAccSettings(), lazyGetSrvAccEntry(),
+          lazyGetSrvWarehouseEntry(), lazyGetSrvUseMaterialEntry(),
+            lazyGetSrvCogsEntry());
+    factoryAppBeans.getBeansMap().put(pSrvName, srvEntity);
+    Object srvEntityLine =
+      new SrvBeginningInventoryLine<RS>(factoryAppBeans.lazyGetSrvOrm(),
+        factoryAppBeans.lazyGetSrvDatabase(),
+          lazyGetSrvAccSettings(), lazyGetSrvWarehouseEntry());
+    factoryAppBeans.getBeansMap().put("srv" + BeginningInventoryLine
+      .class.getSimpleName(), srvEntityLine);
     return srvEntity;
   }
 

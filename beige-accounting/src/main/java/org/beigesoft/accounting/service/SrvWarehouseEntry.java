@@ -164,7 +164,7 @@ public class SrvWarehouseEntry<RS> implements ISrvWarehouseEntry {
     }
     getSrvOrm().insertEntity(wm);
     makeWarehouseRest(pAddParam, pEntity, pWhSiteFrom,
-      pEntity.getItsQuantity());
+      pEntity.getItsQuantity().negate());
     makeWarehouseRest(pAddParam, pEntity, pWhSiteTo, pEntity.getItsQuantity());
     if (wms != null) {
       wms.setReversedId(wm.getItsId());
@@ -223,55 +223,87 @@ public class SrvWarehouseEntry<RS> implements ISrvWarehouseEntry {
    * <p>Withdrawal warehouse item to outside (or use/loss).</p>
    * @param pAddParam additional param
    * @param pEntity movement
+   * @param pWhSiteFrom Site From, if null - automatically find sites
    * @throws Exception - an exception
    **/
   @Override
   public final void withdrawal(final Map<String, Object> pAddParam,
-    final IMakingWarehouseEntry pEntity) throws Exception {
-    List<WarehouseRest> wrl = getSrvOrm().retrieveListWithConditions(
-      WarehouseRest.class, "where THEREST>0 and INVITEM="
-        + pEntity.getInvItem().getItsId() + " and UNITOFMEASURE="
-            + pEntity.getUnitOfMeasure().getItsId());
-    BigDecimal theRest = BigDecimal.ZERO;
-    for (WarehouseRest wr : wrl) {
-      theRest = theRest.add(wr.getTheRest());
-      if (theRest.compareTo(pEntity.getItsQuantity()) >= 0) {
-        break;
+    final IMakingWarehouseEntry pEntity,
+      final WarehouseSite pWhSiteFrom) throws Exception {
+    if (pWhSiteFrom != null) {
+      WarehouseRest wr = getSrvOrm().retrieveEntityWithConditions(
+        WarehouseRest.class, "where THEREST>0 and INVITEM="
+          + pEntity.getInvItem().getItsId() + " and UNITOFMEASURE="
+              + pEntity.getUnitOfMeasure().getItsId() + " and WAREHOUSESITE="
+              + pWhSiteFrom.getItsId());
+      if (wr.getTheRest().compareTo(pEntity.getItsQuantity()) < 0) {
+        throw new ExceptionWithCode(PurchaseInvoice.THERE_IS_NO_GOODS,
+          "there_is_no_goods_in_stock");
       }
-    }
-    if (theRest.compareTo(pEntity.getItsQuantity()) < 0) {
-      throw new ExceptionWithCode(PurchaseInvoice.THERE_IS_NO_GOODS,
-        "there_is_no_goods_in_stock");
-    }
-    BigDecimal quantityToLeaveRest = pEntity.getItsQuantity();
-    for (WarehouseRest wr : wrl) {
-      if (quantityToLeaveRest.doubleValue() == 0) {
-        break;
+        wr.setTheRest(wr.getTheRest().subtract(pEntity.getItsQuantity()));
+        String where = "INVITEM=" + wr.getInvItem().getItsId()
+          + " and WAREHOUSESITE=" + wr.getWarehouseSite().getItsId()
+            + " and UNITOFMEASURE=" + wr.getUnitOfMeasure().getItsId()
+               + " and WAREHOUSESITE=" + pWhSiteFrom.getItsId();
+        getSrvOrm().updateEntityWhere(wr, where);
+        WarehouseEntry wm = new WarehouseEntry();
+        wm.setIdDatabaseBirth(getSrvOrm().getIdDatabase());
+        wm.setSourceId(pEntity.getItsId());
+        wm.setSourceType(pEntity.constTypeCode());
+        wm.setWarehouseSiteFrom(wr.getWarehouseSite());
+        wm.setUnitOfMeasure(wr.getUnitOfMeasure());
+        wm.setInvItem(wr.getInvItem());
+        wm.setItsQuantity(pEntity.getItsQuantity());
+        wm.setSourceOwnerId(pEntity.getOwnerId());
+        wm.setSourceOwnerType(pEntity.getOwnerType());
+        wm.setDescription(makeDescription(pEntity));
+        getSrvOrm().insertEntity(wm);
+    } else {
+      List<WarehouseRest> wrl = getSrvOrm().retrieveListWithConditions(
+        WarehouseRest.class, "where THEREST>0 and INVITEM="
+          + pEntity.getInvItem().getItsId() + " and UNITOFMEASURE="
+              + pEntity.getUnitOfMeasure().getItsId());
+      BigDecimal theRest = BigDecimal.ZERO;
+      for (WarehouseRest wr : wrl) {
+        theRest = theRest.add(wr.getTheRest());
+        if (theRest.compareTo(pEntity.getItsQuantity()) >= 0) {
+          break;
+        }
       }
-      BigDecimal quantityToLeave;
-      if (wr.getTheRest().compareTo(quantityToLeaveRest) <= 0) {
-        quantityToLeave = wr.getTheRest();
-      } else {
-        quantityToLeave = quantityToLeaveRest;
+      if (theRest.compareTo(pEntity.getItsQuantity()) < 0) {
+        throw new ExceptionWithCode(PurchaseInvoice.THERE_IS_NO_GOODS,
+          "there_is_no_goods_in_stock");
       }
-      wr.setTheRest(wr.getTheRest().subtract(quantityToLeave));
-      String where = "INVITEM=" + wr.getInvItem().getItsId()
-        + " and WAREHOUSESITE=" + wr.getWarehouseSite().getItsId()
-          + " and UNITOFMEASURE=" + wr.getUnitOfMeasure().getItsId();
-      getSrvOrm().updateEntityWhere(wr, where);
-      WarehouseEntry wm = new WarehouseEntry();
-      wm.setIdDatabaseBirth(getSrvOrm().getIdDatabase());
-      wm.setSourceId(pEntity.getItsId());
-      wm.setSourceType(pEntity.constTypeCode());
-      wm.setWarehouseSiteFrom(wr.getWarehouseSite());
-      wm.setUnitOfMeasure(wr.getUnitOfMeasure());
-      wm.setInvItem(wr.getInvItem());
-      wm.setItsQuantity(quantityToLeave);
-      wm.setSourceOwnerId(pEntity.getOwnerId());
-      wm.setSourceOwnerType(pEntity.getOwnerType());
-      wm.setDescription(makeDescription(pEntity));
-      getSrvOrm().insertEntity(wm);
-      quantityToLeaveRest = quantityToLeaveRest.subtract(quantityToLeave);
+      BigDecimal quantityToLeaveRest = pEntity.getItsQuantity();
+      for (WarehouseRest wr : wrl) {
+        if (quantityToLeaveRest.doubleValue() == 0) {
+          break;
+        }
+        BigDecimal quantityToLeave;
+        if (wr.getTheRest().compareTo(quantityToLeaveRest) <= 0) {
+          quantityToLeave = wr.getTheRest();
+        } else {
+          quantityToLeave = quantityToLeaveRest;
+        }
+        wr.setTheRest(wr.getTheRest().subtract(quantityToLeave));
+        String where = "INVITEM=" + wr.getInvItem().getItsId()
+          + " and WAREHOUSESITE=" + wr.getWarehouseSite().getItsId()
+            + " and UNITOFMEASURE=" + wr.getUnitOfMeasure().getItsId();
+        getSrvOrm().updateEntityWhere(wr, where);
+        WarehouseEntry wm = new WarehouseEntry();
+        wm.setIdDatabaseBirth(getSrvOrm().getIdDatabase());
+        wm.setSourceId(pEntity.getItsId());
+        wm.setSourceType(pEntity.constTypeCode());
+        wm.setWarehouseSiteFrom(wr.getWarehouseSite());
+        wm.setUnitOfMeasure(wr.getUnitOfMeasure());
+        wm.setInvItem(wr.getInvItem());
+        wm.setItsQuantity(quantityToLeave);
+        wm.setSourceOwnerId(pEntity.getOwnerId());
+        wm.setSourceOwnerType(pEntity.getOwnerType());
+        wm.setDescription(makeDescription(pEntity));
+        getSrvOrm().insertEntity(wm);
+        quantityToLeaveRest = quantityToLeaveRest.subtract(quantityToLeave);
+      }
     }
   }
 

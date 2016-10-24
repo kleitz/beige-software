@@ -43,6 +43,14 @@ public class PurchaseReturnLine extends APersistableBase
   private String purchInvLnAppearance;
 
   /**
+   * <p>Warehouse site from (optional).
+   * If it's empty (null) then withdrawal will be from the first
+   * site/s that has the goods, otherwise withdrawal will be exactly
+   * from this site.</p>
+   **/
+  private WarehouseSite warehouseSiteFo;
+
+  /**
    * <p>Version, reliable autoincrement algorithm.</p>
    **/
   private Long itsVersion;
@@ -341,5 +349,22 @@ public class PurchaseReturnLine extends APersistableBase
    **/
   public final void setTaxesDescription(final String pTaxesDescription) {
     this.taxesDescription = pTaxesDescription;
+  }
+
+  //Simple getters and setters:
+  /**
+   * <p>Getter for warehouseSiteFo.</p>
+   * @return WarehouseSite
+   **/
+  public final WarehouseSite getWarehouseSiteFo() {
+    return this.warehouseSiteFo;
+  }
+
+  /**
+   * <p>Setter for warehouseSiteFo.</p>
+   * @param pWarehouseSiteFo reference
+   **/
+  public final void setWarehouseSiteFo(final WarehouseSite pWarehouseSiteFo) {
+    this.warehouseSiteFo = pWarehouseSiteFo;
   }
 }

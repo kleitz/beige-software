@@ -58,7 +58,9 @@
          <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=InvItemCategory&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("InvItemCategorys")}</a>
          <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=InvItemTaxCategory&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("InvItemTaxCategorys")}</a>
          <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=InvItem&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("InvItems")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=BeginningInventory&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("BeginningInventorys")}</a>
          <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=GoodsLoss&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("GoodsLosss")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=MoveItems&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("MoveItemss")}</a>
          <a href="warehouseRests/?nameRenderer=warehouseRests" target="_blank">${pageContext.servletContext.getAttribute("srvI18n").getMsg("warehouse_rests")}</a>
          <a href="warehouseSiteRests/?nameRenderer=warehouseSiteRests" target="_blank">${pageContext.servletContext.getAttribute("srvI18n").getMsg("warehouse_site_rests")}</a>
       </div>

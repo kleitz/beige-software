@@ -19,4 +19,8 @@
 <entry key="itsTotalwdgEditForm">inputPrice</entry>
 <entry key="salesInvoiceIdwdgNewForm">inputReadOnly</entry>
 <entry key="salesInvoiceIdwdgEditForm">inputReadOnly</entry>
+<entry key="salesInvoiceIdorderShowList">930</entry>
+<entry key="salesInvoiceIdorderShowForm">930</entry>
+<entry key="salesInvoiceIdorderPrintForm">930</entry>
+<entry key="salesInvoiceIdorderPrintfullForm">930</entry>
 </properties>

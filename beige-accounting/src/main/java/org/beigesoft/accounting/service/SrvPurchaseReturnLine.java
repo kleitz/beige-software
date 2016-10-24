@@ -264,7 +264,8 @@ public class SrvPurchaseReturnLine<RS>
           pEntity.getItsOwner().getItsDate(),
             pEntity.getItsOwner().getItsId());
       } else {
-        srvWarehouseEntry.withdrawal(pAddParam, pEntity);
+        srvWarehouseEntry.withdrawal(pAddParam, pEntity,
+          pEntity.getWarehouseSiteFo());
         srvUseMaterialEntry.withdrawalFrom(pAddParam, pEntity,
           pEntity.getPurchaseInvoiceLine(), pEntity.getItsQuantity());
       }

@@ -46,6 +46,14 @@ public class Manufacture extends AInvItemMovementCost
   private ManufacturingProcess manufacturingProcess;
 
   /**
+   * <p>Warehouse site from (optional).
+   * If it's empty (null) then withdrawal will be from the first
+   * site/s that has the goods, otherwise withdrawal will be exactly
+   * from this site.</p>
+   **/
+  private WarehouseSite warehouseSiteFo;
+
+  /**
    * <p>Warehouse Place e.g. refrigerator.</p>
    **/
   private WarehouseSite warehouseSite;
@@ -217,6 +225,22 @@ public class Manufacture extends AInvItemMovementCost
    **/
   public final ManufacturingProcess getManufacturingProcess() {
     return this.manufacturingProcess;
+  }
+
+  /**
+   * <p>Getter for warehouseSiteFo.</p>
+   * @return WarehouseSite
+   **/
+  public final WarehouseSite getWarehouseSiteFo() {
+    return this.warehouseSiteFo;
+  }
+
+  /**
+   * <p>Setter for warehouseSiteFo.</p>
+   * @param pWarehouseSiteFo reference
+   **/
+  public final void setWarehouseSiteFo(final WarehouseSite pWarehouseSiteFo) {
+    this.warehouseSiteFo = pWarehouseSiteFo;
   }
 
   /**
