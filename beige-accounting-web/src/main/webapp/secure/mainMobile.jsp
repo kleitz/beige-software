@@ -74,7 +74,8 @@
     <div class="dropdown">
       <a href="#" class="dropdown-btn">...</a>
       <div class="dropdown-content">
-        <a href="http://www.beigesoft.org/" target="_blank">Beigesoft ™</a>
+        <a href="http://www.beigesoft.org" target="_blank">Beigesoft ™</a>
+        <a href="https://sites.google.com/site/beigesoftware" target="_blank">Other domain Beigesoft ™</a>
         <c:if test="${not empty pageContext['request'].userPrincipal}">
           <a href="../index.jsp?logoff=true">${pageContext['request'].userPrincipal.name} ${pageContext.servletContext.getAttribute("srvI18n").getMsg("logout")}</a>
         </c:if>

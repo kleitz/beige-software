@@ -10,12 +10,12 @@
   <body>
 
     <section name="Accounting of employment (payroll).">
-<b>BeigeAccounting has implemented widely used in many countries tax table percentage method for automatically calculation wage taxes.</b>
+<b>Beige-Accounting has implemented widely used in many countries tax table percentage method for automatically calculation wage taxes.</b>
 <p>It implements automatically calculation <b>wage tax = tax percent (according tables) * (gross wage - all allowances per payment)</b>. This is simple method used in USA.
-In other countries it's used more complex method <b>allowances per year</b> which it hasn't implemented automatically yet.
+In other countries it's used little more complex method <b>allowances per year</b> which it hasn't implemented automatically yet.
 </p>
 <p>
-  Bob hire Rob Swallow as cook. According <a href="https://www.irs.gov/pub/irs-pdf/p583.pdf">IRS Starting a business</a>
+  Bob hire Rob Swallow as a cook. According <a href="https://www.irs.gov/pub/irs-pdf/p583.pdf">IRS Starting a business</a>
   and <a href="https://www.irs.gov/businesses/small-businesses-self-employed/capitalization-period-of-direct-and-indirect-costs">IRS Capitalization Period of Direct and Indirect Costs</a>
   he must include direct labor cost into inventory i.e. <b>cost of pizza = cost of material + cook's wage</b>,
   i.e. Bob have to pay Rob daily to calculate pizza cost.
@@ -27,7 +27,7 @@ In other countries it's used more complex method <b>allowances per year</b> whic
     Rob fill form W-4 and got two withholding allowances. Bob elect percentage method, so according Table 5 (page 42 of <b>IRS-ETG</b>)
     allowance daily is 15.6 * 2 = 31.2. Bob should use table 8 (page 45 of <b>IRS-ETG</b>) to withhold Federal Income tax,
     so he fill Employment -  Wage tax table according it:
-    <p align="center"><img alt="BeigeAccounting tax percentage method" style="max-width: 100%" src="images/wtt-federal-income.png" /></p>
+    <p align="center"><img alt="Beige-Accounting tax percentage method" style="max-width: 100%" src="images/wtt-federal-income.png" /></p>
   </p>
   <p>
     2. Medicare Tax from employee wage.
@@ -58,9 +58,9 @@ In other countries it's used more complex method <b>allowances per year</b> whic
     At Jan 17 Rob makes 12 Pizza with bacon Frozen and 12 Pizza with cheese Frozen then deliver them to customers.
     Bob fill Wage document for 60 USD gross for cooking
     and 20 USD for delivering. He set tax account expense to <b>Inventory capitalized cost</b> (according <a href="https://www.irs.gov/businesses/small-businesses-self-employed/capitalization-period-of-direct-and-indirect-costs">IRS Capitalization Period of Direct and Indirect Costs</a>),
-    then press <b>save</b>, then add two wage lines for cooking (account <b>Inventory direct cost temporary</b>) and delivery, then press fill button to fill taxes, then account document:
-    <p align="center"><img alt="BeigeAccounting payroll" style="max-width: 100%" src="images/wage1.png" /></p>
-    <p align="center"><img alt="BeigeAccounting payroll report" style="max-width: 100%" src="images/wage2.png" /></p>
+    then press <b>save</b>, then add two wage lines for cooking (account <b>Inventory direct cost temporary</b>) and delivery (ICC), then press fill button to fill taxes, then account document:
+    <p align="center"><img alt="Beige-Accounting payroll" style="max-width: 100%" src="images/wage1.png" /></p>
+    <p align="center"><img alt="Beige-Accounting payroll report" style="max-width: 100%" src="images/wage2.png" /></p>
     <p>
       As you can see cooking(direct labor) wage is accounted separately of delivery(indirect labor) one.
     </p>
@@ -68,10 +68,10 @@ In other countries it's used more complex method <b>allowances per year</b> whic
   I guess that you noticed that Bob made mistake, he forget about NY unemployment tax (<a href="https://labor.ny.gov/ui/employerinfo/quarterly-reporting.shtm">NY SUTA requirements and limit</a>
   <a href="https://labor.ny.gov/ui/bpta/contribution-rates.shtm">NY SUTA rate</a>
   <a href="https://www.tax.ny.gov/pdf/publications/withholding/nys50.pdf">NY SUTA instructions.</a>).
-  So you should make sure that you made all properly according your law. Just call to your Tax Bureau (Service) and ask them.
+  So you should make sure that you made all properly according law your of your country. Just call to your Tax Bureau (Service) and ask them.
   Otherwise if you made mistake then you will get penalty, e.g. if you deduct your income tax with wrong cost of goods sold.
   You have to make (and keep) records that shows these properly calculations according <a href="https://www.irs.gov/pub/irs-pdf/p583.pdf">IRS 583 Starting a business</a> page 12.
-  BeigeAccounting respect this, in addition it makes many records automatically (COGS, employment taxes, sales taxes, etc)
+  Beige-Accounting respect this, in addition it makes many records automatically (COGS, employment taxes, sales taxes, etc)
   and reports to prove your business expenses.
 </p>
 

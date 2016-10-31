@@ -11,8 +11,8 @@
   <artifactId>beige-android-jar</artifactId>
 
   <name>Beigesoft Android Library in Java.</name>
-  <description>This library consist of implementation of database service for use in Beige-ORM and some other
-  Java sources.</description>
+  <description>This is library for Android that consist of implementation of database service for use in Beige-ORM and some other
+  Java classes.</description>
   <url>http://www.beigesoft.org</url>
 
   <dependencies>

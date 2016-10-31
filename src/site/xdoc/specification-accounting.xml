@@ -1036,8 +1036,8 @@ group by SOURCETYPE, SOURCEID, ITSDATE, ACCDEBIT, SUBACCDEBITTYPE, SUBACCDEBITID
       Accounting entries source: accounting/journalEntries/SalesRetInvCatDbtCogsCrdt.sql:
       <pre style="white-space: pre-wrap;">
 select 12 as SOURCETYPE, SALESRETURN.ITSID as SOURCEID, SALESRETURN.ITSDATE,
-'Inventory' as ACCDEBIT, 2001 as SUBACCDEBITTYPE, INVITEMCATEGORY.ITSID as SUBACCDEBITID, INVITEMCATEGORY.ITSNAME as SUBACCDEBIT, sum(SALESRETURNLINE.ITSCOST) as DEBIT,
-'COGS' as ACCCREDIT, 2001 as SUBACCCREDITTYPE, INVITEMCATEGORY.ITSID as SUBACCCREDITID, INVITEMCATEGORY.ITSNAME as SUBACCCREDIT, sum(SALESRETURNLINE.ITSCOST) as CREDIT
+'Inventory' as ACCDEBIT, 2001 as SUBACCDEBITTYPE, INVITEMCATEGORY.ITSID as SUBACCDEBITID, INVITEMCATEGORY.ITSNAME as SUBACCDEBIT, sum(SALESRETURNLINE.ITSCOST*SALESRETURNLINE.ITSQUANTITY) as DEBIT,
+'COGS' as ACCCREDIT, 2001 as SUBACCCREDITTYPE, INVITEMCATEGORY.ITSID as SUBACCCREDITID, INVITEMCATEGORY.ITSNAME as SUBACCCREDIT, sum(SALESRETURNLINE.ITSCOST*SALESRETURNLINE.ITSQUANTITY) as CREDIT
 from SALESRETURNLINE
 join SALESRETURN on SALESRETURN.ITSID = SALESRETURNLINE.ITSOWNER
 join INVITEM on INVITEM.ITSID = SALESRETURNLINE.INVITEM
@@ -1325,7 +1325,7 @@ group by SOURCETYPE, SOURCEID, ITSDATE, ACCDEBIT, SUBACCDEBITTYPE, SUBACCDEBITID
         </ul>
       </p>
 
-      <h5>Move items within Warehouse</h5>
+      <h5>Move items within warehouse/between warehouses</h5>
       <p>Persistable model MoveItems move items from one site to another,
         it makes no accounting entries:
         <ul>
@@ -1357,7 +1357,7 @@ group by SOURCETYPE, SOURCEID, ITSDATE, ACCDEBIT, SUBACCDEBITTYPE, SUBACCDEBITID
       <p>BeginningInventory is document that makes accounting (Debit Inventory only) entries,
       and its lines make warehouse load entries. Its lines are sources
       to draw items (sell or loss) with FIFO LIFO method.
-      This document is used when you start not "from zero", i.e. you are already doing business and have inventory
+      This document is used when you start NFS "not from scratch", i.e. you are already doing business and have inventory
       and wont to use this software. If beginning inventory consist of unpaid items then you should
       make accounting entries by hand (do not use document like PaymentTo).
       Any way you should make all beginning accounting entries by hand.</p>
@@ -1616,7 +1616,7 @@ select * from
 select ITSDATE, SOURCEID, SOURCETYPE, ACCDEBIT as ACC, SUBACCDEBIT as SUBACC, DEBIT as ITSTOTAL, 1 as ISDEBIT,
 ACCCREDIT as CORACC, ACCOUNT.ITSNAME as CORACCNAME, ACCOUNT.ITSNUMBER as CORACCNUMBER, SUBACCCREDIT as CORSUBACC, ACCOUNTINGENTRY.DESCRIPTION 
 from ACCOUNTINGENTRY 
-join ACCOUNT on ACCOUNTINGENTRY.ACCCREDIT = ACCOUNT.ITSID
+join ACCOUNT on ACCOUNTINGENTRY.ACCDEBIT = ACCOUNT.ITSID
 where ACCDEBIT=:ACCID :SUBACCDEBIT and ITSDATE &gt;=:DATE1 and ITSDATE&lt;=:DATE2
 
 union all
@@ -1624,7 +1624,7 @@ union all
 select ITSDATE, SOURCEID, SOURCETYPE, ACCCREDIT as ACC, SUBACCCREDIT as SUBACC, CREDIT as ITSTOTAL, 0 as ISDEBIT,
 ACCDEBIT as CORACC, ACCOUNT.ITSNAME as CORACCNAME, ACCOUNT.ITSNUMBER as CORACCNUMBER, SUBACCDEBIT as CORSUBACC, ACCOUNTINGENTRY.DESCRIPTION 
 from ACCOUNTINGENTRY 
-join ACCOUNT on ACCOUNTINGENTRY.ACCDEBIT = ACCOUNT.ITSID
+join ACCOUNT on ACCOUNTINGENTRY.ACCCREDIT = ACCOUNT.ITSID
 where ACCCREDIT=:ACCID :SUBACCCREDIT and ITSDATE &gt;=:DATE1 and ITSDATE&lt;=:DATE2
 ) as UNION_DETAIL
 order by ITSDATE;

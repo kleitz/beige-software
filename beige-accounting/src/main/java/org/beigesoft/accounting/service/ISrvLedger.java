@@ -29,12 +29,12 @@ public interface ISrvLedger {
    * @param pAddParam additional param
    * @param pAccount account
    * @param pDate1 date start
-   * @param pSubaccName Subaccount Name or null
+   * @param pSubaccId Subaccount ID or null
    * @return LedgerPrevious data
    * @throws Exception - an exception
    **/
   LedgerPrevious retrievePrevious(Map<String, Object> pAddParam,
-    Account pAccount, Date pDate1, String pSubaccName) throws Exception;
+    Account pAccount, Date pDate1, String pSubaccId) throws Exception;
 
   /**
    * <p>Retrieve detail entries for period.</p>
@@ -43,11 +43,11 @@ public interface ISrvLedger {
    * @param pDate1 date start
    * @param pDate2 date end
    * @return LedgerDetail data
-   * @param pSubaccName Subaccount Name or null
+   * @param pSubaccId Subaccount ID or null
    * @param ledgerPrevious ledger previous
    * @throws Exception - an exception
    **/
   LedgerDetail retrieveDetail(Map<String, Object> pAddParam,
     Account pAccount, Date pDate1, Date pDate2,
-      String pSubaccName, LedgerPrevious ledgerPrevious) throws Exception;
+      String pSubaccId, LedgerPrevious ledgerPrevious) throws Exception;
 }

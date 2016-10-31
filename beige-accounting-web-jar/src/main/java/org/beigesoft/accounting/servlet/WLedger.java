@@ -89,7 +89,11 @@ public class WLedger<RS> extends HttpServlet {
       Date date1 = new Date(Long.parseLong(pReq.getParameter("date1")));
       Date date2 = new Date(Long.parseLong(pReq.getParameter("date2")));
       String accId = pReq.getParameter("accId");
+      String subaccId = pReq.getParameter("subaccId");
       String subaccName = pReq.getParameter("subaccName");
+      if (subaccId != null && subaccId.trim().length() == 0) {
+        subaccId = null;
+      }
       if (subaccName != null && subaccName.trim().length() == 0) {
         subaccName = null;
       }
@@ -103,9 +107,9 @@ public class WLedger<RS> extends HttpServlet {
         srvDatabase.beginTransaction();
         account = srvOrm.retrieveEntityById(Account.class, accId);
         ledgerPrevious = srvLedger.retrievePrevious(addParams, account,
-          date1, subaccName);
+          date1, subaccId);
         ledgerDetail = srvLedger.retrieveDetail(addParams, account,
-          date1, date2, subaccName, ledgerPrevious);
+          date1, date2, subaccId, ledgerPrevious);
         srvDatabase.commitTransaction();
       } catch (Exception ex) {
         srvDatabase.rollBackTransaction();

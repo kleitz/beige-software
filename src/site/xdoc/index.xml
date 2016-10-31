@@ -11,10 +11,12 @@
 
     <!-- The body of the document contains a number of sections -->
     <section name="Beige-Software overview">
+      
+      <p>If it's slow, then try <a href="https://sites.google.com/site/beigesoftware">https://sites.google.com/site/beigesoftware</a></p>
 
       <h3>Products:</h3>
 
-      <h4>BeigeAccounting</h4>
+      <h4>Beige-Accounting</h4>
             
       <p>Beige Accounting is JEE-WEB based Accounting software.</p>
       <p>
@@ -25,7 +27,7 @@
           <li>Standard JEE web-application on any JEE server (cloud).</li>
         </ul>
       </p>
-      <p>It require Google Chrome browser!</p>
+      <p>It requires Google Chrome browser!</p>
       <p>
         Features:
         <ul>
@@ -42,14 +44,14 @@
         </ul>
       </p>
       <p>
-        <a href="bobs-pizzahtml">See BeigeAccounting Bob's Pizza example.</a>
+        <a href="bobs-pizza.html">See Beige Accounting Bob's Pizza example.</a>
       </p>
       <p>
-        BeigeAccounting for MS Windows/Mac/*Nix  - <b>beige-accounting-ajetty.zip</b> you can find in <a href="https://sourceforge.net/projects/beige-accounting/">https://sourceforge.net/projects/beige-accounting/</a>
+        Beige-Accounting for MS Windows/Mac/*Nix  - <b>beige-accounting-ajetty.zip</b> you can find in <a href="https://sourceforge.net/projects/beige-accounting/">https://sourceforge.net/projects/beige-accounting/</a>
       </p>
       <p>Beige Accounting for Android you can find in Google Play Store (search "Beige Accounting").</p>
       <p>
-        Source code of BeigeAccounting you can find at <a href="https://github.com/demidenko05/beige-software">https://github.com/demidenko05/beige-software</a>
+        Source code of Beige-Accounting you can find in <a href="https://github.com/demidenko05/beige-software">https://github.com/demidenko05/beige-software</a>
       </p>
       <p>Releases you can find in <a href="https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.beigesoft%22">Central Maven Repository: search org.beigesoft.</a></p>
       <p>
@@ -69,8 +71,8 @@
         </ul>
       </p>
       <p>
-        JSP(plus JSTL) is same WEB-view technology as ASPX, PHP and deprecated ASP. JSP and ASPX are faster than PHP and ASP cause
-        they are compiled into byte-code which is performed by Java or DOT.NET. PHP, ASP are text that is interpreted during runtime and they are never compiled.
+        JSP(plus JSTL) is the same WEB-view technology as ASPX, PHP and deprecated ASP. JSP and ASPX are faster than PHP and ASP cause
+        they are compiled into byte-code which is performed by Java VM or DOT.NET. PHP, ASP are text that is interpreted during runtime and they are never compiled.
         All these technology used to build complex WEB-interface quickly.
       </p>
       <p>
@@ -82,10 +84,10 @@
       </p>
       <p>Releases of A-Jetty, A-Tomcat and A-Javabeans you can find in <a href="https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22com.github.demidenko05%22">Central Maven Repository: search com.github.demidenko05.</a></p>
       
-      <h4>BeigeORM</h4>
-      <p>BeigeORM is lightweight multiplatform (Android Java and standard Java 7+) ORM library.
+      <h4>Beige-ORM</h4>
+      <p>Beige-ORM is lightweight multiplatform (Android Java and standard Java 7+) ORM library.
       </p>
-      <p>It supports Postgresql, H2 and SQlite.</p>
+      <p>It supports Postgresql, MySql, H2 and SQlite (adding a new RDBMS is very simple task).</p>
       <p>For mapping it use standard Java XML properties files.</p>
       <p>It has implemented optimistic locking by version (autoincrement and last changed time).</p>
       <p>For updating (not inserting) entity with complex ID you have to make WHERE clause with this ID by hand, but it take no time or problems e.g. WarehouseRest with complex ID {itemId, siteId, unitOfMeasureId}:
@@ -120,7 +122,7 @@
         These lines is retrieved also through 2 level by big SQL query.
       </p>
       <p>Standard ORM use lazy-initialization of model by default. So they retrieve model by several SQL queries
-        and JDBC connection used during whole HTTP request-response. This is no good for performance. BeigeORM retrieve 
+        and JDBC connection used during whole HTTP request-response. This is no good for performance. Beige-ORM retrieve 
         a customer invoice with 15 lines by 2 SQL queries (one for body, another for lines) then close connection and pass model to viewer (renderer).
         Standard ORM make 1 SQL request for body, 1 for customer, 1 for lines, 15 for every line goods, 15 for every line unit of measure.
         Two big SQL queries (exactly with joins) is faster than several (33 in this case) small ones. Any RDMBS is optimized (must be) to perform
@@ -133,29 +135,25 @@
         </pre>
       </p>
       <p>
-        BeigeORM never alter tables, only create new ones, but it has reliable mean - invoke upgrade_[new_version].sql script
-        when BeigeORM is started. BeigeORM required database must has ID and VERSION table, this is holds in model org.beigesoft.persistable.DatabaseInfo.
+        Beige-ORM never alter tables, only create new ones, but it has reliable mean - invoke upgrade_[new_version].sql script
+        when Beige-ORM is started. Beige-ORM required database must has ID and VERSION table, this is holds in model org.beigesoft.persistable.DatabaseInfo.
         Upgrade script can upgrade tables (alters, insert, updates...) and must set new database version. So task "add DebtorCreditor.spetialCategory, not null"
-        is trivial for BeigeORM, not for standard ORM:
+        is trivial for Beige-ORM, not for standard ORM:
         <pre style="white-space: pre-wrap;">
     alter table DebtorCreditor add column specialCategory integer;
     insert into CPECIALCATEGORY  values (1, 'cat A');
     ...
     update DebtorCreditor [for specialCategory]
     ...
-    alter table DebtorCreditor add column spetialCategory integer not null;
+    alter table DebtorCreditor alter column spetialCategory integer not null;
     update DATABASEINFO set DATABASEVERSION=[new_version], DESCRIPTION='database upgraded' where DATABASEID=[DB_ID];          
         </pre>
       </p>
-      <p>
-        Source code of BeigeORM you can find at <a href="https://github.com/demidenko05/beige-software">https://github.com/demidenko05/beige-software</a>
-      </p>
-      <p>Releases you can find in <a href="https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.beigesoft%22">Central Maven Repository: search org.beigesoft.</a></p>
 
-      <h4>BeigeWEB.</h4>
-      <p>BeigeWEB is CRUD WEB-application based on JSP, JSTL, JSON, AJAX.</p>
+      <h4>Beige-WEB.</h4>
+      <p>Beige-WEB is CRUD WEB-application based on JSP, JSTL, JSON, AJAX.</p>
       <p>With it you can build complex WEB interface with no time.
-        It renders forms (include entity pickers) and lists of any entity according XML settings. BeigeAccounting use it.</p>
+        It renders forms (include entity pickers) and lists of any entity according XML settings. Beige-Accounting use it.</p>
       <p>It uses BeigeSettings to describe how to render an entity and its fields, e.g. beige-uvd/fieldTypeToFs/wdgNewForm.xml:
         <pre style="white-space: pre-wrap;">
     &lt;?xml version="1.0" encoding="UTF-8"?&gt;
@@ -197,8 +195,19 @@
         </pre>
         This response clear entity form, refresh entity list and show successful message.
       </p>
+
+      <h4>Beige-Replicator.</h4>
+      <p>Beige-Replicator replicate/persist any entity according XML settings and user's requirements with a file or network (HTTP).
+      Right now it has implemented XML format of stored/transferred data. Beige-Accounting use it to import full database copy with WEB-service.</p>
+
+      <h4>Beige-Settings.</h4>
+      <p>Beige-Settings helps to make quickly settings for class and its fields with properties XML.
+    Instead of create a lot of files to describe every class and its fields it use describing by type, by name,
+    e.g. setting "java.lang.Integer"-"INTEGER NOT NULL" will be assigned for every field of this type. Beige-ORM,
+    Beige-WEB, Beige-Replicator use it.</p>
+      
       <p>
-        Source code of BeigeWEB you can find at <a href="https://github.com/demidenko05/beige-software">https://github.com/demidenko05/beige-software</a>
+        Source code of this software you can find also in <a href="https://github.com/demidenko05/beige-software">https://github.com/demidenko05/beige-software</a>
       </p>
       <p>Releases you can find in <a href="https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.beigesoft%22">Central Maven Repository: search org.beigesoft.</a></p>
       

@@ -11,13 +11,14 @@
 
     <section name="Accounting of business owner taxes, retained earnings.">
 <p>
-  There are two Income Tax methods used in all countries:
+  There are three Income Tax methods used in all countries:
   <ul>
-    <li>income tax = percent * (business revenues - business expenses), and usually accrued method</li>
-    <li>income tax = percent * business revenues, and usually cash method</li>
+    <li>income tax = percent * (business revenues - business expenses - allowances), and usually accrued method</li>
+    <li>income tax = percent * (business revenues - allowances), and usually cash method</li>
+    <li>income tax = fixed amount</li>
   </ul> 
   Accrued means that business revenue/expense is occurred when you bought or sold something (goods, services, rent etc) even unpaid.
-  Cash - when you earn money or paid ones.
+  Cash - when you earn money or paid ones, but not prepayments, i.e. for already sold/purchase goods/service.
   According <a href="https://www.irs.gov/pub/irs-pdf/p583.pdf">IRS 583 Starting a business</a> page 6
   Bob as sole proprietor should pay Income Tax, Self-employment tax. He should pay estimated income tax
   by April 18 (see Form 1040-ES). For manufacturing (according <a href="https://www.irs.gov/businesses/small-businesses-self-employed/capitalization-period-of-direct-and-indirect-costs">IRS Capitalization Period of Direct and Indirect Costs</a>)

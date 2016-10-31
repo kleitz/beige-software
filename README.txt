@@ -1,24 +1,31 @@
-site: https://www.beigesoft.org
+site: http://www.beigesoft.org
 or https://sites.google.com/site/beigesoftware
+
+version 1.1.1.
+Added import full database copy with WEB-service (e.g. from SQlite to MySql).
+Added payByDate to sales/purchase invoices to report invoices list with payByDate conditions. 
+Added MoveItems to move items within warehouse/between warehouses.
+Added BeginningInventory that makes accounting (Debit Inventory only) entries, and its lines make warehouse load entries.
 
 Files overview.
 * Beige-Common Java library. It contains common abstractions, some implementations, some models, e.g. IFactory, IDelegate, Srvi18N, APersistableBase.
-* Beige-Settings library. It helps to quickly make settings for class and its fields of with properties XML.
+* Beige-Settings library. It helps to make quickly settings for class and its fields with properties XML.
     Instead of create a lot of files to describe every class and its fields it use describing by type, by name,
     e.g. setting "java.lang.Integer"-"INTEGER NOT NULL" will be assigned for every field of this type.
 * Beige-ORM library is simple lightweight multi-platform (JDBC/Android) ORM library.
-  It supports Postgresql, H2 and SQlite.
+  It supports Postgresql, MySql, H2 and SQlite.
 * Beige-JDBC used with Beige-ORM for JDBC platform.
-* Beige-WEB-jar contains of servlets, factory and other Java files for Beige-WEB.
+* Beige-Replicator replicate/persist any entity according XML settings and user's requirements with a file or network (HTTP). Right now it has implemented XML format of stored/transferred data.
+* Beige-WEB-Jar contains of servlets, factory and other Java, properties and UVD settings XML files for Beige-WEB.
 * Beige-WEB is CRUD interface based on standard JEE MVC (servlet, JSP, JSTL) and AJAX, JSON. 
   It renders forms (include entity pickers) and lists of any entity according XML settings.
   It contains only non-java webapp files: JSP, js, css, web.xml.
-* Beige-Accounting consist of accounting models and services, e.g. SumpplierInvoice.
-* Beige-Accounting-Jar contains of servlets, factoty and other Java files for Beige-Accounting-Web.
-* Beige-Accounting-Web is web application that contains of JSP, JS, CSS files.
-* Beige-Accounting-AJetty is Web based Accounting on embedded A-Jetty for standard Java and SQLite.
-* Beige-Android -database used with Beige-ORM for Android platform.
-* Beige-Android-Test tests of Beige-ORM for Android platform.
+* Beige-Accounting consist of accounting models and services, e.g. SalesInvoice and SrvSalesInvoice.
+* Beige-Accounting-Web-Jar contains of servlets, application factory and other Java, properties and UVD settings XML files for Beige-Accounting-Web.
+* Beige-Accounting-Web is BeigeAccounting web application that contains of JSP, JS, CSS files.
+* Beige-Accounting-AJetty is BeigeAccounting based on embedded A-Jetty for standard Java and SQLite.
+* Beige-Android-Jar is library for Android that consist of implementation of database service for use in Beige-ORM and some other Java classes.
+* Beige-Android-Test is tests of Beige-ORM for Android platform.
 * Beige-Accounting-Android is Beige Accounting on embedded A-Jetty for Android.
 
 There are dependencies:
@@ -30,21 +37,21 @@ https://github.com/demidenko05/a-tomcat-all - source of Apache Tomcat to precomp
 https://github.com/demidenko05/a-jetty-all - source of A-Jetty is Jetty 9.2 adapted for Android
 
 Prerequisites for building from source:
-* JDK7 (not 8).
+* JDK7 (not 8, jdk 8 can not compile a-javabeans, but can run it).
 * last of Apache Maven and Ant.
-* Postgresql 9.4+ with registered user/password "beigeaccounting/beigeaccounting" and created databases "beigeaccounting" and "beigeaccountingtest".
+* MySql 5.1.7+ with registered user/password "beigeaccounting/beigeaccounting" and created databases "beigeaccounting" and "beigeaccountingtest".
 * SqlLite last version.
-* Android SDK without Studio, loaded last version and 19 API. It requires some 32bit libs for 64bit Fedora (dnf install glibc.i686 glibc-devel.i686 libstdc++.i686 zlib-devel.i686 ncurses-devel.i686 libX11-devel.i686 libXrender.i686 libXrandr.i686)
+* Android SDK without Studio and downloaded last version and 19 API. It requires some 32bit libs for 64bit Fedora (dnf install glibc.i686 glibc-devel.i686 libstdc++.i686 zlib-devel.i686 ncurses-devel.i686 libX11-devel.i686 libXrender.i686 libXrandr.i686)
 * Google Chrome browser (html5-dialog ready).
 
 Installation:
 All software are installed by simple "mvn clean install".
 Test web application Beige-WEB can be started by "mvn clean install tomcat7:run -P webtest"
 but after that run "mvn clean install" to install it as WEB library.
-Web application beige-accounting-web can be started by "mvn clean install tomcat7:run -P sqlite"
-or just copy war file inside a JEE server, also copy sqlite-jdbc-3.8.11.2.jar and HikariCP-2.4.3.jar into [server]/lib.
+Web application beige-accounting-web can be started by "mvn clean install tomcat7:run -P mysql"
+or just copy war file inside a JEE server, also copy mysql-jdbc-connector5.1.40.jar and HikariCP-2.4.3.jar into [server]/lib.
 
-You can make your own JEE(JSP/JSTL) web-app to run on embedded A-Jetty for Standard Java or Android.
+You can make your own JEE(JSP/JSTL) web-app to run on embedded A-Jetty for Standard Java or Android Java.
 To do this:
 1. install all maven projects (a-javabeans, a-tomcat, a-jetty).
 2. copy a-tomcat-all/a-apache-jspc/target/a-apache-jspc-jar-with-dependencies.jar into folder a-apache-tomcat
@@ -58,10 +65,6 @@ To do this:
 8. Add servlets from generated generated_web.xml into your web.xml.
 9. add maven-assembly-plugin (see beige-accounting-ajetty/pom.xml) to generate jar with dependencies with mainClass -> org.beigesoft.ajetty.BootStrapEmbedded
 10. install new maven project
-11. copy directory server from source anywhere and copy there your jar with dependences
-12. start your jar with dependences "java -jar [your jar]"
+11. copy directory server from source anywhere and copy there your jar with dependencies
+12. start your jar with dependencies "java -jar [your jar]"
 13. to make your webapp working on embedded A-Jetty on Android see example beige-accounting-android.
-
-version 1.1.1.
-Added import full database copy with WEB-service (from SQlite to Postgresql).
-Added payByDate to sales/purchase invoices and report invoices list with payByDate conditions. 

@@ -20,6 +20,8 @@ import java.lang.reflect.Method;
 
 import android.content.ContextWrapper;
 import android.app.Activity;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.Intent;
 import android.content.res.AssetManager;
 import android.os.Bundle;
@@ -33,8 +35,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.net.Uri;
 import android.Manifest;
-import android.content.pm.PackageManager;
+import android.util.Log;
 
+import org.beigesoft.exception.ExceptionWithCode;
 import org.beigesoft.ajetty.FactoryAppBeansEmbedded;
 import org.beigesoft.ajetty.BootStrapEmbedded;
 
@@ -139,31 +142,43 @@ public class BeigeAccounting extends Activity implements OnClickListener {
     this.btnStop = (Button) findViewById(R.id.btnStop);
     this.btnStart.setOnClickListener(this);
     this.btnStop.setOnClickListener(this);
-    File jettyBase = new File(getFilesDir().getAbsolutePath()
-     + File.separator + APP_BASE);
-    if (!jettyBase.exists()) {
-      boolean wasMistake = false;
-      try {
-        Toast.makeText(getApplicationContext(),
-            "Try to create Beige Accounting directory...",
-              Toast.LENGTH_SHORT).show();
+    try {
+      File jettyBase = new File(getFilesDir().getAbsolutePath()
+       + File.separator + APP_BASE);
+      PackageInfo packageInfo = getPackageManager()
+        .getPackageInfo(getPackageName(), 0);
+      String nameFileVersion = "version" + packageInfo.versionCode;
+      File fileVersion = new File(getFilesDir().getAbsolutePath()
+       + File.separator + APP_BASE + File.separator + nameFileVersion);
+      if (!jettyBase.exists()) {
         if (!jettyBase.mkdirs()) {
-          wasMistake = true;
+          throw new ExceptionWithCode(ExceptionWithCode.SOMETHING_WRONG,
+            "Cant't create dir " + jettyBase);
         }
         copyAssets(APP_BASE);
-      } catch (Exception e) {
-        wasMistake = true;
-        e.printStackTrace();
-      }
-      if (wasMistake) {
         Toast.makeText(getApplicationContext(),
-          "There was errors!",
+          "Beige Accounting directory has been  successfully created"
+            + " and WEB static files has been copied!",
             Toast.LENGTH_SHORT).show();
-      } else {
+      } else if (!fileVersion.exists()) {
+        copyAssets(APP_BASE);
+        if (!fileVersion.createNewFile()) {
+          throw new ExceptionWithCode(ExceptionWithCode.SOMETHING_WRONG,
+            "Cant't create file " + fileVersion);
+        }
         Toast.makeText(getApplicationContext(),
-          "Beige Accounting directory was successfully created!",
+          "New version of WEB static files has been copied!",
             Toast.LENGTH_SHORT).show();
       }
+    } catch (ExceptionWithCode e) {
+      Toast.makeText(getApplicationContext(),
+        e.getShortMessage(),
+          Toast.LENGTH_SHORT).show();
+    } catch (Exception e) {
+      e.printStackTrace();
+      Toast.makeText(getApplicationContext(),
+        "There was errors!",
+          Toast.LENGTH_SHORT).show();
     }
   }
 
@@ -298,9 +313,16 @@ public class BeigeAccounting extends Activity implements OnClickListener {
         + File.separator + pCurrDir + File.separator + fileName;
       if (!fileName.contains(".")) {
         File subdir = new File(createdPath);
-        if (subdir.mkdirs()) {
-          copyAssets(pCurrDir + File.separator + fileName);
+        if (!subdir.exists()) {
+          if (!subdir.mkdirs()) {
+            throw new ExceptionWithCode(ExceptionWithCode.SOMETHING_WRONG,
+              "Cant't create dir " + subdir);
+          } else {
+            Log.i(BeigeAccounting.class.getSimpleName(),
+              "Created : " + subdir);
+          }
         }
+        copyAssets(pCurrDir + File.separator + fileName);
       } else {
         InputStream ins = null;
         OutputStream outs = null;
@@ -314,6 +336,8 @@ public class BeigeAccounting extends Activity implements OnClickListener {
             outs.write(data, 0, count);
           }
           outs.flush();
+          Log.i(BeigeAccounting.class.getSimpleName(),
+            "Copied: " + pCurrDir + File.separator + fileName);
         } finally {
           if (ins != null) {
             try {

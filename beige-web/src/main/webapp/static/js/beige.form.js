@@ -233,7 +233,7 @@ function retrieveParams(frm) {
       if(params.length > 0) {
         params += "&";
       }
-      params += inputs[i].name + "=" + encodeURI(inputs[i].value);
+      params += inputs[i].name + "=" + escape(inputs[i].value);
     }
   }
   inputs = frm.querySelectorAll('textarea:not([disabled])');
@@ -242,7 +242,7 @@ function retrieveParams(frm) {
       if(params.length > 0) {
         params += "&";
       }
-      params += inputs[i].name + "=" + encodeURI(inputs[i].value);
+      params += inputs[i].name + "=" + escape(inputs[i].value);
     }
   }
   inputs = frm.querySelectorAll('input[type="hidden"]:not([disabled])');
@@ -251,7 +251,7 @@ function retrieveParams(frm) {
       if(params.length > 0) {
         params += "&";
       }
-      params += inputs[i].name + "=" + encodeURI(inputs[i].value);
+      params += inputs[i].name + "=" + escape(inputs[i].value);
     }
   }
   inputs = frm.querySelectorAll('input[type="textarea"]:not([disabled])');
@@ -260,7 +260,7 @@ function retrieveParams(frm) {
       if(params.length > 0) {
         params += "&";
       }
-      params += inputs[i].name + "=" + encodeURI(inputs[i].value);
+      params += inputs[i].name + "=" + escape(inputs[i].value);
     }
   }
   inputs = frm.querySelectorAll('input[type="datetime-local"]:not([disabled])');

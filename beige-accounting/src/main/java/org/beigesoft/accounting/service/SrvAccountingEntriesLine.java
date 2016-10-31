@@ -176,7 +176,7 @@ public class SrvAccountingEntriesLine<RS>
   public final void deleteEntity(final Map<String, Object> pAddParam,
     final Object pId) throws Exception {
     throw new ExceptionWithCode(ExceptionWithCode.FORBIDDEN,
-      "Attempt to delete line by " + pAddParam.get("user"));
+      "delete_not_allowed::" + pAddParam.get("user"));
   }
 
   /**
@@ -213,18 +213,28 @@ public class SrvAccountingEntriesLine<RS>
     }
     if (!this.accountingEntriesTypeCode.equals(pEntity.getSourceType())) {
       throw new ExceptionWithCode(ExceptionWithCode.FORBIDDEN,
-        "Attempt to work with accounting entry with wrong source type - "
+        "attempt_to_work_with_accounting_entry_with_wrong_source_type::"
           + pEntity.getSourceType() + ", user-" + pAddParam.get("user"));
     }
     if (pEntity.getIsNew()) {
       if (pEntity.getDebit().doubleValue() == 0) {
         throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
-          "Amount = 0! " + pAddParam.get("user"));
+          "amount_eq_zero");
       }
       if (pEntity.getDebit().doubleValue() != 0 && pEntity.getAccDebit() == null
         && pEntity.getAccCredit() == null) {
         throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
-          "Account is null! " + pAddParam.get("user"));
+          "account_is_null");
+      }
+      if (pEntity.getAccDebit() != null
+        && pEntity.getAccDebit().getItsId().equals("Inventory")) {
+        throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
+          "account_must_not_be_inventory");
+      }
+      if (pEntity.getAccCredit() != null
+        && pEntity.getAccCredit().getItsId().equals("Inventory")) {
+        throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
+          "account_must_not_be_inventory");
       }
       if (pEntity.getAccCredit() != null) {
         pEntity.setCredit(pEntity.getDebit());
@@ -258,14 +268,18 @@ public class SrvAccountingEntriesLine<RS>
         + " and SOURCEID=" + itsOwner.getItsId();
       String[] columns = new String[]{"DEBIT", "CREDIT"};
       Double[] totals = getSrvDatabase().evalDoubleResults(query, columns);
-      itsOwner.setTotalDebit(BigDecimal.valueOf(totals[0]));
-      itsOwner.setTotalCredit(BigDecimal.valueOf(totals[1]));
+      itsOwner.setTotalDebit(BigDecimal.valueOf(totals[0]).setScale(
+        getSrvAccSettings().lazyGetAccSettings().getCostPrecision(),
+          getSrvAccSettings().lazyGetAccSettings().getRoundingMode()));
+      itsOwner.setTotalCredit(BigDecimal.valueOf(totals[1]).setScale(
+        getSrvAccSettings().lazyGetAccSettings().getCostPrecision(),
+          getSrvAccSettings().lazyGetAccSettings().getRoundingMode()));
       getSrvOrm().updateEntity(itsOwner);
       getSrvBalance().handleNewAccountEntry(null, null,
         pEntity.getItsDate()); //This is for SrvBalanceStd only!!!
     } else {
       throw new ExceptionWithCode(ExceptionWithCode.FORBIDDEN,
-        "Attempt to update line by " + pAddParam.get("user"));
+        "edit_not_allowed::" + pAddParam.get("user"));
     }
   }
 

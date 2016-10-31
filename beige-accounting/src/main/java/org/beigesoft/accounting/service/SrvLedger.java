@@ -84,14 +84,14 @@ public class SrvLedger<RS> implements ISrvLedger {
    * @param pAddParam additional param
    * @param pAccount account
    * @param pDate1 date start
-   * @param pSubaccName Subaccount Name or null
+   * @param pSubaccId Subaccount ID or null
    * @return LedgerPrevious data
    * @throws Exception - an exception
    **/
   @Override
   public final LedgerPrevious retrievePrevious(
     final Map<String, Object> pAddParam, final Account pAccount,
-      final Date pDate1, final String pSubaccName) throws Exception {
+      final Date pDate1, final String pSubaccId) throws Exception {
     getSrvBalance().recalculateAllIfNeed(pDate1);
     LedgerPrevious result = new LedgerPrevious();
     if (this.queryPrevious == null) {
@@ -106,10 +106,10 @@ public class SrvLedger<RS> implements ISrvLedger {
     String whereSubaccDebit = "";
     String whereSubaccCredit = "";
     String whereSubacc = "";
-    if (pSubaccName != null && pSubaccName.length() > 0) {
-      whereSubaccDebit = " and SUBACCDEBIT='" + pSubaccName + "'";
-      whereSubaccCredit = " and SUBACCCREDIT='" + pSubaccName + "'";
-      whereSubacc = " and SUBACCOUNT='" + pSubaccName + "'";
+    if (pSubaccId != null && pSubaccId.length() > 0) {
+      whereSubaccDebit = " and SUBACCDEBITID='" + pSubaccId + "'";
+      whereSubaccCredit = " and SUBACCCREDITID='" + pSubaccId + "'";
+      whereSubacc = " and SUBACCOUNT='" + pSubaccId + "'";
     }
     query = query.replace(":SUBACCDEBIT", whereSubaccDebit);
     query = query.replace(":SUBACCCREDIT", whereSubaccCredit);
@@ -164,14 +164,14 @@ public class SrvLedger<RS> implements ISrvLedger {
    * @param pDate1 date start
    * @param pDate2 date end
    * @return LedgerDetail data
-   * @param pSubaccName Subaccount Name or null
+   * @param pSubaccId Subaccount ID or null
    * @param ledgerPrevious ledger previous
    * @throws Exception - an exception
    **/
   @Override
   public final LedgerDetail retrieveDetail(
     final Map<String, Object> pAddParam, final Account pAccount,
-      final Date pDate1, final Date pDate2, final String pSubaccName,
+      final Date pDate1, final Date pDate2, final String pSubaccId,
         final LedgerPrevious ledgerPrevious) throws Exception {
     LedgerDetail result = new LedgerDetail();
     if (this.queryDetail == null) {
@@ -185,9 +185,9 @@ public class SrvLedger<RS> implements ISrvLedger {
     query = query.replace(":ACCID", "'" + pAccount.getItsId() + "'");
     String whereSubaccDebit = "";
     String whereSubaccCredit = "";
-    if (pSubaccName != null && pSubaccName.length() > 0) {
-      whereSubaccDebit = " and SUBACCDEBIT='" + pSubaccName + "'";
-      whereSubaccCredit = " and SUBACCCREDIT='" + pSubaccName + "'";
+    if (pSubaccId != null && pSubaccId.length() > 0) {
+      whereSubaccDebit = " and SUBACCDEBITID='" + pSubaccId + "'";
+      whereSubaccCredit = " and SUBACCCREDITID='" + pSubaccId + "'";
     }
     query = query.replace(":SUBACCDEBIT", whereSubaccDebit);
     query = query.replace(":SUBACCCREDIT", whereSubaccCredit);

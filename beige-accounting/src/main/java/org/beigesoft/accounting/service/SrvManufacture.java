@@ -205,6 +205,9 @@ public class SrvManufacture<RS>
       throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
         "reversed_manufacture_is_null");
     }
+    pEntity.setItsQuantity(pEntity.getItsQuantity().setScale(
+      getSrvAccSettings().lazyGetAccSettings().getQuantityPrecision(),
+        getSrvAccSettings().lazyGetAccSettings().getRoundingMode()));
     if (pEntity.getReversedId() != null) {
       Manufacture reversed = getSrvOrm().retrieveEntityById(
         Manufacture.class, pEntity.getReversedId());
@@ -222,7 +225,9 @@ public class SrvManufacture<RS>
     }
     pEntity.setItsCost(pEntity.getManufacturingProcess().getItsCost());
     pEntity.setItsTotal(pEntity.getItsCost()
-      .multiply(pEntity.getItsQuantity()));
+      .multiply(pEntity.getItsQuantity()).setScale(
+        getSrvAccSettings().lazyGetAccSettings().getCostPrecision(),
+          getSrvAccSettings().lazyGetAccSettings().getRoundingMode()));
   }
 
   //Utils:

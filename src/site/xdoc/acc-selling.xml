@@ -4,7 +4,7 @@
   xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
 
   <properties>
-    <title>Beigesoftware, BeigeAccounting</title>
+    <title>Beigesoftware, Beige-Accounting</title>
    </properties>
 
   <body>
@@ -13,16 +13,16 @@
       <p>
         At Jan 16 Bob receive 50USD prepayment from Seven Eleven.
         Bob fill Prepayment From:
-        <p align="center"><img alt="BeigeAccounting prepayment for sales" style="max-width: 100%" src="images/prepayment-for-sales.png" /></p>
+        <p align="center"><img alt="Beige-Accounting prepayment for sales" style="max-width: 100%" src="images/prepayment-for-sales.png" /></p>
         <p align="center">After accounting full report is:</p>
-        <p align="center"><img alt="BeigeAccounting prepayment for sales report" style="max-width: 100%" src="images/prepayment-for-sales-report.png" /></p>
+        <p align="center"><img alt="Beige-Accounting prepayment for sales report" style="max-width: 100%" src="images/prepayment-for-sales-report.png" /></p>
       </p>
       <p>
-        At Jan 17 Bob sold 6 Pizza with bacon Frozen and 6 Pizza with cheese Frozen to Seven Eleven.
+        At Jan 17 Bob sold 6 Pizza with bacon frozen and 6 Pizza with cheese frozen to Seven Eleven.
         Bob fill Sales invoice:
-        <p align="center"><img alt="BeigeAccounting sales invoice" style="max-width: 100%" src="images/sales1.png" /></p>
+        <p align="center"><img alt="Beige-Accounting sales invoice" style="max-width: 100%" src="images/sales1.png" /></p>
         <p align="center">After accounting full report is:</p>
-        <p align="center"><img alt="BeigeAccounting sales invoice report" style="max-width: 100%" src="images/sales2.png" /></p>
+        <p align="center"><img alt="Beige-Accounting sales invoice report" style="max-width: 100%" src="images/sales2.png" /></p>
       </p>
       <p>
         After that Bob makes in accounting settings precision for trial balance to 4 then print it:
@@ -30,11 +30,11 @@
       </p>
       <p>
         Ledger Inventory is:
-        <p align="center"><img alt="BeigeAccounting Ledger Inventory" style="max-width: 100%" src="images/ledger-inventory1.png" /></p>
+        <p align="center"><img alt="Beige-Accounting Ledger Inventory" style="max-width: 100%" src="images/ledger-inventory1.png" /></p>
       </p>
       <p>
-        As you can see Bob made another mistake. He set Sales date less than Manufacture one for that pizza, and
-        balance of COGS.Pizza Cheese Frozen is  -21.9288 at 4:43 PM because it(pizza) was made at 6:59 PM.
+        As you can see Bob made another mistake. He set Sales date less than Manufacture date for that pizza, so
+        balance of Inventory.Pizza Cheese Frozen is  -23.0574 at 4:43 PM because it(pizza) was made at 6:59 PM.
         So it's reasonable to make database copy more frequently, he need to copy beigeaccounting.sqlite
         by file explorer without exiting from accounting (on Android he should do it in the Database manager).
         Otherwise he should reverse whole document. For warehouse document date means nothing cause warehouse
@@ -42,14 +42,17 @@
       </p>
 
       <h4>Payments tracking</h4>
-      <p>At 16 Jan Bob receive the rest 48.76 from Seven Eleven for sales invoice#1:
-          <p align="center"><img alt="BeigeAccounting payment for sales" style="max-width: 100%" src="images/payment-for-sales.png" /></p>
+      <p>At 18 Jan Bob receive the rest 48.76 from Seven Eleven for sales invoice #1:
+          <p align="center"><img alt="Beige-Accounting payment for sales" style="max-width: 100%" src="images/payment-for-sales.png" /></p>
       </p>
       <p>It make simple accounting entries:
-          <p align="center"><img alt="BeigeAccounting payment for sales report" style="max-width: 100%" src="images/payment-for-sales-report.png" /></p>
+          <p align="center"><img alt="Beige-Accounting payment for sales report" style="max-width: 100%" src="images/payment-for-sales-report.png" /></p>
       </p>
       <p>After what sales invoice payment tracking fields in list have changed:
-          <p align="center"><img alt="BeigeAccounting payment for sales tracking" style="max-width: 100%" src="images/sales-payment-tracking.png" /></p>
+          <p align="center"><img alt="Beige-Accounting payment for sales tracking" style="max-width: 100%" src="images/sales-payment-tracking.png" /></p>
+      </p>
+      <p>You can use filter for fields <b>Payment total</b> and <b>Pay by date</b> to report payments for sales:
+          <p align="center"><img alt="Beige-Accounting report payments for sales" style="max-width: 100%" src="images/sales-payment-tracking2.png" /></p>
       </p>
 
     </section>

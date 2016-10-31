@@ -325,7 +325,25 @@ group by SOURCETYPE, SOURCEID, ITSDATE, ACCDEBIT, SUBACCDEBITTYPE, SUBACCDEBITID
 decision - add MySql support and delete Postgresql from Accounting
 +++++++++++++
 
-**add draw item from site logic cause wright now srvWarehouseEntry draw the first available 
+***add draw item from site logic cause wright now srvWarehouseEntry draw the first available 
+
+***ledger change filter from subaccName to subaccId
+
+*** form.js # escape problem - change encodeURI to escape
+
+***!!sales return inventory acc.record include price not price*quantity! SalesRetInvCatDbtCogsCrdt.sql fixed
+
+***ledger detail wrong query debit/credit detail ACCCREDIT = ACCOUNT.ITSID -> ACCDEBIT = ACCOUNT.ITSID , queryDetail fixed
+
+***input acc entries total debit/cr round 
+***manufacture add round
+***beginning inventory round to cost
+
+***!!!!!!!!! android update doesn't rewrite web.xml but index.html does, ++ copyAssets error
+
+* alert dialog javascript redo
+
+*filter add OR/AND switch for every condition
 
 *beige settings - add checking of settings name is exist in base.xml
 

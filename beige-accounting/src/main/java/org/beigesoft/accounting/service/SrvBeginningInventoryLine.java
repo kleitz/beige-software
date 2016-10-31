@@ -151,7 +151,7 @@ public class SrvBeginningInventoryLine<RS>
             .lazyGetAccSettings().getRoundingMode()));
       pEntity.setTheRest(pEntity.getItsQuantity());
       pEntity.setItsTotal(pEntity.getItsTotal().setScale(getSrvAccSettings()
-          .lazyGetAccSettings().getPricePrecision(), getSrvAccSettings()
+          .lazyGetAccSettings().getCostPrecision(), getSrvAccSettings()
             .lazyGetAccSettings().getRoundingMode()));
       if (pEntity.getReversedId() != null) {
         pEntity.setTheRest(BigDecimal.ZERO);
@@ -179,7 +179,7 @@ public class SrvBeginningInventoryLine<RS>
       Double total = getSrvDatabase().evalDoubleResult(query, "ITSTOTAL");
       BigDecimal totalBdcm = BigDecimal.valueOf(total);
       itsOwner.setItsTotal(totalBdcm.setScale(
-        getSrvAccSettings().lazyGetAccSettings().getPricePrecision()));
+        getSrvAccSettings().lazyGetAccSettings().getCostPrecision()));
       getSrvOrm().updateEntity(itsOwner);
     } else {
       throw new ExceptionWithCode(ExceptionWithCode.FORBIDDEN,

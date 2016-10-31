@@ -24,8 +24,6 @@
 <entry key="totalTaxeswdgToCellHeader">wdgToCellHeaderSalTaxPurch</entry>
 <entry key="subtotalwdgToCellHeader">wdgToCellHeaderSalTaxPurch</entry>
 <entry key="paymentDescriptionorderShowList">-1</entry>
-<entry key="payByDateorderShowList">920</entry>
-<entry key="payByDateorderShowForm">920</entry>
 <entry key="paymentTotalwdgFilter">explicitFilterPaymentTotalPurchase</entry>
 <entry key="subtotalwdgOrder">null</entry>
 <entry key="subtotalwdgFilter">null</entry>

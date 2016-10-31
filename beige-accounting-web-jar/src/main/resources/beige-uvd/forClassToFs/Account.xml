@@ -11,4 +11,7 @@
 <comment>Explicit final definition.</comment>
 <entry key="itsTypewdgInputWrapper">wdgInpWrpAccount</entry>
 <entry key="normalBalanceTypewdgInputWrapper">wdgInpWrpAccount</entry>
+<entry key="itsIdorderShowPicker">-1</entry>
+<entry key="isUsedorderShowPicker">-1</entry>
+<entry key="isCreatedByUserorderShowPicker">-1</entry>
 </properties>

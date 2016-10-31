@@ -4,13 +4,15 @@
   xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
 
   <properties>
-    <title>Beigesoftware, BeigeAccounting</title>
+    <title>Beige-software, Beige-Accounting</title>
    </properties>
 
   <body>
 
-    <section name="BeigeAccounting Bob's pizza example.">
+    <section name="Beige-Accounting Bob's pizza example.">
 
+      <p>If it's slow, then try <a href="https://sites.google.com/site/beigesoftware/bobspizza">https://sites.google.com/site/beigesoftware/bobs-pizza</a></p>
+      
       <h4>Topics:</h4>      
       
       <h5>
@@ -62,7 +64,19 @@
       </h5>
 
       <h5>
-        <a href="acc-android.html">BeigeAccounting on Android.</a>
+        <a href="acc-android.html">Beige-Accounting on Android.</a>
+      </h5>
+
+      <h5>
+        <a href="import-db-web.html">Import database with WEB-service.</a>
+      </h5>
+
+      <h5>
+        <a href="acc-start-not-from-scratch.html">Beige-Accounting start not from scratch.</a>
+      </h5>
+
+      <h5>
+        Sample databases <b>bobs-pizza.sqlite (from scratch)</b> and <b>bobs-pizza-nfs.sqlite (not from scratch)</b> you can download from <a href="https://sourceforge.net/projects/beige-accounting/">https://sourceforge.net/projects/beige-accounting/</a>
       </h5>
 
     </section>
