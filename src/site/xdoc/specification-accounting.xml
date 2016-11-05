@@ -391,6 +391,8 @@
       <p>Persistable model InvItem consist of:
         <ul>
           <li>APersistableBaseHasName fields (Long ID)</li>
+          <li>itsVersion - Version, changed time algorithm cause check dirty of
+            calculated from it (derived) records</li>
           <li>defUnitOfMeasure - UnitOfMeasure dafault not null </li>
           <li>itsCategory - InvItemCategory, not null.</li>
           <li>itsType - InvItemType, not null.</li>
@@ -611,7 +613,7 @@ group by SOURCETYPE, SOURCEID, MANUFACTURINGPROCESS.ITSDATE, ACCDEBIT, SUBACCDEB
         It used to withdrawals material from purchase line where the rest>0 to manufacturing
         according UsedMaterialLine, so UsedMaterialLine.itsPrice = sum(UseMaterialEntry.itsTotal)/UsedMaterialLine.itsQuantity
       </p>
-      <p>Service ISrvUseMaterialEntry do follow:
+      <p>ServicePurchased ISrvUseMaterialEntry do follow:
         <ul>
           <li>withdrawal(IMakingWarehouseEntry source, Date pDate, Long pDrawingOwnerId) - Withdrawal warehouse material for manufacture product
             pDrawingOwnerId drawing Owner Id if exists, e.g. SalesInvoice.itsId for SalesInvoiceLine
@@ -619,7 +621,7 @@ group by SOURCETYPE, SOURCEID, MANUFACTURINGPROCESS.ITSDATE, ACCDEBIT, SUBACCDEB
           <li>reverseDraw(IMakingWarehouseEntry source) - Reverse a withdrawal material for manufacture product.</li>
         </ul>
       </p>
-      <p>Service SrvUseMaterialEntry implements ISrvUseMaterialEntry use SQL query to reveal material source by FIFO/LIFO:<br></br>
+      <p>ServicePurchased SrvUseMaterialEntry implements ISrvUseMaterialEntry use SQL query to reveal material source by FIFO/LIFO:<br></br>
         materials to draw source FIFO: trade/drawItemFifoSourceM1S.sql:
         <pre style="white-space: pre-wrap;">
 select *
@@ -816,7 +818,7 @@ where PAYMENTFROM.REVERSEDID is null and PAYMENTFROM.HASMADEACCENTRIES = 0 and S
           <li>subaccount - Tax, not null</li>
         </ul>
       </p>
-      <p>Persistable model InvItemTaxCategory:
+      <p>Persistable model InvItemTaxCategory (goods or service tax category):
         <ul>
           <li>APersistableBaseHasName fields</li>
           <li>itsVersion - Version, changed time algorithm cause check dirty of
@@ -824,7 +826,7 @@ where PAYMENTFROM.REVERSEDID is null and PAYMENTFROM.HASMADEACCENTRIES = 0 and S
           <li>List(InvItemTaxCategoryLine) taxes</li>
           <li>taxesDescription - String , uneditable e.g. "NY Sales Tax 10%"</li>
         </ul>
-        This model used to assign tax or set of taxes for an item e.g. "NY sales taX 6%"
+        This model used to assign tax or set of taxes for an goods or service e.g. "NY sales tax 6%"
         for pizza hot. 
       </p>
       <p>Persistable model InvItemTaxCategoryLine:
@@ -839,13 +841,12 @@ where PAYMENTFROM.REVERSEDID is null and PAYMENTFROM.HASMADEACCENTRIES = 0 and S
       </p>
       <p>Persistable model InvItem additionally consist of:
         <ul>
-          <li>taxCategory - InvItemTaxCategory, if tax is self-deducting tax then it will be extracted from inventory cost
-          by purchase invoice.</li>
+          <li>taxCategory - InvItemTaxCategory, nullable.</li>
         </ul>
       </p>
       <p>Persistable model PurchaseInvoice additionally consist of:
         <ul>
-          <li>taxesLines - List&lt;PurchaseInvoiceTaxLine&gt; list of self-deducting sales tax if they exist for merchandise</li>
+          <li>taxesLines - List&lt;PurchaseInvoiceTaxLine&gt; list of summary sales taxes (if exists)</li>
         </ul>
       </p>
       <p>Persistable model ADocTaxLine consist of:
@@ -863,6 +864,7 @@ where PAYMENTFROM.REVERSEDID is null and PAYMENTFROM.HASMADEACCENTRIES = 0 and S
           <li>itsOwner - PurchaseInvoice, not null</li>
         </ul>
       </p>
+      !!!this method deprecated, use purchaseInvoiceTaxes (goods and services)
       Method "accounting/trade/purchaseInvoiceLineTaxes.sql" that calculate purchase taxes:
       <pre style="white-space: pre-wrap;">
 select TAX as TAXID,  sum(SUBTOTAL * ITSPERCENTAGE / 100) as TOTALTAX
@@ -1401,6 +1403,106 @@ from BEGINNINGINVENTORYLINE
 join BEGINNINGINVENTORY on BEGINNINGINVENTORY.ITSID = BEGINNINGINVENTORYLINE.ITSOWNER
 where BEGINNINGINVENTORYLINE.REVERSEDID is null and THEREST>0 and INVITEM=:INVITEM and UNITOFMEASURE=:UNITOFMEASURE
         </pre>
+
+      <h5>Purchase of services</h5>
+      <p>Persistable model ServicePurchased consist of:
+        <ul>
+         <li>APersistableBaseHasName fields (Long ID)</li>
+          <li>itsVersion - Version, changed time algorithm cause check dirty of
+            calculated from it (derived) records</li>
+          <li>itsCategory - ServicePurchasedCategory, not null.</li>
+          <li>taxCategory - ServiceTaxCategory, nullable.</li>
+        </ul>
+      </p>
+      <p>Persistable model ServicePurchasedCategory consist of:
+        <ul>
+          <li>Subaccount fields implements IHasTypeCode</li>
+          <li>expense - Expense, not null</li>
+        </ul>
+        constTypeCode() = 2011<br></br>
+        For inventory item of type product(goods) it means product category
+      </p>
+      <p><b>Any subaccount may be used in input accounting entries document</b> that doesn't hold this
+      subaccount as foreign key, so <b>input accounting entries document</b> must report such subaccount in
+      their correspondent <b>[subaccount]Used</b> table to prevent delete that used subaccount</p>
+      <p>ServiceCategoryUsed consist of:
+        <ul>
+          <li>ASubaccountUsed fields</li>
+          <li>subaccount - ServicePurchasedCategory, not null</li>
+        </ul>
+      </p>
+      <p>Persistable model PurchaseInvoiceServiceLine consist of:
+        <ul>
+         <li>APersistableBaseHasName fields implements IOwned&lt;PurchaseInvoice&gt;</li>
+          <li>itsVersion - Version,  reliable autoincrement algorithm.</li>
+          <li>itsOwner - SPurchaseInvoice, not null.</li>
+          <li>service - ServicePurchased, not null, e.g. "Delivering from NY".</li>
+          <li>itsCost - BigDecimal, not null.</li>
+          <li>totalTaxes - BigDecimal, not null.</li>
+          <li>itsTotal - BigDecimal, not null.</li>
+          <li>taxesDescription - String, nullable, Taxes description, uneditable, e.g. "tax1 10%=12, tax2 5%=6".</li>
+          <li>description - String, nullable, description.</li>
+        </ul>
+      </p>
+      <p>Persistable model PurchaseInvoice additionally consist of:
+        <ul>
+          <li>services - List&lt;PurchaseInvoiceServiceLine&gt; list of summary sales taxes (if exists)</li>
+        </ul>
+      </p>
+      Method "accounting/trade/purchaseInvoiceTaxes.sql" that calculate purchase taxes:
+      <pre style="white-space: pre-wrap;">
+select TAX as TAXID,  sum(SUBTOTAL * ITSPERCENTAGE / 100) as TOTALTAX
+from
+(
+  select INVITEM.TAXCATEGORY as TAXCATEGORY, SUBTOTAL
+  from PURCHASEINVOICELINE 
+  join INVITEM on INVITEM.ITSID = PURCHASEINVOICELINE.INVITEM
+  where PURCHASEINVOICELINE.REVERSEDID is null and PURCHASEINVOICELINE.ITSOWNER = :ITSOWNER
+
+  union all
+
+  select SERVICEPURCHASED.TAXCATEGORY as TAXCATEGORY, SUBTOTAL
+  from PURCHASEINVOICESERVICELINE 
+  join SERVICEPURCHASED on SERVICEPURCHASED.ITSID = PURCHASEINVOICESERVICELINE.SERVICE
+  where PURCHASEINVOICESERVICELINE.ITSOWNER = :ITSOWNER
+) as ALL_LINES
+join INVITEMTAXCATEGORY on INVITEMTAXCATEGORY.ITSID = TAXCATEGORY
+join INVITEMTAXCATEGORYLINE on INVITEMTAXCATEGORYLINE.ITSOWNER = INVITEMTAXCATEGORY.ITSID
+group by TAX;
+      </pre>
+      Method "accounting/trade/purchaseInvoiceTotals.sql" that calculate purchase totals:
+      <pre style="white-space: pre-wrap;">
+select sum(SUBTOTAL) as SUBTOTAL, sum(TOTALTAXES) as TOTALTAXES
+from
+(
+  select SUBTOTAL, TOTALTAXES
+  from PURCHASEINVOICELINE 
+  where PURCHASEINVOICELINE.REVERSEDID is null and PURCHASEINVOICELINE.ITSOWNER = :ITSOWNER
+
+  union all
+
+  select ITSCOST as SUBTOTAL, TOTALTAXES
+  from PURCHASEINVOICESERVICELINE 
+  where PURCHASEINVOICESERVICELINE.ITSOWNER = :ITSOWNER
+) as ALL_LINES;
+      </pre>
+      <p>
+      Method "PurInvExpenceDbtAccPayCredCrdt":
+      "PurchaseInvoice , Debit AccExpense per ServicePurchasedCategory.Expense, Credit AccPayable per DebtorCreditor."
+      Accounting entries source: accounting/journalEntries/PurInvExpenceDbtAccPayCredCrdt.sql:
+      <pre style="white-space: pre-wrap;">
+select 1 as SOURCETYPE, PURCHASEINVOICE.ITSID as SOURCEID, PURCHASEINVOICE.ITSDATE,
+PURCHASEINVOICESERVICELINE.ACCEXPENSE as ACCDEBIT, 2009 as SUBACCDEBITTYPE, EXPENSE.ITSID as SUBACCDEBITID, EXPENSE.ITSNAME as SUBACCDEBIT, sum(PURCHASEINVOICESERVICELINE.ITSCOST) as DEBIT,
+'AccPayable' as ACCCREDIT, 2004 as SUBACCCREDITTYPE, DEBTORCREDITOR.ITSID as SUBACCCREDITID, DEBTORCREDITOR.ITSNAME as SUBACCCREDIT, sum(PURCHASEINVOICESERVICELINE.ITSTOTAL) as CREDIT
+from PURCHASEINVOICESERVICELINE
+join PURCHASEINVOICE on PURCHASEINVOICE.ITSID = PURCHASEINVOICESERVICELINE.ITSOWNER
+join SERVICEPURCHASED on SERVICEPURCHASED.ITSID = PURCHASEINVOICESERVICELINE.SERVICE
+join SERVICEPURCHASEDCATEGORY on SERVICEPURCHASEDCATEGORY.ITSID = SERVICEPURCHASED.ITSCATEGORY
+join EXPENSE on EXPENSE.ITSID = SERVICEPURCHASEDCATEGORY.EXPENSE 
+join DEBTORCREDITOR on DEBTORCREDITOR.ITSID = PURCHASEINVOICE.VENDOR
+where PURCHASEINVOICE.REVERSEDID is null and HASMADEACCENTRIES = 0 :WHEREADD
+group by SOURCETYPE, SOURCEID, ITSDATE, ACCDEBIT, SUBACCDEBITTYPE, SUBACCDEBITID, SUBACCDEBIT, ACCCREDIT, SUBACCCREDITTYPE, SUBACCCREDITID, SUBACCCREDIT
+      </pre>
 
       <h5>Persistable model BalanceAt.</h5>
       <b>For improve performance it store balance at the start of given period (e.g. month),

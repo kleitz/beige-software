@@ -22,9 +22,12 @@ import org.beigesoft.accounting.persistable.InvItemTaxCategory;
 import org.beigesoft.accounting.persistable.InvItemTaxCategoryLine;
 import org.beigesoft.accounting.persistable.PurchaseInvoice;
 import org.beigesoft.accounting.persistable.PurchaseInvoiceLine;
+import org.beigesoft.accounting.persistable.PurchaseInvoiceServiceLine;
 import org.beigesoft.accounting.persistable.PurchaseInvoiceTaxLine;
 import org.beigesoft.accounting.service.SrvPurchaseInvoice;
 import org.beigesoft.accounting.service.SrvPurchaseInvoiceLine;
+import org.beigesoft.accounting.service.SrvPurchaseInvoiceServiceLine;
+import org.beigesoft.accounting.service.UtlPurchaseGoodsServiceLine;
 import org.beigesoft.accounting.persistable.SalesInvoice;
 import org.beigesoft.accounting.persistable.SalesInvoiceLine;
 import org.beigesoft.accounting.persistable.SalesInvoiceTaxLine;
@@ -522,12 +525,24 @@ public class FactoryAccServices<RS> implements IFactoryAppBeans {
             lazyGetSrvCogsEntry(), factoryAppBeans.lazyGetSrvI18n(),
               lazyGetEntryDateFormatter());
     factoryAppBeans.getBeansMap().put(pSrvName, srvEntity);
+    UtlPurchaseGoodsServiceLine<RS> utlPurchaseGoodsServiceLine =
+      new UtlPurchaseGoodsServiceLine();
+    utlPurchaseGoodsServiceLine.setSrvDatabase(factoryAppBeans
+      .lazyGetSrvDatabase());
+    utlPurchaseGoodsServiceLine.setSrvOrm(factoryAppBeans
+      .lazyGetSrvOrm());
+    utlPurchaseGoodsServiceLine.setSrvAccSettings(lazyGetSrvAccSettings());
     Object srvEntityLine =
       new SrvPurchaseInvoiceLine<RS>(factoryAppBeans.lazyGetSrvOrm(),
-        factoryAppBeans.lazyGetSrvDatabase(),
+        utlPurchaseGoodsServiceLine,
           lazyGetSrvAccSettings(), lazyGetSrvWarehouseEntry());
     factoryAppBeans.getBeansMap().put("srv" + PurchaseInvoiceLine
       .class.getSimpleName(), srvEntityLine);
+    Object srvEntitySrvLine =
+      new SrvPurchaseInvoiceServiceLine<RS>(factoryAppBeans.lazyGetSrvOrm(),
+        utlPurchaseGoodsServiceLine, lazyGetSrvAccSettings());
+    factoryAppBeans.getBeansMap().put("srv" + PurchaseInvoiceServiceLine
+      .class.getSimpleName(), srvEntitySrvLine);
     Object srvTaxLine =
       new SrvAccEntityOwnedSimple<PurchaseInvoiceTaxLine,
         PurchaseInvoice>(PurchaseInvoiceTaxLine.class,

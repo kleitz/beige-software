@@ -41,6 +41,9 @@
   org.beigesoft.accounting.persistable.InvItemTaxCategory,
   org.beigesoft.accounting.persistable.InvItemTaxCategoryLine,
   org.beigesoft.accounting.persistable.InvItem,
+  org.beigesoft.accounting.persistable.ServicePurchasedCategory,
+  org.beigesoft.accounting.persistable.ServicePurchasedCategoryUsed,
+  org.beigesoft.accounting.persistable.ServicePurchased,
   org.beigesoft.accounting.persistable.DebtorCreditorCategory,
   org.beigesoft.accounting.persistable.DebtorCreditorCategoryUsed,
   org.beigesoft.accounting.persistable.DebtorCreditor,
@@ -63,6 +66,7 @@
   org.beigesoft.accounting.persistable.PurchaseInvoice,
   org.beigesoft.accounting.persistable.PaymentTo,
   org.beigesoft.accounting.persistable.PurchaseInvoiceLine,
+  org.beigesoft.accounting.persistable.PurchaseInvoiceServiceLine,
   org.beigesoft.accounting.persistable.PurchaseInvoiceTaxLine,
   org.beigesoft.accounting.persistable.BeginningInventory,
   org.beigesoft.accounting.persistable.BeginningInventoryLine,
@@ -98,5 +102,5 @@
 <entry key="settingsKeysForFields">definition, isNullable, foreignEntity</entry>
 <entry key="excludeFields">isNew, itsLines, taxes, usedInvItems, usedInvItemTypes, usedInvItemCategories, taxesLines,
   accEntriesSources, cogsItemSources, drawMaterialSources, usedMaterials, additionCosts, employees, wageTypes,
-  yearWageLines, subaccounts</entry>
+  yearWageLines, subaccounts, services</entry>
 </properties>

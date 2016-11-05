@@ -1,0 +1,2 @@
+insert into ACCENTRIESSOURCESLINE (ITSID, ITSOWNER, FILENAME, ITSVERSION, SOURCETYPE, SETCODE, ISUSED, ENTRIESSOURCETYPE, ENTRIESACCOUNTINGTYPE, SOURCEIDNAME, DESCRIPTION) values (23, 1, 'PurInvExpenceDbtAccPayCredCrdt', 1462867931627, 1, 'Expense,DebtorCreditor', 1, 0, 1, 'PURCHASEINVOICE.ITSID', 'PurchaseInvoice , Debit AccExpense per ServicePurchasedCategory.Expense, Credit AccPayable per DebtorCreditor.');
+update DATABASEINFO set DATABASEVERSION=3, DESCRIPTION='Beige Accounting version 3';

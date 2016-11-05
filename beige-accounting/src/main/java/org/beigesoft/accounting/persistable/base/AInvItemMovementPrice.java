@@ -24,12 +24,12 @@ public abstract class AInvItemMovementPrice extends AInvItemMovement {
   /**
    * <p>Price.</p>
    **/
-  private BigDecimal itsPrice = new BigDecimal("0.00");
+  private BigDecimal itsPrice = BigDecimal.ZERO;
 
   /**
    * <p>Total.</p>
    **/
-  private BigDecimal itsTotal = new BigDecimal("0.00");
+  private BigDecimal itsTotal = BigDecimal.ZERO;
 
   //Simple getters and setters:
   /**

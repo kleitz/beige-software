@@ -24,12 +24,12 @@ public abstract class AInvItemMovementCostTax extends AInvItemMovementCost {
   /**
    * <p>Total taxes.</p>
    **/
-  private BigDecimal totalTaxes = new BigDecimal("0.00");
+  private BigDecimal totalTaxes = BigDecimal.ZERO;
 
   /**
-   * <p>Total with taxes.</p>
+   * <p>Subtotal without taxes.</p>
    **/
-  private BigDecimal subtotal = new BigDecimal("0.00");
+  private BigDecimal subtotal = BigDecimal.ZERO;
 
   /**
    * <p>Taxes description, uneditable,

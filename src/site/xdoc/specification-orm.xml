@@ -204,7 +204,25 @@
         Bean Managed Transactions (code inside business service) actually more flexable then CMT cause you can change
         business service with new logic by invoking simple setter for it during runtime.
       </p>
-            
+      
+      <h5>Depending performance of ID type</h5>
+      <h6>1. Non-complex ID</h6>
+      <p>RDBMS must be optimized for working with keys of any type - String(varchar, char), integer.
+        Beige Accounting uses mostly ID of type <b>Long</b>, but for <b>Account</b> it uses <b>String</b> cause it
+        is better (more readable) to make a lot of SQL accounting queries.
+        RDBMS must index <b>String</b> ID, and use that index with "hidden integer ID" for search(select) and join operations.
+      </p>
+      <h6>2. Complex (composite) ID</h6>
+      <p>Beige Accounting uses complex triple ID (idProduct, idUnitOfMeasure, idWarehousePlace) for <b>WarehouseRests</b>
+        model. MySql, SQlite, H2 automatically makes index for complex ID. I think it's more difficult to RDBMS
+        to recognize complex ID in SQL query to transform it into index "hidden integer ID".
+      </p>
+      <p>Conclusion - RDBMS automatically makes index for constraint <b>primary key</b> for both composite and non-composite.
+        According test <a href="http://stackoverflow.com/questions/2346920/sql-select-speed-int-vs-varchar">http://stackoverflow.com/questions/2346920/sql-select-speed-int-vs-varchar</a>
+        that made by Grzegorz Luczywo, 4 million records in Postgres 9.x for "text" and "bigint" ID, there is no difference in performance.
+      </p>
+      
+
       <h5>Exceptions throw ExceptionWithCode:</h5>
       <ul>
         <li>1000 - not_yet_implemented</li>

@@ -16,8 +16,8 @@ import org.beigesoft.persistable.APersistableBaseHasName;
 
 /**
  * <pre>
- * Model of inventory Item tax category.
- * This model used to assign tax or set of taxes for an item
+ * Model of tax category of a goods/material or service.
+ * This model used to assign tax or set of taxes for an item/service
  * e.g. "NY sales taX 6%" for pizza hot.
  * </pre>
  *

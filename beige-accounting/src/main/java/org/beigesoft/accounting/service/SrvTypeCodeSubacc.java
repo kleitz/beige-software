@@ -21,6 +21,8 @@ import org.beigesoft.accounting.persistable.Tax;
 import org.beigesoft.accounting.persistable.TaxUsed;
 import org.beigesoft.accounting.persistable.InvItemCategory;
 import org.beigesoft.accounting.persistable.InvItemCategoryUsed;
+import org.beigesoft.accounting.persistable.ServicePurchasedCategory;
+import org.beigesoft.accounting.persistable.ServicePurchasedCategoryUsed;
 import org.beigesoft.accounting.persistable.Expense;
 import org.beigesoft.accounting.persistable.ExpenseUsed;
 import org.beigesoft.accounting.persistable.Property;
@@ -73,6 +75,11 @@ public class SrvTypeCodeSubacc implements ISrvSubaccCode {
     this.typeCodeMap.put(iic.constTypeCode(), InvItemCategory.class);
     this.subaccUsedCodeMap.put(iic.constTypeCode(),
       InvItemCategoryUsed.class);
+    ServicePurchasedCategory serCat = new ServicePurchasedCategory();
+    this.typeCodeMap.put(serCat.constTypeCode(),
+      ServicePurchasedCategory.class);
+    this.subaccUsedCodeMap.put(serCat.constTypeCode(),
+      ServicePurchasedCategoryUsed.class);
     Expense exp = new Expense();
     this.typeCodeMap.put(exp.constTypeCode(), Expense.class);
     this.subaccUsedCodeMap.put(exp.constTypeCode(),

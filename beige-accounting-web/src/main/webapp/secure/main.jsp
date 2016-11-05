@@ -21,6 +21,8 @@
       <div class="dropdown-content">
          <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=DebtorCreditorCategory&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("DebtorCreditorCategorys")}</a>
          <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=DebtorCreditor&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("DebtorCreditors")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=ServicePurchasedCategory&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("ServicePurchasedCategorys")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=ServicePurchased&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("ServicePurchaseds")}</a>
          <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=PrepaymentTo&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("PrepaymentTos")}</a>
          <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=PurchaseInvoice&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("PurchaseInvoices")}</a>
          <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=PaymentTo&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("PaymentTos")}</a>

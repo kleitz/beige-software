@@ -9,7 +9,7 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 <comment>App properties</comment>
-<entry key="databaseVersion">2</entry>
+<entry key="databaseVersion">3</entry>
 <entry key="useSubFolder">sqlite</entry>
 <entry key="title">Beige Accounting</entry>
 <entry key="jdbcDriverClass">org.sqlite.JDBC</entry>

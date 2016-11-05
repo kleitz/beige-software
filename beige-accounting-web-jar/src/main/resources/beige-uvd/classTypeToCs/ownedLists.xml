@@ -10,6 +10,7 @@
 <properties>
 <comment>Correspondence of Java types to services that explain about property. ORDER is essential, the LAST value will be used.</comment>
 <entry key="org.beigesoft.accounting.persistable.PurchaseInvoice">org.beigesoft.accounting.persistable.PurchaseInvoiceLine,
+  org.beigesoft.accounting.persistable.PurchaseInvoiceServiceLine,
   org.beigesoft.accounting.persistable.PurchaseInvoiceTaxLine</entry>
 <entry key="org.beigesoft.accounting.persistable.SalesInvoice">org.beigesoft.accounting.persistable.SalesInvoiceLine,
   org.beigesoft.accounting.persistable.SalesInvoiceTaxLine</entry>
