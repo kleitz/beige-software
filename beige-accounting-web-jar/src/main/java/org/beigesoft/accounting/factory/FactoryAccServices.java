@@ -29,10 +29,13 @@ import org.beigesoft.accounting.service.SrvPurchaseInvoiceLine;
 import org.beigesoft.accounting.service.SrvPurchaseInvoiceServiceLine;
 import org.beigesoft.accounting.service.UtlPurchaseGoodsServiceLine;
 import org.beigesoft.accounting.persistable.SalesInvoice;
+import org.beigesoft.accounting.persistable.SalesInvoiceServiceLine;
 import org.beigesoft.accounting.persistable.SalesInvoiceLine;
 import org.beigesoft.accounting.persistable.SalesInvoiceTaxLine;
 import org.beigesoft.accounting.service.SrvSalesInvoice;
 import org.beigesoft.accounting.service.SrvSalesInvoiceLine;
+import org.beigesoft.accounting.service.SrvSalesInvoiceServiceLine;
+import org.beigesoft.accounting.service.UtlSalesGoodsServiceLine;
 import org.beigesoft.accounting.service.SrvInvItemTaxCategoryLine;
 import org.beigesoft.accounting.persistable.AccountingEntries;
 import org.beigesoft.accounting.persistable.AccountingEntry;
@@ -566,9 +569,21 @@ public class FactoryAccServices<RS> implements IFactoryAppBeans {
         lazyGetSrvWarehouseEntry(), lazyGetSrvCogsEntry(),
           factoryAppBeans.lazyGetSrvI18n(), lazyGetEntryDateFormatter());
     factoryAppBeans.getBeansMap().put(pSrvName, srvEntity);
+    UtlSalesGoodsServiceLine<RS> utlSalesGoodsServiceLine =
+      new UtlSalesGoodsServiceLine();
+    utlSalesGoodsServiceLine.setSrvDatabase(factoryAppBeans
+      .lazyGetSrvDatabase());
+    utlSalesGoodsServiceLine.setSrvOrm(factoryAppBeans
+      .lazyGetSrvOrm());
+    utlSalesGoodsServiceLine.setSrvAccSettings(lazyGetSrvAccSettings());
+    Object srvEntitySrvLine =
+      new SrvSalesInvoiceServiceLine<RS>(factoryAppBeans.lazyGetSrvOrm(),
+        utlSalesGoodsServiceLine, lazyGetSrvAccSettings());
+    factoryAppBeans.getBeansMap().put("srv" + SalesInvoiceServiceLine
+      .class.getSimpleName(), srvEntitySrvLine);
     Object srvEntityLine =
       new SrvSalesInvoiceLine<RS>(factoryAppBeans.lazyGetSrvOrm(),
-        factoryAppBeans.lazyGetSrvDatabase(),
+        utlSalesGoodsServiceLine,
           lazyGetSrvAccSettings(), lazyGetSrvWarehouseEntry(),
             lazyGetSrvCogsEntry());
     factoryAppBeans.getBeansMap().put("srv" + SalesInvoiceLine

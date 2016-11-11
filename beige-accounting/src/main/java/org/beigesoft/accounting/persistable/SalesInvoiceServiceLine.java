@@ -1,0 +1,200 @@
+package org.beigesoft.accounting.persistable;
+
+/*
+ * Beigesoft ™
+ *
+ * Licensed under the Apache License, Version 2.0
+ *
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+
+import java.math.BigDecimal;
+
+import org.beigesoft.model.IOwned;
+import org.beigesoft.persistable.APersistableBase;
+
+/**
+ * <pre>
+ * Model of Vendor Invoice ServiceToSale Line.
+ * It is immutable.
+ * </pre>
+ *
+ * @author Yury Demidenko
+ */
+public class SalesInvoiceServiceLine extends APersistableBase
+  implements IOwned<SalesInvoice> {
+
+  /**
+   * <p>Version, reliable autoincrement algorithm.</p>
+   **/
+  private Long itsVersion;
+
+  /**
+   * <p>ServiceToSale.</p>
+   **/
+  private ServiceToSale service;
+
+  /**
+   * <p>Vendor Invoice.</p>
+   **/
+  private SalesInvoice itsOwner;
+
+  /**
+   * <p>Price.</p>
+   **/
+  private BigDecimal itsPrice = BigDecimal.ZERO;
+
+  /**
+   * <p>Total taxes.</p>
+   **/
+  private BigDecimal totalTaxes = BigDecimal.ZERO;
+
+  /**
+   * <p>Taxes description, uneditable,
+   * e.g. "tax1 10%=12, tax2 5%=6".</p>
+   **/
+  private String taxesDescription;
+
+  /**
+   * <p>Total.</p>
+   **/
+  private BigDecimal itsTotal = BigDecimal.ZERO;
+
+  /**
+   * <p>Description.</p>
+   **/
+  private String description;
+
+  /**
+   * <p>Geter for itsOwner.</p>
+   * @return SalesInvoice
+   **/
+  @Override
+  public final SalesInvoice getItsOwner() {
+    return this.itsOwner;
+  }
+
+  /**
+   * <p>Setter for itsOwner.</p>
+   * @param pItsOwner reference
+   **/
+  @Override
+  public final void setItsOwner(final SalesInvoice pItsOwner) {
+    this.itsOwner = pItsOwner;
+  }
+
+  //Simple getters and setters:
+  /**
+   * <p>Getter for itsVersion.</p>
+   * @return Long
+   **/
+  public final Long getItsVersion() {
+    return this.itsVersion;
+  }
+
+  /**
+   * <p>Setter for itsVersion.</p>
+   * @param pItsVersion reference
+   **/
+  public final void setItsVersion(final Long pItsVersion) {
+    this.itsVersion = pItsVersion;
+  }
+
+  /**
+   * <p>Getter for service.</p>
+   * @return ServiceToSale
+   **/
+  public final ServiceToSale getService() {
+    return this.service;
+  }
+
+  /**
+   * <p>Setter for service.</p>
+   * @param pService reference
+   **/
+  public final void setService(final ServiceToSale pService) {
+    this.service = pService;
+  }
+
+  /**
+   * <p>Getter for itsPrice.</p>
+   * @return BigDecimal
+   **/
+  public final BigDecimal getItsPrice() {
+    return this.itsPrice;
+  }
+
+  /**
+   * <p>Setter for itsPrice.</p>
+   * @param pItsPrice reference
+   **/
+  public final void setItsPrice(final BigDecimal pItsPrice) {
+    this.itsPrice = pItsPrice;
+  }
+
+  /**
+   * <p>Getter for totalTaxes.</p>
+   * @return BigDecimal
+   **/
+  public final BigDecimal getTotalTaxes() {
+    return this.totalTaxes;
+  }
+
+  /**
+   * <p>Setter for totalTaxes.</p>
+   * @param pTotalTaxes reference
+   **/
+  public final void setTotalTaxes(final BigDecimal pTotalTaxes) {
+    this.totalTaxes = pTotalTaxes;
+  }
+
+  /**
+   * <p>Getter for taxesDescription.</p>
+   * @return String
+   **/
+  public final String getTaxesDescription() {
+    return this.taxesDescription;
+  }
+
+  /**
+   * <p>Setter for taxesDescription.</p>
+   * @param pTaxesDescription reference
+   **/
+  public final void setTaxesDescription(final String pTaxesDescription) {
+    this.taxesDescription = pTaxesDescription;
+  }
+
+  /**
+   * <p>Getter for itsTotal.</p>
+   * @return BigDecimal
+   **/
+  public final BigDecimal getItsTotal() {
+    return this.itsTotal;
+  }
+
+  /**
+   * <p>Setter for itsTotal.</p>
+   * @param pItsTotal reference
+   **/
+  public final void setItsTotal(final BigDecimal pItsTotal) {
+    this.itsTotal = pItsTotal;
+  }
+
+  /**
+   * <p>Getter for description.</p>
+   * @return String
+   **/
+  public final String getDescription() {
+    return this.description;
+  }
+
+  /**
+   * <p>Setter for description.</p>
+   * @param pDescription reference
+   **/
+  public final void setDescription(final String pDescription) {
+    this.description = pDescription;
+  }
+}

@@ -16,45 +16,45 @@ import java.math.BigDecimal;
 
 import org.beigesoft.accounting.model.ETaxType;
 import org.beigesoft.exception.ExceptionWithCode;
-import org.beigesoft.accounting.persistable.PurchaseInvoice;
-import org.beigesoft.accounting.persistable.PurchaseInvoiceServiceLine;
+import org.beigesoft.accounting.persistable.SalesInvoice;
+import org.beigesoft.accounting.persistable.SalesInvoiceServiceLine;
 import org.beigesoft.accounting.persistable.InvItemTaxCategoryLine;
 import org.beigesoft.service.ISrvEntityOwned;
 import org.beigesoft.orm.service.ISrvOrm;
 
 /**
- * <p>Business service for Vendor Invoice Service Line.</p>
+ * <p>Business service for Sales Invoice Service Line.</p>
  *
  * @param <RS> platform dependent record set type
  * @author Yury Demidenko
  */
-public class SrvPurchaseInvoiceServiceLine<RS>
-  extends ASrvAccEntitySimple<RS, PurchaseInvoiceServiceLine>
-    implements ISrvEntityOwned<PurchaseInvoiceServiceLine, PurchaseInvoice> {
+public class SrvSalesInvoiceServiceLine<RS>
+  extends ASrvAccEntitySimple<RS, SalesInvoiceServiceLine>
+    implements ISrvEntityOwned<SalesInvoiceServiceLine, SalesInvoice> {
 
   /**
    * <p>It makes total for owner.</p>
    **/
-  private UtlPurchaseGoodsServiceLine<RS> utlPurchaseGoodsServiceLine;
+  private UtlSalesGoodsServiceLine<RS> utlSalesGoodsServiceLine;
 
   /**
    * <p>minimum constructor.</p>
    **/
-  public SrvPurchaseInvoiceServiceLine() {
-    super(PurchaseInvoiceServiceLine.class);
+  public SrvSalesInvoiceServiceLine() {
+    super(SalesInvoiceServiceLine.class);
   }
 
   /**
    * <p>Useful constructor.</p>
    * @param pSrvOrm ORM service
-   * @param pUtlPurchaseGoodsServiceLine UtlPurchaseGoodsServiceLine
+   * @param pUtlSalesGoodsServiceLine UtlSalesGoodsServiceLine
    * @param pSrvAccSettings AccSettings service
    **/
-  public SrvPurchaseInvoiceServiceLine(final ISrvOrm<RS> pSrvOrm,
-    final UtlPurchaseGoodsServiceLine<RS> pUtlPurchaseGoodsServiceLine,
+  public SrvSalesInvoiceServiceLine(final ISrvOrm<RS> pSrvOrm,
+    final UtlSalesGoodsServiceLine<RS> pUtlSalesGoodsServiceLine,
       final ISrvAccSettings pSrvAccSettings) {
-    super(PurchaseInvoiceServiceLine.class, pSrvOrm, pSrvAccSettings);
-    this.utlPurchaseGoodsServiceLine = pUtlPurchaseGoodsServiceLine;
+    super(SalesInvoiceServiceLine.class, pSrvOrm, pSrvAccSettings);
+    this.utlSalesGoodsServiceLine = pUtlSalesGoodsServiceLine;
   }
 
   /**
@@ -64,12 +64,12 @@ public class SrvPurchaseInvoiceServiceLine<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final PurchaseInvoiceServiceLine createEntity(
+  public final SalesInvoiceServiceLine createEntity(
     final Map<String, Object> pAddParam) throws Exception {
-    PurchaseInvoiceServiceLine entity = new PurchaseInvoiceServiceLine();
+    SalesInvoiceServiceLine entity = new SalesInvoiceServiceLine();
     entity.setIdDatabaseBirth(getSrvOrm().getIdDatabase());
     entity.setIsNew(true);
-    PurchaseInvoice itsOwner = new PurchaseInvoice();
+    SalesInvoice itsOwner = new SalesInvoice();
     entity.setItsOwner(itsOwner);
     addAccSettingsIntoAttrs(pAddParam);
     return entity;
@@ -83,11 +83,11 @@ public class SrvPurchaseInvoiceServiceLine<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final PurchaseInvoiceServiceLine retrieveCopyEntity(
+  public final SalesInvoiceServiceLine retrieveCopyEntity(
     final Map<String, Object> pAddParam,
       final Object pId) throws Exception {
-    PurchaseInvoiceServiceLine entity = getSrvOrm().retrieveCopyEntity(
-      PurchaseInvoiceServiceLine.class, pId);
+    SalesInvoiceServiceLine entity = getSrvOrm().retrieveCopyEntity(
+      SalesInvoiceServiceLine.class, pId);
     entity.setIsNew(true);
     addAccSettingsIntoAttrs(pAddParam);
     return entity;
@@ -102,25 +102,25 @@ public class SrvPurchaseInvoiceServiceLine<RS>
    **/
   @Override
   public final void saveEntity(final Map<String, Object> pAddParam,
-    final PurchaseInvoiceServiceLine pEntity,
+    final SalesInvoiceServiceLine pEntity,
       final boolean isEntityDetached) throws Exception {
-    if (pEntity.getItsCost().doubleValue() <= 0) {
+    if (pEntity.getItsPrice().doubleValue() <= 0) {
       throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
-        "cost_less_or_eq_zero::" + pAddParam.get("user"));
+        "price_less_or_eq_zero::" + pAddParam.get("user"));
     }
     //SQL refresh:
     pEntity.setService(getSrvOrm().retrieveEntity(pEntity.getService()));
-    PurchaseInvoice itsOwner = getSrvOrm().retrieveEntityById(
-      PurchaseInvoice.class, pEntity.getItsOwner().getItsId());
+    SalesInvoice itsOwner = getSrvOrm().retrieveEntityById(
+      SalesInvoice.class, pEntity.getItsOwner().getItsId());
     pEntity.setItsOwner(itsOwner);
     //rounding:
-    pEntity.setItsCost(pEntity.getItsCost().setScale(getSrvAccSettings()
-        .lazyGetAccSettings().getCostPrecision(), getSrvAccSettings()
+    pEntity.setItsPrice(pEntity.getItsPrice().setScale(getSrvAccSettings()
+        .lazyGetAccSettings().getPricePrecision(), getSrvAccSettings()
           .lazyGetAccSettings().getRoundingMode()));
     BigDecimal totalTaxes = BigDecimal.ZERO;
     String taxesDescription = "";
     if (getSrvAccSettings().lazyGetAccSettings()
-      .getIsExtractSalesTaxFromPurchase()
+      .getIsExtractSalesTaxFromSales()
         && pEntity.getService().getTaxCategory() != null) {
       List<InvItemTaxCategoryLine> pstl = getSrvOrm()
         .retrieveListWithConditions(
@@ -132,7 +132,7 @@ public class SrvPurchaseInvoiceServiceLine<RS>
       for (InvItemTaxCategoryLine pst : pstl) {
         if (ETaxType.SALES_TAX_OUTITEM.equals(pst.getTax().getItsType())
           || ETaxType.SALES_TAX_INITEM.equals(pst.getTax().getItsType())) {
-          BigDecimal addTx = pEntity.getItsCost().multiply(pst
+          BigDecimal addTx = pEntity.getItsPrice().multiply(pst
             .getItsPercentage()).divide(bigDecimal100, getSrvAccSettings()
               .lazyGetAccSettings().getPricePrecision(),
                 getSrvAccSettings().lazyGetAccSettings().getRoundingMode());
@@ -148,13 +148,13 @@ public class SrvPurchaseInvoiceServiceLine<RS>
     }
     pEntity.setTaxesDescription(taxesDescription);
     pEntity.setTotalTaxes(totalTaxes);
-    pEntity.setItsTotal(pEntity.getItsCost().add(totalTaxes));
+    pEntity.setItsTotal(pEntity.getItsPrice().add(totalTaxes));
     if (pEntity.getIsNew()) {
       getSrvOrm().insertEntity(pEntity);
     } else {
       getSrvOrm().updateEntity(pEntity);
     }
-    this.utlPurchaseGoodsServiceLine.updateOwner(pEntity.getItsOwner());
+    this.utlSalesGoodsServiceLine.updateOwner(pEntity.getItsOwner());
   }
 
   /**
@@ -164,9 +164,9 @@ public class SrvPurchaseInvoiceServiceLine<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final PurchaseInvoiceServiceLine retrieveEntity(
+  public final SalesInvoiceServiceLine retrieveEntity(
     final Map<String, Object> pAddParam,
-      final PurchaseInvoiceServiceLine pEntity) throws Exception {
+      final SalesInvoiceServiceLine pEntity) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
     return getSrvOrm().retrieveEntityById(getEntityClass(), pEntity.getItsId());
   }
@@ -179,7 +179,7 @@ public class SrvPurchaseInvoiceServiceLine<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final PurchaseInvoiceServiceLine retrieveEntityById(
+  public final SalesInvoiceServiceLine retrieveEntityById(
     final Map<String, Object> pAddParam,
       final Object pId) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
@@ -194,7 +194,7 @@ public class SrvPurchaseInvoiceServiceLine<RS>
    **/
   @Override
   public final void deleteEntity(final Map<String, Object> pAddParam,
-    final PurchaseInvoiceServiceLine pEntity) throws Exception {
+    final SalesInvoiceServiceLine pEntity) throws Exception {
     deleteEntity(pAddParam, pEntity.getItsId());
   }
 
@@ -207,9 +207,9 @@ public class SrvPurchaseInvoiceServiceLine<RS>
   @Override
   public final void deleteEntity(final Map<String, Object> pAddParam,
     final Object pId) throws Exception {
-    PurchaseInvoiceServiceLine entity = retrieveEntityById(pAddParam, pId);
+    SalesInvoiceServiceLine entity = retrieveEntityById(pAddParam, pId);
     getSrvOrm().deleteEntity(getEntityClass(), pId);
-    this.utlPurchaseGoodsServiceLine.updateOwner(entity.getItsOwner());
+    this.utlSalesGoodsServiceLine.updateOwner(entity.getItsOwner());
   }
 
   /**
@@ -221,13 +221,13 @@ public class SrvPurchaseInvoiceServiceLine<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final PurchaseInvoiceServiceLine createEntityWithOwnerById(
+  public final SalesInvoiceServiceLine createEntityWithOwnerById(
     final Map<String, Object> pAddParam,
       final Object pIdEntityItsOwner) throws Exception {
-    PurchaseInvoiceServiceLine entity = new PurchaseInvoiceServiceLine();
+    SalesInvoiceServiceLine entity = new SalesInvoiceServiceLine();
     entity.setIdDatabaseBirth(getSrvOrm().getIdDatabase());
     entity.setIsNew(true);
-    PurchaseInvoice itsOwner = new PurchaseInvoice();
+    SalesInvoice itsOwner = new SalesInvoice();
     itsOwner.setItsId(Long.valueOf(pIdEntityItsOwner.toString()));
     entity.setItsOwner(itsOwner);
     addAccSettingsIntoAttrs(pAddParam);
@@ -243,10 +243,10 @@ public class SrvPurchaseInvoiceServiceLine<RS>
    * @throws Exception - an exception
    **/
   @Override
-  public final PurchaseInvoiceServiceLine createEntityWithOwner(
+  public final SalesInvoiceServiceLine createEntityWithOwner(
     final Map<String, Object> pAddParam,
-      final PurchaseInvoice pEntityItsOwner) throws Exception {
-    PurchaseInvoiceServiceLine entity = new PurchaseInvoiceServiceLine();
+      final SalesInvoice pEntityItsOwner) throws Exception {
+    SalesInvoiceServiceLine entity = new SalesInvoiceServiceLine();
     entity.setIsNew(true);
     entity.setIdDatabaseBirth(getSrvOrm().getIdDatabase());
     entity.setItsOwner(pEntityItsOwner);
@@ -263,11 +263,11 @@ public class SrvPurchaseInvoiceServiceLine<RS>
    * @throws Exception - an exception
    */
   @Override
-  public final List<PurchaseInvoiceServiceLine> retrieveOwnedListById(
+  public final List<SalesInvoiceServiceLine> retrieveOwnedListById(
     final Map<String, Object> pAddParam,
       final Object pIdEntityItsOwner) throws Exception {
-    return getSrvOrm().retrieveEntityOwnedlist(PurchaseInvoiceServiceLine.class,
-      PurchaseInvoice.class, pIdEntityItsOwner);
+    return getSrvOrm().retrieveEntityOwnedlist(SalesInvoiceServiceLine.class,
+      SalesInvoice.class, pIdEntityItsOwner);
   }
 
   /**
@@ -279,30 +279,30 @@ public class SrvPurchaseInvoiceServiceLine<RS>
    * @throws Exception - an exception
    */
   @Override
-  public final List<PurchaseInvoiceServiceLine> retrieveOwnedList(
+  public final List<SalesInvoiceServiceLine> retrieveOwnedList(
     final Map<String, Object> pAddParam,
-      final PurchaseInvoice pEntityItsOwner) throws Exception {
+      final SalesInvoice pEntityItsOwner) throws Exception {
     addAccSettingsIntoAttrs(pAddParam);
-    return getSrvOrm().retrieveEntityOwnedlist(PurchaseInvoiceServiceLine.class,
-      PurchaseInvoice.class, pEntityItsOwner.getItsId());
+    return getSrvOrm().retrieveEntityOwnedlist(SalesInvoiceServiceLine.class,
+      SalesInvoice.class, pEntityItsOwner.getItsId());
   }
 
   //Simple getters and setters:
   /**
-   * <p>Getter for utlPurchaseGoodsServiceLine.</p>
-   * @return UtlPurchaseGoodsServiceLine<RS>
+   * <p>Getter for utlSalesGoodsServiceLine.</p>
+   * @return UtlSalesGoodsServiceLine<RS>
    **/
-  public final UtlPurchaseGoodsServiceLine<RS>
-    getUtlPurchaseGoodsServiceLine() {
-    return this.utlPurchaseGoodsServiceLine;
+  public final UtlSalesGoodsServiceLine<RS>
+    getUtlSalesGoodsServiceLine() {
+    return this.utlSalesGoodsServiceLine;
   }
 
   /**
-   * <p>Setter for utlPurchaseGoodsServiceLine.</p>
-   * @param pUtlPurchaseGoodsServiceLine reference
+   * <p>Setter for utlSalesGoodsServiceLine.</p>
+   * @param pUtlSalesGoodsServiceLine reference
    **/
-  public final void setUtlPurchaseGoodsServiceLine(
-    final UtlPurchaseGoodsServiceLine<RS> pUtlPurchaseGoodsServiceLine) {
-    this.utlPurchaseGoodsServiceLine = pUtlPurchaseGoodsServiceLine;
+  public final void setUtlSalesGoodsServiceLine(
+    final UtlSalesGoodsServiceLine<RS> pUtlSalesGoodsServiceLine) {
+    this.utlSalesGoodsServiceLine = pUtlSalesGoodsServiceLine;
   }
 }

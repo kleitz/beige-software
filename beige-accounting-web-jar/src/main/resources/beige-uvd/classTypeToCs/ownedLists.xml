@@ -13,6 +13,7 @@
   org.beigesoft.accounting.persistable.PurchaseInvoiceServiceLine,
   org.beigesoft.accounting.persistable.PurchaseInvoiceTaxLine</entry>
 <entry key="org.beigesoft.accounting.persistable.SalesInvoice">org.beigesoft.accounting.persistable.SalesInvoiceLine,
+  org.beigesoft.accounting.persistable.SalesInvoiceServiceLine,
   org.beigesoft.accounting.persistable.SalesInvoiceTaxLine</entry>
 <entry key="org.beigesoft.accounting.persistable.AccountingEntries">org.beigesoft.accounting.persistable.AccountingEntry</entry>
 <entry key="org.beigesoft.accounting.persistable.InvItemTaxCategory">org.beigesoft.accounting.persistable.InvItemTaxCategoryLine</entry>

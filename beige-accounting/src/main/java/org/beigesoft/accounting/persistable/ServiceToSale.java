@@ -14,13 +14,13 @@ import org.beigesoft.persistable.APersistableBaseHasName;
 
 /**
  * <pre>
- * Model of service purchased, e.g. "Shipping to NY",
+ * Model of service to sale, e.g. "Shipping to NY",
  * "Repair carburetor MZX567G".
  * </pre>
  *
  * @author Yury Demidenko
  */
-public class ServicePurchased extends APersistableBaseHasName {
+public class ServiceToSale extends APersistableBaseHasName {
 
   /**
    * <p>Version, changed time algorithm cause check dirty of
@@ -32,7 +32,7 @@ public class ServicePurchased extends APersistableBaseHasName {
    * <p>Its category.
    * It used to filter list of services and as subaccount.</p>
    **/
-  private ServicePurchasedCategory itsCategory;
+  private ServiceToSaleCategory itsCategory;
 
   /**
    * <p>Tax category e.g. "NY: tax1 10%, tax2 5%".</p>
@@ -58,9 +58,9 @@ public class ServicePurchased extends APersistableBaseHasName {
 
   /**
    * <p>Geter for itsCategory.</p>
-   * @return ServicePurchasedCategory
+   * @return ServiceToSaleCategory
    **/
-  public final ServicePurchasedCategory getItsCategory() {
+  public final ServiceToSaleCategory getItsCategory() {
     return this.itsCategory;
   }
 
@@ -69,7 +69,7 @@ public class ServicePurchased extends APersistableBaseHasName {
    * @param pItsCategory reference
    **/
   public final void setItsCategory(
-    final ServicePurchasedCategory pItsCategory) {
+    final ServiceToSaleCategory pItsCategory) {
     this.itsCategory = pItsCategory;
   }
 

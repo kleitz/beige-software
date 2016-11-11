@@ -864,17 +864,6 @@ where PAYMENTFROM.REVERSEDID is null and PAYMENTFROM.HASMADEACCENTRIES = 0 and S
           <li>itsOwner - PurchaseInvoice, not null</li>
         </ul>
       </p>
-      !!!this method deprecated, use purchaseInvoiceTaxes (goods and services)
-      Method "accounting/trade/purchaseInvoiceLineTaxes.sql" that calculate purchase taxes:
-      <pre style="white-space: pre-wrap;">
-select TAX as TAXID,  sum(SUBTOTAL * ITSPERCENTAGE / 100) as TOTALTAX
-from PURCHASEINVOICELINE 
-join INVITEM on INVITEM.ITSID = PURCHASEINVOICELINE.INVITEM
-join INVITEMTAXCATEGORY on INVITEMTAXCATEGORY.ITSID = INVITEM.TAXCATEGORY
-join INVITEMTAXCATEGORYLINE on INVITEMTAXCATEGORYLINE.ITSOWNER = INVITEMTAXCATEGORY.ITSID
-where PURCHASEINVOICELINE.REVERSEDID is null and PURCHASEINVOICELINE.ITSOWNER = :ITSOWNER
-group by TAX;
-      </pre>
       Method "PurInvSalTaxSelfDeductingDbtAccrual":
       "PurchaseInvoice, Debit SalesTaxFromPurchase per Tax."
       Accounting entries source: accounting/journalEntries/PurInvSalTaxSelfDeductingDbtAccrual.sql:
@@ -895,16 +884,6 @@ group by SOURCETYPE, SOURCEID, ITSDATE, ACCDEBIT, SUBACCDEBITTYPE, SUBACCDEBITID
           <li>itsOwner - SalesInvoice, not null</li>
         </ul>
       </p>
-      Method "accounting/trade/salesInvoiceLineTaxes.sql" that calculate sales taxes:
-      <pre style="white-space: pre-wrap;">
-select TAX as TAXID,  sum(SUBTOTAL * ITSPERCENTAGE / 100) as TOTALTAX
-from SALESINVOICELINE 
-join INVITEM on INVITEM.ITSID = SALESINVOICELINE.INVITEM
-join INVITEMTAXCATEGORY on INVITEMTAXCATEGORY.ITSID = INVITEM.TAXCATEGORY
-join INVITEMTAXCATEGORYLINE on INVITEMTAXCATEGORYLINE.ITSOWNER = INVITEMTAXCATEGORY.ITSID
-where SALESINVOICELINE.REVERSEDID is null and SALESINVOICELINE.ITSOWNER = :ITSOWNER
-group by TAX;
-      </pre>
       Method "SalInvSalTaxPayCrdtAccrual":
       "SalesInvoice, Credit SalesTaxPay per Tax."
       Accounting entries source: accounting/journalEntries/SalInvSalTaxPayCrdtAccrual.sql:
@@ -1411,32 +1390,22 @@ where BEGINNINGINVENTORYLINE.REVERSEDID is null and THEREST>0 and INVITEM=:INVIT
           <li>itsVersion - Version, changed time algorithm cause check dirty of
             calculated from it (derived) records</li>
           <li>itsCategory - ServicePurchasedCategory, not null.</li>
-          <li>taxCategory - ServiceTaxCategory, nullable.</li>
+          <li>taxCategory - InvItemTaxCategory, nullable.</li>
         </ul>
       </p>
       <p>Persistable model ServicePurchasedCategory consist of:
         <ul>
-          <li>Subaccount fields implements IHasTypeCode</li>
+          <li>AHasNameIdLong</li>
           <li>expense - Expense, not null</li>
-        </ul>
-        constTypeCode() = 2011<br></br>
-        For inventory item of type product(goods) it means product category
-      </p>
-      <p><b>Any subaccount may be used in input accounting entries document</b> that doesn't hold this
-      subaccount as foreign key, so <b>input accounting entries document</b> must report such subaccount in
-      their correspondent <b>[subaccount]Used</b> table to prevent delete that used subaccount</p>
-      <p>ServiceCategoryUsed consist of:
-        <ul>
-          <li>ASubaccountUsed fields</li>
-          <li>subaccount - ServicePurchasedCategory, not null</li>
         </ul>
       </p>
       <p>Persistable model PurchaseInvoiceServiceLine consist of:
         <ul>
          <li>APersistableBaseHasName fields implements IOwned&lt;PurchaseInvoice&gt;</li>
           <li>itsVersion - Version,  reliable autoincrement algorithm.</li>
-          <li>itsOwner - SPurchaseInvoice, not null.</li>
+          <li>itsOwner - PurchaseInvoice, not null.</li>
           <li>service - ServicePurchased, not null, e.g. "Delivering from NY".</li>
+          <li>accExpense - Account service expense, e.g. Expenses or InventoryCapitalizedCost, Not Null.</li>
           <li>itsCost - BigDecimal, not null.</li>
           <li>totalTaxes - BigDecimal, not null.</li>
           <li>itsTotal - BigDecimal, not null.</li>
@@ -1461,7 +1430,7 @@ from
 
   union all
 
-  select SERVICEPURCHASED.TAXCATEGORY as TAXCATEGORY, SUBTOTAL
+  select SERVICEPURCHASED.TAXCATEGORY as TAXCATEGORY, ITSPRICE as SUBTOTAL
   from PURCHASEINVOICESERVICELINE 
   join SERVICEPURCHASED on SERVICEPURCHASED.ITSID = PURCHASEINVOICESERVICELINE.SERVICE
   where PURCHASEINVOICESERVICELINE.ITSOWNER = :ITSOWNER
@@ -1501,6 +1470,102 @@ join SERVICEPURCHASEDCATEGORY on SERVICEPURCHASEDCATEGORY.ITSID = SERVICEPURCHAS
 join EXPENSE on EXPENSE.ITSID = SERVICEPURCHASEDCATEGORY.EXPENSE 
 join DEBTORCREDITOR on DEBTORCREDITOR.ITSID = PURCHASEINVOICE.VENDOR
 where PURCHASEINVOICE.REVERSEDID is null and HASMADEACCENTRIES = 0 :WHEREADD
+group by SOURCETYPE, SOURCEID, ITSDATE, ACCDEBIT, SUBACCDEBITTYPE, SUBACCDEBITID, SUBACCDEBIT, ACCCREDIT, SUBACCCREDITTYPE, SUBACCCREDITID, SUBACCCREDIT
+      </pre>
+
+
+     <h5>Sales of services</h5>
+      <p>Persistable model ServiceToSale consist of:
+        <ul>
+         <li>APersistableBaseHasName fields (Long ID)</li>
+          <li>itsVersion - Version, changed time algorithm cause check dirty of
+            calculated from it (derived) records</li>
+          <li>itsCategory - ServiceToSaleCategory, not null.</li>
+          <li>taxCategory - InvItemTaxCategory, nullable.</li>
+        </ul>
+      </p>
+      <p>Persistable model ServiceToSaleCategory consist of:
+        <ul>
+          <li>Subaccount fields implements IHasTypeCode</li>
+        </ul>
+        constTypeCode() = 2011<br></br>
+        This is subaccount for SalesServices
+      </p>
+      <p>ServiceToSaleCategoryUsed consist of:
+        <ul>
+          <li>ASubaccountUsed fields</li>
+          <li>subaccount - ServiceToSaleCategory, not null</li>
+        </ul>
+      </p>
+      <p>Persistable model SalesInvoiceServiceLine consist of:
+        <ul>
+         <li>APersistableBaseHasName fields implements IOwned&lt;SalesInvoice&gt;</li>
+          <li>itsVersion - Version,  reliable autoincrement algorithm.</li>
+          <li>itsOwner - SSalesInvoice, not null.</li>
+          <li>service - ServiceToSale, not null, e.g. "Delivering from NY".</li>
+          <li>itsPrice - BigDecimal, not null.</li>
+          <li>totalTaxes - BigDecimal, not null.</li>
+          <li>itsTotal - BigDecimal, not null.</li>
+          <li>taxesDescription - String, nullable, Taxes description, uneditable, e.g. "tax1 10%=12, tax2 5%=6".</li>
+          <li>description - String, nullable, description.</li>
+        </ul>
+      </p>
+      <p>Persistable model SalesInvoice additionally consist of:
+        <ul>
+          <li>services - List&lt;SalesInvoiceServiceLine&gt; list of summary sales taxes (if exists)</li>
+        </ul>
+      </p>
+      Method "accounting/trade/salesInvoiceTaxes.sql" that calculate sales taxes:
+      <pre style="white-space: pre-wrap;">
+select TAX as TAXID,  sum(SUBTOTAL * ITSPERCENTAGE / 100) as TOTALTAX
+from
+(
+  select INVITEM.TAXCATEGORY as TAXCATEGORY, SUBTOTAL
+  from SALESINVOICELINE 
+  join INVITEM on INVITEM.ITSID = SALESINVOICELINE.INVITEM
+  where SALESINVOICELINE.REVERSEDID is null and SALESINVOICELINE.ITSOWNER = :ITSOWNER
+
+  union all
+
+  select SERVICETOSALE.TAXCATEGORY as TAXCATEGORY, ITSPRICE as SUBTOTAL
+  from SALESINVOICESERVICELINE 
+  join SERVICETOSALE on SERVICETOSALE.ITSID = SALESINVOICESERVICELINE.SERVICE
+  where SALESINVOICESERVICELINE.ITSOWNER = :ITSOWNER
+) as ALL_LINES
+join INVITEMTAXCATEGORY on INVITEMTAXCATEGORY.ITSID = TAXCATEGORY
+join INVITEMTAXCATEGORYLINE on INVITEMTAXCATEGORYLINE.ITSOWNER = INVITEMTAXCATEGORY.ITSID
+group by TAX;
+      </pre>
+      Method "accounting/trade/salesInvoiceTotals.sql" that calculate sales totals:
+      <pre style="white-space: pre-wrap;">
+select sum(SUBTOTAL) as SUBTOTAL, sum(TOTALTAXES) as TOTALTAXES
+from
+(
+  select SUBTOTAL, TOTALTAXES
+  from SALESINVOICELINE 
+  where SALESINVOICELINE.REVERSEDID is null and SALESINVOICELINE.ITSOWNER = :ITSOWNER
+
+  union all
+
+  select ITSPRICE as SUBTOTAL, TOTALTAXES
+  from SALESINVOICESERVICELINE 
+  where SALESINVOICESERVICELINE.ITSOWNER = :ITSOWNER
+) as ALL_LINES;
+      </pre>
+      <p>
+      Method "SalInvAccRecDbtSalesServicesCatCrdt":
+      "SalesInvoiceServiceLine , Debit AccReievable per DebtorCreditor, Credit SalesServices per ServiceToSaleCategory."
+      Accounting entries source: accounting/journalEntries/SalInvAccRecDbtSalesServicesCatCrdt.sql:
+      <pre style="white-space: pre-wrap;">
+select 2 as SOURCETYPE, SALESINVOICE.ITSID as SOURCEID, SALESINVOICE.ITSDATE,
+'AccReceivable' as ACCDEBIT, 2004 as SUBACCDEBITTYPE, DEBTORCREDITOR.ITSID as SUBACCDEBITID, DEBTORCREDITOR.ITSNAME as SUBACCDEBIT, sum(SALESINVOICELINE.ITSTOTAL) as DEBIT,
+'SalesServices' as ACCCREDIT, 2011 as SUBACCCREDITTYPE, SERVICETOSALECATEGORY.ITSID as SUBACCCREDITID, SERVICETOSALECATEGORY.ITSNAME as SUBACCCREDIT, sum(SALESINVOICESERVICELINE.ITSPRICE) as CREDIT,
+from SALESINVOICESERVICELINE
+join SALESINVOICE on SALESINVOICE.ITSID = SALESINVOICESERVICELINE.ITSOWNER
+join SERVICETOSALE on SERVICETOSALE.ITSID = SALESINVOICESERVICELINE.SERVICE
+join SERVICETOSALECATEGORY on SERVICETOSALECATEGORY.ITSID = SERVICETOSALE.ITSCATEGORY
+join DEBTORCREDITOR on DEBTORCREDITOR.ITSID = SALESINVOICE.CUSTOMER
+where SALESINVOICE.REVERSEDID is null and HASMADEACCENTRIES = 0 :WHEREADD
 group by SOURCETYPE, SOURCEID, ITSDATE, ACCDEBIT, SUBACCDEBITTYPE, SUBACCDEBITID, SUBACCDEBIT, ACCCREDIT, SUBACCCREDITTYPE, SUBACCCREDITID, SUBACCCREDIT
       </pre>
 

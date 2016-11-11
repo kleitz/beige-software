@@ -1,6 +1,11 @@
 site: http://www.beigesoft.org
 or https://sites.google.com/site/beigesoftware
 
+version 1.1.2.
+Added services purchased (into purchase invoice)
+Added services to sell (into sales invoice)
+Added gross income revenue account SalesServices with subaccount ServiceToSaleCategory
+
 version 1.1.1.
 Added import full database copy with WEB-service (e.g. from SQlite to MySql).
 Added payByDate to sales/purchase invoices to report invoices list with payByDate conditions. 

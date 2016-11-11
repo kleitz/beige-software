@@ -38,6 +38,11 @@ public class SalesInvoice extends ADocWithTaxes
   private List<SalesInvoiceLine> itsLines;
 
   /**
+   * <p>Services to sell.</p>
+   **/
+  private List<SalesInvoiceServiceLine> services;
+
+  /**
    * <p>Taxes lines.</p>
    **/
   private List<SalesInvoiceTaxLine> taxesLines;
@@ -135,6 +140,23 @@ public class SalesInvoice extends ADocWithTaxes
    **/
   public final void setItsLines(final List<SalesInvoiceLine> pItsLines) {
     this.itsLines = pItsLines;
+  }
+
+  /**
+   * <p>Getter for services.</p>
+   * @return List<SalesInvoiceServiceLine>
+   **/
+  public final List<SalesInvoiceServiceLine> getServices() {
+    return this.services;
+  }
+
+  /**
+   * <p>Setter for services.</p>
+   * @param pServices reference
+   **/
+  public final void setServices(
+    final List<SalesInvoiceServiceLine> pServices) {
+    this.services = pServices;
   }
 
   /**

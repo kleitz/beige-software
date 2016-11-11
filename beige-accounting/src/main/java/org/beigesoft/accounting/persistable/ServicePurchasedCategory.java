@@ -10,31 +10,22 @@ package org.beigesoft.accounting.persistable;
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-import org.beigesoft.accounting.persistable.base.ASubaccount;
+import org.beigesoft.persistable.AHasNameIdLong;
 
 /**
  * <pre>
  * Model of category of service purchased, e.g. "Car engine repairs".
- * It used for filter list of services and as subaccount.
+ * It used for filter list of services.
  * </pre>
  *
  * @author Yury Demidenko
  */
-public class ServicePurchasedCategory extends ASubaccount {
+public class ServicePurchasedCategory extends AHasNameIdLong {
 
   /**
-   * <p>Expense, not null.</p>
+   * <p>Expense, not null, subaccount for account expense.</p>
    **/
   private Expense expense;
-
-  /**
-   * <p>OOP friendly Constant of code type.</p>
-   * @return 2011
-   **/
-  @Override
-  public final Integer constTypeCode() {
-    return 2011;
-  }
 
   //Simple getters and setters:
   /**

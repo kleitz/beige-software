@@ -21,8 +21,6 @@ import org.beigesoft.accounting.persistable.Tax;
 import org.beigesoft.accounting.persistable.TaxUsed;
 import org.beigesoft.accounting.persistable.InvItemCategory;
 import org.beigesoft.accounting.persistable.InvItemCategoryUsed;
-import org.beigesoft.accounting.persistable.ServicePurchasedCategory;
-import org.beigesoft.accounting.persistable.ServicePurchasedCategoryUsed;
 import org.beigesoft.accounting.persistable.Expense;
 import org.beigesoft.accounting.persistable.ExpenseUsed;
 import org.beigesoft.accounting.persistable.Property;
@@ -35,6 +33,8 @@ import org.beigesoft.accounting.persistable.EmployeeCategory;
 import org.beigesoft.accounting.persistable.EmployeeCategoryUsed;
 import org.beigesoft.accounting.persistable.Employee;
 import org.beigesoft.accounting.persistable.EmployeeUsed;
+import org.beigesoft.accounting.persistable.ServiceToSaleCategory;
+import org.beigesoft.accounting.persistable.ServiceToSaleCategoryUsed;
 
 /**
  * <p>Business service for code - java sub-account type map.</p>
@@ -75,11 +75,6 @@ public class SrvTypeCodeSubacc implements ISrvSubaccCode {
     this.typeCodeMap.put(iic.constTypeCode(), InvItemCategory.class);
     this.subaccUsedCodeMap.put(iic.constTypeCode(),
       InvItemCategoryUsed.class);
-    ServicePurchasedCategory serCat = new ServicePurchasedCategory();
-    this.typeCodeMap.put(serCat.constTypeCode(),
-      ServicePurchasedCategory.class);
-    this.subaccUsedCodeMap.put(serCat.constTypeCode(),
-      ServicePurchasedCategoryUsed.class);
     Expense exp = new Expense();
     this.typeCodeMap.put(exp.constTypeCode(), Expense.class);
     this.subaccUsedCodeMap.put(exp.constTypeCode(),
@@ -104,6 +99,10 @@ public class SrvTypeCodeSubacc implements ISrvSubaccCode {
     this.typeCodeMap.put(em.constTypeCode(), Employee.class);
     this.subaccUsedCodeMap.put(em.constTypeCode(),
       EmployeeUsed.class);
+    ServiceToSaleCategory stsc = new ServiceToSaleCategory();
+    this.typeCodeMap.put(stsc.constTypeCode(), ServiceToSaleCategory.class);
+    this.subaccUsedCodeMap.put(stsc.constTypeCode(),
+      ServiceToSaleCategoryUsed.class);
   }
 
   /**

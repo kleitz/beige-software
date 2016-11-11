@@ -14,25 +14,25 @@ import org.beigesoft.accounting.persistable.base.ASubaccountUsed;
 
 /**
  * <pre>
- * Model of used Purchased Service Category in AccountingEntries.
+ * Model of used Service To Sale Category in AccountingEntries.
  * </pre>
  *
  * @author Yury Demidenko
  */
-public class ServicePurchasedCategoryUsed
-  extends ASubaccountUsed<ServicePurchasedCategory> {
+public class ServiceToSaleCategoryUsed
+  extends ASubaccountUsed<ServiceToSaleCategory> {
 
   /**
-   * <p>ServicePurchasedCategory.</p>
+   * <p>ServiceToSaleCategory.</p>
    **/
-  private ServicePurchasedCategory subaccount;
+  private ServiceToSaleCategory subaccount;
 
   /**
    * <p>Getter for subaccount.</p>
-   * @return ServicePurchasedCategory
+   * @return ServiceToSaleCategory
    **/
   @Override
-  public final ServicePurchasedCategory getSubaccount() {
+  public final ServiceToSaleCategory getSubaccount() {
     return this.subaccount;
   }
 
@@ -41,7 +41,7 @@ public class ServicePurchasedCategoryUsed
    * @param pSubaccount reference
    **/
   @Override
-  public final void setSubaccount(final ServicePurchasedCategory pSubaccount) {
+  public final void setSubaccount(final ServiceToSaleCategory pSubaccount) {
     this.subaccount = pSubaccount;
   }
 }

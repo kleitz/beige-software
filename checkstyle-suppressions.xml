@@ -18,7 +18,9 @@
   <suppress checks="MagicNumberCheck"
     files="BalanceAtAllDirtyCheck|SrvBalanceStd|GoodsLoss|GoodsLossLine|SalesReturn|SalesReturnLine|PurchaseReturn|PurchaseReturnLine|AFactoryAppBeans"/>
   <suppress checks="MagicNumberCheck"
-    files="UtilXml|ASrvOrm|ClearDbThenGetAnotherCopyXmlHttp|MoveItems|MoveItemsLine|BeginningInventory|BeginningInventoryLine|ServicePurchasedCategory"/>
+    files="UtilXml|ASrvOrm|ClearDbThenGetAnotherCopyXmlHttp|MoveItems|MoveItemsLine|BeginningInventory|BeginningInventoryLine"/>
+  <suppress checks="MagicNumberCheck"
+    files="ServiceToSaleCategory"/>
   <suppress checks="LineLength"
     files="WGetDatabaseCopyResult"/>
   <suppress checks="EmptyBlock"

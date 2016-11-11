@@ -13,23 +13,15 @@ package org.beigesoft.accounting.service;
 import java.util.List;
 import java.math.BigDecimal;
 import java.util.Map;
-import java.io.File;
-import java.io.InputStream;
-import java.io.IOException;
-import java.net.URL;
 
 import org.beigesoft.accounting.model.ETaxType;
 import org.beigesoft.exception.ExceptionWithCode;
 import org.beigesoft.accounting.persistable.SalesInvoice;
 import org.beigesoft.accounting.persistable.SalesInvoiceLine;
-import org.beigesoft.accounting.persistable.SalesInvoiceTaxLine;
-import org.beigesoft.accounting.persistable.Tax;
 import org.beigesoft.accounting.persistable.InvItemTaxCategoryLine;
 import org.beigesoft.accounting.persistable.CogsEntry;
 import org.beigesoft.service.ISrvEntityOwned;
 import org.beigesoft.orm.service.ISrvOrm;
-import org.beigesoft.orm.service.ISrvDatabase;
-import org.beigesoft.orm.model.IRecordSet;
 
 /**
  * <p>Business service for Customer Invoice Line.</p>
@@ -42,11 +34,6 @@ public class SrvSalesInvoiceLine<RS>
     implements ISrvEntityOwned<SalesInvoiceLine, SalesInvoice> {
 
   /**
-   * <p>Database service.</p>
-   **/
-  private ISrvDatabase<RS> srvDatabase;
-
-  /**
    * <p>Business service for warehouse.</p>
    **/
   private ISrvWarehouseEntry srvWarehouseEntry;
@@ -57,9 +44,9 @@ public class SrvSalesInvoiceLine<RS>
   private ISrvDrawItemEntry<CogsEntry> srvCogsEntry;
 
   /**
-   * <p>Query Customer Invoice Line Taxes.</p>
+   * <p>It makes total for owner.</p>
    **/
-  private String querySalesInvoiceLineTaxes;
+  private UtlSalesGoodsServiceLine<RS> utlSalesGoodsServiceLine;
 
   /**
    * <p>minimum constructor.</p>
@@ -71,17 +58,18 @@ public class SrvSalesInvoiceLine<RS>
   /**
    * <p>Useful constructor.</p>
    * @param pSrvOrm ORM service
-   * @param pSrvDatabase Database service
+   * @param pUtlSalesGoodsServiceLine UtlSalesGoodsServiceLine
    * @param pSrvAccSettings AccSettings service
    * @param pSrvWarehouseEntry Warehouse service
    * @param pSrvCogsEntry Draw material service
    **/
   public SrvSalesInvoiceLine(final ISrvOrm<RS> pSrvOrm,
-    final ISrvDatabase<RS> pSrvDatabase, final ISrvAccSettings pSrvAccSettings,
-      final ISrvWarehouseEntry pSrvWarehouseEntry,
-        final ISrvDrawItemEntry<CogsEntry> pSrvCogsEntry) {
+    final UtlSalesGoodsServiceLine<RS> pUtlSalesGoodsServiceLine,
+      final ISrvAccSettings pSrvAccSettings,
+        final ISrvWarehouseEntry pSrvWarehouseEntry,
+          final ISrvDrawItemEntry<CogsEntry> pSrvCogsEntry) {
     super(SalesInvoiceLine.class, pSrvOrm, pSrvAccSettings);
-    this.srvDatabase = pSrvDatabase;
+    this.utlSalesGoodsServiceLine = pUtlSalesGoodsServiceLine;
     this.srvWarehouseEntry = pSrvWarehouseEntry;
     this.srvCogsEntry = pSrvCogsEntry;
   }
@@ -233,25 +221,7 @@ public class SrvSalesInvoiceLine<RS>
           pEntity.getItsOwner().getItsDate(),
             pEntity.getItsOwner().getItsId());
       }
-      String query =
-      "select sum(SUBTOTAL) as SUBTOTAL, sum(TOTALTAXES) as TOTALTAXES from"
-        + " SALESINVOICELINE where ITSOWNER="
-          + pEntity.getItsOwner().getItsId();
-      String[] columns = new String[]{"SUBTOTAL", "TOTALTAXES"};
-      Double[] totals = getSrvDatabase().evalDoubleResults(query, columns);
-      itsOwner.setSubtotal(BigDecimal.valueOf(totals[0]).setScale(
-        getSrvAccSettings().lazyGetAccSettings().getPricePrecision(),
-          getSrvAccSettings().lazyGetAccSettings().getRoundingMode()));
-      itsOwner.setTotalTaxes(BigDecimal.valueOf(totals[1]).setScale(
-        getSrvAccSettings().lazyGetAccSettings().getPricePrecision(),
-          getSrvAccSettings().lazyGetAccSettings().getRoundingMode()));
-      itsOwner.setItsTotal(itsOwner.getSubtotal().
-        add(itsOwner.getTotalTaxes()));
-      getSrvOrm().updateEntity(itsOwner);
-      if (getSrvAccSettings().lazyGetAccSettings()
-        .getIsExtractSalesTaxFromSales()) {
-        updateTaxLines(pEntity.getItsOwner().getItsId());
-      }
+      this.utlSalesGoodsServiceLine.updateOwner(pEntity.getItsOwner());
     } else {
       throw new ExceptionWithCode(ExceptionWithCode.FORBIDDEN,
         "edit_not_allowed::" + pAddParam.get("user"));
@@ -331,103 +301,6 @@ public class SrvSalesInvoiceLine<RS>
       SalesInvoice.class, pEntityItsOwner.getItsId());
   }
 
-  //Utils:
-  /**
-   * <p>Update invoice Tax Lines.</p>
-   * @param pOwnerId Owner Id
-   * @throws Exception - an exception
-   **/
-  public final void updateTaxLines(final Long pOwnerId) throws Exception {
-    List<SalesInvoiceTaxLine> citl = getSrvOrm().retrieveListWithConditions(
-        SalesInvoiceTaxLine.class, "where ITSOWNER="
-          + pOwnerId);
-    String query = lazyGetQuerySalesInvoiceLineTaxes().replace(":ITSOWNER",
-      pOwnerId.toString());
-    int countUpdatedSitl = 0;
-    IRecordSet<RS> recordSet = null;
-    try {
-      recordSet = getSrvDatabase().retrieveRecords(query);
-      if (recordSet.moveToFirst()) {
-        do {
-          Long taxId = getSrvDatabase().getSrvRecordRetriever()
-            .getLong(recordSet.getRecordSet(), "TAXID");
-          Double totalTax = getSrvDatabase().getSrvRecordRetriever()
-            .getDouble(recordSet.getRecordSet(), "TOTALTAX");
-          SalesInvoiceTaxLine cit;
-          if (citl.size() > countUpdatedSitl) {
-            cit = citl.get(countUpdatedSitl);
-            countUpdatedSitl++;
-          } else {
-            cit = getSrvOrm().createEntityWithOwner(
-              SalesInvoiceTaxLine.class, SalesInvoice.class,
-                pOwnerId);
-            cit.setIsNew(true);
-          }
-          Tax tax = new Tax();
-          tax.setItsId(taxId);
-          cit.setTax(tax);
-          cit.setItsTotal(BigDecimal.valueOf(totalTax).setScale(
-            getSrvAccSettings().lazyGetAccSettings().getPricePrecision(),
-              getSrvAccSettings().lazyGetAccSettings().getRoundingMode()));
-          if (cit.getIsNew()) {
-            getSrvOrm().insertEntity(cit);
-          } else {
-            getSrvOrm().updateEntity(cit);
-          }
-        } while (recordSet.moveToNext());
-      }
-    } finally {
-      if (recordSet != null) {
-        recordSet.close();
-      }
-    }
-    if (countUpdatedSitl < citl.size()) {
-      for (int j = countUpdatedSitl; j < citl.size(); j++) {
-        getSrvOrm().deleteEntity(citl.get(j));
-      }
-    }
-  }
-
-  /**
-   * <p>Lazy Get querySalesInvoiceLineTaxes.</p>
-   * @return String
-   * @throws Exception - an exception
-   **/
-  public final String lazyGetQuerySalesInvoiceLineTaxes() throws Exception {
-    if (this.querySalesInvoiceLineTaxes == null) {
-      String flName = File.separator + "accounting" + File.separator + "trade"
-        + File.separator + "salesInvoiceLineTaxes.sql";
-      this.querySalesInvoiceLineTaxes = loadString(flName);
-    }
-    return this.querySalesInvoiceLineTaxes;
-  }
-
-  /**
-   * <p>Load string file (usually SQL query).</p>
-   * @param pFileName file name
-   * @return String usually SQL query
-   * @throws IOException - IO exception
-   **/
-  public final String loadString(final String pFileName)
-        throws IOException {
-    URL urlFile = SrvSalesInvoiceLine.class
-      .getResource(pFileName);
-    if (urlFile != null) {
-      InputStream inputStream = null;
-      try {
-        inputStream = SrvSalesInvoiceLine.class.getResourceAsStream(pFileName);
-        byte[] bArray = new byte[inputStream.available()];
-        inputStream.read(bArray, 0, inputStream.available());
-        return new String(bArray, "UTF-8");
-      } finally {
-        if (inputStream != null) {
-          inputStream.close();
-        }
-      }
-    }
-    return null;
-  }
-
   //Simple getters and setters:
   /**
    * <p>Geter for srvWarehouseEntry.</p>
@@ -444,15 +317,6 @@ public class SrvSalesInvoiceLine<RS>
   public final void setSrvWarehouseEntry(
     final ISrvWarehouseEntry pSrvWarehouseEntry) {
     this.srvWarehouseEntry = pSrvWarehouseEntry;
-  }
-
-  /**
-   * <p>Setter for querySalesInvoiceLineTaxes.</p>
-   * @param pQuerySalesInvoiceLineTaxes reference
-   **/
-  public final void setQuerySalesInvoiceLineTaxes(
-    final String pQuerySalesInvoiceLineTaxes) {
-    this.querySalesInvoiceLineTaxes = pQuerySalesInvoiceLineTaxes;
   }
 
   /**
@@ -473,18 +337,20 @@ public class SrvSalesInvoiceLine<RS>
   }
 
   /**
-   * <p>Geter for srvDatabase.</p>
-   * @return ISrvDatabase
+   * <p>Getter for utlSalesGoodsServiceLine.</p>
+   * @return UtlSalesGoodsServiceLine<RS>
    **/
-  public final ISrvDatabase<RS> getSrvDatabase() {
-    return this.srvDatabase;
+  public final UtlSalesGoodsServiceLine<RS>
+    getUtlSalesGoodsServiceLine() {
+    return this.utlSalesGoodsServiceLine;
   }
 
   /**
-   * <p>Setter for srvDatabase.</p>
-   * @param pSrvDatabase reference
+   * <p>Setter for utlSalesGoodsServiceLine.</p>
+   * @param pUtlSalesGoodsServiceLine reference
    **/
-  public final void setSrvDatabase(final ISrvDatabase<RS> pSrvDatabase) {
-    this.srvDatabase = pSrvDatabase;
+  public final void setUtlSalesGoodsServiceLine(
+    final UtlSalesGoodsServiceLine<RS> pUtlSalesGoodsServiceLine) {
+    this.utlSalesGoodsServiceLine = pUtlSalesGoodsServiceLine;
   }
 }
