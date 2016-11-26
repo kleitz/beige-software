@@ -12,23 +12,19 @@ package org.beigesoft.accounting.persistable;
 
 import java.util.List;
 
-import org.beigesoft.persistable.APersistableBaseHasName;
+import org.beigesoft.persistable.APersistableBaseNameVersion;
 
 /**
  * <pre>
  * For automation purpose there is entity WageTaxTable that implements
  * wide used method "Tax table" to estimate tax.
  * So Wage is filled automatically according this table.
+ * Version changed time algorithm.
  * </pre>
  *
  * @author Yury Demidenko
  */
-public class WageTaxTable extends APersistableBaseHasName {
-
-  /**
-   * <p>Version changed time algorithm.</p>
-   **/
-  private Long itsVersion;
+public class WageTaxTable extends APersistableBaseNameVersion {
 
   /**
    * <p>Tax.</p>
@@ -119,22 +115,6 @@ public class WageTaxTable extends APersistableBaseHasName {
    **/
   public final void setEmployees(final List<WageTaxTableEmployee> pEmployees) {
     this.employees = pEmployees;
-  }
-
-  /**
-   * <p>Getter for itsVersion.</p>
-   * @return Long
-   **/
-  public final Long getItsVersion() {
-    return this.itsVersion;
-  }
-
-  /**
-   * <p>Setter for itsVersion.</p>
-   * @param pItsVersion reference
-   **/
-  public final void setItsVersion(final Long pItsVersion) {
-    this.itsVersion = pItsVersion;
   }
 
   /**

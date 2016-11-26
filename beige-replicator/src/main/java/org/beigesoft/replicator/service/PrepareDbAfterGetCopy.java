@@ -12,8 +12,10 @@ package org.beigesoft.replicator.service;
 
 import java.util.Map;
 import java.util.Date;
+import java.io.Writer;
 
 import org.beigesoft.factory.IFactoryAppBeans;
+import org.beigesoft.delegate.IDelegator;
 import org.beigesoft.log.ILogger;
 
 /**
@@ -22,7 +24,7 @@ import org.beigesoft.log.ILogger;
  * @author Yury Demidenko
  */
 public class PrepareDbAfterGetCopy
-  implements IPrepareDbAfterImport {
+  implements IDelegator {
 
   /**
    * <p>Factory App-Beans.</p>
@@ -36,16 +38,19 @@ public class PrepareDbAfterGetCopy
 
   /**
    * <p>It prepares database after import.</p>
-   * @param pAddParam additional params
+   * @param pAddParams additional params
    * @throws Exception - an exception
    **/
   @Override
-  public final void prepareDbAfterImport(
-    final Map<String, Object> pAddParam) throws Exception {
+  public final void make(
+    final Map<String, Object> pAddParams) throws Exception {
     this.factoryAppBeans.releaseBeans();
-    pAddParam.put("statusPrepareAfterImport", new Date().toString() + ", "
+    Writer htmlWriter = (Writer) pAddParams.get("htmlWriter");
+    if (htmlWriter != null) {
+      htmlWriter.write("<h4>" + new Date().toString() + ", "
       + PrepareDbAfterGetCopy.class.getSimpleName()
-        + ", app-factory beans has released");
+        + ", app-factory beans has released" + "</h4>");
+    }
     this.logger.info(PrepareDbAfterGetCopy.class,
       "app-factory beans has released");
   }

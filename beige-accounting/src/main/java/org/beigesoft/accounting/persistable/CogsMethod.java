@@ -10,27 +10,17 @@ package org.beigesoft.accounting.persistable;
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-import org.beigesoft.persistable.AHasIdLong;
-import org.beigesoft.model.IHasName;
+import org.beigesoft.persistable.AHasNameIdLongVersion;
 
 /**
  * <pre>
  * COGS method.
+ * Version changed time algorithm.
  * </pre>
  *
  * @author Yury Demidenko
  */
-public class CogsMethod extends AHasIdLong implements IHasName {
-
-  /**
-   * <p>Version, changed time algorithm.</p>
-   **/
-  private Long itsVersion;
-
-  /**
-   * <p>Name, Not null, unchangeable, "FIFO perpetual".</p>
-   **/
-  private String itsName;
+public class CogsMethod extends AHasNameIdLongVersion {
 
   /**
    * <p>SQL file name without extension "sql", unchangeable, not Null
@@ -43,41 +33,7 @@ public class CogsMethod extends AHasIdLong implements IHasName {
    **/
   private Boolean isPeriodic = false;
 
-  /**
-   * <p>Getter for itsName.</p>
-   * @return String
-   **/
-  @Override
-  public final String getItsName() {
-    return this.itsName;
-  }
-
-  /**
-   * <p>Setter for itsName.</p>
-   * @param pItsName reference
-   **/
-  @Override
-  public final void setItsName(final String pItsName) {
-    this.itsName = pItsName;
-  }
-
   //Simple getters and setters:
-  /**
-   * <p>Geter for itsVersion.</p>
-   * @return Long
-   **/
-  public final Long getItsVersion() {
-    return this.itsVersion;
-  }
-
-  /**
-   * <p>Setter for itsVersion.</p>
-   * @param pItsVersion reference
-   **/
-  public final void setItsVersion(final Long pItsVersion) {
-    this.itsVersion = pItsVersion;
-  }
-
   /**
    * <p>Geter for fileName.</p>
    * @return String

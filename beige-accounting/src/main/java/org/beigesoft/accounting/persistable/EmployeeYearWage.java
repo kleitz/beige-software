@@ -13,22 +13,18 @@ package org.beigesoft.accounting.persistable;
 import java.math.BigDecimal;
 
 import org.beigesoft.model.IOwned;
-import org.beigesoft.persistable.APersistableBase;
+import org.beigesoft.persistable.APersistableBaseVersion;
 
 /**
  * <pre>
  * Model of Employee Year Wage Line.
+ * Version changed time algorithm.
  * </pre>
  *
  * @author Yury Demidenko
  */
-public class EmployeeYearWage extends APersistableBase
+public class EmployeeYearWage extends APersistableBaseVersion
   implements IOwned<Employee> {
-
-  /**
-   * <p>Version changed time algorithm.</p>
-   **/
-  private Long itsVersion;
 
   /**
    * <p>Wage.</p>
@@ -64,22 +60,6 @@ public class EmployeeYearWage extends APersistableBase
   }
 
   //Simple getters and setters:
-  /**
-   * <p>Getter for itsVersion.</p>
-   * @return Long
-   **/
-  public final Long getItsVersion() {
-    return this.itsVersion;
-  }
-
-  /**
-   * <p>Setter for itsVersion.</p>
-   * @param pItsVersion reference
-   **/
-  public final void setItsVersion(final Long pItsVersion) {
-    this.itsVersion = pItsVersion;
-  }
-
   /**
    * <p>Getter for wageType.</p>
    * @return WageType

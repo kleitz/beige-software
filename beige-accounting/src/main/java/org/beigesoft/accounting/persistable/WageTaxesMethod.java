@@ -10,68 +10,24 @@ package org.beigesoft.accounting.persistable;
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-import org.beigesoft.persistable.AHasIdLong;
-import org.beigesoft.model.IHasName;
+import org.beigesoft.persistable.AHasNameIdLongVersion;
 
 /**
  * <pre>
- * COGS method.
+ * Wage tax table method.
+ * Version changed time algorithm.
  * </pre>
  *
  * @author Yury Demidenko
  */
-public class WageTaxesMethod extends AHasIdLong implements IHasName {
-
-  /**
-   * <p>Version, changed time algorithm.</p>
-   **/
-  private Long itsVersion;
-
-  /**
-   * <p>Name, Not null, unchangeable, "Standard wage tax percentage table".</p>
-   **/
-  private String itsName;
+public class WageTaxesMethod extends AHasNameIdLongVersion {
 
   /**
    * <p>Service name, e.g. SrvWageTaxPercentageTable.</p>
    **/
   private String serviceName;
 
-  /**
-   * <p>Getter for itsName.</p>
-   * @return String
-   **/
-  @Override
-  public final String getItsName() {
-    return this.itsName;
-  }
-
-  /**
-   * <p>Setter for itsName.</p>
-   * @param pItsName reference
-   **/
-  @Override
-  public final void setItsName(final String pItsName) {
-    this.itsName = pItsName;
-  }
-
   //Simple getters and setters:
-  /**
-   * <p>Getter for itsVersion.</p>
-   * @return Long
-   **/
-  public final Long getItsVersion() {
-    return this.itsVersion;
-  }
-
-  /**
-   * <p>Setter for itsVersion.</p>
-   * @param pItsVersion reference
-   **/
-  public final void setItsVersion(final Long pItsVersion) {
-    this.itsVersion = pItsVersion;
-  }
-
   /**
    * <p>Getter for serviceName.</p>
    * @return String

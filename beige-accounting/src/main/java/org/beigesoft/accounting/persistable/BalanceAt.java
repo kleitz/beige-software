@@ -13,22 +13,18 @@ package org.beigesoft.accounting.persistable;
 import java.util.Date;
 import java.math.BigDecimal;
 
-import org.beigesoft.persistable.AHasIdLong;
+import org.beigesoft.persistable.AHasIdLongVersion;
 
 /**
  * <pre>
  * Model that store balance of a account and
  * subaccount at the start of each month (or week etc) to improve performance.
+ * Version changed time algorithm.
  * </pre>
  *
  * @author Yury Demidenko
  */
-public class BalanceAt extends AHasIdLong {
-
-  /**
-   * <p>Version changed time algorithm.</p>
-   **/
-  private Long itsVersion;
+public class BalanceAt extends AHasIdLongVersion {
 
   /**
    * <p>Date, Not Null, usually start of month.</p>
@@ -87,22 +83,6 @@ public class BalanceAt extends AHasIdLong {
   }
 
   //Simple getters and setters:
-  /**
-   * <p>Getter for itsVersion.</p>
-   * @return Long
-   **/
-  public final Long getItsVersion() {
-    return this.itsVersion;
-  }
-
-  /**
-   * <p>Setter for itsVersion.</p>
-   * @param pItsVersion reference
-   **/
-  public final void setItsVersion(final Long pItsVersion) {
-    this.itsVersion = pItsVersion;
-  }
-
   /**
    * <p>Getter for itsAccount.</p>
    * @return Account

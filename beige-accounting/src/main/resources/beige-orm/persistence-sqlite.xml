@@ -85,6 +85,9 @@
   org.beigesoft.accounting.persistable.PurchaseReturnTaxLine,
   org.beigesoft.accounting.persistable.AccountingEntries,
   org.beigesoft.accounting.persistable.AccountingEntry,
+  org.beigesoft.accounting.persistable.ReplicationAccMethod,
+  org.beigesoft.accounting.persistable.ReplExcludeAccountsDebit,
+  org.beigesoft.accounting.persistable.ReplExcludeAccountsCredit,
   org.beigesoft.accounting.persistable.BalanceAt,
   org.beigesoft.accounting.persistable.BalanceAtAllDirtyCheck,
   org.beigesoft.accounting.persistable.ManufacturingProcess,
@@ -105,5 +108,5 @@
 <entry key="settingsKeysForFields">definition, isNullable, foreignEntity</entry>
 <entry key="excludeFields">isNew, itsLines, taxes, usedInvItems, usedInvItemTypes, usedInvItemCategories, taxesLines,
   accEntriesSources, cogsItemSources, drawMaterialSources, usedMaterials, additionCosts, employees, wageTypes,
-  yearWageLines, subaccounts, services</entry>
+  yearWageLines, subaccounts, services, excludeDebitAccounts, excludeCreditAccounts</entry>
 </properties>

@@ -13,23 +13,19 @@ package org.beigesoft.accounting.persistable;
 import java.math.BigDecimal;
 
 import org.beigesoft.model.IOwned;
-import org.beigesoft.persistable.APersistableBase;
+import org.beigesoft.persistable.APersistableBaseVersion;
 
 /**
  * <pre>
  * Model of Vendor Invoice ServicePurchased Line.
  * It is immutable.
+ * Version, reliable autoincrement algorithm.
  * </pre>
  *
  * @author Yury Demidenko
  */
-public class PurchaseInvoiceServiceLine extends APersistableBase
+public class PurchaseInvoiceServiceLine extends APersistableBaseVersion
   implements IOwned<PurchaseInvoice> {
-
-  /**
-   * <p>Version, reliable autoincrement algorithm.</p>
-   **/
-  private Long itsVersion;
 
   /**
    * <p>ServicePurchased.</p>
@@ -92,22 +88,6 @@ public class PurchaseInvoiceServiceLine extends APersistableBase
   }
 
   //Simple getters and setters:
-  /**
-   * <p>Getter for itsVersion.</p>
-   * @return Long
-   **/
-  public final Long getItsVersion() {
-    return this.itsVersion;
-  }
-
-  /**
-   * <p>Setter for itsVersion.</p>
-   * @param pItsVersion reference
-   **/
-  public final void setItsVersion(final Long pItsVersion) {
-    this.itsVersion = pItsVersion;
-  }
-
   /**
    * <p>Getter for service.</p>
    * @return ServicePurchased

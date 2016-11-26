@@ -13,8 +13,11 @@
     <menu name="Articles">
       <item name="Specification Beige-Settings" href="specification-settings.html" />
       <item name="Specification Beige-ORM" href="specification-orm.html" />
+      <item name="Specification Beige-Replicator" href="replication.html" />
+      <item name="Specification Beige-Replicator one way" href="replication-db-1w.html" />
       <item name="Specification Beige-WEB" href="specification-web.html" />
       <item name="Specification Beige-Accounting" href="specification-accounting.html" />
+      <item name="Specification Beige-Replicator tax-market accounting" href="replication-tax-market.html" />
       <item name="Beige Accounting, Bob's pizza example " href="bobs-pizza.html" />
       <item name="Working with source" href="working-with-source.html" />
       <item name="Fedora Linux" href="fedora.html" />

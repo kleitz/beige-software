@@ -1347,7 +1347,8 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
         databaseInfo.setDatabaseVersion(dbVer);
         Double randomDbl = Math.random() * 1000000000;
         databaseInfo.setDatabaseId(randomDbl.intValue());
-        databaseInfo.setDescription("a database");
+        databaseInfo.setDescription(this.mngSettings
+          .getAppSettings().get("title"));
         insertEntity(databaseInfo);
         String insertSql = loadString(dirPath + "insert.sql");
         if (insertSql != null) {

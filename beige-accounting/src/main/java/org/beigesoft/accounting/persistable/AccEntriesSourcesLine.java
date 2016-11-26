@@ -10,24 +10,19 @@ package org.beigesoft.accounting.persistable;
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-import org.beigesoft.persistable.AHasIdLong;
+import org.beigesoft.persistable.AHasIdLongVersion;
 import org.beigesoft.accounting.model.EEntriesSourceType;
 import org.beigesoft.accounting.model.EEntriesAccountingType;
 
 /**
  * <pre>
  * Accounting Entries Source Line.
+ * Version changed time algorithm.
  * </pre>
  *
  * @author Yury Demidenko
  */
-public class AccEntriesSourcesLine extends AHasIdLong {
-
-  /**
-   * <p>Version, changed time algorithm cause check dirty of
-   * calculated from it (derived) records.</p>
-   **/
-  private Long itsVersion;
+public class AccEntriesSourcesLine extends AHasIdLongVersion {
 
   /**
    * <p>Owner AccSettings, not Null.</p>
@@ -81,22 +76,6 @@ public class AccEntriesSourcesLine extends AHasIdLong {
   private EEntriesAccountingType entriesAccountingType;
 
   //Simple getters and setters:
-  /**
-   * <p>Geter for itsVersion.</p>
-   * @return Long
-   **/
-  public final Long getItsVersion() {
-    return this.itsVersion;
-  }
-
-  /**
-   * <p>Setter for itsVersion.</p>
-   * @param pItsVersion reference
-   **/
-  public final void setItsVersion(final Long pItsVersion) {
-    this.itsVersion = pItsVersion;
-  }
-
   /**
    * <p>Geter for itsOwner.</p>
    * @return AccSettings

@@ -13,7 +13,7 @@
 <body>
   <div style="text-align: center;">
     <h4>
-      ${srvI18n.getMsg("trial_balance")} <fmt:formatDate value="${date2}"/> <br>
+      ${srvI18n.getMsg("trial_balance")} <fmt:formatDate value="${date2}" type="date" dateStyle="LONG"/> <br>
       ${accSettings.organization}
     </h4>
   </div>

@@ -36,4 +36,6 @@
   org.beigesoft.accounting.persistable.SalesReturnTaxLine</entry>
 <entry key="org.beigesoft.accounting.persistable.PurchaseReturn">org.beigesoft.accounting.persistable.PurchaseReturnLine,
   org.beigesoft.accounting.persistable.PurchaseReturnTaxLine</entry>
+<entry key="org.beigesoft.accounting.persistable.ReplicationAccMethod">org.beigesoft.accounting.persistable.ReplExcludeAccountsDebit,
+  org.beigesoft.accounting.persistable.ReplExcludeAccountsCredit</entry>
 </properties>

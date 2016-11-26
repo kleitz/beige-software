@@ -10,6 +10,7 @@
 <properties>
 <comment>Correspondence of field name to is null-able.</comment>
 <entry key="itsVersion">false</entry>
+<entry key="requestedDatabaseId">false</entry>
 <entry key="itsName">false</entry>
 <entry key="itsPassword">false</entry>
 <entry key="payByDate">false</entry>
@@ -42,4 +43,5 @@
 <entry key="accDebit">true</entry>
 <entry key="accCredit">true</entry>
 <entry key="payByDate">true</entry>
+<entry key="lastDateReplication">true</entry>
 </properties>

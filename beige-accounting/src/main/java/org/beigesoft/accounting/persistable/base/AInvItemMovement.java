@@ -12,23 +12,19 @@ package org.beigesoft.accounting.persistable.base;
 
 import java.math.BigDecimal;
 
-import org.beigesoft.persistable.APersistableBase;
+import org.beigesoft.persistable.APersistableBaseVersion;
 import org.beigesoft.accounting.persistable.InvItem;
 import org.beigesoft.accounting.persistable.UnitOfMeasure;
 
 /**
  * <pre>
  * Abstract model of invItem movement.
+ * Version, reliable autoincrement algorithm.
  * </pre>
  *
  * @author Yury Demidenko
  */
-public abstract class AInvItemMovement extends APersistableBase {
-
-  /**
-   * <p>Version, reliable autoincrement algorithm.</p>
-   **/
-  private Long itsVersion;
+public abstract class AInvItemMovement extends APersistableBaseVersion {
 
   /**
    * <p>InvItem.</p>
@@ -46,22 +42,6 @@ public abstract class AInvItemMovement extends APersistableBase {
   private BigDecimal itsQuantity = BigDecimal.ZERO;
 
   //Simple getters and setters:
-  /**
-   * <p>Geter for itsVersion.</p>
-   * @return Long
-   **/
-  public final Long getItsVersion() {
-    return this.itsVersion;
-  }
-
-  /**
-   * <p>Setter for itsVersion.</p>
-   * @param pItsVersion reference
-   **/
-  public final void setItsVersion(final Long pItsVersion) {
-    this.itsVersion = pItsVersion;
-  }
-
   /**
    * <p>Geter for invItem.</p>
    * @return InvItem

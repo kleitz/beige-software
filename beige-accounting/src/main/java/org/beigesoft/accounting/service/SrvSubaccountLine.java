@@ -288,13 +288,11 @@ public class SrvSubaccountLine<RS>
           "subacc_used_class_not_found_in_map_its_type_is"
             + "---" + pSubaccType);
       }
-      @SuppressWarnings("unchecked")
       ASubaccountUsed subaccUsed = (ASubaccountUsed) getSrvOrm()
         .retrieveEntityById(subaccClassUsed, pSubaccId);
       if (subaccUsed == null) {
         subaccUsed = (ASubaccountUsed) getSrvOrm()
           .createEntity(subaccClassUsed);
-        @SuppressWarnings("unchecked")
         ASubaccount subaccount = (ASubaccount) getSrvOrm()
           .createEntity(subaccClass);
         subaccount.setItsId(pSubaccId);

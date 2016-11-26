@@ -35,7 +35,7 @@
   </Match>
   <!--Nothing to worry about: -->
   <Match>
-     <Class name="org.beigesoft.web.servlet.WGetDatabaseCopyResult" />
+     <Class name="org.beigesoft.web.servlet.WReplicator" />
      <Bug pattern="XSS_REQUEST_PARAMETER_TO_SERVLET_WRITER" />
   </Match>
 </FindBugsFilter>

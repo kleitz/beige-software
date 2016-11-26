@@ -11,25 +11,20 @@ package org.beigesoft.accounting.persistable.base;
  */
 
 import org.beigesoft.model.IOwned;
-import org.beigesoft.persistable.AHasIdLong;
+import org.beigesoft.persistable.AHasIdLongVersion;
 import org.beigesoft.accounting.persistable.AccSettings;
 
 /**
  * <pre>
  * Draw Item Source Line for AccSettings that describe
  * source include SQL query to get it.
+ * Version changed time algorithm.
  * </pre>
  *
  * @author Yury Demidenko
  */
-public abstract class ADrawItemSourcesLine extends AHasIdLong
+public abstract class ADrawItemSourcesLine extends AHasIdLongVersion
   implements IOwned<AccSettings> {
-
-  /**
-   * <p>Version, changed time algorithm cause check dirty of
-   * calculated from it (derived) records.</p>
-   **/
-  private Long itsVersion;
 
   /**
    * <p>Owner AccSettings, not Null.</p>
@@ -81,22 +76,6 @@ public abstract class ADrawItemSourcesLine extends AHasIdLong
   }
 
   //Simple getters and setters:
-  /**
-   * <p>Geter for itsVersion.</p>
-   * @return Long
-   **/
-  public final Long getItsVersion() {
-    return this.itsVersion;
-  }
-
-  /**
-   * <p>Setter for itsVersion.</p>
-   * @param pItsVersion reference
-   **/
-  public final void setItsVersion(final Long pItsVersion) {
-    this.itsVersion = pItsVersion;
-  }
-
   /**
    * <p>Geter for sourceType.</p>
    * @return Integer

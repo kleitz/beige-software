@@ -347,6 +347,10 @@ decision - add MySql support and delete Postgresql from Accounting
 
 *beige settings - add checking of settings name is exist in base.xml
 
+*ledger - totals for period?
+*AppFactory IOwned classes to IF
+*Database ID from web.xml, fix-db-id-to-1.sql, print reliable ID -  idDB-birthId 
+
 git:
 git config --global user.name "Your Name"
 git config --global user.email "your_email@whatever.com"

@@ -24,6 +24,7 @@ import org.beigesoft.log.ILogger;
 import org.beigesoft.exception.ExceptionWithCode;
 
 import org.beigesoft.android.log.Logger;
+import org.beigesoft.replicator.service.PrepareDbAfterGetCopy;
 import org.beigesoft.android.sqlite.service.CursorFactory;
 import org.beigesoft.android.sqlite.service.SrvDatabase;
 import org.beigesoft.android.sqlite.service.SrvRecordRetriever;
@@ -36,6 +37,11 @@ import org.beigesoft.android.sqlite.service.SrvRecordRetriever;
  * @author Yury Demidenko
  */
 public class FactoryAppBeansAndroid extends AFactoryAppBeans<Cursor> {
+
+  /**
+   * <p>Service that  release AppFactory beans.</p>
+   */
+  private PrepareDbAfterGetCopy prepareDbAfterGetCopy;
 
   /**
    * <p>Android context.</p>
@@ -85,6 +91,7 @@ public class FactoryAppBeansAndroid extends AFactoryAppBeans<Cursor> {
       }
       this.srvDatabase = null;
     }
+    this.prepareDbAfterGetCopy = null;
     this.cursorFactory = null;
     this.mngDatabaseAndroid = null;
     setUtlReflection(null);
@@ -100,6 +107,25 @@ public class FactoryAppBeansAndroid extends AFactoryAppBeans<Cursor> {
     setHlpInsertUpdate(null);
     getEntitiesMap().clear();
     getBeansMap().clear();
+  }
+
+  /**
+   * <p>Get Service that prepare Database after full import
+   * in lazy mode.</p>
+   * @return IDelegator - preparator Database after full import.
+   * @throws Exception - an exception
+   */
+  @Override
+  public final synchronized PrepareDbAfterGetCopy
+    lazyGetPrepareDbAfterFullImport() throws Exception {
+    if (this.prepareDbAfterGetCopy == null) {
+      this.prepareDbAfterGetCopy = new PrepareDbAfterGetCopy();
+      this.prepareDbAfterGetCopy.setLogger(lazyGetLogger());
+      this.prepareDbAfterGetCopy.setFactoryAppBeans(this);
+      lazyGetLogger().info(FactoryAppBeansAndroid.class,
+        "PrepareDbAfterGetCopy has been created.");
+    }
+    return this.prepareDbAfterGetCopy;
   }
 
   /**

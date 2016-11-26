@@ -14,22 +14,18 @@ import java.util.Date;
 import java.util.List;
 
 import org.beigesoft.model.IHasTypeCode;
-import org.beigesoft.persistable.APersistableBase;
+import org.beigesoft.persistable.APersistableBaseVersion;
 
 /**
  * <pre>
  * Model of Move Items within/between warehouse/s.
+ * Version changed time algorithm.
  * </pre>
  *
  * @author Yury Demidenko
  */
-public class MoveItems extends APersistableBase
+public class MoveItems extends APersistableBaseVersion
   implements IHasTypeCode {
-
-  /**
-   * <p>Version, changed time algorithm.</p>
-   **/
-  private Long itsVersion;
 
   /**
    * <p>Date.</p>
@@ -109,21 +105,5 @@ public class MoveItems extends APersistableBase
    **/
   public final void setItsLines(final List<MoveItemsLine> pItsLines) {
     this.itsLines = pItsLines;
-  }
-
-  /**
-   * <p>Geter for itsVersion.</p>
-   * @return Long
-   **/
-  public final Long getItsVersion() {
-    return this.itsVersion;
-  }
-
-  /**
-   * <p>Setter for itsVersion.</p>
-   * @param pItsVersion reference
-   **/
-  public final void setItsVersion(final Long pItsVersion) {
-    this.itsVersion = pItsVersion;
   }
 }

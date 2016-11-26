@@ -12,24 +12,20 @@ package org.beigesoft.accounting.persistable;
 
 import java.util.List;
 
-import org.beigesoft.persistable.APersistableBaseHasName;
+import org.beigesoft.persistable.APersistableBaseNameVersion;
 
 /**
  * <pre>
  * Model of tax category of a goods/material or service.
  * This model used to assign tax or set of taxes for an item/service
  * e.g. "NY sales taX 6%" for pizza hot.
+ * Version, changed time algorithm cause check dirty of
+ * calculated from it (derived) records.
  * </pre>
  *
  * @author Yury Demidenko
  */
-public class InvItemTaxCategory extends APersistableBaseHasName {
-
-  /**
-   * <p>Version, changed time algorithm cause check dirty of
-   * calculated from it (derived) records.</p>
-   **/
-  private Long itsVersion;
+public class InvItemTaxCategory extends APersistableBaseNameVersion {
 
   /**
    * <p>Taxes.</p>
@@ -43,22 +39,6 @@ public class InvItemTaxCategory extends APersistableBaseHasName {
   private String taxesDescription;
 
   //Simple getters and setters:
-  /**
-   * <p>Geter for itsVersion.</p>
-   * @return Long
-   **/
-  public final Long getItsVersion() {
-    return this.itsVersion;
-  }
-
-  /**
-   * <p>Setter for itsVersion.</p>
-   * @param pItsVersion reference
-   **/
-  public final void setItsVersion(final Long pItsVersion) {
-    this.itsVersion = pItsVersion;
-  }
-
   /**
    * <p>Geter for taxes.</p>
    * @return List<InvItemTaxCategoryLine>

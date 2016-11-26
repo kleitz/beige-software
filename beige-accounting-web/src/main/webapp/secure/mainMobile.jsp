@@ -70,16 +70,18 @@
          <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=Currency&page=1&mobile=mobile%2F');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("Currencys")}</a>
          <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=Account&page=1&mobile=mobile%2F');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("Accounts")}</a>
          <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=AccountingEntries&page=1&mobile=mobile%2F');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("AccountingEntriess")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=ReplicationAccMethod&page=1&mobile=mobile%2F');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("ReplicationAccMethods")}</a>
          <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listAccEntriesWholeJson&nameEntity=AccountingEntry&nameSrvEntity=srvAccEntryEditDescr&page=1&mobile=mobile%2F');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("AccountingEntrys")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'report/?nameRenderer=replicateAccFormJson');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("Import_acc_entries")}</a>
          <a href="#" onclick="getHtmlByAjax('GET', 'report/?nameRenderer=ledgerFormJson');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("Ledger")}</a>
          <a href="#" onclick="getHtmlByAjax('GET', 'report/?nameRenderer=balanceFormJson');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("TrialBalance")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'report/?nameRenderer=balanceSheetFormJson');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("balance_sheet")}</a>
       </div>
     </div>
     <div class="dropdown">
       <a href="#" class="dropdown-btn">...</a>
       <div class="dropdown-content">
-        <a href="http://www.beigesoft.org" target="_blank">Beigesoft ™</a>
-        <a href="https://sites.google.com/site/beigesoftware" target="_blank">Other domain Beigesoft ™</a>
+        <a href="#" onclick="getHtmlByAjax('GET', 'service/?nameRenderer=aboutJson&nameService=srvAbout');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("about")}</a>
         <c:if test="${not empty pageContext['request'].userPrincipal}">
           <a href="../index.jsp?logoff=true">${pageContext['request'].userPrincipal.name} ${pageContext.servletContext.getAttribute("srvI18n").getMsg("logout")}</a>
         </c:if>
@@ -102,10 +104,16 @@
   <div id="frmReport">
   </div>
 
+  <div id="frmReplicate">
+  </div>
+
   <div id="pickersPlace">
   </div>
 
   <div id="pickersPlaceDub">
+  </div>
+
+  <div id="targetInfo">
   </div>
 
   <dialog id="dlgError" class="dlg dlg-alert">

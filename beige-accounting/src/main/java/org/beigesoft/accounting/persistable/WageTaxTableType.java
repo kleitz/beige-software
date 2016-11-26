@@ -11,22 +11,18 @@ package org.beigesoft.accounting.persistable;
  */
 
 import org.beigesoft.model.IOwned;
-import org.beigesoft.persistable.APersistableBase;
+import org.beigesoft.persistable.APersistableBaseVersion;
 
 /**
  * <pre>
  * Model of Wage Type Line of payroll tax table.
+ * Version changed time algorithm.
  * </pre>
  *
  * @author Yury Demidenko
  */
-public class WageTaxTableType extends APersistableBase
+public class WageTaxTableType extends APersistableBaseVersion
   implements IOwned<WageTaxTable> {
-
-  /**
-   * <p>Version changed time algorithm.</p>
-   **/
-  private Long itsVersion;
 
   /**
    * <p>Wage.</p>
@@ -57,22 +53,6 @@ public class WageTaxTableType extends APersistableBase
   }
 
   //Simple getters and setters:
-  /**
-   * <p>Getter for itsVersion.</p>
-   * @return Long
-   **/
-  public final Long getItsVersion() {
-    return this.itsVersion;
-  }
-
-  /**
-   * <p>Setter for itsVersion.</p>
-   * @param pItsVersion reference
-   **/
-  public final void setItsVersion(final Long pItsVersion) {
-    this.itsVersion = pItsVersion;
-  }
-
   /**
    * <p>Getter for wageType.</p>
    * @return WageType

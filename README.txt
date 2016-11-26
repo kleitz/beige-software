@@ -2,6 +2,9 @@ site: http://www.beigesoft.org
 or https://sites.google.com/site/beigesoftware
 
 version 1.1.2.
+Added balance sheet report.
+Added import data from Tax accounting into Market (business) one.
+Added Other loses, Retained looses accounts
 Added services purchased (into purchase invoice)
 Added services to sell (into sales invoice)
 Added gross income revenue account SalesServices with subaccount ServiceToSaleCategory

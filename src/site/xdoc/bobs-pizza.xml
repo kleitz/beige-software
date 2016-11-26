@@ -76,7 +76,11 @@
       </h5>
 
       <h5>
-        * Sample databases <b>bobs-pizza.sqlite (from scratch)</b> and <b>bobs-pizza-nfs.sqlite (not from scratch)</b> you can download from <a href="https://sourceforge.net/projects/beige-accounting/">https://sourceforge.net/projects/beige-accounting/</a>
+        <a href="acc-tax-market.html">Market (business) accounting, import data from tax accounting.</a>
+      </h5>
+
+      <h5>
+        * Sample databases <b>bobs-pizza.sqlite (from scratch)</b>, <b>bobs-pizza-market.sqlite</b> and <b>bobs-pizza-nfs.sqlite (not from scratch)</b> you can download from <a href="https://sourceforge.net/projects/beige-accounting/">https://sourceforge.net/projects/beige-accounting/</a>
       </h5>
 
     </section>

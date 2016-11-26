@@ -78,9 +78,6 @@ public class FactoryAppBeansMysql extends AFactoryAppBeansJdbc {
     setSrvOrm(null);
     setSrvWebMvc(null);
     setHlpInsertUpdate(null);
-    setClearDbThenGetAnotherCopyXmlHttp(null);
-    setDatabaseWriter(null);
-    setMngSettingsGetDbCopy(null);
     setUtilXml(null);
     getEntitiesMap().clear();
     getBeansMap().clear();
@@ -96,9 +93,6 @@ public class FactoryAppBeansMysql extends AFactoryAppBeansJdbc {
   @Override
   public final synchronized Object lazyGetOtherRdbmsBean(
     final String pBeanName) throws Exception {
-    if ("prepareDbAfterGetAnotherCopy".equals(pBeanName)) {
-      return lazyGetPrepareDbAfterGetCopy();
-    }
     return null;
   }
 
@@ -133,13 +127,16 @@ public class FactoryAppBeansMysql extends AFactoryAppBeansJdbc {
     return this.dataSource;
   }
 
+
   /**
-   * <p>Get PrepareDbAfterGetCopy in lazy mode.</p>
-   * @return PrepareDbAfterGetCopy - PrepareDbAfterGetCopy
+   * <p>Get Service that prepare Database after full import
+   * in lazy mode.</p>
+   * @return IDelegator - preparator Database after full import.
    * @throws Exception - an exception
    */
+  @Override
   public final synchronized PrepareDbAfterGetCopy
-    lazyGetPrepareDbAfterGetCopy() throws Exception {
+    lazyGetPrepareDbAfterFullImport() throws Exception {
     if (this.prepareDbAfterGetCopyMysql == null) {
       this.prepareDbAfterGetCopyMysql =
         new PrepareDbAfterGetCopy();

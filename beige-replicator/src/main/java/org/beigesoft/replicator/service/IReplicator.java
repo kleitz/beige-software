@@ -13,17 +13,19 @@ package org.beigesoft.replicator.service;
 import java.util.Map;
 
 /**
- * <p>Abstraction of service prepares database after import.
- * For Postgresql it's needs to reset auto-incremented ID sequences.</p>
+ * <p>Abstraction of service that replicate data
+ * from requested(source) database to requesting(destination) database.</p>
  *
  * @author Yury Demidenko
  */
-public interface IPrepareDbAfterImport {
+public interface IReplicator {
 
   /**
-   * <p>It prepares database after import.</p>
+   * <p>It will replicate data from requested(source) database
+   * to requesting(destination) database.</p>
    * @param pAddParam additional params
    * @throws Exception - an exception
    **/
-  void prepareDbAfterImport(Map<String, Object> pAddParam) throws Exception;
+  void replicate(
+    Map<String, Object> pAddParam) throws Exception;
 }

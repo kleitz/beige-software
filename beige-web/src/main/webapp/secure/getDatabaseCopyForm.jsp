@@ -16,7 +16,7 @@
     <div class="dialog-title">
       ${srvI18n.getMsg("get_db_copy")}
     </div>
-    <form method="post" action="getDatabaseCopyResult">
+    <form method="post" action="replicator">
       <table class="tbl-fieldset">
         <tr>
           <td>
@@ -44,7 +44,7 @@
           </td>
           <td>
             <div style="display: flex;">
-              <input name="urlSource" value="http://localhost:8080/beige-accounting-web/secure/sendDatabaseCopy">
+              <input name="urlSource" value="http://localhost:8080/beige-accounting-web/secure/sendEntities">
             </div>
           </td>
         </tr>
@@ -55,6 +55,7 @@
           <td>
             <div style="display: flex;">
               <input type="number" name="maxRecords" value="100">
+              <input type="hidden" name="replicatorName" value="importFullDatabaseCopy">
             </div>
           </td>
         </tr>

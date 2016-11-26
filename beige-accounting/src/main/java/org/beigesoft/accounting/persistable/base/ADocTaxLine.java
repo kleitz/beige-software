@@ -12,22 +12,18 @@ package org.beigesoft.accounting.persistable.base;
 
 import java.math.BigDecimal;
 
-import org.beigesoft.persistable.APersistableBase;
+import org.beigesoft.persistable.APersistableBaseVersion;
 import org.beigesoft.accounting.persistable.Tax;
 
 /**
  * <pre>
  * Abstraction of document tax Line.
+ * Version, reliable autoincrement algorithm.
  * </pre>
  *
  * @author Yury Demidenko
  */
-public abstract class ADocTaxLine extends APersistableBase {
-
-  /**
-   * <p>Version, reliable autoincrement algorithm.</p>
-   **/
-  private Long itsVersion;
+public abstract class ADocTaxLine extends APersistableBaseVersion {
 
   /**
    * <p>ID of reversed/reversing tax line.</p>
@@ -45,21 +41,6 @@ public abstract class ADocTaxLine extends APersistableBase {
   private BigDecimal itsTotal = BigDecimal.ZERO;
 
   //Simple getters and setters:
-  /**
-   * <p>Geter for itsVersion.</p>
-   * @return Long
-   **/
-  public final Long getItsVersion() {
-    return this.itsVersion;
-  }
-
-  /**
-   * <p>Setter for itsVersion.</p>
-   * @param pItsVersion reference
-   **/
-  public final void setItsVersion(final Long pItsVersion) {
-    this.itsVersion = pItsVersion;
-  }
   /**
    * <p>Getter for reversedId.</p>
    * @return Long

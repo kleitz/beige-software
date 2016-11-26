@@ -11,22 +11,22 @@
 
     <!-- The body of the document contains a number of sections -->
     <section name="Beige Replicator specification #1.">
-      <h4>Main features:</h4>
-      <p>* Beige Replicator is designed for big data.</p>
+      <h4>Description:</h4>
+      <p>* Beige Replicator is designed for big data (high load).</p>
       <p>* For usability reasons it must be a persistence service to store/retrieve data from/to a file.
         In case HTTP-connection this stored/retrieved file from/to remotely storage.</p>
       <p>* It must not touch replicated/persisted beans by using annotations, i.e. must be configurable through standard XML properties.</p>
       <p>* It should use either XML or JSON (or other) formats to convert data.</p>
-      <p>* There is two ways for replication/persisting - either by using in a file (and send it for replication)
+      <p>* There is two ways for replication/persisting - either by using a file (and send it for replication)
         or through network connection (HTTP or other network protocols).</p>
-      <p>* For replication/persisting trough HTTP it used a Servlet.</p>
+      <p>* For replication/persisting trough HTTP it uses a Servlet.</p>
       <p>* Replicator is represented as either a WEB-application with HTTP-base authentication for cloud version (high load)
         or it's contained by standalone WEB-app based on A-Jetty without authentication.</p>
       <p>* This is one-way replicator, i.e. it get (receive, not send) data (replicated beans) from a source.</p>
       <p>* Partially replication is implemented by using request parameters, e.g. request for replicate all descriptions of all customer invoices
         for given period.</p>
       
-      <h4>Beige Replicator use BeigeSettings to describe entities and their fields replications rules.</h4>
+      <h4>Beige Replicator use Beige-Settings to describe entities and their fields replications rules.</h4>
       <p>There are field settings:
         <ul>
           <li>isEnabled - boolean if field is replicable/persistable</li>
@@ -36,7 +36,8 @@
       </p>
       
       <h4>Replication delete action</h4>
-      <p>An entity to be deleted should has special attribute IS_DELETED="true" in the message.</p>
+      <p>It's assumed that Business Application must implements "registration of deleted entities" logic.
+      Requesting database should request for deleted entities separately.</p>
       
       <h4>XML based implementation.</h4>
       <p>XML is widely used and reliable way to do this job.

@@ -15,9 +15,11 @@ import java.util.Map;
 import java.util.LinkedHashSet;
 import java.util.HashMap;
 
+import org.beigesoft.delegate.IDelegator;
 import org.beigesoft.factory.IFactoryAppBeans;
 import org.beigesoft.service.UtlReflection;
 import org.beigesoft.properties.UtlProperties;
+import org.beigesoft.service.SrvAbout;
 import org.beigesoft.orm.service.ASrvOrm;
 import org.beigesoft.orm.service.ISrvDatabase;
 import org.beigesoft.orm.service.ISrvRecordRetriever;
@@ -34,7 +36,8 @@ import org.beigesoft.settings.MngSettings;
 import org.beigesoft.log.ILogger;
 import org.beigesoft.web.service.UtlJsp;
 import org.beigesoft.service.UtilXml;
-import org.beigesoft.replicator.service.ClearDbThenGetAnotherCopyXmlHttp;
+import org.beigesoft.replicator.service.SrvClearDatabase;
+import org.beigesoft.replicator.service.ReplicatorXmlHttp;
 import org.beigesoft.replicator.service.DatabaseWriterXml;
 import org.beigesoft.replicator.service.DatabaseReaderIdenticalXml;
 import org.beigesoft.replicator.service.SrvEntityReaderXml;
@@ -141,21 +144,6 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
   private HlpInsertUpdate hlpInsertUpdate;
 
   /**
-   * <p>Service that read database from XML message.</p>
-   **/
-  private ClearDbThenGetAnotherCopyXmlHttp<RS> srvGetDbCopyXml;
-
-  /**
-   * <p>Service that read database from XML message.</p>
-   **/
-  private DatabaseWriterXml<RS> databaseWriter;
-
-  /**
-   * <p>Manager Replicator settings.</p>
-   **/
-  private MngSettings mngSettingsGetDbCopy;
-
-  /**
    * <p>Service escape XML.</p>
    **/
   private UtilXml utilXml;
@@ -214,10 +202,12 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
     setLastRequestTime(new Date().getTime());
     if ("ISrvOrm".equals(pBeanName)) {
       return lazyGetSrvOrm();
-    } else if ("clearDbThenGetAnotherCopyHttp".equals(pBeanName)) {
-      return lazyGetClearDbThenGetAnotherCopyXmlHttp();
+    } else if ("srvAbout".equals(pBeanName)) {
+      return lazyGetSrvAbout();
+    } else if ("importFullDatabaseCopy".equals(pBeanName)) {
+      return lazyGetImportFullDatabaseCopy();
     } else if ("IDatabaseWriter".equals(pBeanName)) {
-      return lazyGetDatabaseWriter();
+      return lazyGetDbWriterFullCopy();
     } else if ("IUtilXml".equals(pBeanName)) {
       return lazyGetUtilXml();
     } else if ("ILogger".equals(pBeanName)) {
@@ -293,6 +283,15 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
   public abstract ILogger lazyGetLogger() throws Exception;
 
   /**
+   * <p>Get Service that prepare Database after full import
+   * in lazy mode.</p>
+   * @return IDelegator - preparator Database after full import.
+   * @throws Exception - an exception
+   */
+  public abstract IDelegator
+    lazyGetPrepareDbAfterFullImport() throws Exception;
+
+  /**
    * <p>Get SrvRecordRetriever in lazy mode.</p>
    * @return SrvRecordRetriever - SrvRecordRetriever
    * @throws Exception - an exception
@@ -349,14 +348,17 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
   }
 
   /**
-   * <p>Get ClearDbThenGetAnotherCopyXmlHttp in lazy mode.</p>
-   * @return ClearDbThenGetAnotherCopyXmlHttp - ClearDbThenGetAnotherCopyXmlHttp
+   * <p>Get ReplicatorXmlHttp full import in lazy mode.</p>
+   * @return ReplicatorXmlHttp - ReplicatorXmlHttp
    * @throws Exception - an exception
    */
-  public final synchronized ClearDbThenGetAnotherCopyXmlHttp<RS>
-    lazyGetClearDbThenGetAnotherCopyXmlHttp() throws Exception {
-    if (this.srvGetDbCopyXml == null) {
-      this.srvGetDbCopyXml = new ClearDbThenGetAnotherCopyXmlHttp<RS>();
+  public final synchronized ReplicatorXmlHttp<RS>
+    lazyGetImportFullDatabaseCopy() throws Exception {
+    @SuppressWarnings("unchecked")
+    ReplicatorXmlHttp<RS> srvGetDbCopyXml =
+      (ReplicatorXmlHttp<RS>) this.beansMap.get("srvGetDbCopyXml");
+    if (srvGetDbCopyXml == null) {
+      srvGetDbCopyXml = new ReplicatorXmlHttp<RS>();
       SrvEntityReaderXml srvEntityReaderXml = new SrvEntityReaderXml();
       srvEntityReaderXml.setUtilXml(lazyGetUtilXml());
       SrvEntityFieldFillerStd srvEntityFieldFillerStd =
@@ -398,48 +400,60 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
       databaseReaderIdenticalXml.setSrvDatabase(lazyGetSrvDatabase());
       databaseReaderIdenticalXml.setSrvOrm(lazyGetSrvOrm());
       databaseReaderIdenticalXml.setLogger(lazyGetLogger());
-      this.srvGetDbCopyXml.setUtilXml(lazyGetUtilXml());
-      this.srvGetDbCopyXml.setSrvEntityReaderXml(srvEntityReaderXml);
-      this.srvGetDbCopyXml.setMngSettings(lazyGetMngSettingsGetDbCopy());
-      this.srvGetDbCopyXml.setSrvDatabase(lazyGetSrvDatabase());
-      this.srvGetDbCopyXml.setDatabaseReader(databaseReaderIdenticalXml);
-      this.srvGetDbCopyXml.setLogger(lazyGetLogger());
+      SrvClearDatabase srvClearDatabase = new SrvClearDatabase();
+      srvClearDatabase.setMngSettings(lazyGetMngSettingsGetDbCopy());
+      srvClearDatabase.setLogger(lazyGetLogger());
+      srvClearDatabase.setSrvDatabase(lazyGetSrvDatabase());
+      srvGetDbCopyXml.setDatabasePrepearerBefore(srvClearDatabase);
+      srvGetDbCopyXml
+        .setDatabasePrepearerAfter(lazyGetPrepareDbAfterFullImport());
+      srvGetDbCopyXml.setUtilXml(lazyGetUtilXml());
+      srvGetDbCopyXml.setSrvEntityReaderXml(srvEntityReaderXml);
+      srvGetDbCopyXml.setMngSettings(lazyGetMngSettingsGetDbCopy());
+      srvGetDbCopyXml.setSrvDatabase(lazyGetSrvDatabase());
+      srvGetDbCopyXml.setDatabaseReader(databaseReaderIdenticalXml);
+      srvGetDbCopyXml.setLogger(lazyGetLogger());
       lazyGetLogger().info(AFactoryAppBeans.class,
-        "ClearDbThenGetAnotherCopyXmlHttp has been created.");
+        "importFullDatabaseCopy has been created.");
+      this.beansMap.put("srvGetDbCopyXml", srvGetDbCopyXml);
     }
-    return this.srvGetDbCopyXml;
+    return srvGetDbCopyXml;
   }
 
   /**
-   * <p>Get DatabaseWriterXml in lazy mode.</p>
+   * <p>Get DatabaseWriterXml for full DB copy in lazy mode.</p>
    * @return DatabaseWriterXml - DatabaseWriterXml
    * @throws Exception - an exception
    */
-  public final synchronized DatabaseWriterXml<RS> lazyGetDatabaseWriter(
+  public final synchronized DatabaseWriterXml<RS> lazyGetDbWriterFullCopy(
     ) throws Exception {
-    if (this.databaseWriter == null) {
-      this.databaseWriter = new DatabaseWriterXml<RS>();
+    @SuppressWarnings("unchecked")
+    DatabaseWriterXml<RS> dbWriterXmlFullImport =
+      (DatabaseWriterXml<RS>) this.beansMap.get("dbWriterXmlFullImport");
+    if (dbWriterXmlFullImport == null) {
+      dbWriterXmlFullImport = new DatabaseWriterXml<RS>();
       SrvEntityWriterXml srvEntityWriterXml = new SrvEntityWriterXml();
       SrvFieldWriterXmlStd srvFieldWriterXmlStd = new SrvFieldWriterXmlStd();
       srvFieldWriterXmlStd.setUtilXml(lazyGetUtilXml());
       SrvFieldHasIdWriterXml srvFieldHasIdWriterXml =
         new SrvFieldHasIdWriterXml();
       srvFieldHasIdWriterXml.setUtilXml(lazyGetUtilXml());
-      srvEntityWriterXml.setMngSettings(lazyGetMngSettingsGetDbCopy());
       srvEntityWriterXml.setUtlReflection(lazyGetUtlReflection());
       Map<String, ISrvFieldWriter> fieldsWritersMap =
         new HashMap<String, ISrvFieldWriter>();
       fieldsWritersMap.put("SrvFieldWriterXmlStd", srvFieldWriterXmlStd);
       fieldsWritersMap.put("SrvFieldHasIdWriterXml", srvFieldHasIdWriterXml);
       srvEntityWriterXml.setFieldsWritersMap(fieldsWritersMap);
-      this.databaseWriter.setLogger(lazyGetLogger());
-      this.databaseWriter.setSrvEntityWriter(srvEntityWriterXml);
-      this.databaseWriter.setSrvDatabase(lazyGetSrvDatabase());
-      this.databaseWriter.setSrvOrm(lazyGetSrvOrm());
+      srvEntityWriterXml.setMngSettings(lazyGetMngSettingsGetDbCopy());
+      dbWriterXmlFullImport.setLogger(lazyGetLogger());
+      dbWriterXmlFullImport.setSrvEntityWriter(srvEntityWriterXml);
+      dbWriterXmlFullImport.setSrvDatabase(lazyGetSrvDatabase());
+      dbWriterXmlFullImport.setSrvOrm(lazyGetSrvOrm());
       lazyGetLogger().info(AFactoryAppBeans.class,
-        "DatabaseWriterXml has been created.");
+        "DatabaseWriterXml full import has been created.");
+      this.beansMap.put("dbWriterXmlFullImport", dbWriterXmlFullImport);
     }
-    return this.databaseWriter;
+    return dbWriterXmlFullImport;
   }
 
   /**
@@ -449,15 +463,39 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
    */
   public final synchronized MngSettings lazyGetMngSettingsGetDbCopy(
     ) throws Exception {
-    if (this.mngSettingsGetDbCopy == null) {
-      this.mngSettingsGetDbCopy = new MngSettings();
-      this.mngSettingsGetDbCopy.setLogger(lazyGetLogger());
-      this.mngSettingsGetDbCopy
+    MngSettings mngSettingsGetDbCopy =
+      (MngSettings) this.beansMap.get("mngSettingsGetDbCopy");
+    if (mngSettingsGetDbCopy == null) {
+      mngSettingsGetDbCopy = new MngSettings();
+      mngSettingsGetDbCopy.setLogger(lazyGetLogger());
+      mngSettingsGetDbCopy
         .loadConfiguration("beige-get-db-copy", "base.xml");
       lazyGetLogger().info(AFactoryAppBeans.class,
-        "MngSettings replicator has been created.");
+        "MngSettings replicator full import has been created.");
+      this.beansMap.put("mngSettingsGetDbCopy", mngSettingsGetDbCopy);
     }
-    return this.mngSettingsGetDbCopy;
+    return mngSettingsGetDbCopy;
+  }
+
+  /**
+   * <p>Get SrvAbout in lazy mode.</p>
+   * @return SrvAbout - SrvAbout
+   * @throws Exception - an exception
+   */
+  public final synchronized SrvAbout<RS> lazyGetSrvAbout(
+    ) throws Exception {
+    @SuppressWarnings("unchecked")
+    SrvAbout<RS> srvAbout =
+      (SrvAbout<RS>) this.beansMap.get("srvAbout");
+    if (srvAbout == null) {
+      srvAbout = new SrvAbout<RS>();
+      srvAbout.setSrvOrm(lazyGetSrvOrm());
+      srvAbout.setSrvDatabase(lazyGetSrvDatabase());
+      lazyGetLogger().info(AFactoryAppBeans.class,
+        "SrvAbout has been created.");
+      this.beansMap.put("srvAbout", srvAbout);
+    }
+    return srvAbout;
   }
 
   /**
@@ -810,35 +848,6 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
     final IFactoryAppBeans pFactoryOverBeans) {
     this.factoryOverBeans = pFactoryOverBeans;
   }
-
-  /**
-   * <p>Setter for srvGetDbCopyXml.</p>
-   * @param pClearDbThenGetAnotherCopyXmlHttp reference
-   **/
-  public final synchronized void setClearDbThenGetAnotherCopyXmlHttp(
-    final ClearDbThenGetAnotherCopyXmlHttp<RS>
-      pClearDbThenGetAnotherCopyXmlHttp) {
-    this.srvGetDbCopyXml = pClearDbThenGetAnotherCopyXmlHttp;
-  }
-
-  /**
-   * <p>Setter for databaseWriter.</p>
-   * @param pDatabaseWriter reference
-   **/
-  public final synchronized void setDatabaseWriter(
-    final DatabaseWriterXml<RS> pDatabaseWriter) {
-    this.databaseWriter = pDatabaseWriter;
-  }
-
-  /**
-   * <p>Setter for mngSettingsGetDbCopy.</p>
-   * @param pMngSettingsGetDbCopy reference
-   **/
-  public final synchronized void setMngSettingsGetDbCopy(
-    final MngSettings pMngSettingsGetDbCopy) {
-    this.mngSettingsGetDbCopy = pMngSettingsGetDbCopy;
-  }
-
   /**
    * <p>Setter for utilXml.</p>
    * @param pUtilXml reference

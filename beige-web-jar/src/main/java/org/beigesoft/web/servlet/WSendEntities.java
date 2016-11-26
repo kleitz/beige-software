@@ -26,13 +26,13 @@ import org.beigesoft.replicator.service.IDatabaseWriter;
 
 /**
  * <p>
- * Servlet that send required entities in XML/Json format.
+ * Replicator's servlet that send required entities in XML/Json format.
  * </p>
  *
  * @author Yury Demidenko
  */
 @SuppressWarnings("serial")
-public class WSendDatabaseCopy extends HttpServlet {
+public class WSendEntities extends HttpServlet {
 
   /**
    * <p>Content type e.g. text/xml;
@@ -60,13 +60,14 @@ public class WSendDatabaseCopy extends HttpServlet {
       PrintWriter writer = pResp.getWriter();
       Class<?> entityClass = Class.forName(pReq.getParameter("entityName"));
       Map<String, Object> params = new HashMap<String, Object>();
-      int maxRecords = Integer.parseInt(pReq.getParameter("maxRecords"));
-      int firstRecord = Integer.parseInt(pReq.getParameter("firstRecord"));
       String requestingDatabaseVersion = (String) pReq
         .getParameter("requestingDatabaseVersion");
-      params.put("conditions", " limit " + maxRecords + " offset "
-        + firstRecord);
       params.put("requestingDatabaseVersion", requestingDatabaseVersion);
+      String requestedDatabaseId = (String) pReq
+        .getParameter("requestedDatabaseId");
+      params.put("requestedDatabaseId", requestedDatabaseId);
+      String conditions = (String) pReq.getParameter("conditions");
+      params.put("conditions", conditions);
       databaseWriter.retrieveAndWriteEntities(entityClass, writer, params);
       writer.close();
     } catch (Exception e) {

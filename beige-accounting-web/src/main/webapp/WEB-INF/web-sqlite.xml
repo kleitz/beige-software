@@ -66,9 +66,9 @@
     <url-pattern>/secure/entityList/*</url-pattern>
   </servlet-mapping>
   <servlet>
-    <servlet-name>sendDatabaseCopy</servlet-name>
+    <servlet-name>sendEntities</servlet-name>
     <servlet-class>
-      org.beigesoft.web.servlet.WSendDatabaseCopy
+      org.beigesoft.web.servlet.WSendEntities
     </servlet-class>
     <init-param>
       <param-name>contentType</param-name>
@@ -76,18 +76,18 @@
     </init-param>
   </servlet>
   <servlet-mapping>
-    <servlet-name>sendDatabaseCopy</servlet-name>
-    <url-pattern>/secure/sendDatabaseCopy/*</url-pattern>
+    <servlet-name>sendEntities</servlet-name>
+    <url-pattern>/secure/sendEntities/*</url-pattern>
   </servlet-mapping>
   <servlet>
-    <servlet-name>getDatabaseCopyResult</servlet-name>
+    <servlet-name>replicator</servlet-name>
     <servlet-class>
-      org.beigesoft.web.servlet.WGetDatabaseCopyResult
+      org.beigesoft.web.servlet.WReplicator
     </servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>getDatabaseCopyResult</servlet-name>
-    <url-pattern>/secure/getDatabaseCopyResult/*</url-pattern>
+    <servlet-name>replicator</servlet-name>
+    <url-pattern>/secure/replicator/*</url-pattern>
   </servlet-mapping>
   <servlet>
     <servlet-name>entity</servlet-name>
@@ -102,6 +102,20 @@
   <servlet-mapping>
     <servlet-name>entity</servlet-name>
     <url-pattern>/secure/entity/*</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>service</servlet-name>
+    <servlet-class>
+      org.beigesoft.web.servlet.WService
+    </servlet-class>
+    <init-param>
+      <param-name>dirJsp</param-name>
+      <param-value>/WEB-INF/jsp/</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>service</servlet-name>
+    <url-pattern>/secure/service/*</url-pattern>
   </servlet-mapping>
   <servlet>
     <servlet-name>report</servlet-name>

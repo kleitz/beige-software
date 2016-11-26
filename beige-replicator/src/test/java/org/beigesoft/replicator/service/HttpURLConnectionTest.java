@@ -71,7 +71,7 @@ public class HttpURLConnectionTest {
     params.put("authUserPass", "j_password");
     params.put("urlSource", urlSource);
     tstAuthGet(url, params, cookieManager); //either Get or Post for test allowed
-    urlSource = "http://localhost:8080/beige-accounting-web/secure/sendDatabaseCopy";
+    urlSource = "http://localhost:8080/beige-accounting-web/secure/sendEntities";
     params.put("urlSource", urlSource);
     //url = new URL(urlSource);
     //tstAuthPost(url, params, cookieManager);

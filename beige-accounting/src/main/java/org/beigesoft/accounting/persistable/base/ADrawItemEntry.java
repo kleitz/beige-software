@@ -13,23 +13,19 @@ package org.beigesoft.accounting.persistable.base;
 import java.util.Date;
 import java.math.BigDecimal;
 
-import org.beigesoft.persistable.APersistableBase;
+import org.beigesoft.persistable.APersistableBaseVersion;
 import org.beigesoft.accounting.persistable.InvItem;
 import org.beigesoft.accounting.persistable.UnitOfMeasure;
 
 /**
  * <pre>
  * Abstract model of withdrawal inventory item for use, sale, loss, stole.
+ * Version, reliable autoincrement algorithm.
  * </pre>
  *
  * @author Yury Demidenko
  */
-public abstract class ADrawItemEntry extends APersistableBase {
-
-  /**
-   * <p>Version, reliable autoincrement algorithm.</p>
-   **/
-  private Long itsVersion;
+public abstract class ADrawItemEntry extends APersistableBaseVersion {
 
   /**
    * <p>Date of document of accounting entry.</p>
@@ -139,22 +135,6 @@ public abstract class ADrawItemEntry extends APersistableBase {
   }
 
   //Simple getters and setters:
-  /**
-   * <p>Getter for itsVersion.</p>
-   * @return Long
-   **/
-  public final Long getItsVersion() {
-    return this.itsVersion;
-  }
-
-  /**
-   * <p>Setter for itsVersion.</p>
-   * @param pItsVersion reference
-   **/
-  public final void setItsVersion(final Long pItsVersion) {
-    this.itsVersion = pItsVersion;
-  }
-
   /**
    * <p>Getter for reversedId.</p>
    * @return Long

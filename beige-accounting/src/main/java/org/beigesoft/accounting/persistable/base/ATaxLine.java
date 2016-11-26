@@ -13,23 +13,19 @@ package org.beigesoft.accounting.persistable.base;
 import java.math.BigDecimal;
 
 
-import org.beigesoft.persistable.APersistableBase;
+import org.beigesoft.persistable.APersistableBaseVersion;
 import org.beigesoft.accounting.persistable.Tax;
 
 /**
  * <pre>
  * Abstraction of tax line.
+ * Version, changed time algorithm cause check dirty of
+ * calculated from it (derived) records.
  * </pre>
  *
  * @author Yury Demidenko
  */
-public abstract class ATaxLine extends APersistableBase {
-
-  /**
-   * <p>Version, changed time algorithm cause check dirty of
-   * calculated from it (derived) records.</p>
-   **/
-  private Long itsVersion;
+public abstract class ATaxLine extends APersistableBaseVersion {
 
   /**
    * <p>Tax.</p>
@@ -56,22 +52,6 @@ public abstract class ATaxLine extends APersistableBase {
    **/
   public final void setItsPercentage(final BigDecimal pItsPercentage) {
     this.itsPercentage = pItsPercentage;
-  }
-
-  /**
-   * <p>Geter for itsVersion.</p>
-   * @return Long
-   **/
-  public final Long getItsVersion() {
-    return this.itsVersion;
-  }
-
-  /**
-   * <p>Setter for itsVersion.</p>
-   * @param pItsVersion reference
-   **/
-  public final void setItsVersion(final Long pItsVersion) {
-    this.itsVersion = pItsVersion;
   }
 
   /**

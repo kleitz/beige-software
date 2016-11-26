@@ -75,6 +75,9 @@
   org.beigesoft.accounting.persistable.AccEntriesSourcesLine,
   org.beigesoft.accounting.persistable.CogsItemSourcesLine,
   org.beigesoft.accounting.persistable.DrawMaterialSourcesLine,
+  org.beigesoft.accounting.persistable.ReplicationAccMethod,
+  org.beigesoft.accounting.persistable.ReplExcludeAccountsDebit,
+  org.beigesoft.accounting.persistable.ReplExcludeAccountsCredit,
   org.beigesoft.accounting.persistable.WarehouseEntry,
   org.beigesoft.accounting.persistable.CogsEntry,
   org.beigesoft.accounting.persistable.UseMaterialEntry,
@@ -89,5 +92,5 @@
   </entry>
 <entry key="excludeFields">itsLines, taxes, usedInvItems, usedInvItemTypes, usedInvItemCategories, taxesLines,
   accEntriesSources, cogsItemSources, drawMaterialSources, usedMaterials, additionCosts, employees, wageTypes,
-  yearWageLines, subaccounts, services</entry>
+  yearWageLines, subaccounts, services, excludeDebitAccounts, excludeCreditAccounts</entry>
 </properties>

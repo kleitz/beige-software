@@ -35,6 +35,7 @@
 <entry key="totalCredit">inputReadOnly</entry>
 <entry key="subtotal">inputReadOnly</entry>
 <entry key="subaccType">inputSubaccType</entry>
+<entry key="lastDateReplication">inputReadOnly</entry>
 <entry key="taxesDescription">inputReadOnly</entry>
 <entry key="itsOwner">inputEntityHasIdHidden</entry>
 <entry key="description">inputText</entry>

@@ -10,6 +10,7 @@
 <properties>
 <comment>App properties</comment>
 <entry key="title">Beige Accounting</entry>
+<entry key="appVersion">1.1.2</entry>
 <entry key="databaseVersion">3</entry>
 <entry key="useSubFolder">mysql</entry>
 <entry key="jdbcDriverClass">com.mysql.jdbc.Driver</entry>

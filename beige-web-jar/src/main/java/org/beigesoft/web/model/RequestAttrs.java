@@ -15,7 +15,8 @@ import javax.servlet.http.HttpServletRequest;
 import org.beigesoft.holder.IAttributes;
 
 /**
- * <p>Http Servlet Request attributes holder adapter.</p>
+ * <p>Http Servlet Request attributes holder adapter.
+ * Use HttpRequestData instead.</p>
  *
  * @author Yury Demidenko
  */
@@ -27,7 +28,7 @@ public class RequestAttrs implements IAttributes {
   private final HttpServletRequest httpReq;
 
   /**
-   * <p>Onky constructor.</p>
+   * <p>Only constructor.</p>
    * @param pHttpReq reference
    **/
   public RequestAttrs(final HttpServletRequest pHttpReq) {

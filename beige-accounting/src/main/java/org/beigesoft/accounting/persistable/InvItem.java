@@ -12,16 +12,18 @@ package org.beigesoft.accounting.persistable;
 
 import java.math.BigDecimal;
 
-import org.beigesoft.persistable.APersistableBaseHasName;
+import org.beigesoft.persistable.APersistableBaseNameVersion;
 
 /**
  * <pre>
  * Model of invItem.
+ * Version, changed time algorithm cause check dirty of
+ * calculated from it (derived) records.
  * </pre>
  *
  * @author Yury Demidenko
  */
-public class InvItem extends APersistableBaseHasName {
+public class InvItem extends APersistableBaseNameVersion {
 
   /**
    * <p>Merchandise or stock in trade type ID.</p>
@@ -48,12 +50,6 @@ public class InvItem extends APersistableBaseHasName {
    * the item intended for sale type ID.</p>
    **/
   public static final Long SUPPLIES_PART_OF_PRODUCT_ID = 5L;
-
-  /**
-   * <p>Version, changed time algorithm cause check dirty of
-   * calculated from it (derived) records.</p>
-   **/
-  private Long itsVersion;
 
   /**
    * <p>Its category.
@@ -87,22 +83,6 @@ public class InvItem extends APersistableBaseHasName {
   private InvItemTaxCategory taxCategory;
 
   //Simple getters and setters:
-  /**
-   * <p>Geter for itsVersion.</p>
-   * @return Long
-   **/
-  public final Long getItsVersion() {
-    return this.itsVersion;
-  }
-
-  /**
-   * <p>Setter for itsVersion.</p>
-   * @param pItsVersion reference
-   **/
-  public final void setItsVersion(final Long pItsVersion) {
-    this.itsVersion = pItsVersion;
-  }
-
   /**
    * <p>Geter for itsType.</p>
    * @return InvItemType

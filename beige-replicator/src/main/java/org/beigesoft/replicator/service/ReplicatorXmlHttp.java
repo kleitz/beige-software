@@ -13,8 +13,8 @@ package org.beigesoft.replicator.service;
 import java.util.Map;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Date;
+import java.io.Writer;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
@@ -30,6 +30,8 @@ import java.net.CookieHandler;
 
 import org.beigesoft.log.ILogger;
 import org.beigesoft.service.IUtilXml;
+import org.beigesoft.replicator.filter.IFilterEntities;
+import org.beigesoft.delegate.IDelegator;
 import org.beigesoft.exception.ExceptionWithCode;
 import org.beigesoft.settings.IMngSettings;
 import org.beigesoft.orm.service.ISrvDatabase;
@@ -45,8 +47,8 @@ import org.beigesoft.orm.service.ISrvDatabase;
  * @param <RS> platform dependent record set type
  * @author Yury Demidenko
  */
-public class ClearDbThenGetAnotherCopyXmlHttp<RS>
-  implements IClearDbThenGetAnotherCopy {
+public class ReplicatorXmlHttp<RS>
+  implements IReplicator {
 
   /**
    * <p>Replicators settings manager.</p>
@@ -79,31 +81,50 @@ public class ClearDbThenGetAnotherCopyXmlHttp<RS>
   private String cookies;
 
   /**
+   * <p>It prepare database before import (may be null),
+   * e.g. for full database copy it should clear database.</p>
+   **/
+  private IDelegator databasePrepearerBefore;
+
+  /**
+   * <p>It prepare database after import (may be null),
+   * e.g. for full database copy it should release AppBeansFactory
+   * and for Postgresql it should remake sequences.</p>
+   **/
+  private IDelegator databasePrepearerAfter;
+
+  /**
    * <p>XML service.</p>
    **/
   private IUtilXml utilXml;
 
   /**
+   * <p>Filters Entity Sync map.</p>
+   **/
+  private Map<String, IFilterEntities> filtersEntities;
+
+  /**
    * <p>It will clear current database then copy
    * data from another with XML messages trough HTTP connection.</p>
-   * @param pAddParam additional params
+   * @param pAddParams additional params
    * @throws Exception - an exception
    **/
   @Override
-  public final void clearDbThenGetAnotherCopy(
-    final Map<String, Object> pAddParam) throws Exception {
+  public final void replicate(
+    final Map<String, Object> pAddParams) throws Exception {
+    Writer htmlWriter = (Writer) pAddParams.get("htmlWriter");
     try {
       //URL must be
-      String urlSourceStr = (String) pAddParam.get("urlSource");
+      String urlSourceStr = (String) pAddParams.get("urlSource");
       if (urlSourceStr == null || urlSourceStr.length() < 10) {
         throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
           "Where is no urlSource!!!");
       }
       URL url = new URL(urlSourceStr);
-      String authMethod = (String) pAddParam.get("authMethod");
+      String authMethod = (String) pAddParams.get("authMethod");
       if ("base".equals(authMethod)) {
-        final String userName = (String) pAddParam.get("userName");
-        final String userPass = (String) pAddParam.get("userPass");
+        final String userName = (String) pAddParams.get("userName");
+        final String userPass = (String) pAddParams.get("userPass");
         Authenticator.setDefault(new Authenticator() {
           @Override
           protected PasswordAuthentication getPasswordAuthentication() {
@@ -114,48 +135,37 @@ public class ClearDbThenGetAnotherCopyXmlHttp<RS>
         CookieManager cookieManager = new CookieManager();
         CookieHandler.setDefault(cookieManager);
         cookieManager.setCookiePolicy(CookiePolicy.ACCEPT_ALL);
-        requestCookiesGet(pAddParam);
-        authForm(pAddParam, cookieManager);
+        requestCookiesGet(pAddParams);
+        authForm(pAddParams, cookieManager);
       }
-      makeJob(url, pAddParam);
-      String statusString =
-        ", Database has been emptied and data has been imported.";
-      pAddParam.put("statusString", new Date().toString() + ", "
-        + ClearDbThenGetAnotherCopyXmlHttp.class.getSimpleName()
+      Map<String, Integer> classesCounts = makeJob(url, pAddParams);
+      if (htmlWriter != null) {
+        String statusString = ", replication has been done.";
+        htmlWriter.write("<h4>" + new Date().toString()
+          + statusString + "</h4>");
+        pAddParams.put("statusString", new Date().toString() + ", "
+          + ReplicatorXmlHttp.class.getSimpleName()
           + statusString);
-      this.logger.info(ClearDbThenGetAnotherCopyXmlHttp.class, statusString);
-    } catch (ExceptionWithCode ex) {
-      pAddParam.put("statusString", new Date().toString() + ", "
-        + ClearDbThenGetAnotherCopyXmlHttp.class.getSimpleName()
-          + ", " + ex.getShortMessage());
-      this.logger.info(ClearDbThenGetAnotherCopyXmlHttp.class,
-        ex.getShortMessage());
-    }
-  }
-
-  /**
-   * <p>It will clear current database.</p>
-   * @throws Exception - an exception
-   **/
-  public final void clearDB() throws Exception {
-    ArrayList<Class<?>> classesArr =
-      new ArrayList<Class<?>>(this.mngSettings.getClasses());
-    try {
-      this.srvDatabase.setIsAutocommit(false);
-      this.srvDatabase.
-        setTransactionIsolation(ISrvDatabase.TRANSACTION_READ_UNCOMMITTED);
-      this.srvDatabase.beginTransaction();
-      for (int i = classesArr.size() - 1; i >= 0; i--) {
-        Class<?> entityClass = classesArr.get(i);
-        this.srvDatabase.executeDelete(entityClass.getSimpleName()
-          .toUpperCase(), null);
+        this.logger.info(ReplicatorXmlHttp.class, statusString);
+        htmlWriter.write("<table>");
+        htmlWriter.write("<tr><th style=\"padding: 5px;\">Class</th><th style=\"padding: 5px;\">Total records</th></tr>");
+        for (Map.Entry<String, Integer> entry : classesCounts.entrySet()) {
+          htmlWriter.write("<tr>");
+          htmlWriter.write("<td>" + entry.getKey() + "</td>");
+          htmlWriter.write("<td>" + entry.getValue() + "</td>");
+          htmlWriter.write("</tr>");
+        }
+        htmlWriter.write("</table>");
       }
-      this.srvDatabase.commitTransaction();
-    } catch (Exception ex) {
-      this.srvDatabase.rollBackTransaction();
+    } catch (ExceptionWithCode ex) {
+      if (htmlWriter != null) {
+        htmlWriter.write(new Date().toString() + ", "
+        + ReplicatorXmlHttp.class.getSimpleName()
+          + ", " + ex.getShortMessage());
+      }
+      this.logger.error(ReplicatorXmlHttp.class,
+        ex.getShortMessage());
       throw ex;
-    } finally {
-      this.srvDatabase.releaseResources();
     }
   }
 
@@ -163,21 +173,22 @@ public class ClearDbThenGetAnotherCopyXmlHttp<RS>
    * <p>It copy data from another with XML messages
    * through given HTTP connection.</p>
    * @param pUrl URL
-   * @param pAddParam additional params
+   * @param pAddParams additional params
+   * @return Map<String, Integer> affected Class - records count
    * @throws Exception - an exception
    **/
-  public final void makeJob(final URL pUrl,
-    final Map<String, Object> pAddParam) throws Exception {
-    String maxRecordsStr = (String) pAddParam.get("maxRecords");
+  public final Map<String, Integer> makeJob(final URL pUrl,
+    final Map<String, Object> pAddParams) throws Exception {
+    String requestedDatabaseId = (String) pAddParams.get("requestedDatabaseId");
+    String maxRecordsStr = (String) pAddParams.get("maxRecords");
     if (maxRecordsStr == null || maxRecordsStr.length() == 0) {
       throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
         "Where is no maxRecords!!!");
     }
     int maxRecords = Integer.parseInt(maxRecordsStr);
     Map<String, Integer> classesCounts = new LinkedHashMap<String, Integer>();
-    pAddParam.put("classesCounts", classesCounts);
     Integer classCount = 0;
-    boolean isCleared = false;
+    boolean isDbPreparedBefore = false;
     int databaseVersion = this.srvDatabase.getVersionDatabase();
     for (Class<?> entityClass : this.mngSettings.getClasses()) {
       int entitiesReceived = 0;
@@ -200,9 +211,28 @@ public class ClearDbThenGetAnotherCopyXmlHttp<RS>
           }
           writer = new OutputStreamWriter(urlConnection
             .getOutputStream(), Charset.forName("UTF-8").newEncoder());
+          String nameFilterEntities = this.mngSettings.getClassesSettings()
+            .get(entityClass.getCanonicalName()).get("filter");
+          String conditions = "";
+          if (nameFilterEntities != null) {
+            IFilterEntities filterEntities = this.filtersEntities
+              .get(nameFilterEntities);
+            if (filterEntities != null) {
+              String cond = filterEntities.makeFilter(entityClass, pAddParams);
+              if (cond != null) {
+                conditions = " where " + cond;
+              }
+            }
+          }
+          conditions += " limit " + maxRecords + " offset " + firstRecord;
+          String requestedDatabaseIdStr = "";
+          if (requestedDatabaseId != null) {
+            requestedDatabaseIdStr = "&requestedDatabaseId="
+                + requestedDatabaseId;
+          }
           writer.write("entityName=" + entityClass.getCanonicalName()
-            + "&maxRecords=" + maxRecords + "&firstRecord="
-              + firstRecord + "&requestingDatabaseVersion=" + databaseVersion);
+            + "&conditions=" + conditions + "&requestingDatabaseVersion="
+              + databaseVersion + requestedDatabaseIdStr);
           writer.flush();
           if (HttpURLConnection.HTTP_OK == urlConnection.getResponseCode()) {
             reader = new BufferedReader(new InputStreamReader(urlConnection
@@ -226,14 +256,16 @@ public class ClearDbThenGetAnotherCopyXmlHttp<RS>
             entitiesReceived = Integer.parseInt(entitiesCountStr);
             if (entitiesReceived > 0) {
               classCount += entitiesReceived;
-              this.logger.info(ClearDbThenGetAnotherCopyXmlHttp.class,
+              this.logger.info(ReplicatorXmlHttp.class,
                 "Try to parse entities total: " + entitiesReceived + " of "
                   + entityClass.getCanonicalName());
-              if (!isCleared) {
-                clearDB();
-                isCleared = true;
+              if (!isDbPreparedBefore) {
+                if (this.databasePrepearerBefore != null) {
+                  this.databasePrepearerBefore.make(pAddParams);
+                }
+                isDbPreparedBefore = true;
               }
-              this.databaseReader.readAndStoreEntities(reader, pAddParam);
+              this.databaseReader.readAndStoreEntities(reader, pAddParams);
               if (entitiesReceived == maxRecords) {
                 firstRecord += maxRecords;
               } else {
@@ -269,17 +301,21 @@ public class ClearDbThenGetAnotherCopyXmlHttp<RS>
       classesCounts.put(entityClass.getCanonicalName(), classCount);
       classCount = 0;
     }
+    if (this.databasePrepearerAfter != null) {
+      this.databasePrepearerAfter.make(pAddParams);
+    }
+    return classesCounts;
   }
 
   /**
    * <p>Connect to secure address with method GET to receive
    * authenticate cookies.</p>
-   * @param pAddParam additional params
+   * @param pAddParams additional params
    * @throws Exception - an exception
    **/
   public final void requestCookiesGet(
-    final Map<String, Object> pAddParam) throws Exception {
-    String urlGetAuthCookStr = (String) pAddParam.get("urlGetAuthCookies");
+    final Map<String, Object> pAddParams) throws Exception {
+    String urlGetAuthCookStr = (String) pAddParams.get("urlGetAuthCookies");
     URL urlGetAuthCookies = new URL(urlGetAuthCookStr);
     HttpURLConnection urlConnection = (HttpURLConnection) urlGetAuthCookies
       .openConnection();
@@ -312,17 +348,17 @@ public class ClearDbThenGetAnotherCopyXmlHttp<RS>
 
   /**
    * <p>It authenticate by post simulate form.</p>
-   * @param pAddParam additional params
+   * @param pAddParams additional params
    * @param pCookieManager CookieManager for form auth
    * @throws Exception - an exception
    **/
-  public final void authForm(final Map<String, Object> pAddParam,
+  public final void authForm(final Map<String, Object> pAddParams,
       final CookieManager pCookieManager) throws Exception {
-    String authUrl = (String) pAddParam.get("authUrl");
-    String authUserName = (String) pAddParam.get("authUserName");
-    String authUserPass = (String) pAddParam.get("authUserPass");
-    String userName = (String) pAddParam.get("userName");
-    String userPass = (String) pAddParam.get("userPass");
+    String authUrl = (String) pAddParams.get("authUrl");
+    String authUserName = (String) pAddParams.get("authUserName");
+    String authUserPass = (String) pAddParams.get("authUserPass");
+    String userName = (String) pAddParams.get("userName");
+    String userPass = (String) pAddParams.get("userPass");
     URL url = new URL(authUrl);
     HttpURLConnection urlConnection = (HttpURLConnection) url
       .openConnection();
@@ -348,14 +384,14 @@ public class ClearDbThenGetAnotherCopyXmlHttp<RS>
         "application/x-www-form-urlencoded");
       urlConnection.addRequestProperty("Content-Length",
         String.valueOf(paramStr.length()));
-      this.logger.debug(ClearDbThenGetAnotherCopyXmlHttp.class,
+      this.logger.debug(ReplicatorXmlHttp.class,
         "Request before flush auth:");
       for (Map.Entry<String, List<String>> entry
         : urlConnection.getRequestProperties().entrySet()) {
-        this.logger.debug(ClearDbThenGetAnotherCopyXmlHttp.class,
+        this.logger.debug(ReplicatorXmlHttp.class,
           "  Request entry key: " + entry.getKey());
         for (String val : entry.getValue()) {
-          this.logger.debug(ClearDbThenGetAnotherCopyXmlHttp.class,
+          this.logger.debug(ReplicatorXmlHttp.class,
             "   Request entry value: " + val);
         }
       }
@@ -486,6 +522,40 @@ public class ClearDbThenGetAnotherCopyXmlHttp<RS>
   }
 
   /**
+   * <p>Getter for databasePrepearerBefore.</p>
+   * @return IDelegator
+   **/
+  public final IDelegator getDatabasePrepearerBefore() {
+    return this.databasePrepearerBefore;
+  }
+
+  /**
+   * <p>Setter for databasePrepearerBefore.</p>
+   * @param pDatabasePrepearerBefore reference
+   **/
+  public final void setDatabasePrepearerBefore(
+    final IDelegator pDatabasePrepearerBefore) {
+    this.databasePrepearerBefore = pDatabasePrepearerBefore;
+  }
+
+  /**
+   * <p>Getter for databasePrepearerAfter.</p>
+   * @return IDelegator
+   **/
+  public final IDelegator getDatabasePrepearerAfter() {
+    return this.databasePrepearerAfter;
+  }
+
+  /**
+   * <p>Setter for databasePrepearerAfter.</p>
+   * @param pDatabasePrepearerAfter reference
+   **/
+  public final void setDatabasePrepearerAfter(
+    final IDelegator pDatabasePrepearerAfter) {
+    this.databasePrepearerAfter = pDatabasePrepearerAfter;
+  }
+
+  /**
    * <p>Getter for utilXml.</p>
    * @return IUtilXml
    **/
@@ -499,5 +569,22 @@ public class ClearDbThenGetAnotherCopyXmlHttp<RS>
    **/
   public final void setUtilXml(final IUtilXml pUtilXml) {
     this.utilXml = pUtilXml;
+  }
+
+  /**
+   * <p>Getter for filtersEntities.</p>
+   * @return Map<String, IFilterEntities>
+   **/
+  public final Map<String, IFilterEntities> getFiltersEntities() {
+    return this.filtersEntities;
+  }
+
+  /**
+   * <p>Setter for filtersEntities.</p>
+   * @param pFiltersEntities reference
+   **/
+  public final void setFiltersEntities(
+    final Map<String, IFilterEntities> pFiltersEntities) {
+    this.filtersEntities = pFiltersEntities;
   }
 }

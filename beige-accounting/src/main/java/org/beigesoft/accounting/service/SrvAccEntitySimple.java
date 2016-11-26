@@ -19,8 +19,7 @@ import org.beigesoft.service.ISrvEntity;
 import org.beigesoft.orm.service.ISrvOrm;
 
 /**
- * <p>Simple business service for persistable accounting entity.
-.</p>
+ * <p>Simple business service for persistable accounting entity.</p>
  *
  * @param <T> entity type
  * @author Yury Demidenko
@@ -250,6 +249,7 @@ public class SrvAccEntitySimple<T extends IHasId<?>>
     final Object pId) throws Exception {
     getSrvOrm().deleteEntity(this.entityClass, pId);
   }
+
   //Utils:
   /**
    * <p>Added accounting settings to attributes.</p>

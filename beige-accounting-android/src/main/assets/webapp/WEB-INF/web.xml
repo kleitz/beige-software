@@ -63,9 +63,9 @@
     <url-pattern>/secure/entityList/*</url-pattern>
   </servlet-mapping>
   <servlet>
-    <servlet-name>sendDatabaseCopy</servlet-name>
+    <servlet-name>sendEntities</servlet-name>
     <servlet-class>
-      org.beigesoft.web.servlet.WSendDatabaseCopy
+      org.beigesoft.web.servlet.WSendEntities
     </servlet-class>
     <init-param>
       <param-name>contentType</param-name>
@@ -73,18 +73,18 @@
     </init-param>
   </servlet>
   <servlet-mapping>
-    <servlet-name>sendDatabaseCopy</servlet-name>
-    <url-pattern>/secure/sendDatabaseCopy/*</url-pattern>
+    <servlet-name>sendEntities</servlet-name>
+    <url-pattern>/secure/sendEntities/*</url-pattern>
   </servlet-mapping>
   <servlet>
-    <servlet-name>getDatabaseCopyResult</servlet-name>
+    <servlet-name>replicator</servlet-name>
     <servlet-class>
-      org.beigesoft.web.servlet.WGetDatabaseCopyResult
+      org.beigesoft.web.servlet.WReplicator
     </servlet-class>
   </servlet>
   <servlet-mapping>
-    <servlet-name>getDatabaseCopyResult</servlet-name>
-    <url-pattern>/secure/getDatabaseCopyResult/*</url-pattern>
+    <servlet-name>replicator</servlet-name>
+    <url-pattern>/secure/replicator/*</url-pattern>
   </servlet-mapping>
   <servlet>
     <servlet-name>mngDatabase</servlet-name>
@@ -141,6 +141,20 @@
   <servlet-mapping>
     <servlet-name>warehouseSiteRests</servlet-name>
     <url-pattern>/secure/warehouseSiteRests/*</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>service</servlet-name>
+    <servlet-class>
+      org.beigesoft.web.servlet.WService
+    </servlet-class>
+    <init-param>
+      <param-name>dirJsp</param-name>
+      <param-value>/WEB-INF/jsp/</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>service</servlet-name>
+    <url-pattern>/secure/service/*</url-pattern>
   </servlet-mapping>
 
 <!--
@@ -250,6 +264,11 @@ description, distributable, and context-param elements.
     </servlet>
 
     <servlet>
+        <servlet-name>org.apache.jsp.WEB_002dINF.jsp.balanceSheetFormJson_jsp</servlet-name>
+        <servlet-class>org.apache.jsp.WEB_002dINF.jsp.balanceSheetFormJson_jsp</servlet-class>
+    </servlet>
+
+    <servlet>
         <servlet-name>org.apache.jsp.WEB_002dINF.jsp.listWhole_jsp</servlet-name>
         <servlet-class>org.apache.jsp.WEB_002dINF.jsp.listWhole_jsp</servlet-class>
     </servlet>
@@ -295,6 +314,11 @@ description, distributable, and context-param elements.
     </servlet>
 
     <servlet>
+        <servlet-name>org.apache.jsp.WEB_002dINF.jsp.balanceSheetForm_jsp</servlet-name>
+        <servlet-class>org.apache.jsp.WEB_002dINF.jsp.balanceSheetForm_jsp</servlet-class>
+    </servlet>
+
+    <servlet>
         <servlet-name>org.apache.jsp.WEB_002dINF.jsp.ledgerFormJson_jsp</servlet-name>
         <servlet-class>org.apache.jsp.WEB_002dINF.jsp.ledgerFormJson_jsp</servlet-class>
     </servlet>
@@ -312,6 +336,11 @@ description, distributable, and context-param elements.
     <servlet>
         <servlet-name>org.apache.jsp.WEB_002dINF.jsp.reverseLine_jsp</servlet-name>
         <servlet-class>org.apache.jsp.WEB_002dINF.jsp.reverseLine_jsp</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>org.apache.jsp.WEB_002dINF.jsp.replicateAccFormJson_jsp</servlet-name>
+        <servlet-class>org.apache.jsp.WEB_002dINF.jsp.replicateAccFormJson_jsp</servlet-class>
     </servlet>
 
     <servlet>
@@ -355,6 +384,11 @@ description, distributable, and context-param elements.
     </servlet>
 
     <servlet>
+        <servlet-name>org.apache.jsp.WEB_002dINF.jsp.balanceSheet_jsp</servlet-name>
+        <servlet-class>org.apache.jsp.WEB_002dINF.jsp.balanceSheet_jsp</servlet-class>
+    </servlet>
+
+    <servlet>
         <servlet-name>org.apache.jsp.WEB_002dINF.jsp.listAccEntriesWhole_jsp</servlet-name>
         <servlet-class>org.apache.jsp.WEB_002dINF.jsp.listAccEntriesWhole_jsp</servlet-class>
     </servlet>
@@ -367,6 +401,16 @@ description, distributable, and context-param elements.
     <servlet>
         <servlet-name>org.apache.jsp.WEB_002dINF.jsp.listAccEntries_jsp</servlet-name>
         <servlet-class>org.apache.jsp.WEB_002dINF.jsp.listAccEntries_jsp</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>org.apache.jsp.WEB_002dINF.jsp.about_jsp</servlet-name>
+        <servlet-class>org.apache.jsp.WEB_002dINF.jsp.about_jsp</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>org.apache.jsp.WEB_002dINF.jsp.replicateAccForm_jsp</servlet-name>
+        <servlet-class>org.apache.jsp.WEB_002dINF.jsp.replicateAccForm_jsp</servlet-class>
     </servlet>
 
     <servlet>
@@ -392,6 +436,11 @@ description, distributable, and context-param elements.
     <servlet>
         <servlet-name>org.apache.jsp.WEB_002dINF.jsp.editLineKnownCost_jsp</servlet-name>
         <servlet-class>org.apache.jsp.WEB_002dINF.jsp.editLineKnownCost_jsp</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>org.apache.jsp.WEB_002dINF.jsp.aboutJson_jsp</servlet-name>
+        <servlet-class>org.apache.jsp.WEB_002dINF.jsp.aboutJson_jsp</servlet-class>
     </servlet>
 
     <servlet>
@@ -832,6 +881,11 @@ description, distributable, and context-param elements.
     <servlet>
         <servlet-name>org.apache.jsp.WEB_002dINF.jsp.mobile.inputs.inputCostQuantityTotal_jsp</servlet-name>
         <servlet-class>org.apache.jsp.WEB_002dINF.jsp.mobile.inputs.inputCostQuantityTotal_jsp</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>org.apache.jsp.WEB_002dINF.jsp.mobile.inputs.inputAccountOnly_jsp</servlet-name>
+        <servlet-class>org.apache.jsp.WEB_002dINF.jsp.mobile.inputs.inputAccountOnly_jsp</servlet-class>
     </servlet>
 
     <servlet>
@@ -1355,6 +1409,11 @@ description, distributable, and context-param elements.
     </servlet>
 
     <servlet>
+        <servlet-name>org.apache.jsp.WEB_002dINF.jsp.inputs.inputAccountOnly_jsp</servlet-name>
+        <servlet-class>org.apache.jsp.WEB_002dINF.jsp.inputs.inputAccountOnly_jsp</servlet-class>
+    </servlet>
+
+    <servlet>
         <servlet-name>org.apache.jsp.WEB_002dINF.jsp.inputs.inputCurrency_jsp</servlet-name>
         <servlet-class>org.apache.jsp.WEB_002dINF.jsp.inputs.inputCurrency_jsp</servlet-class>
     </servlet>
@@ -1720,6 +1779,11 @@ description, distributable, and context-param elements.
     </servlet-mapping>
 
     <servlet-mapping>
+        <servlet-name>org.apache.jsp.WEB_002dINF.jsp.balanceSheetFormJson_jsp</servlet-name>
+        <url-pattern>/WEB-INF/jsp/balanceSheetFormJson.jsp</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
         <servlet-name>org.apache.jsp.WEB_002dINF.jsp.listWhole_jsp</servlet-name>
         <url-pattern>/WEB-INF/jsp/listWhole.jsp</url-pattern>
     </servlet-mapping>
@@ -1765,6 +1829,11 @@ description, distributable, and context-param elements.
     </servlet-mapping>
 
     <servlet-mapping>
+        <servlet-name>org.apache.jsp.WEB_002dINF.jsp.balanceSheetForm_jsp</servlet-name>
+        <url-pattern>/WEB-INF/jsp/balanceSheetForm.jsp</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
         <servlet-name>org.apache.jsp.WEB_002dINF.jsp.ledgerFormJson_jsp</servlet-name>
         <url-pattern>/WEB-INF/jsp/ledgerFormJson.jsp</url-pattern>
     </servlet-mapping>
@@ -1782,6 +1851,11 @@ description, distributable, and context-param elements.
     <servlet-mapping>
         <servlet-name>org.apache.jsp.WEB_002dINF.jsp.reverseLine_jsp</servlet-name>
         <url-pattern>/WEB-INF/jsp/reverseLine.jsp</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>org.apache.jsp.WEB_002dINF.jsp.replicateAccFormJson_jsp</servlet-name>
+        <url-pattern>/WEB-INF/jsp/replicateAccFormJson.jsp</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>
@@ -1825,6 +1899,11 @@ description, distributable, and context-param elements.
     </servlet-mapping>
 
     <servlet-mapping>
+        <servlet-name>org.apache.jsp.WEB_002dINF.jsp.balanceSheet_jsp</servlet-name>
+        <url-pattern>/WEB-INF/jsp/balanceSheet.jsp</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
         <servlet-name>org.apache.jsp.WEB_002dINF.jsp.listAccEntriesWhole_jsp</servlet-name>
         <url-pattern>/WEB-INF/jsp/listAccEntriesWhole.jsp</url-pattern>
     </servlet-mapping>
@@ -1837,6 +1916,16 @@ description, distributable, and context-param elements.
     <servlet-mapping>
         <servlet-name>org.apache.jsp.WEB_002dINF.jsp.listAccEntries_jsp</servlet-name>
         <url-pattern>/WEB-INF/jsp/listAccEntries.jsp</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>org.apache.jsp.WEB_002dINF.jsp.about_jsp</servlet-name>
+        <url-pattern>/WEB-INF/jsp/about.jsp</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>org.apache.jsp.WEB_002dINF.jsp.replicateAccForm_jsp</servlet-name>
+        <url-pattern>/WEB-INF/jsp/replicateAccForm.jsp</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>
@@ -1862,6 +1951,11 @@ description, distributable, and context-param elements.
     <servlet-mapping>
         <servlet-name>org.apache.jsp.WEB_002dINF.jsp.editLineKnownCost_jsp</servlet-name>
         <url-pattern>/WEB-INF/jsp/editLineKnownCost.jsp</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>org.apache.jsp.WEB_002dINF.jsp.aboutJson_jsp</servlet-name>
+        <url-pattern>/WEB-INF/jsp/aboutJson.jsp</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>
@@ -2302,6 +2396,11 @@ description, distributable, and context-param elements.
     <servlet-mapping>
         <servlet-name>org.apache.jsp.WEB_002dINF.jsp.mobile.inputs.inputCostQuantityTotal_jsp</servlet-name>
         <url-pattern>/WEB-INF/jsp/mobile/inputs/inputCostQuantityTotal.jsp</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>org.apache.jsp.WEB_002dINF.jsp.mobile.inputs.inputAccountOnly_jsp</servlet-name>
+        <url-pattern>/WEB-INF/jsp/mobile/inputs/inputAccountOnly.jsp</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>
@@ -2822,6 +2921,11 @@ description, distributable, and context-param elements.
     <servlet-mapping>
         <servlet-name>org.apache.jsp.WEB_002dINF.jsp.inputs.inputCostQuantityTotal_jsp</servlet-name>
         <url-pattern>/WEB-INF/jsp/inputs/inputCostQuantityTotal.jsp</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>org.apache.jsp.WEB_002dINF.jsp.inputs.inputAccountOnly_jsp</servlet-name>
+        <url-pattern>/WEB-INF/jsp/inputs/inputAccountOnly.jsp</url-pattern>
     </servlet-mapping>
 
     <servlet-mapping>

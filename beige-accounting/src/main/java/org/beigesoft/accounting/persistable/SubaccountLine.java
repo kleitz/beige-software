@@ -11,26 +11,23 @@ package org.beigesoft.accounting.persistable;
  */
 
 import org.beigesoft.model.IOwned;
-import org.beigesoft.persistable.AHasIdLong;
+import org.beigesoft.persistable.AHasIdLongVersion;
 
 /**
  * <pre>
  * Model of subaccount line in account.
+ * Version changed time algorithm.
  * </pre>
  *
  * @author Yury Demidenko
  */
-public class SubaccountLine extends AHasIdLong implements IOwned<Account> {
+public class SubaccountLine extends AHasIdLongVersion
+  implements IOwned<Account> {
 
   /**
    * <p>Account.</p>
    **/
   private Account itsOwner;
-
-  /**
-   * <p>Version, changed time algorithm cause check dirty.</p>
-   **/
-  private Long itsVersion;
 
   /**
    * <p>Subaccount type, not null, must be same as owner's one.</p>
@@ -66,23 +63,6 @@ public class SubaccountLine extends AHasIdLong implements IOwned<Account> {
   }
 
   //Simple getters and setters:
-
-  /**
-   * <p>Geter for itsVersion.</p>
-   * @return Long
-   **/
-  public final Long getItsVersion() {
-    return this.itsVersion;
-  }
-
-  /**
-   * <p>Setter for itsVersion.</p>
-   * @param pItsVersion reference/value
-   **/
-  public final void setItsVersion(final Long pItsVersion) {
-    this.itsVersion = pItsVersion;
-  }
-
   /**
    * <p>Getter for subaccType.</p>
    * @return Integer

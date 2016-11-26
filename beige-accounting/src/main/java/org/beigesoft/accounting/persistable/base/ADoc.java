@@ -13,24 +13,19 @@ package org.beigesoft.accounting.persistable.base;
 import java.util.Date;
 import java.math.BigDecimal;
 
-import org.beigesoft.persistable.APersistableBase;
+import org.beigesoft.persistable.APersistableBaseVersion;
 import org.beigesoft.accounting.persistable.IDoc;
 
 /**
  * <pre>
  * Abstraction of a document that makes accounting entries.
+ * Version changed time algorithm.
  * </pre>
  *
  * @author Yury Demidenko
  */
-public abstract class ADoc extends APersistableBase
+public abstract class ADoc extends APersistableBaseVersion
   implements IDoc {
-
-  /**
-   * <p>Version, changed time algorithm cause check dirty of
-   * calculated from it (derived) records.</p>
-   **/
-  private Long itsVersion;
 
   /**
    * <p>Date.</p>
@@ -154,22 +149,5 @@ public abstract class ADoc extends APersistableBase
     } else {
       this.itsDate = new Date(pItsDate.getTime());
     }
-  }
-
-  //Simple getters and setters:
-  /**
-   * <p>Geter for itsVersion.</p>
-   * @return Long
-   **/
-  public final Long getItsVersion() {
-    return this.itsVersion;
-  }
-
-  /**
-   * <p>Setter for itsVersion.</p>
-   * @param pItsVersion reference
-   **/
-  public final void setItsVersion(final Long pItsVersion) {
-    this.itsVersion = pItsVersion;
   }
 }

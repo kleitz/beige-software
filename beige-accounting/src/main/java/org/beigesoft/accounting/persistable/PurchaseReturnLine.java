@@ -14,17 +14,18 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import org.beigesoft.model.IOwned;
-import org.beigesoft.persistable.APersistableBase;
+import org.beigesoft.persistable.APersistableBaseVersion;
 
 /**
  * <pre>
  * Model of Purchase Return Line for each work type,
  * e.g. cooking or delivery.
+ * Version, reliable autoincrement algorithm.
  * </pre>
  *
  * @author Yury Demidenko
  */
-public class PurchaseReturnLine extends APersistableBase
+public class PurchaseReturnLine extends APersistableBaseVersion
   implements IMakingWarehouseEntry, IOwned<PurchaseReturn> {
 
   /**
@@ -49,11 +50,6 @@ public class PurchaseReturnLine extends APersistableBase
    * from this site.</p>
    **/
   private WarehouseSite warehouseSiteFo;
-
-  /**
-   * <p>Version, reliable autoincrement algorithm.</p>
-   **/
-  private Long itsVersion;
 
   /**
    * <p>ID of reversed/reversing tax line.</p>
@@ -255,23 +251,6 @@ public class PurchaseReturnLine extends APersistableBase
   }
 
   /**
-   * <p>Getter for itsVersion.</p>
-   * @return Long
-   **/
-  public final Long getItsVersion() {
-    return this.itsVersion;
-  }
-
-  /**
-   * <p>Setter for itsVersion.</p>
-   * @param pItsVersion reference
-   **/
-  public final void setItsVersion(final Long pItsVersion) {
-    this.itsVersion = pItsVersion;
-  }
-
-
-  /**
    * <p>Getter for itsQuantity.</p>
    * @return BigDecimal
    **/
@@ -351,7 +330,6 @@ public class PurchaseReturnLine extends APersistableBase
     this.taxesDescription = pTaxesDescription;
   }
 
-  //Simple getters and setters:
   /**
    * <p>Getter for warehouseSiteFo.</p>
    * @return WarehouseSite

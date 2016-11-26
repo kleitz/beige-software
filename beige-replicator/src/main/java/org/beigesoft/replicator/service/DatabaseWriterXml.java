@@ -66,6 +66,8 @@ public class DatabaseWriterXml<RS> implements IDatabaseWriter {
   public final <T> int retrieveAndWriteEntities(final Class<T> pEntityClass,
     final Writer pWriter,
       final Map<String, Object> pAddParam) throws Exception {
+    //e.g. "limit 20 offset 19":
+    //e.g. "where (ITSID>0 and IDDATABASEBIRTH=2135) limit 20 offset 19":
     String conditions = (String) pAddParam.get("conditions");
     int requestingDatabaseVersion = Integer
       .parseInt((String) pAddParam.get("requestingDatabaseVersion"));
@@ -80,6 +82,20 @@ public class DatabaseWriterXml<RS> implements IDatabaseWriter {
           setTransactionIsolation(ISrvDatabase.TRANSACTION_READ_UNCOMMITTED);
         this.srvDatabase.beginTransaction();
         di = getSrvOrm().retrieveEntityWithConditions(DatabaseInfo.class, "");
+        String requestedDatabaseIdStr = (String) pAddParam
+          .get("requestedDatabaseId");
+        if (requestedDatabaseIdStr != null) {
+          int requestedDatabaseId = Integer.parseInt(requestedDatabaseIdStr);
+          if (requestedDatabaseId != di.getDatabaseId()) {
+            String error = "Different requested database ID! required/is: "
+                + requestedDatabaseId + "/" + di.getDatabaseId();
+            this.logger.error(DatabaseWriterXml.class, error);
+            pWriter.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+            pWriter.write("<message error=\"" + error + "\">\n");
+            pWriter.write("</message>\n");
+            return entitiesCount;
+          }
+        }
         if (conditions == null) {
           entities = getSrvOrm().retrieveList(pEntityClass);
         } else {
@@ -107,7 +123,7 @@ public class DatabaseWriterXml<RS> implements IDatabaseWriter {
       pWriter.write("</message>\n");
       this.logger.info(DatabaseWriterXml.class, "Entities has been wrote");
     } else {
-      this.logger.info(DatabaseWriterXml.class,
+      this.logger.error(DatabaseWriterXml.class,
         "Send error message - Different database version!");
       pWriter.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
       pWriter.write("<message error=\"Different database version!\">\n");

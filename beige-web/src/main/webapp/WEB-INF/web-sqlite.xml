@@ -80,6 +80,20 @@
     <url-pattern>/secure/entity/*</url-pattern>
   </servlet-mapping>
   <servlet>
+    <servlet-name>service</servlet-name>
+    <servlet-class>
+      org.beigesoft.web.servlet.WService
+    </servlet-class>
+    <init-param>
+      <param-name>dirJsp</param-name>
+      <param-value>/WEB-INF/jsp/</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>service</servlet-name>
+    <url-pattern>/secure/service/*</url-pattern>
+  </servlet-mapping>
+  <servlet>
     <servlet-name>report</servlet-name>
     <servlet-class>
       org.beigesoft.web.servlet.WReport

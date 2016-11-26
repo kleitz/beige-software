@@ -15,22 +15,17 @@ import java.util.Date;
 import java.math.RoundingMode;
 
 import org.beigesoft.model.EPeriod;
-import org.beigesoft.persistable.AHasIdLong;
+import org.beigesoft.persistable.AHasIdLongVersion;
 
 /**
  * <pre>
  * Accounting settings.
+ * Version changed time algorithm.
  * </pre>
  *
  * @author Yury Demidenko
  */
-public class AccSettings extends AHasIdLong {
-
-  /**
-   * <p>Version, changed time algorithm cause check dirty of
-   * calculated from it (derived) records.</p>
-   **/
-  private Long itsVersion;
+public class AccSettings extends AHasIdLongVersion {
 
   /**
    * <p>Date current accounting year to prevent wrong accounting entries.</p>
@@ -180,22 +175,6 @@ public class AccSettings extends AHasIdLong {
    **/
   public final void setBalancePrecision(final Integer pBalancePrecision) {
     this.balancePrecision = pBalancePrecision;
-  }
-
-  /**
-   * <p>Geter for itsVersion.</p>
-   * @return Long
-   **/
-  public final Long getItsVersion() {
-    return this.itsVersion;
-  }
-
-  /**
-   * <p>Setter for itsVersion.</p>
-   * @param pItsVersion reference
-   **/
-  public final void setItsVersion(final Long pItsVersion) {
-    this.itsVersion = pItsVersion;
   }
 
   /**

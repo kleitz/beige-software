@@ -11,9 +11,11 @@ package org.beigesoft.accounting.factory;
  */
 
 import java.util.Map;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.text.DateFormat;
 
+import org.beigesoft.settings.MngSettings;
 import org.beigesoft.factory.IFactoryAppBeans;
 import org.beigesoft.web.factory.AFactoryAppBeans;
 import org.beigesoft.accounting.persistable.Account;
@@ -109,6 +111,36 @@ import org.beigesoft.accounting.persistable.PurchaseReturnLine;
 import org.beigesoft.accounting.persistable.PurchaseReturnTaxLine;
 import org.beigesoft.accounting.service.SrvPurchaseReturn;
 import org.beigesoft.accounting.service.SrvPurchaseReturnLine;
+import org.beigesoft.accounting.persistable.ReplicationAccMethod;
+import org.beigesoft.accounting.persistable.ReplExcludeAccountsDebit;
+import org.beigesoft.accounting.persistable.ReplExcludeAccountsCredit;
+import org.beigesoft.replicator.service.SrvReplicationAccMethod;
+import org.beigesoft.replicator.service.SrvReplExcludeAccountsDebitCredit;
+import org.beigesoft.replicator.service.ReplicatorXmlHttp;
+import org.beigesoft.replicator.service.DatabaseWriterXml;
+import org.beigesoft.replicator.service.DatabaseReaderSyncStdXml;
+import org.beigesoft.replicator.service.SrvEntityReaderXml;
+import org.beigesoft.replicator.service.ISrvEntitySync;
+import org.beigesoft.replicator.service.SrvEntitySyncHasId;
+import org.beigesoft.replicator.service.SrvEntitySyncPersistableBase;
+import org.beigesoft.replicator.service.SrvEntitySyncHasVersion;
+import org.beigesoft.replicator.service.SrvEntitySyncPersistableBaseVersion;
+import org.beigesoft.replicator.service.SrvEntitySyncAccEntry;
+import org.beigesoft.replicator.service.ISrvEntityFieldFiller;
+import org.beigesoft.replicator.service.ISrvFieldWriter;
+import org.beigesoft.replicator.service.SrvEntityFieldPersistableBaseRepl;
+import org.beigesoft.replicator.service.SrvEntityFieldHasIdStringRepl;
+import org.beigesoft.replicator.service.SrvEntityFieldHasIdLongRepl;
+import org.beigesoft.replicator.service.SrvEntityFieldFillerStd;
+import org.beigesoft.replicator.service.SrvEntityWriterXml;
+import org.beigesoft.replicator.service.SrvFieldWriterXmlStd;
+import org.beigesoft.replicator.service.SrvFieldHasIdWriterXml;
+import org.beigesoft.replicator.filter.IFilterEntities;
+import org.beigesoft.replicator.filter.FilterLastVersionChanged;
+import org.beigesoft.replicator.filter.FilterPersistableBaseImmutable;
+import org.beigesoft.replicator.filter.FilterAvoidAccDebtCredit;
+import org.beigesoft.accounting.report.SrvBalanceSheet;
+import org.beigesoft.accounting.report.SrvReqBalanceSheet;
 
 /**
  * <p>
@@ -163,7 +195,7 @@ public class FactoryAccServices<RS> implements IFactoryAppBeans {
   /**
    * <p>Business service edit accounting entry description.</p>
    **/
-  private SrvAccEntryEditDescr srvAccEntryEditDescr;
+  private SrvAccEntryEditDescr<RS> srvAccEntryEditDescr;
 
   /**
    * <p>Balance service.</p>
@@ -211,6 +243,8 @@ public class FactoryAccServices<RS> implements IFactoryAppBeans {
     final String pBeanName) throws Exception {
     if ("entryDateFormatter".equals(pBeanName)) {
       return lazyGetEntryDateFormatter();
+    } else if ("srvReqBalanceSheet".equals(pBeanName)) {
+      return lazyGetSrvReqBalanceSheet();
     } else if ("ISrvBalance".equals(pBeanName)) {
       return lazyGetSrvBalanceStd();
     } else if ("srvWarehouseRests".equals(pBeanName)) {
@@ -237,6 +271,8 @@ public class FactoryAccServices<RS> implements IFactoryAppBeans {
       return lazyGetSrvTypeCodeSubacc();
     } else if ("srvTypeCodeAccSources".equals(pBeanName)) {
       return lazyGetSrvTypeCodeAccSources();
+    } else if ("replicatorTaxMarket".equals(pBeanName)) {
+      return lazyGetReplicatorTaxMarket();
     } else {
       Object bean = null;
       if (this.factoryOverBeans != null) {
@@ -305,6 +341,8 @@ public class FactoryAccServices<RS> implements IFactoryAppBeans {
           srvEntity = createSrvInvItemTaxCat(pSrvName);
         } else if (entityClass == Wage.class) {
           srvEntity = createSrvWage(pSrvName);
+        } else if (entityClass == ReplicationAccMethod.class) {
+          srvEntity = createSrvReplicationAccMethod(pSrvName);
         } else if (entityClass == Employee.class) {
           srvEntity = new SrvAccEntitySimple(entityClass,
             factoryAppBeans.lazyGetSrvOrm(), lazyGetSrvAccSettings());
@@ -478,15 +516,41 @@ public class FactoryAccServices<RS> implements IFactoryAppBeans {
         this.factoryAppBeans);
     factoryAppBeans.getBeansMap().put(pSrvName, srvEntity);
     Object srvWageTaxLine =
-      new SrvWageTaxLine(factoryAppBeans.lazyGetSrvOrm(),
+      new SrvWageTaxLine<RS>(factoryAppBeans.lazyGetSrvOrm(),
         factoryAppBeans.lazyGetSrvDatabase(), lazyGetSrvAccSettings());
     factoryAppBeans.getBeansMap().put("srv" + WageTaxLine.class
       .getSimpleName(), srvWageTaxLine);
     Object srvWageLine =
-      new SrvWageLine(factoryAppBeans.lazyGetSrvOrm(),
+      new SrvWageLine<RS>(factoryAppBeans.lazyGetSrvOrm(),
         factoryAppBeans.lazyGetSrvDatabase(), lazyGetSrvAccSettings());
     factoryAppBeans.getBeansMap().put("srv" + WageLine.class
       .getSimpleName(), srvWageLine);
+    return srvEntity;
+  }
+
+  /**
+   * <p>Create ReplicationAccMethod service.</p>
+   * @param pSrvName Service Name
+   * @return SrvReplicationAccMethod ReplicationAccMethod service
+   * @throws Exception - an exception
+   */
+  public final synchronized SrvReplicationAccMethod<RS>
+    createSrvReplicationAccMethod(final String pSrvName) throws Exception {
+    SrvReplicationAccMethod<RS> srvEntity = new SrvReplicationAccMethod<RS>(
+      factoryAppBeans.lazyGetSrvOrm(), lazyGetSrvAccSettings());
+    factoryAppBeans.getBeansMap().put(pSrvName, srvEntity);
+    Object srvReplExcludeAccountsDebit =
+      new SrvReplExcludeAccountsDebitCredit<RS, ReplExcludeAccountsDebit>(
+        ReplExcludeAccountsDebit.class, factoryAppBeans.lazyGetSrvOrm(),
+          lazyGetSrvAccSettings());
+    factoryAppBeans.getBeansMap().put("srv" + ReplExcludeAccountsDebit.class
+      .getSimpleName(), srvReplExcludeAccountsDebit);
+    Object srvReplExcludeAccountsCredit =
+      new SrvReplExcludeAccountsDebitCredit<RS, ReplExcludeAccountsCredit>(
+        ReplExcludeAccountsCredit.class, factoryAppBeans.lazyGetSrvOrm(),
+          lazyGetSrvAccSettings());
+    factoryAppBeans.getBeansMap().put("srv" + ReplExcludeAccountsCredit.class
+      .getSimpleName(), srvReplExcludeAccountsCredit);
     return srvEntity;
   }
 
@@ -529,7 +593,7 @@ public class FactoryAccServices<RS> implements IFactoryAppBeans {
               lazyGetEntryDateFormatter());
     factoryAppBeans.getBeansMap().put(pSrvName, srvEntity);
     UtlPurchaseGoodsServiceLine<RS> utlPurchaseGoodsServiceLine =
-      new UtlPurchaseGoodsServiceLine();
+      new UtlPurchaseGoodsServiceLine<RS>();
     utlPurchaseGoodsServiceLine.setSrvDatabase(factoryAppBeans
       .lazyGetSrvDatabase());
     utlPurchaseGoodsServiceLine.setSrvOrm(factoryAppBeans
@@ -570,7 +634,7 @@ public class FactoryAccServices<RS> implements IFactoryAppBeans {
           factoryAppBeans.lazyGetSrvI18n(), lazyGetEntryDateFormatter());
     factoryAppBeans.getBeansMap().put(pSrvName, srvEntity);
     UtlSalesGoodsServiceLine<RS> utlSalesGoodsServiceLine =
-      new UtlSalesGoodsServiceLine();
+      new UtlSalesGoodsServiceLine<RS>();
     utlSalesGoodsServiceLine.setSrvDatabase(factoryAppBeans
       .lazyGetSrvDatabase());
     utlSalesGoodsServiceLine.setSrvOrm(factoryAppBeans
@@ -863,14 +927,242 @@ public class FactoryAccServices<RS> implements IFactoryAppBeans {
   }
 
   /**
+   * <p>Get ReplicatorXmlHttp tax-market in lazy mode.</p>
+   * @return ReplicatorXmlHttp - ReplicatorXmlHttp
+   * @throws Exception - an exception
+   */
+  public final synchronized ReplicatorXmlHttp<RS>
+    lazyGetReplicatorTaxMarket() throws Exception {
+    @SuppressWarnings("unchecked")
+    ReplicatorXmlHttp<RS> srvReplTaxMarketXml =
+      (ReplicatorXmlHttp<RS>) this.factoryAppBeans.getBeansMap()
+        .get("srvReplTaxMarketXml");
+    if (srvReplTaxMarketXml == null) {
+      srvReplTaxMarketXml = new ReplicatorXmlHttp<RS>();
+      SrvEntityReaderXml srvEntityReaderXml = new SrvEntityReaderXml();
+      srvEntityReaderXml.setUtilXml(this.factoryAppBeans.lazyGetUtilXml());
+      SrvEntityFieldFillerStd srvEntityFieldFillerStd =
+        new SrvEntityFieldFillerStd();
+      srvEntityFieldFillerStd.setUtilXml(this.factoryAppBeans.lazyGetUtilXml());
+      srvEntityFieldFillerStd.setUtlReflection(this.factoryAppBeans
+        .lazyGetUtlReflection());
+      SrvEntityFieldPersistableBaseRepl srvEntityFieldPersistableBaseRepl =
+        new SrvEntityFieldPersistableBaseRepl();
+      srvEntityFieldPersistableBaseRepl
+        .setUtlReflection(this.factoryAppBeans.lazyGetUtlReflection());
+      SrvEntityFieldHasIdStringRepl srvEntityFieldHasIdStringRepl =
+        new SrvEntityFieldHasIdStringRepl();
+      srvEntityFieldHasIdStringRepl
+        .setUtlReflection(this.factoryAppBeans.lazyGetUtlReflection());
+      SrvEntityFieldHasIdLongRepl srvEntityFieldHasIdLongRepl =
+        new SrvEntityFieldHasIdLongRepl();
+      srvEntityFieldHasIdLongRepl
+        .setUtlReflection(this.factoryAppBeans.lazyGetUtlReflection());
+      Map<String, ISrvEntityFieldFiller> fieldsFillersMap =
+        new HashMap<String, ISrvEntityFieldFiller>();
+      fieldsFillersMap.put("SrvEntityFieldFillerStd",
+        srvEntityFieldFillerStd);
+      fieldsFillersMap.put("SrvEntityFieldPersistableBaseRepl",
+        srvEntityFieldPersistableBaseRepl);
+      fieldsFillersMap.put("SrvEntityFieldHasIdStringRepl",
+        srvEntityFieldHasIdStringRepl);
+      fieldsFillersMap.put("SrvEntityFieldHasIdLongRepl",
+        srvEntityFieldHasIdLongRepl);
+      srvEntityReaderXml.setFieldsFillersMap(fieldsFillersMap);
+      srvEntityReaderXml.setMngSettings(lazyGetMngSettingsReplTaxMarket());
+      Map<String, ISrvEntitySync> srvEntitySyncMap =
+        new HashMap<String, ISrvEntitySync>();
+      DatabaseReaderSyncStdXml<RS> databaseReaderSyncStdXml =
+       new DatabaseReaderSyncStdXml<RS>();
+      SrvEntitySyncHasId<RS> srvEntitySyncHasId = new SrvEntitySyncHasId<RS>();
+      srvEntitySyncHasId.setSrvOrm(this.factoryAppBeans.lazyGetSrvOrm());
+      srvEntitySyncMap.put("SrvEntitySyncHasId", srvEntitySyncHasId);
+      SrvEntitySyncHasVersion<RS> srvEntitySyncHasVersion =
+        new SrvEntitySyncHasVersion<RS>();
+      srvEntitySyncHasVersion.setSrvOrm(this.factoryAppBeans.lazyGetSrvOrm());
+      srvEntitySyncMap.put("SrvEntitySyncHasVersion", srvEntitySyncHasVersion);
+      SrvEntitySyncPersistableBase<RS> srvEntitySyncPersistableBase =
+        new SrvEntitySyncPersistableBase<RS>();
+      srvEntitySyncPersistableBase.setSrvOrm(this.factoryAppBeans
+        .lazyGetSrvOrm());
+      srvEntitySyncMap.put("SrvEntitySyncPersistableBase",
+        srvEntitySyncPersistableBase);
+      SrvEntitySyncPersistableBaseVersion<RS>
+        srvEntitySyncPersistableBaseVersion =
+          new SrvEntitySyncPersistableBaseVersion<RS>();
+      srvEntitySyncPersistableBaseVersion.setSrvOrm(this.factoryAppBeans
+        .lazyGetSrvOrm());
+      srvEntitySyncMap.put("SrvEntitySyncPersistableBaseVersion",
+        srvEntitySyncPersistableBaseVersion);
+      SrvEntitySyncAccEntry<RS> srvEntitySyncAccEntry =
+          new SrvEntitySyncAccEntry<RS>();
+      srvEntitySyncAccEntry.setSrvOrm(this.factoryAppBeans.lazyGetSrvOrm());
+      srvEntitySyncAccEntry.setSrvBalance(lazyGetSrvBalanceStd());
+      srvEntitySyncMap.put("SrvEntitySyncAccEntry", srvEntitySyncAccEntry);
+      databaseReaderSyncStdXml.setSrvEntitySyncMap(srvEntitySyncMap);
+      databaseReaderSyncStdXml.setUtilXml(this.factoryAppBeans
+        .lazyGetUtilXml());
+      databaseReaderSyncStdXml.setSrvEntityReader(srvEntityReaderXml);
+      databaseReaderSyncStdXml.setSrvDatabase(this.factoryAppBeans
+        .lazyGetSrvDatabase());
+      databaseReaderSyncStdXml.setSrvOrm(this.factoryAppBeans.lazyGetSrvOrm());
+      databaseReaderSyncStdXml
+        .setMngSettings(lazyGetMngSettingsReplTaxMarket());
+      databaseReaderSyncStdXml.setLogger(this.factoryAppBeans.lazyGetLogger());
+      Map<String, IFilterEntities> filtersEntities =
+        new HashMap<String, IFilterEntities>();
+      FilterPersistableBaseImmutable<RS> filterPersistableBaseImmutable =
+        new FilterPersistableBaseImmutable<RS>();
+      filterPersistableBaseImmutable.setSrvDatabase(this.factoryAppBeans
+        .lazyGetSrvDatabase());
+      filtersEntities.put("FilterPersistableBaseImmutable",
+        filterPersistableBaseImmutable);
+      FilterAvoidAccDebtCredit<RS> filterAvoidAccDebtCredit =
+        new FilterAvoidAccDebtCredit<RS>();
+      filterAvoidAccDebtCredit.setSrvOrm(this.factoryAppBeans
+        .lazyGetSrvOrm());
+      filterAvoidAccDebtCredit.setFilterId(filterPersistableBaseImmutable);
+      filtersEntities.put("FilterAvoidAccDebtCredit",
+        filterAvoidAccDebtCredit);
+      FilterLastVersionChanged filterLastVersionChanged =
+        new FilterLastVersionChanged();
+      filterLastVersionChanged
+        .setLastReplicatedDateEvaluator(filterAvoidAccDebtCredit);
+      filtersEntities.put("FilterLastVersionChanged", filterLastVersionChanged);
+      SrvReplicationAccMethod<RS> srvReplicationAccMethod =
+        (SrvReplicationAccMethod<RS>) lazyGet("srv"
+          + ReplicationAccMethod.class.getSimpleName());
+      srvReplicationAccMethod
+        .addReplAccMethChangedHandler(filterAvoidAccDebtCredit);
+      SrvReplExcludeAccountsDebitCredit<RS,
+        ReplExcludeAccountsDebit> srvReplExcludeAccountsDebit =
+          (SrvReplExcludeAccountsDebitCredit<RS, ReplExcludeAccountsDebit>)
+            lazyGet("srv" + ReplExcludeAccountsDebit.class.getSimpleName());
+      srvReplExcludeAccountsDebit
+        .addReplAccMethChangedHandler(filterAvoidAccDebtCredit);
+      SrvReplExcludeAccountsDebitCredit<RS,
+        ReplExcludeAccountsCredit> srvReplExcludeAccountsCredit =
+          (SrvReplExcludeAccountsDebitCredit<RS, ReplExcludeAccountsCredit>)
+            lazyGet("srv" + ReplExcludeAccountsCredit.class.getSimpleName());
+      srvReplExcludeAccountsCredit
+        .addReplAccMethChangedHandler(filterAvoidAccDebtCredit);
+      srvReplTaxMarketXml.setFiltersEntities(filtersEntities);
+      srvReplTaxMarketXml.setDatabasePrepearerAfter(filterAvoidAccDebtCredit);
+      srvReplTaxMarketXml.setUtilXml(this.factoryAppBeans.lazyGetUtilXml());
+      srvReplTaxMarketXml.setSrvEntityReaderXml(srvEntityReaderXml);
+      srvReplTaxMarketXml.setMngSettings(lazyGetMngSettingsReplTaxMarket());
+      srvReplTaxMarketXml.setSrvDatabase(this.factoryAppBeans
+        .lazyGetSrvDatabase());
+      srvReplTaxMarketXml.setDatabaseReader(databaseReaderSyncStdXml);
+      srvReplTaxMarketXml.setLogger(this.factoryAppBeans.lazyGetLogger());
+      this.factoryAppBeans.lazyGetLogger().info(FactoryAccServices.class,
+        "srvReplTaxMarketXml has been created.");
+      this.factoryAppBeans.getBeansMap()
+        .put("srvReplTaxMarketXml", srvReplTaxMarketXml);
+    }
+    return srvReplTaxMarketXml;
+  }
+
+  /**
+   * <p>Get DatabaseWriterXml for tax-market in lazy mode.</p>
+   * @return DatabaseWriterXml - DatabaseWriterXml
+   * @throws Exception - an exception
+   */
+  public final synchronized DatabaseWriterXml<RS> lazyGetDbWriterReplTaxMarket(
+    ) throws Exception {
+   @SuppressWarnings("unchecked")
+   DatabaseWriterXml<RS> dbWriterXmlReplTaxMarket =
+      (DatabaseWriterXml<RS>) this.factoryAppBeans.getBeansMap()
+        .get("dbWriterXmlReplTaxMarket");
+    if (dbWriterXmlReplTaxMarket == null) {
+      dbWriterXmlReplTaxMarket = new DatabaseWriterXml<RS>();
+      SrvEntityWriterXml srvEntityWriterXml = new SrvEntityWriterXml();
+      SrvFieldWriterXmlStd srvFieldWriterXmlStd = new SrvFieldWriterXmlStd();
+      srvFieldWriterXmlStd.setUtilXml(this.factoryAppBeans.lazyGetUtilXml());
+      SrvFieldHasIdWriterXml srvFieldHasIdWriterXml =
+        new SrvFieldHasIdWriterXml();
+      srvFieldHasIdWriterXml.setUtilXml(this.factoryAppBeans.lazyGetUtilXml());
+      srvEntityWriterXml.setUtlReflection(this.factoryAppBeans
+        .lazyGetUtlReflection());
+      Map<String, ISrvFieldWriter> fieldsWritersMap =
+        new HashMap<String, ISrvFieldWriter>();
+      fieldsWritersMap.put("SrvFieldWriterXmlStd", srvFieldWriterXmlStd);
+      fieldsWritersMap.put("SrvFieldHasIdWriterXml", srvFieldHasIdWriterXml);
+      srvEntityWriterXml.setFieldsWritersMap(fieldsWritersMap);
+      srvEntityWriterXml.setMngSettings(lazyGetMngSettingsReplTaxMarket());
+      dbWriterXmlReplTaxMarket.setLogger(this.factoryAppBeans.lazyGetLogger());
+      dbWriterXmlReplTaxMarket.setSrvEntityWriter(srvEntityWriterXml);
+      dbWriterXmlReplTaxMarket.setSrvDatabase(this.factoryAppBeans
+        .lazyGetSrvDatabase());
+      dbWriterXmlReplTaxMarket.setSrvOrm(this.factoryAppBeans.lazyGetSrvOrm());
+      this.factoryAppBeans.lazyGetLogger().info(FactoryAccServices.class,
+        "DatabaseWriterXml tax-market has been created.");
+      this.factoryAppBeans.getBeansMap()
+        .put("dbWriterXmlReplTaxMarket", dbWriterXmlReplTaxMarket);
+    }
+    return dbWriterXmlReplTaxMarket;
+  }
+
+  /**
+   * <p>Get MngSettings for replicator tax-market acc in lazy mode.</p>
+   * @return MngSettings - MngSettings replicator
+   * @throws Exception - an exception
+   */
+  public final synchronized MngSettings lazyGetMngSettingsReplTaxMarket(
+    ) throws Exception {
+    MngSettings mngSettingsReplTaxMarket =
+      (MngSettings) this.factoryAppBeans.getBeansMap()
+        .get("mngSettingsReplTaxMarket");
+    if (mngSettingsReplTaxMarket == null) {
+      mngSettingsReplTaxMarket = new MngSettings();
+      mngSettingsReplTaxMarket.setLogger(this.factoryAppBeans.lazyGetLogger());
+      mngSettingsReplTaxMarket
+        .loadConfiguration("tax-to-market", "base.xml");
+      this.factoryAppBeans.lazyGetLogger().info(FactoryAccServices.class,
+        "MngSettings tax-market replicator has been created.");
+      this.factoryAppBeans.getBeansMap()
+        .put("mngSettingsReplTaxMarket", mngSettingsReplTaxMarket);
+    }
+    return mngSettingsReplTaxMarket;
+  }
+
+  /**
+   * <p>Get SrvReqBalanceSheet  in lazy mode.</p>
+   * @return SrvReqBalanceSheet - SrvReqBalanceSheet
+   * @throws Exception - an exception
+   */
+  public final synchronized SrvReqBalanceSheet<RS> lazyGetSrvReqBalanceSheet(
+    ) throws Exception {
+    @SuppressWarnings("unchecked")
+    SrvReqBalanceSheet<RS> srvReqBalanceSheet =
+      (SrvReqBalanceSheet<RS>) this.factoryAppBeans.getBeansMap()
+        .get("srvReqBalanceSheet");
+    if (srvReqBalanceSheet == null) {
+      srvReqBalanceSheet = new SrvReqBalanceSheet<RS>();
+      srvReqBalanceSheet.setSrvDatabase(this.factoryAppBeans
+        .lazyGetSrvDatabase());
+      srvReqBalanceSheet.setSrvAccSettings(lazyGetSrvAccSettings());
+      SrvBalanceSheet<RS> srvBalanceSheet = new SrvBalanceSheet<RS>(this
+        .factoryAppBeans.lazyGetSrvDatabase(), lazyGetSrvAccSettings(),
+          lazyGetSrvBalanceStd());
+      srvReqBalanceSheet.setSrvBalanceSheet(srvBalanceSheet);
+      this.factoryAppBeans.lazyGetLogger().info(FactoryAccServices.class,
+        "SrvReqBalanceSheet has been created.");
+      this.factoryAppBeans.getBeansMap()
+        .put("srvReqBalanceSheet", srvReqBalanceSheet);
+    }
+    return srvReqBalanceSheet;
+  }
+
+  /**
    * <p>Get SrvAccEntryEditDescr in lazy mode.</p>
    * @return SrvAccEntryEditDescr - SrvAccEntryEditDescr
    * @throws Exception - an exception
    */
-  public final synchronized SrvAccEntryEditDescr lazyGetSrvAccEntryEditDescr()
-    throws Exception {
+  public final synchronized SrvAccEntryEditDescr<RS>
+    lazyGetSrvAccEntryEditDescr() throws Exception {
     if (this.srvAccEntryEditDescr == null) {
-      this.srvAccEntryEditDescr = new SrvAccEntryEditDescr(factoryAppBeans
+      this.srvAccEntryEditDescr = new SrvAccEntryEditDescr<RS>(factoryAppBeans
         .lazyGetSrvOrm(), lazyGetSrvAccSettings());
     }
     return this.srvAccEntryEditDescr;

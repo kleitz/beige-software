@@ -10,23 +10,19 @@ package org.beigesoft.accounting.persistable;
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-import org.beigesoft.persistable.APersistableBaseHasName;
+import org.beigesoft.persistable.APersistableBaseNameVersion;
 
 /**
  * <pre>
  * Model of service to sale, e.g. "Shipping to NY",
  * "Repair carburetor MZX567G".
+ * Version, changed time algorithm cause check dirty of
+   * calculated from it (derived) records.
  * </pre>
  *
  * @author Yury Demidenko
  */
-public class ServiceToSale extends APersistableBaseHasName {
-
-  /**
-   * <p>Version, changed time algorithm cause check dirty of
-   * calculated from it (derived) records.</p>
-   **/
-  private Long itsVersion;
+public class ServiceToSale extends APersistableBaseNameVersion {
 
   /**
    * <p>Its category.
@@ -40,22 +36,6 @@ public class ServiceToSale extends APersistableBaseHasName {
   private InvItemTaxCategory taxCategory;
 
   //Simple getters and setters:
-  /**
-   * <p>Geter for itsVersion.</p>
-   * @return Long
-   **/
-  public final Long getItsVersion() {
-    return this.itsVersion;
-  }
-
-  /**
-   * <p>Setter for itsVersion.</p>
-   * @param pItsVersion reference
-   **/
-  public final void setItsVersion(final Long pItsVersion) {
-    this.itsVersion = pItsVersion;
-  }
-
   /**
    * <p>Geter for itsCategory.</p>
    * @return ServiceToSaleCategory

@@ -13,8 +13,10 @@ package org.beigesoft.replicator.service;
 import java.util.Map;
 import java.util.Set;
 import java.util.Date;
+import java.io.Writer;
 
 import org.beigesoft.factory.IFactoryAppBeans;
+import org.beigesoft.delegate.IDelegator;
 import org.beigesoft.persistable.APersistableBase;
 import org.beigesoft.orm.service.ISrvDatabase;
 import org.beigesoft.log.ILogger;
@@ -28,7 +30,7 @@ import org.beigesoft.log.ILogger;
  * @author Yury Demidenko
  */
 public class PrepareDbAfterGetCopyPostgresql<RS>
-  implements IPrepareDbAfterImport {
+  implements IDelegator {
 
   /**
    * <p>Factory App-Beans.</p>
@@ -52,12 +54,12 @@ public class PrepareDbAfterGetCopyPostgresql<RS>
 
   /**
    * <p>It prepares database after import.</p>
-   * @param pAddParam additional params
+   * @param pAddParams additional params
    * @throws Exception - an exception
    **/
   @Override
-  public final void prepareDbAfterImport(
-    final Map<String, Object> pAddParam) throws Exception {
+  public final void make(
+    final Map<String, Object> pAddParams) throws Exception {
     int preparedEntitiesCount = 0;
     try {
       this.srvDatabase.setIsAutocommit(false);
@@ -87,10 +89,12 @@ public class PrepareDbAfterGetCopyPostgresql<RS>
       this.srvDatabase.releaseResources();
     }
     this.factoryAppBeans.releaseBeans();
-    pAddParam.put("statusPrepareAfterImport", new Date().toString() + ", "
+    Writer htmlWriter = (Writer) pAddParams.get("htmlWriter");
+    if (htmlWriter != null) {
+      htmlWriter.write("<h4>" + new Date().toString() + ", "
       + PrepareDbAfterGetCopyPostgresql.class.getSimpleName()
-        + ", total sequence prepared: " + preparedEntitiesCount
-          + ", app-factory beans has released");
+        + ", app-factory beans has released" + "</h4>");
+    }
     this.logger.info(PrepareDbAfterGetCopyPostgresql.class,
       "Total sequence prepared: " + preparedEntitiesCount
         + ", app-factory beans has released");

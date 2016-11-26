@@ -22,22 +22,18 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.beigesoft.exception.ExceptionWithCode;
 import org.beigesoft.factory.IFactoryAppBeans;
-import org.beigesoft.replicator.service.IClearDbThenGetAnotherCopy;
-import org.beigesoft.replicator.service.IPrepareDbAfterImport;
+import org.beigesoft.replicator.service.IReplicator;
 
 /**
  * <p>
- * Servlet that take get database copy request then invoke service
- * clearDbThenGetAnotherCopyHttp that clear database then get identical
- * copy of another one
- * (exclude tables with authentication User/Role/Tomcat/Jetty)
- * through WEB service (WSendDatabaseCopy).
+ * Servlet that replicate database
+ * through WEB service (WSendEntities).
  * </p>
  *
  * @author Yury Demidenko
  */
 @SuppressWarnings("serial")
-public class WGetDatabaseCopyResult extends HttpServlet {
+public class WReplicator extends HttpServlet {
 
   @Override
   public final void doPost(final HttpServletRequest pReq,
@@ -49,18 +45,20 @@ public class WGetDatabaseCopyResult extends HttpServlet {
     try {
       IFactoryAppBeans factoryAppBeans  = (IFactoryAppBeans) getServletContext()
           .getAttribute("IFactoryAppBeans");
-      IClearDbThenGetAnotherCopy clearDbThenGetAnotherCopyHttp = (IClearDbThenGetAnotherCopy) factoryAppBeans
-        .lazyGet("clearDbThenGetAnotherCopyHttp");
-      IPrepareDbAfterImport prepareDbAfterGetAnotherCopy = (IPrepareDbAfterImport) factoryAppBeans
-          .lazyGet("prepareDbAfterGetAnotherCopy");
+      // e.g. importFullDatabaseCopy, replicatorTaxMarket
+      String replicatorName = (String) pReq.getParameter("replicatorName");
+      IReplicator replicator = (IReplicator) factoryAppBeans
+        .lazyGet(replicatorName); // expected HTML replicator
       Map<String, Object> params = new HashMap<String, Object>();
+      @SuppressWarnings("unchecked")
+      Map<String, String[]> parameterMap =
+        (Map<String, String[]>) pReq.getParameterMap();
+      for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
+        params.put(entry.getKey(), entry.getValue()[0]);
+      }
       String urlSource = (String) pReq.getParameter("urlSource");
-      params.put("maxRecords", pReq.getParameter("maxRecords"));
-      params.put("urlSource", urlSource);
       String userName = pReq.getParameter("userName");
       if (userName != null && userName.trim().length() > 0) {
-        params.put("userName", userName);
-        params.put("userPass", pReq.getParameter("userPass"));
         params.put("authMethod", "form");
         String urlBase = urlSource.substring(0, urlSource.indexOf("secure") - 1);
         params.put("urlBase", urlBase);
@@ -70,6 +68,7 @@ public class WGetDatabaseCopyResult extends HttpServlet {
         params.put("authUserPass", "j_password");
       }
       PrintWriter writer = pResp.getWriter();
+      params.put("htmlWriter", writer);
       writer.println("<!DOCTYPE html>");
       writer.println("<html>");
       writer.println("<head>");
@@ -77,39 +76,15 @@ public class WGetDatabaseCopyResult extends HttpServlet {
       writer.println("<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no\"/>");
       writer.println("<link rel=\"shortcut icon\" href=\"../static/img/favicon.png\"/>");
       writer.println("<link rel=\"stylesheet\" href=\"../static/css/beige.common.css\"/>");
-      writer.println("<title>Clear current database then get identical copy of another one</title>");
+      writer.println("<title>Replication data</title>");
       writer.println("</head>");
       writer.println("<body style=\"padding: 20px;\">");
       writer.println("<a href=\"../\" class=\"btn\">Home</a>");
       writer.println("<div style=\"text-align: center;\">");
-      writer.println("<h3>Clear current database then get identical copy of another one from "
-        + urlSource + "</h3>");
+      writer.println("<h3>Replication data from " + urlSource + "</h3>");
       writer.println("</div>");
       writer.println("<div>");
-      clearDbThenGetAnotherCopyHttp.clearDbThenGetAnotherCopy(params);
-      prepareDbAfterGetAnotherCopy.prepareDbAfterImport(params); //must exists, and does at least release beans
-      //factoryAppBeans.releaseBeans();
-      String statusString = (String) params.get("statusString");
-      if (statusString != null) {
-        writer.println("<h4>" + statusString + "</h4>");
-      }
-      String statusPrepareAfterImport = (String) params.get("statusPrepareAfterImport");
-      if (statusPrepareAfterImport != null) {
-        writer.println("<h4>" + statusPrepareAfterImport + "</h4>");
-      }
-      @SuppressWarnings("unchecked")
-      Map<String, Integer> classesCounts = (Map<String, Integer>) params.get("classesCounts");
-      if (classesCounts != null) {
-        writer.println("<table>");
-        writer.println("<tr><th style=\"padding: 5px;\">Class</th><th style=\"padding: 5px;\">Total records</th></tr>");
-        for (Map.Entry<String, Integer> entry : classesCounts.entrySet()) {
-          writer.println("<tr>");
-          writer.println("<td>" + entry.getKey() + "</td>");
-          writer.println("<td>" + entry.getValue() + "</td>");
-          writer.println("</tr>");
-        }
-        writer.println("</table>");
-      }
+      replicator.replicate(params);
       writer.println("</div>");
       writer.println("</body>");
       writer.println("</html>");

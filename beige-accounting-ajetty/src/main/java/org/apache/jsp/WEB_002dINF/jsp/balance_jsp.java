@@ -20,6 +20,7 @@ public final class balance_jsp extends org.apache.jasper.runtime.HttpJspBase
   private static java.util.Map<java.lang.String,java.lang.Long> _jspx_dependants;
 
   private org.apache.jasper.runtime.TagHandlerPool _005fjspx_005ftagPool_005ffmt_005fformatDate_0026_005fvalue_005fnobody;
+  private org.apache.jasper.runtime.TagHandlerPool _005fjspx_005ftagPool_005ffmt_005fformatDate_0026_005fvalue_005ftype_005fdateStyle_005fnobody;
   private org.apache.jasper.runtime.TagHandlerPool _005fjspx_005ftagPool_005fc_005fset_0026_005fvar_005fvalue_005fnobody;
   private org.apache.jasper.runtime.TagHandlerPool _005fjspx_005ftagPool_005fc_005fforEach_0026_005fvar_005fitems;
   private org.apache.jasper.runtime.TagHandlerPool _005fjspx_005ftagPool_005fc_005fif_0026_005ftest;
@@ -55,6 +56,7 @@ public final class balance_jsp extends org.apache.jasper.runtime.HttpJspBase
 
   public void _jspInit() {
     _005fjspx_005ftagPool_005ffmt_005fformatDate_0026_005fvalue_005fnobody = org.apache.jasper.runtime.TagHandlerPool.getTagHandlerPool(getServletConfig());
+    _005fjspx_005ftagPool_005ffmt_005fformatDate_0026_005fvalue_005ftype_005fdateStyle_005fnobody = org.apache.jasper.runtime.TagHandlerPool.getTagHandlerPool(getServletConfig());
     _005fjspx_005ftagPool_005fc_005fset_0026_005fvar_005fvalue_005fnobody = org.apache.jasper.runtime.TagHandlerPool.getTagHandlerPool(getServletConfig());
     _005fjspx_005ftagPool_005fc_005fforEach_0026_005fvar_005fitems = org.apache.jasper.runtime.TagHandlerPool.getTagHandlerPool(getServletConfig());
     _005fjspx_005ftagPool_005fc_005fif_0026_005ftest = org.apache.jasper.runtime.TagHandlerPool.getTagHandlerPool(getServletConfig());
@@ -62,6 +64,7 @@ public final class balance_jsp extends org.apache.jasper.runtime.HttpJspBase
 
   public void _jspDestroy() {
     _005fjspx_005ftagPool_005ffmt_005fformatDate_0026_005fvalue_005fnobody.release();
+    _005fjspx_005ftagPool_005ffmt_005fformatDate_0026_005fvalue_005ftype_005fdateStyle_005fnobody.release();
     _005fjspx_005ftagPool_005fc_005fset_0026_005fvar_005fvalue_005fnobody.release();
     _005fjspx_005ftagPool_005fc_005fforEach_0026_005fvar_005fitems.release();
     _005fjspx_005ftagPool_005fc_005fif_0026_005ftest.release();
@@ -175,17 +178,21 @@ public final class balance_jsp extends org.apache.jasper.runtime.HttpJspBase
     javax.servlet.jsp.PageContext pageContext = _jspx_page_context;
     javax.servlet.jsp.JspWriter out = _jspx_page_context.getOut();
     //  fmt:formatDate
-    org.apache.taglibs.standard.tag.rt.fmt.FormatDateTag _jspx_th_fmt_005fformatDate_005f1 = (org.apache.taglibs.standard.tag.rt.fmt.FormatDateTag) _005fjspx_005ftagPool_005ffmt_005fformatDate_0026_005fvalue_005fnobody.get(org.apache.taglibs.standard.tag.rt.fmt.FormatDateTag.class);
+    org.apache.taglibs.standard.tag.rt.fmt.FormatDateTag _jspx_th_fmt_005fformatDate_005f1 = (org.apache.taglibs.standard.tag.rt.fmt.FormatDateTag) _005fjspx_005ftagPool_005ffmt_005fformatDate_0026_005fvalue_005ftype_005fdateStyle_005fnobody.get(org.apache.taglibs.standard.tag.rt.fmt.FormatDateTag.class);
     _jspx_th_fmt_005fformatDate_005f1.setPageContext(_jspx_page_context);
     _jspx_th_fmt_005fformatDate_005f1.setParent(null);
     // /WEB-INF/jsp/balance.jsp(16,41) name = value type = null reqTime = true required = true fragment = false deferredValue = false expectedTypeName = null deferredMethod = false methodSignature = null
     _jspx_th_fmt_005fformatDate_005f1.setValue((java.util.Date) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${date2}", java.util.Date.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
+    // /WEB-INF/jsp/balance.jsp(16,41) name = type type = null reqTime = true required = false fragment = false deferredValue = false expectedTypeName = null deferredMethod = false methodSignature = null
+    _jspx_th_fmt_005fformatDate_005f1.setType("date");
+    // /WEB-INF/jsp/balance.jsp(16,41) name = dateStyle type = null reqTime = true required = false fragment = false deferredValue = false expectedTypeName = null deferredMethod = false methodSignature = null
+    _jspx_th_fmt_005fformatDate_005f1.setDateStyle("LONG");
     int _jspx_eval_fmt_005fformatDate_005f1 = _jspx_th_fmt_005fformatDate_005f1.doStartTag();
     if (_jspx_th_fmt_005fformatDate_005f1.doEndTag() == javax.servlet.jsp.tagext.Tag.SKIP_PAGE) {
-      _005fjspx_005ftagPool_005ffmt_005fformatDate_0026_005fvalue_005fnobody.reuse(_jspx_th_fmt_005fformatDate_005f1);
+      _005fjspx_005ftagPool_005ffmt_005fformatDate_0026_005fvalue_005ftype_005fdateStyle_005fnobody.reuse(_jspx_th_fmt_005fformatDate_005f1);
       return true;
     }
-    _005fjspx_005ftagPool_005ffmt_005fformatDate_0026_005fvalue_005fnobody.reuse(_jspx_th_fmt_005fformatDate_005f1);
+    _005fjspx_005ftagPool_005ffmt_005fformatDate_0026_005fvalue_005ftype_005fdateStyle_005fnobody.reuse(_jspx_th_fmt_005fformatDate_005f1);
     return false;
   }
 

@@ -10,6 +10,7 @@
 <properties>
 <comment>App properties</comment>
 <entry key="databaseVersion">3</entry>
+<entry key="appVersion">1.1.2</entry>
 <entry key="useSubFolder">sqlite</entry>
 <entry key="title">Beige Accounting</entry>
 <entry key="jdbcDriverClass">org.sqlite.JDBC</entry>

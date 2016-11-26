@@ -13,22 +13,18 @@ package org.beigesoft.accounting.persistable;
 import java.math.BigDecimal;
 
 import org.beigesoft.model.IOwned;
-import org.beigesoft.persistable.APersistableBase;
+import org.beigesoft.persistable.APersistableBaseVersion;
 
 /**
  * <pre>
  * Model of Wage Employer Line of payroll tax table.
+ * Version changed time algorithm.
  * </pre>
  *
  * @author Yury Demidenko
  */
-public class WageTaxTableEmployee extends APersistableBase
+public class WageTaxTableEmployee extends APersistableBaseVersion
   implements IOwned<WageTaxTable> {
-
-  /**
-   * <p>Version changed time algorithm.</p>
-   **/
-  private Long itsVersion;
 
   /**
    * <p>Wage.</p>
@@ -94,21 +90,5 @@ public class WageTaxTableEmployee extends APersistableBase
    **/
   public final void setAllowance(final BigDecimal pAllowance) {
     this.allowance = pAllowance;
-  }
-
-  /**
-   * <p>Getter for itsVersion.</p>
-   * @return Long
-   **/
-  public final Long getItsVersion() {
-    return this.itsVersion;
-  }
-
-  /**
-   * <p>Setter for itsVersion.</p>
-   * @param pItsVersion reference
-   **/
-  public final void setItsVersion(final Long pItsVersion) {
-    this.itsVersion = pItsVersion;
   }
 }

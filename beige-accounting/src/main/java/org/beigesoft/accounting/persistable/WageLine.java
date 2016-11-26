@@ -13,28 +13,24 @@ package org.beigesoft.accounting.persistable;
 import java.math.BigDecimal;
 
 import org.beigesoft.model.IOwned;
-import org.beigesoft.persistable.APersistableBase;
+import org.beigesoft.persistable.APersistableBaseVersion;
 
 /**
  * <pre>
  * Model of Wage Line for each work type,
  * e.g. cooking or delivery.
+ * Version, reliable autoincrement algorithm.
  * </pre>
  *
  * @author Yury Demidenko
  */
-public class WageLine extends APersistableBase
+public class WageLine extends APersistableBaseVersion
   implements IOwned<Wage> {
 
   /**
    * <p>Wage.</p>
    **/
   private Wage itsOwner;
-
-  /**
-   * <p>Version, reliable autoincrement algorithm.</p>
-   **/
-  private Long itsVersion;
 
   /**
    * <p>ID of reversed/reversing tax line.</p>
@@ -86,22 +82,6 @@ public class WageLine extends APersistableBase
   }
 
   //Simple getters and setters:
-  /**
-   * <p>Getter for itsVersion.</p>
-   * @return Long
-   **/
-  public final Long getItsVersion() {
-    return this.itsVersion;
-  }
-
-  /**
-   * <p>Setter for itsVersion.</p>
-   * @param pItsVersion reference
-   **/
-  public final void setItsVersion(final Long pItsVersion) {
-    this.itsVersion = pItsVersion;
-  }
-
   /**
    * <p>Getter for reversedId.</p>
    * @return Long

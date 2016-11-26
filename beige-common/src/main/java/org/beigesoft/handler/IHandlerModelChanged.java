@@ -20,7 +20,7 @@ public interface IHandlerModelChanged<M> {
 
   /**
    * <p>Handle model changed event.</p>
-   * @param model that changed
+   * @param pModel which changed
    **/
-  void handleModelChanged(M model);
+  void handleModelChanged(M pModel);
 }

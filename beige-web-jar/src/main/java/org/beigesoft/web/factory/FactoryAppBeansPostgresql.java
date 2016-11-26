@@ -79,9 +79,6 @@ public class FactoryAppBeansPostgresql extends AFactoryAppBeansJdbc {
     setSrvOrm(null);
     setSrvWebMvc(null);
     setHlpInsertUpdate(null);
-    setClearDbThenGetAnotherCopyXmlHttp(null);
-    setDatabaseWriter(null);
-    setMngSettingsGetDbCopy(null);
     setUtilXml(null);
     getEntitiesMap().clear();
     getBeansMap().clear();
@@ -97,9 +94,6 @@ public class FactoryAppBeansPostgresql extends AFactoryAppBeansJdbc {
   @Override
   public final synchronized Object lazyGetOtherRdbmsBean(
     final String pBeanName) throws Exception {
-    if ("prepareDbAfterGetAnotherCopy".equals(pBeanName)) {
-      return lazyGetPrepareDbAfterGetCopyPostgresql();
-    }
     return null;
   }
 
@@ -134,13 +128,16 @@ public class FactoryAppBeansPostgresql extends AFactoryAppBeansJdbc {
     return this.dataSource;
   }
 
+
   /**
-   * <p>Get PrepareDbAfterGetCopyPostgresql in lazy mode.</p>
-   * @return PrepareDbAfterGetCopyPostgresql - PrepareDbAfterGetCopyPostgresql
+   * <p>Get Service that prepare Database after full import
+   * in lazy mode.</p>
+   * @return IDelegator - preparator Database after full import.
    * @throws Exception - an exception
    */
+  @Override
   public final synchronized PrepareDbAfterGetCopyPostgresql<ResultSet>
-    lazyGetPrepareDbAfterGetCopyPostgresql() throws Exception {
+    lazyGetPrepareDbAfterFullImport() throws Exception {
     if (this.prepareDbAfterGetCopyPostgresql == null) {
       this.prepareDbAfterGetCopyPostgresql =
         new PrepareDbAfterGetCopyPostgresql<ResultSet>();

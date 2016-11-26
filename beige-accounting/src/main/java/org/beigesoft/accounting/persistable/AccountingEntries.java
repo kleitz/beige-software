@@ -15,23 +15,18 @@ import java.util.Date;
 import java.math.BigDecimal;
 
 import org.beigesoft.model.IHasTypeCode;
-import org.beigesoft.persistable.APersistableBase;
+import org.beigesoft.persistable.APersistableBaseVersion;
 
 /**
  * <pre>
  * Model of Input Accounting entries.
+ * Version changed time algorithm.
  * </pre>
  *
  * @author Yury Demidenko
  */
-public class AccountingEntries extends APersistableBase
+public class AccountingEntries extends APersistableBaseVersion
  implements IHasTypeCode {
-
-  /**
-   * <p>Version, changed time algorithm cause check dirty of
-   * calculated from it (derived) records.</p>
-   **/
-  private Long itsVersion;
 
   /**
    * <p>Date.</p>
@@ -92,15 +87,7 @@ public class AccountingEntries extends APersistableBase
 
   //Simple getters and setters:
   /**
-   * <p>Geter for itsVersion.</p>
-   * @return Long
-   **/
-  public final Long getItsVersion() {
-    return this.itsVersion;
-  }
-
-  /**
-   * <p>Geter for totalDebit.</p>
+   * <p>Getter for totalDebit.</p>
    * @return BigDecimal
    **/
   public final BigDecimal getTotalDebit() {

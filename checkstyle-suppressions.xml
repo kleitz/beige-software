@@ -18,11 +18,11 @@
   <suppress checks="MagicNumberCheck"
     files="BalanceAtAllDirtyCheck|SrvBalanceStd|GoodsLoss|GoodsLossLine|SalesReturn|SalesReturnLine|PurchaseReturn|PurchaseReturnLine|AFactoryAppBeans"/>
   <suppress checks="MagicNumberCheck"
-    files="UtilXml|ASrvOrm|ClearDbThenGetAnotherCopyXmlHttp|MoveItems|MoveItemsLine|BeginningInventory|BeginningInventoryLine"/>
+    files="UtilXml|ASrvOrm|ReplicatorXmlHttp|MoveItems|MoveItemsLine|BeginningInventory|BeginningInventoryLine"/>
   <suppress checks="MagicNumberCheck"
-    files="ServiceToSaleCategory"/>
+    files="ServiceToSaleCategory|SrvBalanceSheet"/>
   <suppress checks="LineLength"
-    files="WGetDatabaseCopyResult"/>
+    files="WReplicator|ReplicatorXmlHttp"/>
   <suppress checks="EmptyBlock"
-    files="ClearDbThenGetAnotherCopyXmlHttp"/>
+    files="ReplicatorXmlHttp"/>
 </suppressions>

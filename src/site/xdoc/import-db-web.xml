@@ -21,8 +21,8 @@
         folder of Apache Tomcat.
         He download file <b>beige-accounting-web.war</b> from <a href="https://sourceforge.net/projects/beige-accounting/">https://sourceforge.net/projects/beige-accounting/</a>
         and put it into <b>webapps</b> folder of Apache Tomcat.
-        He start SQlite version Beige Accounting: in terminal (CMD in beige-accounting-ajetty folder) he enter
-        <b>java -jar beige-accounting-ajetty-jar-with-dependencies.jar port=8081</b> (port must not be 8080!) to start source database.
+        He launch SQlite version Beige Accounting: in terminal (CMD in beige-accounting-ajetty folder) he enter
+        <b>java -jar beige-accounting-ajetty-jar-with-dependencies.jar port=8081</b> (port must not be 8080!) to launch source database.
         Then he start Tomcat and open address <a href="http://localhost:8080/beige-accounting-web/">http://localhost:8080/beige-accounting-web/</a> (destination database):
       </p>
 
@@ -31,7 +31,7 @@
       <p>He login as admin with password admin:</p>
       <p align="center"><img style="max-width: 100%" src="images/import-db2.png" /></p>
       
-      <p>He enter "URL of WEB-service of another database:" as "http://localhost:8081/secure/sendDatabaseCopy" and leave user/password fields empty and press "submit":</p>
+      <p>He enter "URL of WEB-service of another database:" as "http://localhost:8081/secure/sendEntities" and leave user/password fields empty and press "submit":</p>
       <p align="center"><img style="max-width: 100%" src="images/import-db3.png" /></p>
       
       <p>The import report is:</p>

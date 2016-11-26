@@ -135,6 +135,35 @@ function clearChangesAndCloseDialog(idDomBase) {
   removeFormChanges(document.getElementById(idDomBase + "Frm"));
 };
 
+function checkSubmitForm(idFrm, isMustHasChanges) {
+  var frm = document.getElementById(idFrm);
+  if (!frm.checkValidity()){
+    document.getElementById(idFrm + 'FakeSubmit').click();
+    return false;
+  }
+  if (isMustHasChanges == null || 
+    (isMustHasChanges != null && isMustHasChanges)) {
+    if (!formHasBeenChanged(frm)){
+      showWarning(MSGS["nothingToSend"]);
+      return false;
+    }
+  }
+  //validation of owned entity
+  reqiredChildSelected = true;
+  inputs = frm.querySelectorAll('input[type="hidden"][required]');
+  for (var i=0; i < inputs.length; i++)
+    if(inputs[i].value==""){
+      reqiredChildSelected=false;
+      break;
+    }
+  if(!reqiredChildSelected) {
+    showWarning(MSGS['select_child']);
+    return false;
+  }
+  removeFormChanges(frm);
+  frm.submit();
+};
+
 function submitFormByAjax(idFrm, isMustHasChanges, addParams) {
   var frm = document.getElementById(idFrm);
   if (!frm.checkValidity()){

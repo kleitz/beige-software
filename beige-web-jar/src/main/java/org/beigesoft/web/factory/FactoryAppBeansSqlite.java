@@ -80,9 +80,6 @@ public class FactoryAppBeansSqlite extends AFactoryAppBeansJdbc {
     setSrvOrm(null);
     setSrvWebMvc(null);
     setHlpInsertUpdate(null);
-    setClearDbThenGetAnotherCopyXmlHttp(null);
-    setDatabaseWriter(null);
-    setMngSettingsGetDbCopy(null);
     setUtilXml(null);
     getEntitiesMap().clear();
     getBeansMap().clear();
@@ -100,8 +97,6 @@ public class FactoryAppBeansSqlite extends AFactoryAppBeansJdbc {
     final String pBeanName) throws Exception {
     if ("IMngDatabase".equals(pBeanName)) {
       return lazyGetMngDatabaseSqlite();
-    } else if ("prepareDbAfterGetAnotherCopy".equals(pBeanName)) {
-      return lazyGetPrepareDbAfterGetCopy();
     }
     return null;
   }
@@ -148,12 +143,14 @@ public class FactoryAppBeansSqlite extends AFactoryAppBeansJdbc {
   }
 
   /**
-   * <p>Get PrepareDbAfterGetCopy in lazy mode.</p>
-   * @return PrepareDbAfterGetCopy - PrepareDbAfterGetCopy
+   * <p>Get Service that prepare Database after full import
+   * in lazy mode.</p>
+   * @return IDelegator - preparator Database after full import.
    * @throws Exception - an exception
    */
+  @Override
   public final synchronized PrepareDbAfterGetCopy
-    lazyGetPrepareDbAfterGetCopy() throws Exception {
+    lazyGetPrepareDbAfterFullImport() throws Exception {
     if (this.prepareDbAfterGetCopy == null) {
       this.prepareDbAfterGetCopy = new PrepareDbAfterGetCopy();
       this.prepareDbAfterGetCopy.setLogger(lazyGetLogger());

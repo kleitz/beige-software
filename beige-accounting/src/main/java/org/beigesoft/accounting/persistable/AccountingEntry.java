@@ -35,8 +35,8 @@ public class AccountingEntry extends APersistableBase {
   private Long reversedId;
 
   /**
-   * <p>Integer, Not Null Source Type e.g. 1001 - PurchaseInvoiceLine,
-   * 1002 - SalesInvoiceLine, 1003 - AccountingEntriesLine.
+   * <p>Integer, Not Null Source Type e.g. 1 - PurchaseInvoice,
+   * 2 - SalesInvoice, 3 - AccountingEntries.
    * This is constant [document/line].constTypeCode().</p>
    **/
   private Integer sourceType;
