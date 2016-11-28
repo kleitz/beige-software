@@ -5,7 +5,7 @@
   <parent>
     <groupId>org.beigesoft</groupId>
     <artifactId>beige-software</artifactId>
-    <version>1.1.2-SNAPSHOT</version>
+    <version>1.1.2</version>
   </parent>
   <artifactId>beige-common</artifactId>
   <url>http://www.beigesoft.org</url>
