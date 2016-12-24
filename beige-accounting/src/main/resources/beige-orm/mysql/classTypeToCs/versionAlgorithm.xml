@@ -9,9 +9,8 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 <comment>Correspondence of class type to version algorithm. ORDER is essential, the LAST value will be used.</comment>
-<entry key="java.lang.Object">0</entry>
-<entry key="org.beigesoft.accounting.persistable.IDoc">1</entry>
-<entry key="org.beigesoft.accounting.persistable.base.ASubaccount">1</entry>
-<entry key="org.beigesoft.accounting.persistable.base.ATaxLine">1</entry>
-<entry key="org.beigesoft.accounting.persistable.BalanceAt">1</entry>
+<entry key="java.lang.Object">1</entry>
+<entry key="org.beigesoft.accounting.persistable.base.AInvItemMovement">0</entry>
+<entry key="org.beigesoft.accounting.persistable.ManufacturingProcess">1</entry>
+<entry key="org.beigesoft.accounting.persistable.Manufacture">1</entry>
 </properties>

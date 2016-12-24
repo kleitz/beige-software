@@ -39,16 +39,6 @@ public class SrvSalesReturn<RS>
   extends ASrvDocumentFull<RS, SalesReturn> {
 
   /**
-   * <p>I18N service.</p>
-   **/
-  private ISrvI18n srvI18n;
-
-  /**
-   * <p>Date Formatter.</p>
-   **/
-  private DateFormat dateFormatter;
-
-  /**
    * <p>minimum constructor.</p>
    **/
   public SrvSalesReturn() {
@@ -60,23 +50,22 @@ public class SrvSalesReturn<RS>
    * @param pSrvOrm ORM service
    * @param pSrvAccSettings AccSettings service
    * @param pSrvAccEntry Accounting entries service
+   * @param pSrvI18n I18N service
+   * @param pDateFormatter for description
    * @param pSrvWarehouseEntry Warehouse service
    * @param pSrvUseMaterialEntry Draw material service
    * @param pSrvCogsEntry Draw material service
-   * @param pSrvI18n I18N service
-   * @param pDateFormatter for description
    **/
   public SrvSalesReturn(final ISrvOrm<RS> pSrvOrm,
     final ISrvAccSettings pSrvAccSettings,
       final ISrvAccEntry pSrvAccEntry,
-        final ISrvWarehouseEntry pSrvWarehouseEntry,
-          final ISrvDrawItemEntry<UseMaterialEntry> pSrvUseMaterialEntry,
-            final ISrvDrawItemEntry<CogsEntry> pSrvCogsEntry,
-              final ISrvI18n pSrvI18n, final DateFormat pDateFormatter) {
+        final ISrvI18n pSrvI18n, final DateFormat pDateFormatter,
+          final ISrvWarehouseEntry pSrvWarehouseEntry,
+            final ISrvDrawItemEntry<UseMaterialEntry> pSrvUseMaterialEntry,
+              final ISrvDrawItemEntry<CogsEntry> pSrvCogsEntry) {
     super(SalesReturn.class, pSrvOrm, pSrvAccSettings, pSrvAccEntry,
-      pSrvWarehouseEntry, pSrvUseMaterialEntry, pSrvCogsEntry);
-    this.srvI18n = pSrvI18n;
-    this.dateFormatter = pDateFormatter;
+      pSrvI18n, pDateFormatter,
+        pSrvWarehouseEntry, pSrvUseMaterialEntry, pSrvCogsEntry);
   }
 
   /**
@@ -152,8 +141,9 @@ public class SrvSalesReturn<RS>
             .getTaxesDescription());
           reversingLine.setIsNew(true);
           reversingLine.setItsOwner(pEntity);
-          reversingLine.setDescription("Reversed ID: "
-            + reversedLine.getItsId());
+          reversingLine.setDescription(getSrvI18n().getMsg("reversed_n")
+            + reversedLine.getIdDatabaseBirth() + "-"
+              + reversedLine.getItsId()); //local
           getSrvOrm().insertEntity(reversingLine);
           getSrvWarehouseEntry().load(pAddParam, reversingLine,
             reversingLine.getWarehouseSite());
@@ -164,7 +154,8 @@ public class SrvSalesReturn<RS>
             descr = reversedLine.getDescription();
           }
           reversedLine.setDescription(descr
-            + " reversing ID: " + reversingLine.getItsId());
+            + " " + getSrvI18n().getMsg("reversing_n") + reversingLine
+              .getIdDatabaseBirth() + "-" + reversingLine.getItsId());
           reversedLine.setReversedId(reversingLine.getItsId());
           reversedLine.setTheRest(BigDecimal.ZERO);
           getSrvOrm().updateEntity(reversedLine);
@@ -228,38 +219,5 @@ public class SrvSalesReturn<RS>
   public final void makeFirstPrepareForSave(final Map<String, Object> pAddParam,
     final SalesReturn pEntity) throws Exception {
     //nothing
-  }
-
-  //Simple getters and setters:
-  /**
-   * <p>Geter for srvI18n.</p>
-   * @return ISrvI18n
-   **/
-  public final ISrvI18n getSrvI18n() {
-    return this.srvI18n;
-  }
-
-  /**
-   * <p>Setter for srvI18n.</p>
-   * @param pSrvI18n reference
-   **/
-  public final void setSrvI18n(final ISrvI18n pSrvI18n) {
-    this.srvI18n = pSrvI18n;
-  }
-
-  /**
-   * <p>Getter for dateFormatter.</p>
-   * @return DateFormat
-   **/
-  public final DateFormat getDateFormatter() {
-    return this.dateFormatter;
-  }
-
-  /**
-   * <p>Setter for dateFormatter.</p>
-   * @param pDateFormatter reference
-   **/
-  public final void setDateFormatter(final DateFormat pDateFormatter) {
-    this.dateFormatter = pDateFormatter;
   }
 }

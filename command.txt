@@ -75,7 +75,7 @@ mvn android:redeploy
 mvn android:instrument
 adb root
 adp push/pull <surce> <dest>  !!! as root!!!
-adb push ~/beige-accounting-ajetty/bobs-pizza.sqlite /sdcard/BeigeAccountingBackup/bobs-pizza.sqlite
+adb push ~/git/bobs-pizza-tax/bobs-pizza-tax.sqlite /sdcard/BeigeAccountingBackup/bobs-pizza-tax.sqlite
 adb push ~/git/a-jetty-all/a-jetty/target/a-jetty.apk /sdcard/a-jetty.apk
 adb pull /sdcard/BeigeAccountingBackup/beige-accounting.sqlite bablnssterr.sqlite
 adb shell - ls to list AVD filesistem
@@ -348,9 +348,14 @@ decision - add MySql support and delete Postgresql from Accounting
 *beige settings - add checking of settings name is exist in base.xml
 
 *ledger - totals for period?
-*AppFactory IOwned classes to IF
-*Database ID from web.xml, fix-db-id-to-1.sql, print reliable ID -  idDB-birthId 
-
+**AppFactory IOwned classes to IF
+**Database ID from web.xml,
+  *fix-db-id-to-1.sql?,
+  **print reliable ID -  idDB-birthId 
+*!!!fix error ACCOUNTINGENTRY sourceDatabaseBirth nullable
+  *input acc.entries
+  **ORM
+  **fix-source-database-birth.sql (update ACCOUNTINGENTRY set SOURCEDATABASEBIRTH=IDDATABASEBIRTH where SOURCEDATABASEBIRTH isnull;)
 git:
 git config --global user.name "Your Name"
 git config --global user.email "your_email@whatever.com"

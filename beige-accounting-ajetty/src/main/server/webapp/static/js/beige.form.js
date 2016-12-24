@@ -33,11 +33,14 @@ function initJs(){
 
 function getHtmlByAjaxCareful(method, url) {
   if (anyOpenedFormHasBeenChanged()) {
-    if (!confirm(MSGS["formHasBeenChanged"])) {
-      return;
-    }
+    var funcYes = function() {
+      document.getElementById('dlgConfirm').close();
+      getHtmlByAjax(method,url);
+    };
+    showConfirm(MSGS["formHasBeenChanged"], funcYes);
+  } else {
+    getHtmlByAjax(method,url);
   }
-  getHtmlByAjax(method,url);
 };
 
 function anyOpenedFormHasBeenChanged() {
@@ -123,11 +126,14 @@ function closeDlg(nameDlg) {
 function closeDlgCareful(idDomBase) {
   var frm=document.getElementById(idDomBase + "Frm");
   if (formHasBeenChanged(frm)) {
-    if (!confirm(MSGS["formHasBeenChanged"])) {
-      return;
-    }
+    var funcYes = function() {
+      document.getElementById(idDomBase + "Dlg").close();
+      document.getElementById('dlgConfirm').close();
+    };
+    showConfirm(MSGS["formHasBeenChanged"], funcYes);
+  } else {
+    document.getElementById(idDomBase + "Dlg").close();
   }
-  document.getElementById(idDomBase + "Dlg").close();
 };
 
 function clearChangesAndCloseDialog(idDomBase) {
@@ -162,6 +168,14 @@ function checkSubmitForm(idFrm, isMustHasChanges) {
   }
   removeFormChanges(frm);
   frm.submit();
+};
+
+function submitFormByAjaxConfirm(idFrm, isMustHasChanges, addParams) {
+  var funcYes = function() {
+    document.getElementById('dlgConfirm').close();
+    submitFormByAjax(idFrm, isMustHasChanges, addParams);
+  };
+  showConfirm(MSGS['are_you_sure'], funcYes);
 };
 
 function submitFormByAjax(idFrm, isMustHasChanges, addParams) {
@@ -453,6 +467,28 @@ function openEntityPicker(pickedEntity, pickingEntity, pickingField, addParam){
     }
   }
   cnvState["Who Picking"][pickerPlace + pickedEntity] = {pickingEntity, pickingField};
+};
+
+function confirmHref(inpHref, msg) {
+  var funcYes = function() {
+    window.location.assign(inpHref.href);
+    document.getElementById('dlgConfirm').close();
+  };
+  showConfirm(msg, funcYes);
+};
+
+function confirmSubmit(inpSbmt, msg) {
+  var funcYes = function() {
+    inpSbmt.form.submit();
+    document.getElementById('dlgConfirm').close();
+  };
+  showConfirm(msg, funcYes);
+};
+
+function showConfirm(msg, yesHandler) {
+  document.getElementById("confirmPlace").innerHTML = msg;
+  document.getElementById("dlgConfirm").showModal();
+  document.getElementById("confirmYes").onclick = yesHandler;
 };
 
 function showWarning(msg) {

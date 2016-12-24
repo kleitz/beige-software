@@ -87,12 +87,20 @@ public class SrvWarehouseEntry<RS> implements ISrvWarehouseEntry {
   public final void load(final Map<String, Object> pAddParam,
     final IMakingWarehouseEntry pEntity,
       final WarehouseSite pWhSiteTo) throws Exception {
+    if (!pEntity.getIdDatabaseBirth()
+      .equals(getSrvOrm().getIdDatabase())) {
+      throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
+        "can_not_make_ws_entry_for_foreign_src");
+    }
     WarehouseEntry wms = null;
     if (pEntity.getReversedId() != null) {
+      String tblNm = WarehouseEntry.class.getSimpleName().toUpperCase();
       wms = getSrvOrm().retrieveEntityWithConditions(WarehouseEntry.class,
         " where SOURCETYPE=" + pEntity.constTypeCode()
-        + " and SOURCEID=" + pEntity.getReversedId() + " and WAREHOUSESITETO="
-          + pWhSiteTo.getItsId()  + " and INVITEM=" + pEntity.getInvItem()
+          + " and SOURCEID=" + pEntity.getReversedId()
+          + " and " + tblNm + ".IDDATABASEBIRTH=" + getSrvOrm().getIdDatabase()
+              + " and WAREHOUSESITETO=" + pWhSiteTo.getItsId()
+                + " and INVITEM=" + pEntity.getInvItem()
         .getItsId());
       if (wms == null) {
         throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
@@ -111,8 +119,9 @@ public class SrvWarehouseEntry<RS> implements ISrvWarehouseEntry {
     wm.setSourceOwnerType(pEntity.getOwnerType());
     if (wms != null) {
       wm.setReversedId(wms.getItsId());
-      wm.setDescription(makeDescription(pEntity) + " reversed entry ID: "
-        + wms.getItsId());
+      wm.setDescription(makeDescription(pEntity) + " " + getSrvI18n()
+        .getMsg("reversed_entry_n") + getSrvOrm().getIdDatabase()
+          + "-" + wms.getItsId()); //only local
     } else {
       wm.setDescription(makeDescription(pEntity));
     }
@@ -120,8 +129,9 @@ public class SrvWarehouseEntry<RS> implements ISrvWarehouseEntry {
     makeWarehouseRest(pAddParam, pEntity, pWhSiteTo, pEntity.getItsQuantity());
     if (wms != null) {
       wms.setReversedId(wm.getItsId());
-      wms.setDescription(wms.getDescription() + " reversing entry ID: "
-        + wm.getItsId());
+      wms.setDescription(wms.getDescription() + " " + getSrvI18n()
+        .getMsg("reversing_entry_n") + getSrvOrm().getIdDatabase()
+          + "-" + wm.getItsId());
       getSrvOrm().updateEntity(wms);
     }
   }
@@ -139,10 +149,21 @@ public class SrvWarehouseEntry<RS> implements ISrvWarehouseEntry {
     final IMakingWarehouseEntry pEntity, final WarehouseSite pWhSiteFrom,
       final WarehouseSite pWhSiteTo) throws Exception {
     WarehouseEntry wms = null;
+    if (!pEntity.getIdDatabaseBirth()
+      .equals(getSrvOrm().getIdDatabase())) {
+      throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
+        "can_not_make_ws_entry_for_foreign_src");
+    }
     if (pEntity.getReversedId() != null) {
+      String tblNm = WarehouseEntry.class.getSimpleName().toUpperCase();
       wms = getSrvOrm().retrieveEntityWithConditions(WarehouseEntry.class,
         " where SOURCETYPE=" + pEntity.constTypeCode()
-        + " and SOURCEID=" + pEntity.getReversedId());
+          + " and " + tblNm + ".IDDATABASEBIRTH=" + getSrvOrm().getIdDatabase()
+            + " and SOURCEID=" + pEntity.getReversedId());
+      if (wms == null) {
+        throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
+          "cant_find_reverced_source");
+      }
     }
     WarehouseEntry wm = new WarehouseEntry();
     wm.setIdDatabaseBirth(getSrvOrm().getIdDatabase());
@@ -157,8 +178,9 @@ public class SrvWarehouseEntry<RS> implements ISrvWarehouseEntry {
     wm.setSourceOwnerType(pEntity.getOwnerType());
     if (wms != null) {
       wm.setReversedId(wms.getItsId());
-      wm.setDescription(makeDescription(pEntity) + " reversed entry ID: "
-        + wms.getItsId());
+      wm.setDescription(makeDescription(pEntity) + " " + getSrvI18n()
+        .getMsg("reversed_entry_n") + getSrvOrm().getIdDatabase()
+          + "-" + wms.getItsId()); //only local
     } else {
       wm.setDescription(makeDescription(pEntity));
     }
@@ -168,8 +190,9 @@ public class SrvWarehouseEntry<RS> implements ISrvWarehouseEntry {
     makeWarehouseRest(pAddParam, pEntity, pWhSiteTo, pEntity.getItsQuantity());
     if (wms != null) {
       wms.setReversedId(wm.getItsId());
-      wms.setDescription(wms.getDescription() + " reversing entry ID: "
-        + wm.getItsId());
+      wms.setDescription(wms.getDescription() + " " + getSrvI18n()
+        .getMsg("reversing_entry_n") + getSrvOrm().getIdDatabase()
+          + "-" + wm.getItsId());
       getSrvOrm().updateEntity(wms);
     }
   }
@@ -187,6 +210,11 @@ public class SrvWarehouseEntry<RS> implements ISrvWarehouseEntry {
     final IMakingWarehouseEntry pEntity,
       final WarehouseSite pWhSite,
         final BigDecimal pQuantity) throws Exception {
+    if (!pEntity.getIdDatabaseBirth()
+      .equals(getSrvOrm().getIdDatabase())) {
+      throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
+        "can_not_make_ws_entry_for_foreign_src");
+    }
     WarehouseRest wr = getSrvOrm().retrieveEntityWithConditions(
       WarehouseRest.class, "where WAREHOUSESITE="
         + pWhSite.getItsId() + " and INVITEM="
@@ -195,8 +223,7 @@ public class SrvWarehouseEntry<RS> implements ISrvWarehouseEntry {
     if (wr == null) {
       if (pQuantity.doubleValue() < 0) {
         throw new ExceptionWithCode(ExceptionWithCode.FORBIDDEN,
-          "Attempt to reverse non-existent good in wh-site!"
-            + pAddParam.get("user"));
+          "attempt_reverse_non_existent_good_in_warehouse");
       }
       wr = new WarehouseRest();
       wr.setIsNew(true);
@@ -230,6 +257,11 @@ public class SrvWarehouseEntry<RS> implements ISrvWarehouseEntry {
   public final void withdrawal(final Map<String, Object> pAddParam,
     final IMakingWarehouseEntry pEntity,
       final WarehouseSite pWhSiteFrom) throws Exception {
+    if (!pEntity.getIdDatabaseBirth()
+      .equals(getSrvOrm().getIdDatabase())) {
+      throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
+        "can_not_make_ws_entry_for_foreign_src");
+    }
     if (pWhSiteFrom != null) {
       WarehouseRest wr = getSrvOrm().retrieveEntityWithConditions(
         WarehouseRest.class, "where THEREST>0 and INVITEM="
@@ -316,15 +348,22 @@ public class SrvWarehouseEntry<RS> implements ISrvWarehouseEntry {
   @Override
   public final void reverseDraw(final Map<String, Object> pAddParam,
     final IMakingWarehouseEntry pEntity) throws Exception {
+    if (!pEntity.getIdDatabaseBirth()
+      .equals(getSrvOrm().getIdDatabase())) {
+      throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
+        "can_not_make_ws_entry_for_foreign_src");
+    }
     if (pEntity.getItsQuantity().doubleValue() > 0) {
       throw new ExceptionWithCode(ExceptionWithCode.SOMETHING_WRONG,
-        "Reversing source must has negative quantity!");
+        "reversing_source_must_has_negative_quantity");
     }
+    String tblNm = WarehouseEntry.class.getSimpleName().toUpperCase();
     List<WarehouseEntry> wml = getSrvOrm().retrieveListWithConditions(
-      WarehouseEntry.class, "where SOURCETYPE="
-        + pEntity.constTypeCode() + " and SOURCEID="
-          + pEntity.getReversedId() + " and INVITEM=" + pEntity.getInvItem()
-        .getItsId() +  " and WAREHOUSESITEFROM is not null");
+      WarehouseEntry.class, "where SOURCETYPE=" + pEntity.constTypeCode()
+        + " and " + tblNm + ".IDDATABASEBIRTH=" + getSrvOrm().getIdDatabase()
+          + " and SOURCEID=" + pEntity.getReversedId()
+            + " and INVITEM=" + pEntity.getInvItem().getItsId()
+              +  " and WAREHOUSESITEFROM is not null");
     BigDecimal quantityToLeaveRst = pEntity.getItsQuantity();
     for (WarehouseEntry wms : wml) {
       if (wms.getItsQuantity().doubleValue() < 0) {
@@ -342,26 +381,26 @@ public class SrvWarehouseEntry<RS> implements ISrvWarehouseEntry {
       quantityToLeaveRst = quantityToLeaveRst.add(wms.getItsQuantity());
       if (quantityToLeaveRst.doubleValue() > 0) {
         throw new ExceptionWithCode(ExceptionWithCode.SOMETHING_WRONG,
-          "Reversing source has different quantity against movement entries! "
-            + pAddParam.get("user"));
+          "reversing_source_has_different_quantity_against_movement_entries");
       }
       wm.setSourceOwnerId(pEntity.getOwnerId());
       wm.setSourceOwnerType(pEntity.getOwnerType());
       wm.setReversedId(wms.getItsId());
-      wm.setDescription(makeDescription(pEntity) + " reversed entry ID: "
-        + wms.getItsId());
+      wm.setDescription(makeDescription(pEntity) + " " + getSrvI18n()
+        .getMsg("reversed_entry_n") + getSrvOrm().getIdDatabase()
+          + "-" + wms.getItsId());
       getSrvOrm().insertEntity(wm);
       makeWarehouseRest(pAddParam, pEntity, wm.getWarehouseSiteFrom(),
         wms.getItsQuantity());
       wms.setReversedId(wm.getItsId());
-      wms.setDescription(wms.getDescription() + " reversing entry ID: "
-        + wm.getItsId());
+      wms.setDescription(wms.getDescription() + " " + getSrvI18n()
+        .getMsg("reversing_entry_n") + getSrvOrm().getIdDatabase()
+          + "-" + wm.getItsId());
       getSrvOrm().updateEntity(wms);
     }
     if (quantityToLeaveRst.doubleValue() != 0) {
       throw new ExceptionWithCode(ExceptionWithCode.SOMETHING_WRONG,
-        "Reversing source has different quantity against movement entries! "
-          + pAddParam.get("user"));
+        "reversing_source_has_different_quantity_against_movement_entries");
     }
   }
 
@@ -376,11 +415,13 @@ public class SrvWarehouseEntry<RS> implements ISrvWarehouseEntry {
   public final List<WarehouseEntry> retrieveEntriesFor(
     final Map<String, Object> pAddParam,
       final IDocWarehouse pEntity) throws Exception {
+    String tblNm = WarehouseEntry.class.getSimpleName().toUpperCase();
     String where = null;
     if (pEntity instanceof IMakingWarehouseEntry) {
       //e.g. Manufacture
       where = " where SOURCETYPE=" + pEntity.constTypeCode()
-        + " and SOURCEID=" + pEntity.getItsId();
+        + " and " + tblNm + ".IDDATABASEBIRTH=" + getSrvOrm().getIdDatabase()
+          + " and SOURCEID=" + pEntity.getItsId();
     }
     List<WarehouseEntry> result = null;
     if (where != null) {
@@ -390,7 +431,8 @@ public class SrvWarehouseEntry<RS> implements ISrvWarehouseEntry {
     if (pEntity.getLinesWarehouseType() != null) {
       //e.g. PurchaseInvoice
       where = " where SOURCEOWNERTYPE=" + pEntity.constTypeCode()
-        + " and SOURCEOWNERID=" + pEntity.getItsId();
+        + " and " + tblNm + ".IDDATABASEBIRTH=" + getSrvOrm().getIdDatabase()
+          + " and SOURCEOWNERID=" + pEntity.getItsId();
       if (result == null) {
         result = getSrvOrm().retrieveListWithConditions(WarehouseEntry.class,
           where);
@@ -410,18 +452,20 @@ public class SrvWarehouseEntry<RS> implements ISrvWarehouseEntry {
    **/
   public final String makeDescription(final IMakingWarehouseEntry pEntity) {
     String strWho = getSrvI18n().getMsg(pEntity.getClass().getSimpleName()
-      + "short") + " ID: " + pEntity.getItsId();
+      + "short") + " #" + getSrvOrm().getIdDatabase() + "-"
+        + pEntity.getItsId(); //only local
     if (pEntity.getOwnerId() == null) {
-      strWho += ", date: " + getDateFormatter().format(pEntity
+      strWho += ", " + getDateFormatter().format(pEntity
         .getDocumentDate());
     } else {
-      strWho += " in " + getSrvI18n().getMsg(getSrvTypeCodeDocuments()
-        .getTypeCodeMap().get(pEntity.getOwnerType()).getSimpleName()
-        + "short") + " ID, date: " + pEntity.getOwnerId() + ", "
-        + getDateFormatter().format(pEntity.getDocumentDate());
+      strWho += " " + getSrvI18n().getMsg("in") + " " + getSrvI18n()
+        .getMsg(getSrvTypeCodeDocuments().getTypeCodeMap().get(pEntity
+          .getOwnerType()).getSimpleName() + "short") + " #" + getSrvOrm()
+            .getIdDatabase() + "-" + pEntity.getOwnerId() + ", "
+              + getDateFormatter().format(pEntity.getDocumentDate());
     }
-    return "Made at " + getDateFormatter().format(
-      new Date()) + " by " + strWho;
+    return getSrvI18n().getMsg("made_at") + " " + getDateFormatter().format(
+      new Date()) + " " + getSrvI18n().getMsg("by") + " " + strWho;
   }
 
   //Simple getters and setters:

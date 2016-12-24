@@ -10,7 +10,7 @@ package org.beigesoft.accounting.persistable.base;
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-import org.beigesoft.persistable.APersistableBase;
+import org.beigesoft.persistable.APersistableBaseVersion;
 
 /**
  * <pre>
@@ -21,7 +21,7 @@ import org.beigesoft.persistable.APersistableBase;
  * @author Yury Demidenko
  */
 public abstract class ASubaccountUsed<T extends ASubaccount>
-  extends APersistableBase {
+  extends APersistableBaseVersion {
 
   /**
    * <p>Geter for subaccount.</p>

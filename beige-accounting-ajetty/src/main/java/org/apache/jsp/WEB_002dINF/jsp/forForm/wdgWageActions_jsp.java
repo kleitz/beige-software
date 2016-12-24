@@ -84,7 +84,7 @@ public final class wdgWageActions_jsp extends org.apache.jasper.runtime.HttpJspB
 
       out.write("\n\n<div class=\"form-actions\">\n  <input style=\"display: none\" id=\"");
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${namePlaceForm}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
-      out.write("EditFrmFakeSubmit\" type=\"submit\"/>\n  <button type=\"button\" onclick=\"if (confirm(MSGS['are_you_sure'])) submitFormByAjax('");
+      out.write("EditFrmFakeSubmit\" type=\"submit\"/>\n  <button type=\"button\" onclick=\"submitFormByAjaxConfirm('");
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${namePlaceForm}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
       out.write("EditFrm', false, '&nameRenderer=editEntitySavedJson&actionAdd=fill');\">");
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${srvI18n.getMsg(\"fill_taxes\")}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
@@ -132,7 +132,7 @@ public final class wdgWageActions_jsp extends org.apache.jasper.runtime.HttpJspB
     int _jspx_eval_c_005fif_005f0 = _jspx_th_c_005fif_005f0.doStartTag();
     if (_jspx_eval_c_005fif_005f0 != javax.servlet.jsp.tagext.Tag.SKIP_BODY) {
       do {
-        out.write("\n    <button type=\"button\" onclick=\"if (confirm(MSGS['are_you_sure'])) submitFormByAjax('");
+        out.write("\n    <button type=\"button\" onclick=\"submitFormByAjaxConfirm('");
         out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${namePlaceForm}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
         out.write("EditFrm', false, '&nameRenderer=listAfterAccountJson&actionAdd=makeAccEntries');\">");
         out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${srvI18n.getMsg(\"MakeAccEntries\")}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));

@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.Date;
 import java.util.Calendar;
 import java.math.BigDecimal;
-import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
 import java.net.URL;
@@ -490,8 +489,8 @@ public class SrvBalanceStd<RS> implements ISrvBalance {
   public final synchronized String evalQueryBalance(
     final Date pDate) throws Exception {
     if (this.queryBalance == null) {
-      String flName = File.separator + "accounting" + File.separator + "balance"
-        + File.separator + "queryBalance.sql";
+      String flName = "/" + "accounting" + "/" + "balance"
+        + "/" + "queryBalance.sql";
       this.queryBalance = loadString(flName);
     }
     String query = queryBalance.replace(":DATE1",

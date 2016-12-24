@@ -10,6 +10,7 @@
 <properties>
 <comment>Correspondence of field name to field setting.</comment>
 <entry key="reversedId">null</entry>
+<entry key="reversedIdDatabaseBirth">null</entry>
 <entry key="itsId">inputReadOnly</entry>
 <entry key="itsVersion">inputHidden</entry>
 <entry key="idDatabaseBirth">inputHidden</entry>

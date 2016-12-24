@@ -80,7 +80,7 @@ public final class wdgFormDoc1StepActionsreverse_jsp extends org.apache.jasper.r
 
       out.write("\n\n<div class=\"form-actions\">\n  <input style=\"display: none\" id=\"");
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${namePlaceForm}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
-      out.write("EditFrmFakeSubmit\" type=\"submit\"/>\n  <button type=\"button\" onclick=\"if (confirm(MSGS['are_you_sure'])) submitFormByAjax('");
+      out.write("EditFrmFakeSubmit\" type=\"submit\"/>\n  <button type=\"button\" onclick=\"submitFormByAjaxConfirm('");
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${namePlaceForm}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
       out.write("EditFrm', true, '&nameRenderer=listAfterAccountJson&actionAdd=makeAccEntries');\">");
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${srvI18n.getMsg(\"Reverse\")}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));

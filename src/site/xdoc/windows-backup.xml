@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+  <properties>
+    <title>Use Fedora Linux</title>
+   </properties>
+
+  <body>
+
+    <section name="Backup MS Windows">
+      <h4>Backup MS Windows</h4>
+      <p>
+          You have 3 option to restore your precious MS Windows in case if something goes wrong (e.g. a malware erased your HDD):
+          <ol>
+            <li>Get recovery disk image from official site Microsoft and install MS Windows using your product key (it's format is XXXXX-XXXXX-XXXXX-XXXXX-XXXXX)</li>
+            <li>Make recovery disk with your MS Windows (create recovery drive).</li>
+            <li>Make HDD image with Fedora Live.</li>
+          </ol>
+      </p>
+      <p>In my experience Windows Vista recovery drive works not well. This modern (in that time) software can not recover Boot Loader in MBR.
+      So I recommend (cause newest modern MS Windows recovery features) make copy HDD partitions with <b>sudo -i fsdisk -l &gt; hdd.txt</b>. For old non-UEFI boot computers
+      copy the first sector MBR with <b>sudo -i dd if=/dev/sda of=/path/to/mbr_file.img bs=512 count=1</b>. This is can be done with Fedora Live CD.</p>
+      
+      <h4>Using Fedora Live CD to backup HDD</h4>
+      <p>1. Get last ISO of any Fedora Live e.g. <a href="https://getfedora.org/en/workstation/download/">https://getfedora.org/en/workstation/download/</a> </p>
+      <p>2. Burn it and boot. Do not switch BIOS to accept old boot-loaders (MBR) for new UEFI computers.</p>
+      <p>3. Add new administrator user. Press ALT F3 and login that user. Use <b>sudo -i [command]</b> cause you do not know live root password.</p>
+      <p>To copy HDD image into another USB HDD (must be at least 50 GB for new computers without cleaning from gifts software and zeroing HDD) use <b>sudo -i dd if=/dev/sda conv=sync,noerror bs=64K | gzip -c  > /path/to/backup.img.gz</b></p>
+      <p>To copy HDD image through network SSH (e.g. to another notebook connected via WIFI) use <b>sudo -i dd if=/dev/sda conv=sync,noerror bs=64K | gzip -c | ssh [USER-NAME]@[IP-ADDRESS] dd of=backup.img.gz</b></p>
+      
+    </section>
+    
+  </body>
+
+</document>

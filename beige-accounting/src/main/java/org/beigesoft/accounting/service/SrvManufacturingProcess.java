@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Date;
 import java.math.BigDecimal;
 import java.util.Map;
+import java.text.DateFormat;
 
 import org.beigesoft.exception.ExceptionWithCode;
 import org.beigesoft.accounting.persistable.ManufacturingProcess;
@@ -21,6 +22,7 @@ import org.beigesoft.accounting.persistable.UseMaterialEntry;
 import org.beigesoft.accounting.persistable.UsedMaterialLine;
 import org.beigesoft.accounting.persistable.InvItem;
 import org.beigesoft.orm.service.ISrvOrm;
+import org.beigesoft.service.ISrvI18n;
 
 /**
  * <p>Business service for ManufacturingProcess that manufactures product.</p>
@@ -43,16 +45,19 @@ public class SrvManufacturingProcess<RS>
    * @param pSrvOrm ORM service
    * @param pSrvAccSettings AccSettings service
    * @param pSrvAccEntry Accounting entries service
+   * @param pSrvI18n I18N service
+   * @param pDateFormatter for description
    * @param pSrvWarehouseEntry Warehouse service
    * @param pSrvUseMaterialEntry Draw material service
    **/
   public SrvManufacturingProcess(final ISrvOrm<RS> pSrvOrm,
-    final ISrvAccSettings pSrvAccSettings,
-      final ISrvAccEntry pSrvAccEntry,
+    final ISrvAccSettings pSrvAccSettings, final ISrvAccEntry pSrvAccEntry,
+      final ISrvI18n pSrvI18n, final DateFormat pDateFormatter,
         final ISrvWarehouseEntry pSrvWarehouseEntry,
           final ISrvDrawItemEntry<UseMaterialEntry> pSrvUseMaterialEntry) {
     super(ManufacturingProcess.class, pSrvOrm, pSrvAccSettings, pSrvAccEntry,
-      pSrvWarehouseEntry, pSrvUseMaterialEntry);
+      pSrvI18n, pDateFormatter,
+        pSrvWarehouseEntry, pSrvUseMaterialEntry);
   }
 
   /**
@@ -128,8 +133,9 @@ public class SrvManufacturingProcess<RS>
           reversingLine.setItsTotal(reversedLine.getItsTotal().negate());
           reversingLine.setIsNew(true);
           reversingLine.setItsOwner(pEntity);
-          reversingLine.setDescription("Reversed ID: "
-            + reversedLine.getItsId());
+          reversingLine.setDescription(getSrvI18n().getMsg("reversed_n")
+            + reversedLine.getIdDatabaseBirth() + "-"
+              + reversedLine.getItsId()); //local
           getSrvOrm().insertEntity(reversingLine);
           getSrvWarehouseEntry().reverseDraw(pAddParam, reversingLine);
           getSrvUseMaterialEntry().reverseDraw(pAddParam, reversingLine,
@@ -141,7 +147,8 @@ public class SrvManufacturingProcess<RS>
             descr = reversedLine.getDescription();
           }
           reversedLine.setDescription(descr
-            + " reversing ID: " + reversingLine.getItsId());
+            + " " + getSrvI18n().getMsg("reversing_n") + reversingLine
+              .getIdDatabaseBirth() + "-" + reversingLine.getItsId());
           reversedLine.setReversedId(reversingLine.getItsId());
           getSrvOrm().updateEntity(reversedLine);
         }

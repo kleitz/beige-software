@@ -21,6 +21,7 @@ import org.beigesoft.accounting.persistable.UnitOfMeasure;
  * <pre>
  * Abstract model of withdrawal inventory item for use, sale, loss, stole.
  * Version, reliable autoincrement algorithm.
+ * It can't be created by foreign source!
  * </pre>
  *
  * @author Yury Demidenko

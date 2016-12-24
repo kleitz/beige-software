@@ -27,6 +27,7 @@
     <a class="navbar-brand" href="secure/main.jsp">Main</a>
     <a class="navbar-brand" href="secure/mainMobile.jsp">Main mobile</a>
     <a class="navbar-brand" href="mngSoftware/?nameRenderer=mngSoftware">Software management</a>
+    <a class="navbar-brand" href="mngDatabase/?nameRenderer=mngDatabase">Database management</a>
     <div class="nav-right">
       <a href="http://www.beigesoft.org/" target="_blank">Beigesoft ™</a>
     </div>

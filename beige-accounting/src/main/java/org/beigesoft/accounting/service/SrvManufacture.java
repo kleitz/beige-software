@@ -35,16 +35,6 @@ public class SrvManufacture<RS>
   extends ASrvDocumentUseMaterial<RS, Manufacture> {
 
   /**
-   * <p>I18N service.</p>
-   **/
-  private ISrvI18n srvI18n;
-
-  /**
-   * <p>Date Formatter.</p>
-   **/
-  private DateFormat dateFormatter;
-
-  /**
    * <p>minimum constructor.</p>
    **/
   public SrvManufacture() {
@@ -56,21 +46,19 @@ public class SrvManufacture<RS>
    * @param pSrvOrm ORM service
    * @param pSrvAccSettings AccSettings service
    * @param pSrvAccEntry Accounting entries service
-   * @param pSrvWarehouseEntry Warehouse service
-   * @param pSrvUseMaterialEntry Draw material service
    * @param pSrvI18n I18N service
    * @param pDateFormatter for description
+   * @param pSrvWarehouseEntry Warehouse service
+   * @param pSrvUseMaterialEntry Draw material service
    **/
   public SrvManufacture(final ISrvOrm<RS> pSrvOrm,
-    final ISrvAccSettings pSrvAccSettings,
-      final ISrvAccEntry pSrvAccEntry,
+    final ISrvAccSettings pSrvAccSettings, final ISrvAccEntry pSrvAccEntry,
+      final ISrvI18n pSrvI18n, final DateFormat pDateFormatter,
         final ISrvWarehouseEntry pSrvWarehouseEntry,
-          final ISrvDrawItemEntry<UseMaterialEntry> pSrvUseMaterialEntry,
-            final ISrvI18n pSrvI18n, final DateFormat pDateFormatter) {
+          final ISrvDrawItemEntry<UseMaterialEntry> pSrvUseMaterialEntry) {
     super(Manufacture.class, pSrvOrm, pSrvAccSettings, pSrvAccEntry,
-      pSrvWarehouseEntry, pSrvUseMaterialEntry);
-    this.srvI18n = pSrvI18n;
-    this.dateFormatter = pDateFormatter;
+      pSrvI18n, pDateFormatter,
+        pSrvWarehouseEntry, pSrvUseMaterialEntry);
   }
 
   /**
@@ -238,13 +226,15 @@ public class SrvManufacture<RS>
    **/
   public final String makeDescription(final Manufacture pEntity) {
     String strWho = getSrvI18n().getMsg(pEntity.getClass().getSimpleName()
-      + "short") + " ID: " + pEntity.getItsId() + ", date: "
-        + getDateFormatter().format(pEntity.getItsDate());
-    String strFrom = " from " + getSrvI18n().getMsg(ManufacturingProcess
-      .class.getSimpleName()) + " ID: " + pEntity.getManufacturingProcess()
-        .getItsId();
-    return "Made at " + getDateFormatter().format(new Date()) + " by "
-      + strWho + strFrom;
+      + "short") + " #" + pEntity.getIdDatabaseBirth() + "-" + pEntity
+        .getItsId() + ", " + getDateFormatter().format(pEntity.getItsDate());
+    String strFrom = " " + getSrvI18n().getMsg("from") + " " + getSrvI18n()
+      .getMsg(ManufacturingProcess.class.getSimpleName() + "short") + " #"
+        + pEntity.getManufacturingProcess().getIdDatabaseBirth() + "-"
+          + pEntity.getManufacturingProcess().getItsId(); //local
+    return getSrvI18n().getMsg("made_at") + " " + getDateFormatter()
+      .format(new Date()) + " " + getSrvI18n().getMsg("by") + " "
+        + strWho + strFrom;
   }
 
   /**
@@ -309,48 +299,17 @@ public class SrvManufacture<RS>
     die.setInvItem(dies.getInvItem());
     die.setItsQuantity(dies.getItsQuantity().negate());
     die.setReversedId(die.getItsId());
-    die.setDescription(makeDescription(pEntity) + " reversed entry ID: "
-      + dies.getItsId());
+    die.setDescription(makeDescription(pEntity) + " " + getSrvI18n()
+      .getMsg("reversed_entry_n") + dies.getIdDatabaseBirth() + "-"
+        + dies.getItsId());
     getSrvOrm().insertEntity(die);
     pEntity.getManufacturingProcess().setTheRest(pEntity
       .getManufacturingProcess().getTheRest().add(dies.getItsQuantity()));
     getSrvOrm().updateEntity(pEntity.getManufacturingProcess());
     dies.setReversedId(die.getItsId());
-    dies.setDescription(dies.getDescription() + " reversing entry ID: "
-      + die.getItsId());
+    dies.setDescription(dies.getDescription() + " " + getSrvI18n()
+      .getMsg("reversing_entry_n") + die.getIdDatabaseBirth() + "-"
+        + die.getItsId()); //local
     getSrvOrm().updateEntity(dies);
-  }
-
-  //Simple getters and setters:
-  /**
-   * <p>Getter for srvI18n.</p>
-   * @return ISrvI18n
-   **/
-  public final ISrvI18n getSrvI18n() {
-    return this.srvI18n;
-  }
-
-  /**
-   * <p>Setter for srvI18n.</p>
-   * @param pSrvI18n reference
-   **/
-  public final void setSrvI18n(final ISrvI18n pSrvI18n) {
-    this.srvI18n = pSrvI18n;
-  }
-
-  /**
-   * <p>Getter for dateFormatter.</p>
-   * @return DateFormat
-   **/
-  public final DateFormat getDateFormatter() {
-    return this.dateFormatter;
-  }
-
-  /**
-   * <p>Setter for dateFormatter.</p>
-   * @param pDateFormatter reference
-   **/
-  public final void setDateFormatter(final DateFormat pDateFormatter) {
-    this.dateFormatter = pDateFormatter;
   }
 }

@@ -39,7 +39,19 @@ public interface IDoc extends IPersistableBase, IHasTypeCode {
   void setHasMadeAccEntries(Boolean pHasMadeAccEntries);
 
   /**
-   * <p>Geter for reversedId.</p>
+   * <p>Getter for reversed database Id.</p>
+   * @return Integer DB birth ID
+   **/
+  Integer getReversedIdDatabaseBirth();
+
+  /**
+   * <p>Setter for reversed database Id.</p>
+   * @param pReversedIdDatabaseBirth reference
+   **/
+  void setReversedIdDatabaseBirth(Integer pReversedIdDatabaseBirth);
+
+  /**
+   * <p>Getter for reversedId.</p>
    * @return Long
    **/
   Long getReversedId();

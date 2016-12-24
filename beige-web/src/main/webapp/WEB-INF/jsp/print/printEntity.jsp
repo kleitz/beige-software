@@ -14,7 +14,7 @@
 <div class="entity-title">${srvI18n.getMsg(title)} ${srvI18n.getMsg(entity.getClass().simpleName)}</div>
 <div class="entity">
   <jsp:include page="printHead.jsp"/>
-  <jsp:include page="printOwnedList.jsp"/>
+  <jsp:include page="${printOwnedList}.jsp"/>
 </div>
 </body>
 </html>

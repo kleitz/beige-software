@@ -2,6 +2,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <c:if test="${not empty entity[fieldName]}">
   <c:set var="docLineAppr" value="# ${entity[fieldName].itsId}, ${entity[fieldName].invItem.itsName}, ${srvI18n.getMsg('itsCost')}=${entity[fieldName].itsCost}, ${srvI18n.getMsg('rest_was')}=${entity[fieldName].theRest}"/>
+  <c:if test="${empty entity[fieldName].idBirth}">
+    <c:set var="docLineAppr" value="# ${entity[fieldName].idDatabaseBirth}-${entity[fieldName].itsId}, ${entity[fieldName].invItem.itsName}, ${srvI18n.getMsg('itsCost')}=${entity[fieldName].itsCost}, ${srvI18n.getMsg('rest_was')}=${entity[fieldName].theRest}"/>
+  </c:if>
+  <c:if test="${not empty entity[fieldName].idBirth}">
+    <c:set var="docLineAppr" value="# ${entity[fieldName].idDatabaseBirth}-${entity[fieldName].idBirth}, ${entity[fieldName].invItem.itsName}, ${srvI18n.getMsg('itsCost')}=${entity[fieldName].itsCost}, ${srvI18n.getMsg('rest_was')}=${entity[fieldName].theRest}"/>
+  </c:if>
 </c:if>
 <tr>
   <td>

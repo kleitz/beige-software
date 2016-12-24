@@ -12,6 +12,7 @@
 <entry key="currentAccYear">inputDate</entry>
 <entry key="payByDate">inputDate</entry>
 <entry key="reversedId">null</entry>
+<entry key="reversedIdDatabaseBirth">null</entry>
 <entry key="theRest">null</entry>
 <entry key="hasMadeAccEntries">inputBooleanDisabled</entry>
 <entry key="sourceType">inputHidden</entry>

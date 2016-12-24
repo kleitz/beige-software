@@ -113,7 +113,9 @@ public class WMngDatabase extends HttpServlet {
       String nameDatabase = pReq.getParameter("nameDatabase");
       if (nameDatabase != null && nameDatabase.length() > 2) {
         if ("create".equals(nameAction)) {
-          mngDatabase.createDatabase(nameDatabase);
+          String idDatabaseStr = pReq.getParameter("idDatabase");
+          int idDatabase = Integer.parseInt(idDatabaseStr);
+          mngDatabase.createDatabase(nameDatabase, idDatabase);
         } else if ("change".equals(nameAction)) {
           mngDatabase.changeDatabase(nameDatabase);
         }

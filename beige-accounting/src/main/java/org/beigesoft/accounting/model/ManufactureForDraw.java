@@ -61,6 +61,41 @@ public class ManufactureForDraw
   }
 
   /**
+   * <p>Geter for idDatabaseBirth.</p>
+   * @return Integer
+   **/
+  @Override
+  public final Integer getIdDatabaseBirth() {
+    return this.manufacture.getIdDatabaseBirth();
+  }
+
+  /**
+   * <p>Setter for idDatabaseBirth.</p>
+   * @param pIdDatabaseBirth reference
+   **/
+  @Override
+  public final void setIdDatabaseBirth(final Integer pIdDatabaseBirth) {
+    //stub
+  }
+
+  /**
+   * <p>Geter for idBirth.</p>
+   * @return Long
+   **/
+  @Override
+  public final Long getIdBirth() {
+    return this.manufacture.getIdBirth();
+  }
+
+  /**
+   * <p>Setter for idBirth.</p>
+   * @param pIdBirth reference
+   **/
+  public final void setIdBirth(final Long pIdBirth) {
+    //stub
+  }
+
+  /**
    * <p>Evaluate "is new" status.
    * Usually it's simple getter.
    * </p>

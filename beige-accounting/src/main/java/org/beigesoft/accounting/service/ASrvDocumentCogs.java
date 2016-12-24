@@ -11,11 +11,13 @@ package org.beigesoft.accounting.service;
  */
 
 import java.util.Map;
+import java.text.DateFormat;
 
 import org.beigesoft.holder.IAttributes;
 import org.beigesoft.accounting.persistable.IDocWarehouse;
 import org.beigesoft.accounting.persistable.CogsEntry;
 import org.beigesoft.orm.service.ISrvOrm;
+import org.beigesoft.service.ISrvI18n;
 
 /**
  * <p>Business service for accounting document
@@ -52,15 +54,19 @@ public abstract class ASrvDocumentCogs<RS, T extends IDocWarehouse>
    * @param pSrvOrm ORM service
    * @param pSrvAccSettings AccSettings service
    * @param pSrvAccEntry Accounting entries service
+   * @param pSrvI18n I18N service
+   * @param pDateFormatter for description
    * @param pSrvWarehouseEntry Warehouse service
    * @param pSrvCogsEntry Draw material service
    **/
   public ASrvDocumentCogs(final Class<T> pEntityClass,
     final ISrvOrm<RS> pSrvOrm, final ISrvAccSettings pSrvAccSettings,
       final ISrvAccEntry pSrvAccEntry,
-        final ISrvWarehouseEntry pSrvWarehouseEntry,
-          final ISrvDrawItemEntry<CogsEntry> pSrvCogsEntry) {
-    super(pEntityClass, pSrvOrm, pSrvAccSettings, pSrvAccEntry);
+        final ISrvI18n pSrvI18n, final DateFormat pDateFormatter,
+          final ISrvWarehouseEntry pSrvWarehouseEntry,
+            final ISrvDrawItemEntry<CogsEntry> pSrvCogsEntry) {
+    super(pEntityClass, pSrvOrm, pSrvAccSettings, pSrvAccEntry,
+      pSrvI18n, pDateFormatter);
     this.srvWarehouseEntry = pSrvWarehouseEntry;
     this.srvCogsEntry = pSrvCogsEntry;
   }

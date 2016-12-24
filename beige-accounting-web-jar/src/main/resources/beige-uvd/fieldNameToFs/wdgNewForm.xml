@@ -23,6 +23,7 @@
 <entry key="idBirth">null</entry>
 <entry key="isNew">inputHidden</entry>
 <entry key="reversedId">null</entry>
+<entry key="reversedIdDatabaseBirth">null</entry>
 <entry key="dateHire">inputDate</entry>
 <entry key="currentYearStart">inputDate</entry>
 <entry key="itsPassword">inputPassword</entry>

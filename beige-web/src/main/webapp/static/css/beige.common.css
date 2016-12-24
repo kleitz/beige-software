@@ -55,6 +55,12 @@ textarea {
   text-decoration: initial;
 }
 
+.dlg-actions {
+  margin-bottom: 10px;
+  text-align: center;
+  text-decoration: initial;
+}
+
 .btn, .page, .page-current, .page-inactive, .form-actions input, .form-actions button, .form-actions a {
   width: initial;
   background-color: #3D80B9;
@@ -304,6 +310,10 @@ tr:hover {
   background-color: #AF4841;
 }
 
+.confirm-title {
+  background-color: #72acde;
+}
+
 .success-title {
   background-color: #629626;
 }
@@ -321,6 +331,24 @@ tr:hover {
 
 .btn-error:hover {
   background-color: #C71A0D;
+}
+
+.confirm {
+  border-color: #72acde;
+  border: 1px solid;
+  border-radius: 4px;
+}
+
+.btn-act {
+  min-width: 80px;
+}
+
+.btn-confirm {
+  background-color: #72acde;
+}
+
+.btn-confirm:hover {
+  background-color: #598fbd;
 }
 
 .warning {

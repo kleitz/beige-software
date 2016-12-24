@@ -191,6 +191,11 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
   private int minutesOfIdle = 30;
 
   /**
+   * <p>ID for New Database.</p>
+   **/
+  private int newDatabaseId = 1;
+
+  /**
    * <p>Get bean in lazy mode (if bean is null then initialize it).</p>
    * @param pBeanName - bean name
    * @return Object - requested bean
@@ -317,6 +322,7 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
     if (this.srvOrm == null) {
       this.srvOrm = instantiateSrvOrm();
       this.srvOrm.setSrvRecordRetriever(lazyGetSrvRecordRetriever());
+      this.srvOrm.setNewDatabaseId(this.newDatabaseId);
       this.srvOrm.setSrvDatabase(lazyGetSrvDatabase());
       this.srvOrm.setSrvSqlEscape(new SrvSqlEscape());
       this.srvOrm.setHlpInsertUpdate(lazyGetHlpInsertUpdate());
@@ -1017,5 +1023,25 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
    **/
   public final void setDatabasePassword(final String pDatabasePassword) {
     this.databasePassword = pDatabasePassword;
+  }
+
+  /**
+   * <p>Getter for new database ID.
+   * Any database mist has ID, int is suitable type for that cause
+   * its range is enough and it's faster than String.</p>
+   * @return ID for new database
+   **/
+  public final int getNewDatabaseId() {
+    return this.newDatabaseId;
+  }
+
+  /**
+   * <p>Setter for new database ID.
+   * Any database mist has ID, int is suitable type for that cause
+   * its range is enough and it's faster than String.</p>
+   * @param pNewDatabaseId ID for new database
+   **/
+  public final void setNewDatabaseId(final int pNewDatabaseId) {
+    this.newDatabaseId = pNewDatabaseId;
   }
 }

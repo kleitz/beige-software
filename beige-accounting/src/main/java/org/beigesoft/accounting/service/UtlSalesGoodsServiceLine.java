@@ -12,7 +12,6 @@ package org.beigesoft.accounting.service;
 
 import java.util.List;
 import java.math.BigDecimal;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -107,8 +106,8 @@ public class UtlSalesGoodsServiceLine<RS> {
    **/
   public final String lazyGetQuerySalesInvoiceTaxes() throws Exception {
     if (this.querySalesInvoiceTaxes == null) {
-      String flName = File.separator + "accounting" + File.separator + "trade"
-        + File.separator + this.fileQuerySalesInvoiceTaxes;
+      String flName = "/" + "accounting" + "/" + "trade"
+        + "/" + this.fileQuerySalesInvoiceTaxes;
       this.querySalesInvoiceTaxes = loadString(flName);
     }
     return this.querySalesInvoiceTaxes;
@@ -121,8 +120,8 @@ public class UtlSalesGoodsServiceLine<RS> {
    **/
   public final String lazyGetQuerySalesInvoiceTotals() throws Exception {
     if (this.querySalesInvoiceTotals == null) {
-      String flName = File.separator + "accounting" + File.separator + "trade"
-        + File.separator + this.fileQuerySalesInvoiceTotals;
+      String flName = "/" + "accounting" + "/" + "trade"
+        + "/" + this.fileQuerySalesInvoiceTotals;
       this.querySalesInvoiceTotals = loadString(flName);
     }
     return this.querySalesInvoiceTotals;

@@ -13,6 +13,7 @@ package org.beigesoft.accounting.service;
 import java.util.Date;
 import java.util.Map;
 
+import org.beigesoft.exception.ExceptionWithCode;
 import org.beigesoft.accounting.persistable.AccountingEntries;
 import org.beigesoft.orm.service.ISrvOrm;
 
@@ -70,6 +71,11 @@ public class SrvAccountingEntries<RS>
   public final void saveEntity(final Map<String, Object> pAddParam,
     final AccountingEntries pEntity,
       final boolean isEntityDetached) throws Exception {
+    if (!pEntity.getIdDatabaseBirth()
+      .equals(getSrvOrm().getIdDatabase())) {
+      throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
+        "can_not_change_foreign_src");
+    }
     if (pEntity.getIsNew()) {
       getSrvOrm().insertEntity(pEntity);
     } else {

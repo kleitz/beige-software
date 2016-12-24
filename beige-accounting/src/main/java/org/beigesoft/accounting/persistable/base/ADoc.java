@@ -49,9 +49,40 @@ public abstract class ADoc extends APersistableBaseVersion
   private Long reversedId;
 
   /**
+   * <p>ID database birth of reversed/reversing document.</p>
+   **/
+  private Integer reversedIdDatabaseBirth;
+
+  /**
    * <p>Description.</p>
    **/
   private String description;
+
+  //Hiding references getters and setters:
+  /**
+   * <p>Geter for itsDate.</p>
+   * @return Date
+   **/
+  @Override
+  public final Date getItsDate() {
+    if (this.itsDate == null) {
+      return null;
+    }
+    return new Date(this.itsDate.getTime());
+  }
+
+  /**
+   * <p>Setter for itsDate.</p>
+   * @param pItsDate reference
+   **/
+  @Override
+  public final void setItsDate(final Date pItsDate) {
+    if (pItsDate == null) {
+      this.itsDate = null;
+    } else {
+      this.itsDate = new Date(pItsDate.getTime());
+    }
+  }
 
   /**
    * <p>Geter for hasMadeAccEntries.</p>
@@ -90,6 +121,25 @@ public abstract class ADoc extends APersistableBaseVersion
   }
 
   /**
+   * <p>Geter for reversed database Id.</p>
+   * @return Integer DB birth ID
+   **/
+  @Override
+  public final Integer getReversedIdDatabaseBirth() {
+    return this.reversedIdDatabaseBirth;
+  }
+
+  /**
+   * <p>Setter for reversed database Id.</p>
+   * @param pReversedIdDatabaseBirth reference
+   **/
+  @Override
+  public final void setReversedIdDatabaseBirth(
+    final Integer pReversedIdDatabaseBirth) {
+    this.reversedIdDatabaseBirth = pReversedIdDatabaseBirth;
+  }
+
+  /**
    * <p>Setter for itsTotal.</p>
    * @param pItsTotal reference
    **/
@@ -123,31 +173,5 @@ public abstract class ADoc extends APersistableBaseVersion
   @Override
   public final void setDescription(final String pDescription) {
     this.description = pDescription;
-  }
-
-  //Hiding references getters and setters:
-  /**
-   * <p>Geter for itsDate.</p>
-   * @return Date
-   **/
-  @Override
-  public final Date getItsDate() {
-    if (this.itsDate == null) {
-      return null;
-    }
-    return new Date(this.itsDate.getTime());
-  }
-
-  /**
-   * <p>Setter for itsDate.</p>
-   * @param pItsDate reference
-   **/
-  @Override
-  public final void setItsDate(final Date pItsDate) {
-    if (pItsDate == null) {
-      this.itsDate = null;
-    } else {
-      this.itsDate = new Date(pItsDate.getTime());
-    }
   }
 }

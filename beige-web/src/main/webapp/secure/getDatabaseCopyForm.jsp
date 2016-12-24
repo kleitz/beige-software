@@ -61,7 +61,8 @@
         </tr>
       </table>
       <div>
-        <input type="submit" onclick="return confirm('${srvI18n.getMsg('clear_db_and_get_copy')}?');"/>
+        <c:set var="cdagcMsg" value="${srvI18n.getMsg('clear_db_and_get_copy')}"/>
+        <input type="submit" onclick="confirmSubmit(this, '${cdagcMsg}'); return false;"/>
       </div>
     </form>
   </div>

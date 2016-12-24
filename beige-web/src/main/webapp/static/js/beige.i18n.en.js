@@ -8,6 +8,8 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 var MSGS={};
+MSGS["yes"]="Yes";
+MSGS["no"]="No";
 MSGS["cancel"]="Cancel";
 MSGS["apply"]="Apply";
 MSGS["validationError"]="Validation Error!";

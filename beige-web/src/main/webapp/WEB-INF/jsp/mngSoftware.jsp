@@ -7,6 +7,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <link rel="shortcut icon" href="../static/img/favicon.png">
+  <script type="text/javascript" src="../static/js/beige.form.js"></script>
+  <script type="text/javascript" src="../static/js/beige.i18n.en.js"></script>
   <link rel="stylesheet" href="../static/css/beige.common.css">
   <title>${srvI18n.getMsg("mngSoftware")}</title>
 </head>
@@ -26,7 +28,7 @@
           ${srvI18n.getMsg("isShowDebugMessages")}: ${mngSoftware.isShowDebugMessages}
         </td>
         <td style="padding: 5px;">
-          <a class="btn" href="?nameRenderer=mngSoftware&isShowDebugMessages=change" onclick="return confirm('Change?');">${srvI18n.getMsg("change")}</a>
+          <a class="btn" href="?nameRenderer=mngSoftware&isShowDebugMessages=change" onclick="confirmHref(this, 'Change?'); return false;">${srvI18n.getMsg("change")}</a>
         </td>
       </tr>
     </table>

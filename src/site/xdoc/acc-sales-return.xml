@@ -28,9 +28,9 @@
       </p>
       <p>
         Sales returns is business expense (deducting income tax).
-        If according law of your country accrual method means that business expense incur when you receive document (prove)
-        even though you haven't received goods yet (in same day), then (in that case) switch off method "SalesReturn, Debit SalesReturns.InvItemCategory Credit ReturnsPayable.DebtorCreditor ." in accounting settings and make
-        deducting income accounting entries by hand.
+        If according law of your country accrual method means that business expense occurs when you received document (prove)
+        even though you haven't received goods yet (in same day), then (in that case) switch off method "SalesReturn, Debit SalesReturns.InvItemCategory Credit ReturnsPayable.DebtorCreditor" in accounting settings and make
+        these deducting income accounting entries by hand.
       </p>
 
     </section>

@@ -37,6 +37,9 @@ public class InitAppFactoryAndroid implements IDelegateExc<FactoryAndServlet> {
       .getInitParameter("isShowDebugMessages");
     factoryAppBeans.setIsShowDebugMessages(Boolean
       .valueOf(isShowDebugMessagesStr));
+    String newDatabaseIdStr = pFactoryAndServlet.getHttpServlet()
+      .getInitParameter("newDatabaseId");
+    factoryAppBeans.setNewDatabaseId(Integer.parseInt(newDatabaseIdStr));
     String ormSettingsDir = pFactoryAndServlet.getHttpServlet()
       .getInitParameter("ormSettingsDir");
     factoryAppBeans.setOrmSettingsDir(ormSettingsDir);

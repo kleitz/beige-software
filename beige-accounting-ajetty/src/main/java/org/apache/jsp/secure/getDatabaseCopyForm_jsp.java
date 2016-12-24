@@ -19,6 +19,8 @@ public final class getDatabaseCopyForm_jsp extends org.apache.jasper.runtime.Htt
 
   private static java.util.Map<java.lang.String,java.lang.Long> _jspx_dependants;
 
+  private org.apache.jasper.runtime.TagHandlerPool _005fjspx_005ftagPool_005fc_005fset_0026_005fvar_005fvalue_005fnobody;
+
   private volatile javax.el.ExpressionFactory _el_expressionfactory;
   private volatile org.apache.tomcat.InstanceManager _jsp_instancemanager;
 
@@ -49,9 +51,11 @@ public final class getDatabaseCopyForm_jsp extends org.apache.jasper.runtime.Htt
   }
 
   public void _jspInit() {
+    _005fjspx_005ftagPool_005fc_005fset_0026_005fvar_005fvalue_005fnobody = org.apache.jasper.runtime.TagHandlerPool.getTagHandlerPool(getServletConfig());
   }
 
   public void _jspDestroy() {
+    _005fjspx_005ftagPool_005fc_005fset_0026_005fvar_005fvalue_005fnobody.release();
   }
 
   public void _jspService(final javax.servlet.http.HttpServletRequest request, final javax.servlet.http.HttpServletResponse response)
@@ -88,9 +92,12 @@ public final class getDatabaseCopyForm_jsp extends org.apache.jasper.runtime.Htt
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${srvI18n.getMsg(\"url_source\")}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
       out.write(":</label>\n          </td>\n          <td>\n            <div style=\"display: flex;\">\n              <input name=\"urlSource\" value=\"http://localhost:8080/beige-accounting-web/secure/sendEntities\">\n            </div>\n          </td>\n        </tr>\n        <tr>\n          <td>\n            <label>");
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${srvI18n.getMsg(\"max_records_per_transaction\")}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
-      out.write(":</label>\n          </td>\n          <td>\n            <div style=\"display: flex;\">\n              <input type=\"number\" name=\"maxRecords\" value=\"100\">\n              <input type=\"hidden\" name=\"replicatorName\" value=\"importFullDatabaseCopy\">\n            </div>\n          </td>\n        </tr>\n      </table>\n      <div>\n        <input type=\"submit\" onclick=\"return confirm('");
-      out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${srvI18n.getMsg('clear_db_and_get_copy')}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
-      out.write("?');\"/>\n      </div>\n    </form>\n  </div>\n</body>\n</html>\n");
+      out.write(":</label>\n          </td>\n          <td>\n            <div style=\"display: flex;\">\n              <input type=\"number\" name=\"maxRecords\" value=\"100\">\n              <input type=\"hidden\" name=\"replicatorName\" value=\"importFullDatabaseCopy\">\n            </div>\n          </td>\n        </tr>\n      </table>\n      <div>\n        ");
+      if (_jspx_meth_c_005fset_005f0(_jspx_page_context))
+        return;
+      out.write("\n        <input type=\"submit\" onclick=\"confirmSubmit(this, '");
+      out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${cdagcMsg}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
+      out.write("'); return false;\"/>\n      </div>\n    </form>\n  </div>\n</body>\n</html>\n");
     } catch (java.lang.Throwable t) {
       if (!(t instanceof javax.servlet.jsp.SkipPageException)){
         out = _jspx_out;
@@ -108,5 +115,26 @@ public final class getDatabaseCopyForm_jsp extends org.apache.jasper.runtime.Htt
     } finally {
       _jspxFactory.releasePageContext(_jspx_page_context);
     }
+  }
+
+  private boolean _jspx_meth_c_005fset_005f0(javax.servlet.jsp.PageContext _jspx_page_context)
+          throws java.lang.Throwable {
+    javax.servlet.jsp.PageContext pageContext = _jspx_page_context;
+    javax.servlet.jsp.JspWriter out = _jspx_page_context.getOut();
+    //  c:set
+    org.apache.taglibs.standard.tag.rt.core.SetTag _jspx_th_c_005fset_005f0 = (org.apache.taglibs.standard.tag.rt.core.SetTag) _005fjspx_005ftagPool_005fc_005fset_0026_005fvar_005fvalue_005fnobody.get(org.apache.taglibs.standard.tag.rt.core.SetTag.class);
+    _jspx_th_c_005fset_005f0.setPageContext(_jspx_page_context);
+    _jspx_th_c_005fset_005f0.setParent(null);
+    // /secure/getDatabaseCopyForm.jsp(64,8) name = var type = java.lang.String reqTime = false required = false fragment = false deferredValue = false expectedTypeName = null deferredMethod = false methodSignature = null
+    _jspx_th_c_005fset_005f0.setVar("cdagcMsg");
+    // /secure/getDatabaseCopyForm.jsp(64,8) name = value type = javax.el.ValueExpression reqTime = true required = false fragment = false deferredValue = true expectedTypeName = java.lang.Object deferredMethod = false methodSignature = null
+    _jspx_th_c_005fset_005f0.setValue(new org.apache.jasper.el.JspValueExpression("/secure/getDatabaseCopyForm.jsp(64,8) '${srvI18n.getMsg('clear_db_and_get_copy')}'",_jsp_getExpressionFactory().createValueExpression(_jspx_page_context.getELContext(),"${srvI18n.getMsg('clear_db_and_get_copy')}",java.lang.Object.class)).getValue(_jspx_page_context.getELContext()));
+    int _jspx_eval_c_005fset_005f0 = _jspx_th_c_005fset_005f0.doStartTag();
+    if (_jspx_th_c_005fset_005f0.doEndTag() == javax.servlet.jsp.tagext.Tag.SKIP_PAGE) {
+      _005fjspx_005ftagPool_005fc_005fset_0026_005fvar_005fvalue_005fnobody.reuse(_jspx_th_c_005fset_005f0);
+      return true;
+    }
+    _005fjspx_005ftagPool_005fc_005fset_0026_005fvar_005fvalue_005fnobody.reuse(_jspx_th_c_005fset_005f0);
+    return false;
   }
 }

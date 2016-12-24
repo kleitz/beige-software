@@ -16,7 +16,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
 import java.math.BigDecimal;
-import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
 import java.net.URL;
@@ -121,6 +120,11 @@ public abstract class ASrvDrawItemEntry<T extends ADrawItemEntry, RS>
   public final void withdrawal(final Map<String, Object> pAddParam,
     final IMakingWarehouseEntry pEntity, final Date pDateAccount,
       final Long pDrawingOwnerId) throws Exception {
+    if (!pEntity.getIdDatabaseBirth()
+      .equals(getSrvOrm().getIdDatabase())) {
+      throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
+        "can_not_make_di_entry_for_foreign_src");
+    }
     String queryMain = lazyGetQuery(srvAccSettings.lazyGetAccSettings().
       getCogsMethod().getFileName());
     StringBuffer sb = new StringBuffer();
@@ -128,6 +132,8 @@ public abstract class ASrvDrawItemEntry<T extends ADrawItemEntry, RS>
     for (ADrawItemSourcesLine drawItemSourceLine : getDrawItemSources()) {
       if (drawItemSourceLine.getIsUsed()) {
         String query = lazyGetQuery(drawItemSourceLine.getFileName());
+        query = query.replace(":IDDATABASEBIRTH", String.valueOf(getSrvOrm()
+          .getIdDatabase()));
         query = query.replace(":INVITEM", pEntity.getInvItem()
           .getItsId().toString());
         query = query.replace(":UNITOFMEASURE", pEntity.getUnitOfMeasure()
@@ -216,6 +222,11 @@ public abstract class ASrvDrawItemEntry<T extends ADrawItemEntry, RS>
   public final void withdrawalFrom(final Map<String, Object> pAddParam,
     final IMakingWarehouseEntry pEntity, final IDrawItemSource pSource,
         final BigDecimal pQuantityToDraw) throws Exception {
+    if (!pEntity.getIdDatabaseBirth()
+      .equals(getSrvOrm().getIdDatabase())) {
+      throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
+        "can_not_make_di_entry_for_foreign_src");
+    }
     T die = createDrawItemEntry();
     die.setItsDate(pEntity.getDocumentDate());
     die.setIdDatabaseBirth(getSrvOrm().getIdDatabase());
@@ -253,9 +264,16 @@ public abstract class ASrvDrawItemEntry<T extends ADrawItemEntry, RS>
   public final void reverseDraw(final Map<String, Object> pAddParam,
     final IMakingWarehouseEntry pEntity, final Date pDateAccount,
       final Long pDrawingOwnerId) throws Exception {
+    if (!pEntity.getIdDatabaseBirth()
+      .equals(getSrvOrm().getIdDatabase())) {
+      throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
+        "can_not_make_di_entry_for_foreign_src");
+    }
+    String tblNm = getDrawItemEntryClass().getSimpleName().toUpperCase();
     List<T> diel = getSrvOrm().retrieveListWithConditions(
       getDrawItemEntryClass(), " where DRAWINGTYPE=" + pEntity.constTypeCode()
-        + " and DRAWINGID=" + pEntity.getReversedId());
+        + " and " + tblNm + ".IDDATABASEBIRTH=" + getSrvOrm().getIdDatabase()
+          + " and DRAWINGID=" + pEntity.getReversedId());
     BigDecimal quantityToLeaveRst = pEntity.getItsQuantity();
     for (T dies : diel) {
       if (dies.getItsQuantity().doubleValue() < 0) {
@@ -285,8 +303,9 @@ public abstract class ASrvDrawItemEntry<T extends ADrawItemEntry, RS>
             + pAddParam.get("user"));
       }
       die.setReversedId(dies.getItsId());
-      die.setDescription(makeDescription(pEntity, dies) + " reversed entry ID: "
-        + dies.getItsId());
+      die.setDescription(makeDescription(pEntity, dies) + " "
+        + getSrvI18n().getMsg("reversed_entry_n")
+          + getSrvOrm().getIdDatabase() + "-" + dies.getItsId());
       getSrvOrm().insertEntity(die);
       IDrawItemSource drawed = (IDrawItemSource) srvOrm
         .retrieveEntityById(srvTypeCode.getTypeCodeMap()
@@ -294,8 +313,9 @@ public abstract class ASrvDrawItemEntry<T extends ADrawItemEntry, RS>
       drawed.setTheRest(drawed.getTheRest().add(dies.getItsQuantity()));
       srvOrm.updateEntity(drawed);
       dies.setReversedId(die.getItsId());
-      dies.setDescription(dies.getDescription() + " reversing entry ID: "
-        + die.getItsId());
+      dies.setDescription(dies.getDescription() + " "
+        + getSrvI18n().getMsg("reversing_entry_n")
+          + getSrvOrm().getIdDatabase() + "-" + die.getItsId()); //only local
       getSrvOrm().updateEntity(dies);
     }
     if (quantityToLeaveRst.doubleValue() != 0) {
@@ -306,7 +326,7 @@ public abstract class ASrvDrawItemEntry<T extends ADrawItemEntry, RS>
   }
 
   /**
-   * <p>Retrieve entries for whole document.</p>
+   * <p>Retrieve entries for whole document to print.</p>
    * @param pAddParam additional param
    * @param pEntity a document
    * @return warehouse entries made by this document
@@ -317,12 +337,19 @@ public abstract class ASrvDrawItemEntry<T extends ADrawItemEntry, RS>
     final Map<String, Object> pAddParam,
       final IDocWarehouse pEntity) throws Exception {
     String where = null;
+    Long docId = pEntity.getItsId();
+    if (pEntity.getIdBirth() != null) {
+      docId = pEntity.getIdBirth();
+    }
+    String tblNm = getDrawItemEntryClass().getSimpleName().toUpperCase();
     if (pEntity instanceof IDrawItemSource) {
       where = " where SOURCETYPE=" + pEntity.constTypeCode()
-        + " and SOURCEID=" + pEntity.getItsId();
+        + " and SOURCEID="  + docId + " and " + tblNm + ".IDDATABASEBIRTH="
+          + pEntity.getIdDatabaseBirth();
     } else if (pEntity instanceof IMakingWarehouseEntry) {
       where = " where DRAWINGTYPE=" + pEntity.constTypeCode()
-        + " and DRAWINGID=" + pEntity.getItsId();
+        + " and DRAWINGID=" + docId + " and " + tblNm + ".IDDATABASEBIRTH="
+          + pEntity.getIdDatabaseBirth();
     }
     List<T> result = null;
     if (where != null) {
@@ -332,7 +359,8 @@ public abstract class ASrvDrawItemEntry<T extends ADrawItemEntry, RS>
     }
     if (pEntity instanceof IDrawItemSource) { //also may draw, e.g. Manufacture
       where = " where DRAWINGTYPE=" + pEntity.constTypeCode()
-        + " and DRAWINGID=" + pEntity.getItsId();
+        + " and DRAWINGID="  + docId + " and " + tblNm + ".IDDATABASEBIRTH="
+          + pEntity.getIdDatabaseBirth();
     }
     if (where != null) {
       if (result == null) {
@@ -347,12 +375,14 @@ public abstract class ASrvDrawItemEntry<T extends ADrawItemEntry, RS>
     if (pEntity.getLinesWarehouseType() == EWarehouseMovementType.LOAD) {
       //e.g. PurchaseInvoice
       where = " where SOURCEOWNERTYPE=" + pEntity.constTypeCode()
-        + " and SOURCEOWNERID=" + pEntity.getItsId();
+        + " and SOURCEOWNERID=" + docId + " and " + tblNm + ".IDDATABASEBIRTH="
+          + pEntity.getIdDatabaseBirth();
     } else if (pEntity.getLinesWarehouseType()
       == EWarehouseMovementType.WITHDRAWAL) {
       //e.g. SalesInvoice
       where = " where DRAWINGOWNERTYPE=" + pEntity.constTypeCode()
-        + " and DRAWINGOWNERID=" + pEntity.getItsId();
+        + " and DRAWINGOWNERID=" + docId + " and " + tblNm + ".IDDATABASEBIRTH="
+          + pEntity.getIdDatabaseBirth();
     }
     if (where != null) {
       if (result == null) {
@@ -396,8 +426,8 @@ public abstract class ASrvDrawItemEntry<T extends ADrawItemEntry, RS>
    **/
   public final String lazyGetQuery(final String pFileName) throws Exception {
     if (this.queries.get(pFileName) == null) {
-      String flName = File.separator + "accounting" + File.separator + "trade"
-          + File.separator + pFileName + ".sql";
+      String flName = "/" + "accounting" + "/" + "trade"
+          + "/" + pFileName + ".sql";
       this.queries.put(pFileName, loadString(flName));
     }
     return this.queries.get(pFileName);
@@ -438,21 +468,24 @@ public abstract class ASrvDrawItemEntry<T extends ADrawItemEntry, RS>
   public final String makeDescription(final IMakingWarehouseEntry pEntity,
     final ADrawItemEntry pSource) {
     String strWho = getSrvI18n().getMsg(pEntity.getClass().getSimpleName()
-      + "short") + " ID: " + pEntity.getItsId();
+      + "short") + " #" + getSrvOrm().getIdDatabase() + "-" //only local
+        + pEntity.getItsId();
     if (pEntity.getOwnerId() == null) {
-      strWho += ", date: " + getDateFormatter().format(pEntity
+      strWho += ", " + getDateFormatter().format(pEntity
         .getDocumentDate());
     } else {
-      strWho += " in " + getSrvI18n().getMsg(getSrvTypeCode()
-        .getTypeCodeMap().get(pEntity.getOwnerType()).getSimpleName()
-        + "short") + " ID, date: " + pEntity.getOwnerId() + ", "
-        + getDateFormatter().format(pEntity.getDocumentDate());
+      strWho += " " + getSrvI18n().getMsg("in") + " " + getSrvI18n()
+        .getMsg(getSrvTypeCode().getTypeCodeMap().get(pEntity.getOwnerType())
+          .getSimpleName() + "short") + " #" + getSrvOrm().getIdDatabase()
+            + "-" + pEntity.getOwnerId() + ", "
+              + getDateFormatter().format(pEntity.getDocumentDate());
     }
-    String strFrom = " from " + getSrvI18n().getMsg(getSrvTypeCode()
-        .getTypeCodeMap().get(pSource.getSourceType()).getSimpleName())
-          + " ID: " + pSource.getSourceId();
-    return "Made at " + getDateFormatter().format(
-      new Date()) + " by " + strWho + strFrom;
+    String strFrom = " " + getSrvI18n().getMsg("from") + " " + getSrvI18n()
+      .getMsg(getSrvTypeCode().getTypeCodeMap().get(pSource.getSourceType())
+        .getSimpleName() + "short") + " #" + getSrvOrm().getIdDatabase() + "-"
+          + pSource.getSourceId();
+    return getSrvI18n().getMsg("made_at") + " " + getDateFormatter().format(
+      new Date()) + " " + getSrvI18n().getMsg("by") + " " + strWho + strFrom;
   }
 
   //Simple getters and setters:

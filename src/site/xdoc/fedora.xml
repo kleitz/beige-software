@@ -11,12 +11,13 @@
 
     <section name="Install Fedora">
       <p>Right now stable Debian Jessie consist of too old software. For example Network Manager(0.9.10.0-7) can make neither DSL connection nor WIFI Hotspot.
-        Debian Stretch consist of too new software for testing (but it works really stable), it even consist of experimental versions of software(e.g. GnuPg).
+        Debian Stretch consist of too new software for testing (but it works really stable), it even consist of experimental versions of software(e.g. GnuPg), and so does SID (it consists of same packages).
         So Fedora is reliable alternative.
-        In my experience KDE(last plasma) is extremely unstable.
-        Gnome get rid of useful hierarchical menu, task bar, system tray.
+        In my experience KDE (last plasma) is extremely unstable.
+        Gnome get rid of useful hierarchical menu, task bar, system tray and even terminal (it's more useful for programmers than "text terminal -ALT F[N]").
         XFCE - you are not able to move applications tags inside task bar. LXDE is the most user friendly and stable interface.
       </p>
+
       <h4>Install from Live DVD</h4>
       <p>
         1. Get Live ISO (amd64 1Gb) from <a href="https://spins.fedoraproject.org/en/lxde/">https://spins.fedoraproject.org/en/lxde/</a><br></br>
@@ -25,25 +26,17 @@
         2. Burn DVD, or better copy it into flash. In Linux make sure what is your USB drive name (sdb or sdc).
         In root terminal type "df" to list mounted devices. Hard drive (HDD) is always "/dev/sda".
         Insert USB flash and list devices again. USB flash usually appears as "dev/sdb". Unmount flash e.g. "umount /dev/sdb1" then "sync".
-        Copy ISO image into flash with "cp Fedora-LXDE-Live-x86_64-24-1.2.iso /dev/sdb".
+        Copy ISO image into flash with "cp Fedora-LXDE-Live-x86_64-25-1.3.iso /dev/sdb".
       </p>
       <p>Boot from live DVD/USB-SD then install.</p>
+      <p>If you have MS Windows then <a href="windows-backup.html">make recovery disks</a>. 
+      Fedora properly recognize it and added it into its boot menu.</p>
+
       <h4>After installation make it better.</h4>
-      <p>1. Web-browser Midori doesn't works, and many applications are useless, so remove them:
-        <pre style="white-space: pre-wrap;">
-          dnf remove midori
-          dnf remove abiword        
-          dnf remove lxmusic
-          dnf remove gnumeric
-          dnf remove osmo
-          dnf remove sylpheed
-          dnf remove xpad
-          dnf remove gigolo
-        </pre>
+      <p>
         Install useful software:
         <pre style="white-space: pre-wrap;">
           dnf install mc //terminal file manager
-          dnf install chromium
           dnf install libreoffice
           rpm -ivh http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-stable.noarch.rpm
           dnf install vlc //best multimedia player (can take photo/video from webcam)
@@ -66,13 +59,6 @@
         <ul>
           <li>Terminal emulator - lxterminal -e %s</li>
         </ul> 
-        PCManFM unstable. It's often crashed:
-        <pre style="white-space: pre-wrap;">
-dnf remove pcmanfm
-dnf install glib2-devel
-dnf install pcmanfm
-        </pre>
-        After re-install it works stable.
       </p>
 
       <h4>Change look:</h4>
@@ -86,7 +72,7 @@ dnf install pcmanfm
         Open "menu-preferences-Openbox Configuration Manager" and choose theme "bear2".
       </p>
 
-      <h4>Screen-saver:</h4>
+      <h4>Linux screen-saver that shows CAPS LOCK status and keyboard layout.</h4>
       <p>Fix problem that xscreensaver can't show Caps Lock status and keyboard layout:
         <ul>
           <li>dnf remove xscreensaver-base //or xscreensaver</li>
@@ -179,8 +165,7 @@ dnf install pcmanfm
             <ul>
               <li>dnf install automake</li>
               <li>dnf install pam-devel</li>
-              <li>libX11-devel.x86_64</li>
-              <li>?libXext-dev?</li>
+              <li>dnf install libX11-devel - (!x86_64)</li>
             </ul>
           </li>
           <li>install xsecurelock from source:
@@ -198,7 +183,7 @@ dnf install pcmanfm
 xss-lock xsecurelock auth_pam_x11 saver_blank
             </pre>
           </li>
-          <li>Open Applications Menu - Preferences - Default applications for LXSession then choose Autostart and add <b>@~/xsslock.sh</b></li>
+          <li>Open Applications Menu - Preferences - Default applications for LXSession then choose Autostart and add <b>@[home]/xsslock.sh</b></li>
         </ul>
         It will be blank screen with password input and current led mask and keyboard layout e.g.
         <pre style="white-space: pre-wrap;">
@@ -251,32 +236,71 @@ Categories=GTK;Development;IDE;
         </pre> 
       </p>
       
-      <h4>Android devices (MTP) problem</h4>
-      <p>It doesn't show USB mobile. After mount manually:
+      <h5>Prevent rough shutdown when you press <b>power off</b></h5>
+      <p>
+        1. edit /etc/systemd/logind.conf - uncomment and ignore power button:
         <pre>
-          gvfs-mount -li | grep -e ^Volume -e activation_root
-          //Volume(0): SAMSUNG Android
-              //activation_root=mtp://[usb:002,005]/
-          gvfs-mount  mtp://[usb:002,005]/
-          //it never blame, but there is no mounted device anywhere
+...
+HandlePowerKey=ignore
+...
         </pre>
-        So as root:
+        2. edit ~/.config/openbox/lxde-rc.xml - add:
+        <pre>
+...
+  &lt;!-- Turn off PC with power button --&gt;
+  &lt;keybind key="XF86PowerOff"&gt;
+    &lt;action name="Execute"&gt;
+      &lt;command&gt;lxde-logout&lt;/command&gt;
+    &lt;/action&gt;
+  &lt;/keybind&gt;
+...
+        </pre>
+       </p>
+
+      <h4>Android devices (MTP) problem</h4>
+      <p>It doesn't shows USB mobile. So as root:
         <pre style="white-space: pre-wrap;">
 dnf install gvfs-mtp
-dnf reinstall gvfs gvfs-mtp libmtp
+dnf reinstall gvfs libmtp
 //change automount to true:
 nano /usr/share/gvfs/mounts/mtp.mount
 //get product and vendor ID from logs (you should insert mobile):
 nano /var/log/messages
-//e.g. VID=04e8 and PID=6860
-//add string into:
+//e.g. New USB device found, idVendor=04e8, idProduct=6860 (idVendor=1004, idProduct=618e)
+//add entry into rules:
 nano /etc/udev/rules.d/51-android.rules
-SUBSYSTEM=="usb", ATTR{idVendor}=="04e8", ATTR{idProduct}=="6860", MODE="0660", GROUP="uucp", ENV{ID_MTP_DEVICE}="1", SYMLINK+="libmtp"
-//reboot
+SUBSYSTEM=="usb", ATTR{idVendor}=="04e8", ATTR{idProduct}=="6860", MODE="0666", GROUP="uucp", ENV{ID_MTP_DEVICE}="1", SYMLINK+="libmtp"
+//reboot or reload rules:
+udevadm control --reload
+        </pre>
+      </p>
+
+      <h4>Monitor</h4>
+      <p>To show current settings run <b>xrandr --current --verbose</b></p>
+      <p>To change brightness and RGB run <b>xrandr --output [DEVICE_NAME] --brightness 0.9 --gamma 1:1:0.7</b></p>
+
+      <h4>Touch-pad</h4>
+      <p>It should be better to enable tapping for touch-pads with tough keys, anyway tapping is more efficient than keying.
+       Edge scrolling is better than 2-fingers.</p>
+      <p>List devices <b>xinput list</b></p>
+      <p>List device props <b>xinput list-props [DEV_NUMBER]</b></p>
+      <p>Set tapping enabled: <b>xinput set-prop 11 273 1</b> where 11 is device number and 273 - property one, 1 means "true"</p>
+      <p>But just modify file <b>/usr/share/X11/xorg.conf.d/60-libinput.conf</b>:
+        <pre>
+          ...
+Section "InputClass"
+        Identifier "libinput touchpad catchall"
+        MatchIsTouchpad "on"
+        MatchDevicePath "/dev/input/event*"
+        Driver "libinput"
+        Option "ScrollMethod" "edge"
+        Option "Tapping" "on"
+EndSection
+          ...
         </pre>
       </p>
     </section>
-    
+
   </body>
 
 </document>

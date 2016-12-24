@@ -13,6 +13,8 @@ package org.beigesoft.orm.service;
 import java.util.List;
 import java.util.Map;
 
+import org.beigesoft.persistable.APersistableBase;
+import org.beigesoft.exception.ExceptionWithCode;
 import org.beigesoft.model.IHasId;
 import org.beigesoft.service.ISrvEntity;
 
@@ -123,6 +125,12 @@ public class SrvEntitySimple<T extends IHasId<?>> implements ISrvEntity<T> {
     if (pEntity.getIsNew()) {
       this.srvOrm.insertEntity(pEntity);
     } else {
+      if (APersistableBase.class.isAssignableFrom(pEntity.getClass())
+        && !((APersistableBase) pEntity).getIdDatabaseBirth()
+          .equals(getSrvOrm().getIdDatabase())) {
+        throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
+          "can_not_change_foreign_src");
+      }
       this.srvOrm.updateEntity(pEntity);
     }
   }
@@ -136,6 +144,12 @@ public class SrvEntitySimple<T extends IHasId<?>> implements ISrvEntity<T> {
   @Override
   public final void deleteEntity(final Map<String, Object> pAddParam,
     final T pEntity) throws Exception {
+    if (APersistableBase.class.isAssignableFrom(pEntity.getClass())
+      && !((APersistableBase) pEntity).getIdDatabaseBirth()
+        .equals(getSrvOrm().getIdDatabase())) {
+      throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
+        "can_not_delete_foreign_src");
+    }
     this.srvOrm.deleteEntity(this.entityClass, pEntity.getItsId());
   }
 
@@ -148,7 +162,8 @@ public class SrvEntitySimple<T extends IHasId<?>> implements ISrvEntity<T> {
   @Override
   public final void deleteEntity(final Map<String, Object> pAddParam,
     final Object pId) throws Exception {
-    this.srvOrm.deleteEntity(this.entityClass, pId);
+    T entity = retrieveEntityById(pAddParam, pId);
+    deleteEntity(pAddParam, entity);
   }
 
   /**

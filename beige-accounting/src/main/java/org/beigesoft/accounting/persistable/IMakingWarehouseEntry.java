@@ -13,7 +13,7 @@ package org.beigesoft.accounting.persistable;
 import java.util.Date;
 import java.math.BigDecimal;
 
-import org.beigesoft.model.IHasId;
+import org.beigesoft.persistable.IPersistableBase;
 import org.beigesoft.model.IHasTypeCode;
 
 /**
@@ -24,7 +24,7 @@ import org.beigesoft.model.IHasTypeCode;
  *
  * @author Yury Demidenko
  */
-public interface IMakingWarehouseEntry extends IHasId<Long>, IHasTypeCode {
+public interface IMakingWarehouseEntry extends IPersistableBase, IHasTypeCode {
 
   /**
    * <p>Geter for invItem.</p>

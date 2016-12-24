@@ -13,7 +13,6 @@ package org.beigesoft.accounting.service;
 import java.util.Map;
 import java.util.Date;
 import java.math.BigDecimal;
-import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
 import java.net.URL;
@@ -95,8 +94,8 @@ public class SrvLedger<RS> implements ISrvLedger {
     getSrvBalance().recalculateAllIfNeed(pDate1);
     LedgerPrevious result = new LedgerPrevious();
     if (this.queryPrevious == null) {
-      String flName = File.separator + "accounting" + File.separator + "ledger"
-        + File.separator + "queryPrevious.sql";
+      String flName = "/" + "accounting" + "/" + "ledger"
+        + "/" + "queryPrevious.sql";
       this.queryPrevious = loadString(flName);
     }
     String query = queryPrevious.replace(":DATEBALANCE",
@@ -175,8 +174,8 @@ public class SrvLedger<RS> implements ISrvLedger {
         final LedgerPrevious ledgerPrevious) throws Exception {
     LedgerDetail result = new LedgerDetail();
     if (this.queryDetail == null) {
-      String flName = File.separator + "accounting" + File.separator + "ledger"
-        + File.separator + "queryDetail.sql";
+      String flName = "/" + "accounting" + "/" + "ledger"
+        + "/" + "queryDetail.sql";
       this.queryDetail = loadString(flName);
     }
     String query = queryDetail.replace(":DATE1",

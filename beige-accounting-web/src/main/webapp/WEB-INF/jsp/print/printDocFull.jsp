@@ -11,10 +11,10 @@
 </head>
 <body>
 
-<div class="entity-title">${srvI18n.getMsg(title)} ${srvI18n.getMsg(entity.getClass().simpleName)}</div>
+<div class="entity-title">${accSettings.organization}, ${srvI18n.getMsg(title)} ${srvI18n.getMsg(entity.getClass().simpleName)}</div>
 <div class="entity">
   <jsp:include page="printHead.jsp"/>
-  <jsp:include page="printOwnedList.jsp"/>
+  <jsp:include page="printOwnedListFull.jsp"/>
   <jsp:include page="printAccEntries.jsp"/>
   <jsp:include page="printWarehouseEntries.jsp"/>
   <jsp:include page="printUseMaterialEntries.jsp"/>

@@ -13,7 +13,6 @@ package org.beigesoft.accounting.service;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
-import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
 import java.net.URL;
@@ -65,8 +64,8 @@ public class SrvWarehouseRests<RS> implements ISrvWarehouseRests {
     final Map<String, Object> pAddParam) throws Exception {
     List<WarehouseRestLine> result = new ArrayList<WarehouseRestLine>();
     if (this.queryMain == null) {
-      String flName = File.separator + "accounting" + File.separator
-        + "warehouse" + File.separator + "rests-in-warehouses.sql";
+      String flName = "/" + "accounting" + "/"
+        + "warehouse" + "/" + "rests-in-warehouses.sql";
       this.queryMain = loadString(flName);
     }
     IRecordSet<RS> recordSet = null;

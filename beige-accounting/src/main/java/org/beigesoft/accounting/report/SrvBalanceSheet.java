@@ -13,7 +13,6 @@ package org.beigesoft.accounting.report;
 import java.util.Map;
 import java.util.Date;
 import java.math.BigDecimal;
-import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
 import java.net.URL;
@@ -156,8 +155,8 @@ public class SrvBalanceSheet<RS> implements ISrvBalanceSheet {
   public final synchronized String evalQueryBalance(
     final Date pDate) throws Exception {
     if (this.queryBalance == null) {
-      String flName = File.separator + "accounting" + File.separator + "balance"
-        + File.separator + "queryBalanceSheet.sql";
+      String flName = "/" + "accounting" + "/" + "balance"
+        + "/" + "queryBalanceSheet.sql";
       this.queryBalance = loadString(flName);
     }
     String query = queryBalance.replace(":DATE1",

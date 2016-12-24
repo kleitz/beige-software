@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
-import java.io.File;
 import java.net.URL;
 import java.lang.reflect.Field;
 
@@ -80,7 +79,7 @@ public class MngSettings implements IMngSettings {
   @Override
   public final void loadConfiguration(final String pDirName,
     final String pFileName) throws Exception {
-    String nameBaseXml = File.separator + pDirName + File.separator
+    String nameBaseXml = "/" + pDirName + "/"
       + pFileName;
     getLogger().debug(MngSettings.class, "try to load: "
       + nameBaseXml);
@@ -254,8 +253,8 @@ public class MngSettings implements IMngSettings {
     this.appSettings =
       new HashMap<String, String>();
     String subFolder = evalSubfolder(pProps);
-    String nameAppStXml = File.separator + pDirName
-      + File.separator + subFolder + APP_SETTINGS_FILE_NAME;
+    String nameAppStXml = "/" + pDirName
+      + "/" + subFolder + APP_SETTINGS_FILE_NAME;
     URL urlAppStXml = MngSettings.class
       .getResource(nameAppStXml);
     if (urlAppStXml != null) {
@@ -296,8 +295,8 @@ public class MngSettings implements IMngSettings {
       .evalPropsStringsSet(strClasses);
     for (String settingName : settingsNames) {
       LinkedProperties propJaTyToCs = this.utlProperties.loadPropertiesXml(
-        File.separator + pDirName + File.separator + subFolder
-          + FOLDER_CLASS_TYPE_TO_CS + File.separator + settingName + ".xml");
+        "/" + pDirName + "/" + subFolder
+          + FOLDER_CLASS_TYPE_TO_CS + "/" + settingName + ".xml");
       if (propJaTyToCs != null) {
         getLogger().debug(MngSettings.class, "add class setting file: "
           + settingName + " in " + FOLDER_CLASS_TYPE_TO_CS);
@@ -307,8 +306,8 @@ public class MngSettings implements IMngSettings {
     for (Class<?> clazz : classes) {
       Map<String, String> classSettings = new HashMap<String, String>();
       LinkedProperties propsClassToSetting = this.utlProperties
-        .loadPropertiesXml(File.separator + pDirName + File.separator
-          + subFolder + FOLDER_CLASS_TO_CS + File.separator
+        .loadPropertiesXml("/" + pDirName + "/"
+          + subFolder + FOLDER_CLASS_TO_CS + "/"
             + clazz.getSimpleName() + ".xml");
       if (propsClassToSetting != null) {
         getLogger().debug(MngSettings.class, "add class setting file: "
@@ -400,7 +399,7 @@ public class MngSettings implements IMngSettings {
     if (subFolder == null) {
       subFolder = "";
     } else {
-      subFolder += File.separator;
+      subFolder += "/";
     }
     return subFolder;
   }
@@ -442,18 +441,18 @@ public class MngSettings implements IMngSettings {
       .evalPropsStringsSet(strFields);
     for (String settingName : settingsNames) {
       LinkedProperties propJaTyToSt = this.utlProperties
-        .loadPropertiesXml(File.separator + pDirName
-        + File.separator + subFolder + FOLDER_FIELD_TYPE_TO_FS
-          + File.separator + settingName + ".xml");
+        .loadPropertiesXml("/" + pDirName
+        + "/" + subFolder + FOLDER_FIELD_TYPE_TO_FS
+          + "/" + settingName + ".xml");
       if (propJaTyToSt != null) {
         getLogger().debug(MngSettings.class, "add field setting file: "
           + settingName + " in " + FOLDER_FIELD_TYPE_TO_FS);
         javaTypeToStMap.put(settingName, propJaTyToSt);
       }
       LinkedProperties propFldNmToSt = this.utlProperties
-        .loadPropertiesXml(File.separator + pDirName
-        + File.separator + subFolder + FOLDER_FIELD_NAME_TO_FS
-          + File.separator + settingName + ".xml");
+        .loadPropertiesXml("/" + pDirName
+        + "/" + subFolder + FOLDER_FIELD_NAME_TO_FS
+          + "/" + settingName + ".xml");
       if (propFldNmToSt != null) {
         getLogger().debug(MngSettings.class, "add field setting file: "
           + settingName + " in " + FOLDER_FIELD_NAME_TO_FS);
@@ -464,9 +463,9 @@ public class MngSettings implements IMngSettings {
       Map<String, Map<String, String>> fieldsDescriptor =
         new HashMap<String, Map<String, String>>();
       LinkedProperties propsClassToSetting = this.utlProperties
-          .loadPropertiesXml(File.separator + pDirName
-        + File.separator + subFolder + FOLDER_CLASS_TO_FS
-          + File.separator + clazz.getSimpleName() + ".xml");
+          .loadPropertiesXml("/" + pDirName
+        + "/" + subFolder + FOLDER_CLASS_TO_FS
+          + "/" + clazz.getSimpleName() + ".xml");
       Field[] fields = getUtlReflection().retrieveFields(clazz);
       if (propsClassToSetting != null) {
         getLogger().debug(MngSettings.class, "add field setting file: "
@@ -498,9 +497,9 @@ public class MngSettings implements IMngSettings {
                   settingName, fldSettings, "2nd for " + clazz.getSimpleName()
                     + "->" + field.getName());
               }
-              String nmFlJavaTypeToFs = File.separator + pDirName
-                + File.separator + subFolder + DIR_FIELD_NAME_FIELD_TYPE_TO_FS
-                  + File.separator + field.getName() + settingName + ".xml";
+              String nmFlJavaTypeToFs = "/" + pDirName
+                + "/" + subFolder + DIR_FIELD_NAME_FIELD_TYPE_TO_FS
+                  + "/" + field.getName() + settingName + ".xml";
               LinkedProperties propFldNmJaTyToFs = evalProps(fldNmJaTyToFsMap,
                 field.getName() + settingName, nmFlJavaTypeToFs);
               if (propFldNmJaTyToFs != null) { //3d
@@ -509,9 +508,9 @@ public class MngSettings implements IMngSettings {
                   settingName, fldSettings, "3d for " + clazz.getSimpleName()
                     + "->" + field.getName());
               }
-              String nmFlClassTypeToFs = File.separator + pDirName
-                + File.separator + subFolder + DIR_FIELD_NAME_CLASS_TYPE_TO_FS
-                  + File.separator + field.getName() + settingName + ".xml";
+              String nmFlClassTypeToFs = "/" + pDirName
+                + "/" + subFolder + DIR_FIELD_NAME_CLASS_TYPE_TO_FS
+                  + "/" + field.getName() + settingName + ".xml";
               LinkedProperties propFldNmClassTyToFs = evalProps(
                 fldNmClassTyToFsMap, field.getName() + settingName,
                   nmFlClassTypeToFs);

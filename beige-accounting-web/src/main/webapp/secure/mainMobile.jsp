@@ -116,6 +116,21 @@
   <div id="targetInfo">
   </div>
 
+  <dialog id="dlgConfirm" class="dlg dlg-alert">
+      <div class="confirm">
+        <div class="dialog-title confirm-title">
+          Conformation.
+          <button onclick="document.getElementById('dlgConfirm').close();" class="btn-close btn-confirm">x</button>
+        </div>
+        <div id="confirmPlace" class="msg-place">
+        </div>
+        <div class="dlg-actions">
+          <button id="confirmYes" class="btn btn-act btn-confirm">${pageContext.servletContext.getAttribute("srvI18n").getMsg("Yes")}</button>
+          <button onclick="document.getElementById('dlgConfirm').close();" class="btn btn-act btn-confirm">${pageContext.servletContext.getAttribute("srvI18n").getMsg("No")}</button>
+        </div>
+     </div>
+  </dialog>
+
   <dialog id="dlgError" class="dlg dlg-alert">
     <div class="error">
       <div class="dialog-title error-title">

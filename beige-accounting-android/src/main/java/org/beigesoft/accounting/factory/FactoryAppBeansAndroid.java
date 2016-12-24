@@ -203,7 +203,7 @@ public class FactoryAppBeansAndroid extends AFactoryAppBeans<Cursor> {
       this.mngDatabaseAndroid.setDatabaseDir(cw.getFilesDir()
         .getAbsolutePath().replace("files", "databases"));
       File bkDir = new File(Environment.getExternalStorageDirectory()
-        .getAbsolutePath() + File.separator + "BeigeAccountingBackup");
+        .getAbsolutePath() + "/" + "BeigeAccountingBackup");
       if (!bkDir.exists() && !bkDir.mkdirs()) {
         throw new ExceptionWithCode(ExceptionWithCode.SOMETHING_WRONG,
           "Can't create dir: " + bkDir);

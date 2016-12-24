@@ -11,5 +11,4 @@
 <comment>Correspondence of Java types to usually SQL WHERE clause. ORDER is essential, the LAST value will be used.</comment>
 <entry key="org.beigesoft.model.IHasVersion">FilterLastVersionChanged</entry>
 <entry key="org.beigesoft.accounting.persistable.AccountingEntry">FilterAvoidAccDebtCredit</entry>
-<entry key="org.beigesoft.accounting.persistable.SubaccountLine">null</entry>
 </properties>

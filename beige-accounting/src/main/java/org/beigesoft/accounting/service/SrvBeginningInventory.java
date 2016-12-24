@@ -14,6 +14,7 @@ import java.util.Date;
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.List;
+import java.text.DateFormat;
 
 import org.beigesoft.exception.ExceptionWithCode;
 import org.beigesoft.accounting.persistable.BeginningInventory;
@@ -21,6 +22,7 @@ import org.beigesoft.accounting.persistable.BeginningInventoryLine;
 import org.beigesoft.accounting.persistable.UseMaterialEntry;
 import org.beigesoft.accounting.persistable.CogsEntry;
 import org.beigesoft.orm.service.ISrvOrm;
+import org.beigesoft.service.ISrvI18n;
 
 /**
  * <p>Business service for Beginning Inventory.</p>
@@ -43,18 +45,21 @@ public class SrvBeginningInventory<RS>
    * @param pSrvOrm ORM service
    * @param pSrvAccSettings AccSettings service
    * @param pSrvAccEntry Accounting entries service
+   * @param pSrvI18n I18N service
+   * @param pDateFormatter for description
    * @param pSrvWarehouseEntry Warehouse service
    * @param pSrvUseMaterialEntry Draw material service
    * @param pSrvCogsEntry Draw material service
    **/
   public SrvBeginningInventory(final ISrvOrm<RS> pSrvOrm,
-    final ISrvAccSettings pSrvAccSettings,
-      final ISrvAccEntry pSrvAccEntry,
+    final ISrvAccSettings pSrvAccSettings, final ISrvAccEntry pSrvAccEntry,
+      final ISrvI18n pSrvI18n, final DateFormat pDateFormatter,
         final ISrvWarehouseEntry pSrvWarehouseEntry,
           final ISrvDrawItemEntry<UseMaterialEntry> pSrvUseMaterialEntry,
             final ISrvDrawItemEntry<CogsEntry> pSrvCogsEntry) {
     super(BeginningInventory.class, pSrvOrm, pSrvAccSettings, pSrvAccEntry,
-      pSrvWarehouseEntry, pSrvUseMaterialEntry, pSrvCogsEntry);
+      pSrvI18n, pDateFormatter,
+        pSrvWarehouseEntry, pSrvUseMaterialEntry, pSrvCogsEntry);
   }
 
   /**
@@ -125,8 +130,9 @@ public class SrvBeginningInventory<RS>
           reversingLine.setItsTotal(reversedLine.getItsTotal().negate());
           reversingLine.setIsNew(true);
           reversingLine.setItsOwner(pEntity);
-          reversingLine.setDescription("Reversed ID: "
-            + reversedLine.getItsId());
+          reversingLine.setDescription(getSrvI18n().getMsg("reversed_n")
+            + reversedLine.getIdDatabaseBirth() + "-"
+              + reversedLine.getItsId()); //local
           getSrvOrm().insertEntity(reversingLine);
           getSrvWarehouseEntry().load(pAddParam, reversingLine,
             reversingLine.getWarehouseSite());
@@ -136,8 +142,9 @@ public class SrvBeginningInventory<RS>
           } else {
             descr = reversedLine.getDescription();
           }
-          reversedLine.setDescription(descr
-            + " reversing ID: " + reversingLine.getItsId());
+          reversedLine.setDescription(descr + " " + getSrvI18n()
+            .getMsg("reversing_n") + reversingLine.getIdDatabaseBirth() + "-"
+              + reversingLine.getItsId());
           reversedLine.setReversedId(reversingLine.getItsId());
           reversedLine.setTheRest(BigDecimal.ZERO);
           getSrvOrm().updateEntity(reversedLine);

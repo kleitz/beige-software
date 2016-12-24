@@ -80,7 +80,7 @@ public final class mngDatabaseExt_jsp extends org.apache.jasper.runtime.HttpJspB
       out = pageContext.getOut();
       _jspx_out = out;
 
-      out.write("\n\n\n<!DOCTYPE html>\n<html>\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no\">\n  <link rel=\"shortcut icon\" href=\"../static/img/favicon.png\">\n  <link rel=\"stylesheet\" href=\"../static/css/beige.common.css\">\n  <title>");
+      out.write("\n\n\n<!DOCTYPE html>\n<html>\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no\">\n  <link rel=\"shortcut icon\" href=\"../static/img/favicon.png\">\n  <script type=\"text/javascript\" src=\"../static/js/beige.form.js\"></script>\n  <script type=\"text/javascript\" src=\"../static/js/beige.i18n.en.js\"></script>\n  <link rel=\"stylesheet\" href=\"../static/css/beige.common.css\">\n  <title>");
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${srvI18n.getMsg(\"mngDatabase\")}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
       out.write("</title>\n</head>\n<body>\n  <br>\n  <a class=\"btn\" href=\"../\" style=\"margin: 10px;\">");
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${srvI18n.getMsg(\"home\")}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
@@ -111,7 +111,13 @@ public final class mngDatabaseExt_jsp extends org.apache.jasper.runtime.HttpJspB
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${srvI18n.getMsg(\"create_db_curr\")}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
       out.write("\n    </div>\n    <form method=\"post\">\n      <input type=\"hidden\" name=\"nameAction\" value=\"create\">\n      <input type=\"hidden\" name=\"nameRenderer\" value=\"mngDatabaseExt\">\n      <table class=\"tbl-fieldset\">\n        <tr>\n          <td>\n            <label>");
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${srvI18n.getMsg(\"create_label\")}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
-      out.write(":</label>\n          </td>\n          <td>\n            <div style=\"display: flex;\">\n              <input name=\"nameDatabase\" value=\"dbmy\">.sqlite\n            </div>\n          </td>\n        </tr>\n      </table>\n      <div>\n        <input type=\"submit\" onclick=\"return confirm('Create?');\"/>\n      </div>\n    </form>\n  </div>\n\n</body>\n</html>\n\n");
+      out.write(":</label>\n          </td>\n          <td>\n            <div style=\"display: flex;\">\n              <input name=\"nameDatabase\" value=\"dbmy\">.sqlite\n            </div>\n          </td>\n        </tr>\n        <tr>\n          <td>\n            <label>");
+      out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${srvI18n.getMsg(\"idDatabase\")}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
+      out.write(":</label>\n          </td>\n          <td>\n            <div style=\"display: flex;\">\n              <input type=\"number\" name=\"idDatabase\" value=\"2\">\n            </div>\n          </td>\n        </tr>\n      </table>\n      <div>\n        <input type=\"submit\" onclick=\"confirmSubmit(this, 'Create?'); return false;\"/>\n      </div>\n    </form>\n  </div>\n\n\n  <dialog id=\"dlgConfirm\" class=\"dlg dlg-alert\">\n      <div class=\"confirm\">\n        <div class=\"dialog-title confirm-title\">\n          Conformation.\n          <button onclick=\"document.getElementById('dlgConfirm').close();\" class=\"btn-close btn-confirm\">x</button>\n        </div>\n        <div id=\"confirmPlace\" class=\"msg-place\">\n        </div>\n        <div class=\"dlg-actions\">\n          <button id=\"confirmYes\" class=\"btn btn-act btn-confirm\">");
+      out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${srvI18n.getMsg(\"Yes\")}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
+      out.write("</button>\n          <button onclick=\"document.getElementById('dlgConfirm').close();\" class=\"btn btn-act btn-confirm\">");
+      out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${srvI18n.getMsg(\"No\")}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
+      out.write("</button>\n        </div>\n     </div>\n  </dialog>\n\n</body>\n</html>\n\n");
     } catch (java.lang.Throwable t) {
       if (!(t instanceof javax.servlet.jsp.SkipPageException)){
         out = _jspx_out;
@@ -139,10 +145,10 @@ public final class mngDatabaseExt_jsp extends org.apache.jasper.runtime.HttpJspB
     org.apache.taglibs.standard.tag.rt.core.ForEachTag _jspx_th_c_005fforEach_005f0 = (org.apache.taglibs.standard.tag.rt.core.ForEachTag) _005fjspx_005ftagPool_005fc_005fforEach_0026_005fvar_005fitems.get(org.apache.taglibs.standard.tag.rt.core.ForEachTag.class);
     _jspx_th_c_005fforEach_005f0.setPageContext(_jspx_page_context);
     _jspx_th_c_005fforEach_005f0.setParent(null);
-    // /WEB-INF/jsp/mngDatabaseExt.jsp(24,6) name = var type = java.lang.String reqTime = false required = false fragment = false deferredValue = false expectedTypeName = null deferredMethod = false methodSignature = null
+    // /WEB-INF/jsp/mngDatabaseExt.jsp(26,6) name = var type = java.lang.String reqTime = false required = false fragment = false deferredValue = false expectedTypeName = null deferredMethod = false methodSignature = null
     _jspx_th_c_005fforEach_005f0.setVar("database");
-    // /WEB-INF/jsp/mngDatabaseExt.jsp(24,6) name = items type = javax.el.ValueExpression reqTime = true required = false fragment = false deferredValue = true expectedTypeName = java.lang.Object deferredMethod = false methodSignature = null
-    _jspx_th_c_005fforEach_005f0.setItems(new org.apache.jasper.el.JspValueExpression("/WEB-INF/jsp/mngDatabaseExt.jsp(24,6) '${databases}'",_jsp_getExpressionFactory().createValueExpression(_jspx_page_context.getELContext(),"${databases}",java.lang.Object.class)).getValue(_jspx_page_context.getELContext()));
+    // /WEB-INF/jsp/mngDatabaseExt.jsp(26,6) name = items type = javax.el.ValueExpression reqTime = true required = false fragment = false deferredValue = true expectedTypeName = java.lang.Object deferredMethod = false methodSignature = null
+    _jspx_th_c_005fforEach_005f0.setItems(new org.apache.jasper.el.JspValueExpression("/WEB-INF/jsp/mngDatabaseExt.jsp(26,6) '${databases}'",_jsp_getExpressionFactory().createValueExpression(_jspx_page_context.getELContext(),"${databases}",java.lang.Object.class)).getValue(_jspx_page_context.getELContext()));
     int[] _jspx_push_body_count_c_005fforEach_005f0 = new int[] { 0 };
     try {
       int _jspx_eval_c_005fforEach_005f0 = _jspx_th_c_005fforEach_005f0.doStartTag();
@@ -152,15 +158,15 @@ public final class mngDatabaseExt_jsp extends org.apache.jasper.runtime.HttpJspB
           out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${database}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
           out.write(".sqlite\n          </td>\n          <td style=\"padding: 15px;\">\n            <a class=\"btn\" href=\"?nameRenderer=mngDatabaseExt&nameAction=change&nameDatabase=");
           out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${database}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
-          out.write("\" onclick=\"return confirm('Change?');\">");
+          out.write("\" onclick=\"confirmHref(this, 'Change?'); return false;\">");
           out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${srvI18n.getMsg(\"change_db_curr\")}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
           out.write("</a>\n            <br><br>\n            <a class=\"btn\" href=\"?nameRenderer=mngDatabaseExt&nameAction=backup&nameDatabase=");
           out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${database}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
-          out.write("\" onclick=\"return confirm('Backup?');\">");
+          out.write("\" onclick=\"confirmHref(this, 'Backup?'); return false;\">");
           out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${srvI18n.getMsg(\"backup\")}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
           out.write("</a>\n            <br><br>\n            <a class=\"btn\" href=\"?nameRenderer=mngDatabaseExt&nameAction=delete&nameDatabase=");
           out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${database}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
-          out.write("\" onclick=\"return confirm('Delete?');\">");
+          out.write("\" onclick=\"confirmHref(this, 'Delete?'); return false;\">");
           out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${srvI18n.getMsg(\"Delete\")}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
           out.write("</a>\n          </td>\n        </tr>\n      ");
           int evalDoAfterBody = _jspx_th_c_005fforEach_005f0.doAfterBody();
@@ -190,10 +196,10 @@ public final class mngDatabaseExt_jsp extends org.apache.jasper.runtime.HttpJspB
     org.apache.taglibs.standard.tag.rt.core.ForEachTag _jspx_th_c_005fforEach_005f1 = (org.apache.taglibs.standard.tag.rt.core.ForEachTag) _005fjspx_005ftagPool_005fc_005fforEach_0026_005fvar_005fitems.get(org.apache.taglibs.standard.tag.rt.core.ForEachTag.class);
     _jspx_th_c_005fforEach_005f1.setPageContext(_jspx_page_context);
     _jspx_th_c_005fforEach_005f1.setParent(null);
-    // /WEB-INF/jsp/mngDatabaseExt.jsp(48,6) name = var type = java.lang.String reqTime = false required = false fragment = false deferredValue = false expectedTypeName = null deferredMethod = false methodSignature = null
+    // /WEB-INF/jsp/mngDatabaseExt.jsp(50,6) name = var type = java.lang.String reqTime = false required = false fragment = false deferredValue = false expectedTypeName = null deferredMethod = false methodSignature = null
     _jspx_th_c_005fforEach_005f1.setVar("database");
-    // /WEB-INF/jsp/mngDatabaseExt.jsp(48,6) name = items type = javax.el.ValueExpression reqTime = true required = false fragment = false deferredValue = true expectedTypeName = java.lang.Object deferredMethod = false methodSignature = null
-    _jspx_th_c_005fforEach_005f1.setItems(new org.apache.jasper.el.JspValueExpression("/WEB-INF/jsp/mngDatabaseExt.jsp(48,6) '${bkDatabases}'",_jsp_getExpressionFactory().createValueExpression(_jspx_page_context.getELContext(),"${bkDatabases}",java.lang.Object.class)).getValue(_jspx_page_context.getELContext()));
+    // /WEB-INF/jsp/mngDatabaseExt.jsp(50,6) name = items type = javax.el.ValueExpression reqTime = true required = false fragment = false deferredValue = true expectedTypeName = java.lang.Object deferredMethod = false methodSignature = null
+    _jspx_th_c_005fforEach_005f1.setItems(new org.apache.jasper.el.JspValueExpression("/WEB-INF/jsp/mngDatabaseExt.jsp(50,6) '${bkDatabases}'",_jsp_getExpressionFactory().createValueExpression(_jspx_page_context.getELContext(),"${bkDatabases}",java.lang.Object.class)).getValue(_jspx_page_context.getELContext()));
     int[] _jspx_push_body_count_c_005fforEach_005f1 = new int[] { 0 };
     try {
       int _jspx_eval_c_005fforEach_005f1 = _jspx_th_c_005fforEach_005f1.doStartTag();
@@ -203,7 +209,7 @@ public final class mngDatabaseExt_jsp extends org.apache.jasper.runtime.HttpJspB
           out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${database}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
           out.write(".sqlite\n          </td>\n          <td style=\"padding: 15px;\">\n            <a class=\"btn\" href=\"?nameRenderer=mngDatabaseExt&nameAction=restore&nameDatabase=");
           out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${database}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
-          out.write("\" onclick=\"return confirm('Restore?');\">");
+          out.write("\" onclick=\"confirmHref(this, 'Restore?'); return false;\">");
           out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${srvI18n.getMsg(\"restore\")}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
           out.write("</a>\n          </td>\n        </tr>\n      ");
           int evalDoAfterBody = _jspx_th_c_005fforEach_005f1.doAfterBody();

@@ -49,6 +49,10 @@
       <param-value>true</param-value>
     </init-param>
     <init-param>
+      <param-name>newDatabaseId</param-name>
+      <param-value>1</param-value>
+    </init-param>
+    <init-param>
       <param-name>ormSettingsDir</param-name>
       <param-value>beige-orm</param-value>
     </init-param>

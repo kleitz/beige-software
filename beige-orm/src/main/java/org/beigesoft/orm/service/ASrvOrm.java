@@ -104,6 +104,33 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
   private HlpInsertUpdate hlpInsertUpdate;
 
   /**
+   * <p>ID for New Database.</p>
+   **/
+  private int newDatabaseId = 1;
+
+  /**
+   * <p>Getter for new database ID.
+   * Any database mist has ID, int is suitable type for that cause
+   * its range is enough and it's faster than String.</p>
+   * @return ID for new database
+   **/
+  @Override
+  public final int getNewDatabaseId() {
+    return this.newDatabaseId;
+  }
+
+  /**
+   * <p>Setter for new database ID.
+   * Any database mist has ID, int is suitable type for that cause
+   * its range is enough and it's faster than String.</p>
+   * @param pNewDatabaseId ID for new database
+   **/
+  @Override
+  public final void setNewDatabaseId(final int pNewDatabaseId) {
+    this.newDatabaseId = pNewDatabaseId;
+  }
+
+  /**
    * <p>Create entity.</p>
    * @param <T> entity type
    * @param pEntityClass entity class
@@ -138,7 +165,7 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
     Constructor<T> constructor = pEntityClass.getDeclaredConstructor();
     T entity = constructor.newInstance();
     if (APersistableBase.class.isAssignableFrom(pEntityClass)) {
-      initPersistableBase(entity);
+      initPersistableBase(entity); // always for current DB!!!
     }
     Constructor<?> constrEntityOwner = pEntityOwnerClass
       .getDeclaredConstructor();
@@ -169,7 +196,13 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
     fieldEntityOwner.setAccessible(true);
     fieldEntityOwner.set(entity, entityOwner);
     if (APersistableBase.class.isAssignableFrom(pEntityClass)) {
-      initPersistableBase(entity);
+      if (getSrvDatabase() != null //for test purpose, otherwise it must be set
+        && !((APersistableBase) entity).getIdDatabaseBirth()
+        .equals(getIdDatabase())) {
+        throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
+          "can_not_change_foreign_src");
+      }
+      initPersistableBase(entity); // always for current DB!!!
     }
     return entity;
   }
@@ -1320,15 +1353,15 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
           ifAllTablesCreated = false;
         }
       }
-      String dirPath = File.separator;
+      String dirPath = "/";
       if (this.propertiesBase.getDirectory() != null) {
-        dirPath = File.separator + this.propertiesBase.getDirectory()
-          + File.separator;
+        dirPath = "/" + this.propertiesBase.getDirectory()
+          + "/";
       }
       String useSubFolder = this.mngSettings
         .getAppSettings().get("useSubFolder");
       String initSql = loadString(dirPath + useSubFolder
-          + File.separator + "init.sql");
+          + "/" + "init.sql");
       if (initSql != null) {
         getLogger().info(ASrvOrm.class, "init.sql found, try to execute.");
         for (String initSingle : initSql.split("\n")) {
@@ -1345,8 +1378,7 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
         int dbVer = Integer.parseInt(this.mngSettings
         .getAppSettings().get("databaseVersion"));
         databaseInfo.setDatabaseVersion(dbVer);
-        Double randomDbl = Math.random() * 1000000000;
-        databaseInfo.setDatabaseId(randomDbl.intValue());
+        databaseInfo.setDatabaseId(getNewDatabaseId());
         databaseInfo.setDescription(this.mngSettings
           .getAppSettings().get("title"));
         insertEntity(databaseInfo);
@@ -1369,7 +1401,7 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
         getLogger().info(ASrvOrm.class, "tables already created.");
       }
       if (!ifAllTablesCreated) {
-        tryUgradeDatabase(dirPath + useSubFolder + File.separator);
+        tryUgradeDatabase(dirPath + useSubFolder + "/");
       }
     } finally {
       srvDatabase.releaseResources(); //close connection
@@ -1407,7 +1439,7 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
         this.srvDatabase.rollBackTransaction();
         throw ex;
       }
-      nextVersion = srvDatabase.getVersionDatabase() + 1;
+      nextVersion++;
       upgradeSqlName = "upgrade_" + nextVersion + ".sql";
       upgradeSql = loadString(pUpgradeDir + upgradeSqlName);
     }
@@ -1456,6 +1488,10 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
       new StringBuffer();
     boolean isFirstField = true;
     TableSql tableSql = getTablesMap().get(pEntityClass.getSimpleName());
+    if (tableSql == null) {
+      throw new ExceptionWithCode(ExceptionWithCode.CONFIGURATION_MISTAKE,
+        "where_is_no_table_def_for::" + pEntityClass.getSimpleName());
+    }
     int idx = 0;
     for (Map.Entry<String, FieldSql> entry
       : tableSql.getFieldsMap().entrySet()) {

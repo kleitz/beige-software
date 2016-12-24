@@ -14,7 +14,7 @@
   <suppress checks="MagicNumberCheck"
     files="BeigeAccounting|JettyAccountingService|MngDatabaseAndroid|SrvWebEntity|PaymentTo|PrepaymentTo|PrepaymentFrom|PaymentFrom"/>
   <suppress checks="ParameterNumber"
-    files="SrvPurchaseInvoice|SrvSalesReturn"/>
+    files="SrvPurchaseInvoice|SrvSalesReturn|SrvBeginningInventory|ASrvDocumentCogs|ASrvDocumentUseMaterial|ASrvDocumentFull"/>
   <suppress checks="MagicNumberCheck"
     files="BalanceAtAllDirtyCheck|SrvBalanceStd|GoodsLoss|GoodsLossLine|SalesReturn|SalesReturnLine|PurchaseReturn|PurchaseReturnLine|AFactoryAppBeans"/>
   <suppress checks="MagicNumberCheck"

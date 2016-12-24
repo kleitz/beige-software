@@ -16,7 +16,7 @@
       <p>Install Apache Ant.</p>
       <p>Install update-alternatives then add new java (the first is OpenJdk8):
         <pre>
-          update-alternatives --install "/usr/bin/java" "java" "/opt/oracle/jdk1.7.0_79/bin/java" 110
+          update-alternatives --install "/usr/bin/java" "java" "/opt/obuildfactory/jdk-1.7.0-openjdk-x86_64/bin/java" 110
           update-alternatives --config java //- elect jdk7
         </pre>
       </p>

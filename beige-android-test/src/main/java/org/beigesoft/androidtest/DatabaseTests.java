@@ -55,68 +55,73 @@ public class DatabaseTests extends android.test.AndroidTestCase {
    * <p>Perform simple (non-concurrence) tests.</p>
    * @throws Exception an exception
    **/
-  public void testAll() throws Exception {
-    //BeanELResolver beanELResolver = new BeanELResolver();
-    Context context = getContext();
-    Logger log = new Logger();
-    log.setIsShowDebugMessages(true);
-    SQLiteDatabase db = context.openOrCreateDatabase ("dbtest.sqlite",
-     Context.MODE_PRIVATE, new CursorFactory());
-    srvDatabase = new SrvDatabase();
-    srvDatabase.setSqliteDatabase(db);
-    srvDatabase.setLogger(log);
-    srvOrm = new SrvOrmAndroid<Cursor>();
-    srvOrm.setSrvSqlEscape(new SrvSqlEscape());
-    srvOrm.setIsNeedsToSqlEscape(false);
-    SrvRecordRetriever srvRecordRetriever = new SrvRecordRetriever();
-    srvOrm.setSrvRecordRetriever(srvRecordRetriever);
-    srvOrm.setSrvDatabase(srvDatabase);
-    MngSettings mngSettings = new MngSettings();
-    mngSettings.setLogger(log);
-    srvOrm.setLogger(log);
-    srvOrm.setMngSettings(mngSettings);
-    log.debug(DatabaseTests.class, 
-      "loading configuration: beige-orm, persistence-sqlite.xml");
-    srvOrm.loadConfiguration("beige-orm", "persistence-sqlite.xml");
-    assertEquals("integer not null primary key autoincrement",
-      srvOrm.getMngSettings().getFieldsSettings()
-                .get(RoleJetty.class.getCanonicalName()).get("itsId")
-                  .get("definition"));
-    TestSimple<Cursor> testSimple = new TestSimple<Cursor>();
-    testSimple.setSrvDatabase(srvDatabase);
-    testSimple.setLogger(log);
-    testSimple.setSrvOrm(srvOrm);
-    testSimple.doTest1();
-    srvDatabase.setIsAutocommit(true);
-    String dep3insert = "insert into DEPARTMENT  (ITSID, ITSNAME, IDDATABASEBIRTH ) values (3, 'dp3', 999);";
-    String dep4insert = "insert into DEPARTMENT  (ITSID, ITSNAME, IDDATABASEBIRTH ) values (4, 'dp4', 999);";
-    Department dp3 = srvOrm.retrieveEntityById(Department.class, "3");
-    if (dp3 == null) {
-      srvDatabase.executeQuery(dep3insert);
-      dp3 = srvOrm.retrieveEntityById(Department.class, "3");
-      assertNotNull(dp3);
-      srvOrm.deleteEntity(dp3);
-      dp3 = srvOrm.retrieveEntityById(Department.class, "3");
-      assertNull(dp3);
-    }
-    Department dp4 = srvOrm.retrieveEntityById(Department.class, "4");
-    if (dp4 == null) {
-      srvDatabase.executeQuery(dep4insert);
-      dp4 = srvOrm.retrieveEntityById(Department.class, "4");
-      assertNotNull(dp4);
-      srvOrm.deleteEntity(dp4);
-      dp4 = srvOrm.retrieveEntityById(Department.class, "4");
-      assertNull(dp4);
-    }
-    boolean isFallGroupInsert = false;
+  public void testAll() {
     try {
-      srvDatabase.executeQuery(dep3insert + "\n" + dep4insert);
-    } catch (Exception e) {
-      isFallGroupInsert = true;
+      //BeanELResolver beanELResolver = new BeanELResolver();
+      Context context = getContext();
+      Logger log = new Logger();
+      log.setIsShowDebugMessages(true);
+      SQLiteDatabase db = context.openOrCreateDatabase ("dbtest.sqlite",
+       Context.MODE_PRIVATE, new CursorFactory());
+      srvDatabase = new SrvDatabase();
+      srvDatabase.setSqliteDatabase(db);
+      srvDatabase.setLogger(log);
+      srvOrm = new SrvOrmAndroid<Cursor>();
+      srvOrm.setSrvSqlEscape(new SrvSqlEscape());
+      srvOrm.setIsNeedsToSqlEscape(false);
+      SrvRecordRetriever srvRecordRetriever = new SrvRecordRetriever();
+      srvDatabase.setSrvRecordRetriever(srvRecordRetriever);
+      srvOrm.setSrvRecordRetriever(srvRecordRetriever);
+      srvOrm.setSrvDatabase(srvDatabase);
+      MngSettings mngSettings = new MngSettings();
+      mngSettings.setLogger(log);
+      srvOrm.setLogger(log);
+      srvOrm.setMngSettings(mngSettings);
+      log.debug(DatabaseTests.class, 
+        "loading configuration: beige-orm, persistence-sqlite.xml");
+      srvOrm.loadConfiguration("beige-orm", "persistence-sqlite.xml");
+      assertEquals("integer not null primary key autoincrement",
+        srvOrm.getMngSettings().getFieldsSettings()
+                  .get(RoleJetty.class.getCanonicalName()).get("itsId")
+                    .get("definition"));
+      TestSimple<Cursor> testSimple = new TestSimple<Cursor>();
+      testSimple.setSrvDatabase(srvDatabase);
+      testSimple.setLogger(log);
+      testSimple.setSrvOrm(srvOrm);
+      testSimple.doTest1();
+      srvDatabase.setIsAutocommit(true);
+      String dep3insert = "insert into DEPARTMENT  (ITSID, ITSNAME, IDDATABASEBIRTH ) values (3, 'dp3', 999);";
+      String dep4insert = "insert into DEPARTMENT  (ITSID, ITSNAME, IDDATABASEBIRTH ) values (4, 'dp4', 999);";
+      Department dp3 = srvOrm.retrieveEntityById(Department.class, "3");
+      if (dp3 == null) {
+        srvDatabase.executeQuery(dep3insert);
+        dp3 = srvOrm.retrieveEntityById(Department.class, "3");
+        assertNotNull(dp3);
+        srvOrm.deleteEntity(dp3);
+        dp3 = srvOrm.retrieveEntityById(Department.class, "3");
+        assertNull(dp3);
+      }
+      Department dp4 = srvOrm.retrieveEntityById(Department.class, "4");
+      if (dp4 == null) {
+        srvDatabase.executeQuery(dep4insert);
+        dp4 = srvOrm.retrieveEntityById(Department.class, "4");
+        assertNotNull(dp4);
+        srvOrm.deleteEntity(dp4);
+        dp4 = srvOrm.retrieveEntityById(Department.class, "4");
+        assertNull(dp4);
+      }
+      boolean isFallGroupInsert = false;
+      try {
+        srvDatabase.executeQuery(dep3insert + "\n" + dep4insert);
+      } catch (Exception e) {
+        isFallGroupInsert = true;
+      }
+      assertTrue(!isFallGroupInsert);
+      srvOrm.deleteEntity(Department.class, "3");
+      srvOrm.deleteEntity(Department.class, "4");
+    } catch (Exception ex) {
+      ex.printStackTrace();
     }
-    assertTrue(!isFallGroupInsert);
-    srvOrm.deleteEntity(Department.class, "3");
-    srvOrm.deleteEntity(Department.class, "4");
   }
 
   //Simple getters and setters:
@@ -140,7 +145,7 @@ public class DatabaseTests extends android.test.AndroidTestCase {
    * <p>Geter for srvOrm.</p>
    * @return SrvOrmAndroid
    **/
-  public final SrvOrmAndroid getSrvOrm() {
+  public final SrvOrmAndroid<Cursor> getSrvOrm() {
     return this.srvOrm;
   }
 
@@ -148,7 +153,7 @@ public class DatabaseTests extends android.test.AndroidTestCase {
    * <p>Setter for srvOrm.</p>
    * @param pSrvOrm reference
    **/
-  public final void setSrvOrm(final SrvOrmAndroid pSrvOrm) {
+  public final void setSrvOrm(final SrvOrmAndroid<Cursor> pSrvOrm) {
     this.srvOrm = pSrvOrm;
   }
 }

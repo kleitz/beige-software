@@ -1,7 +1,13 @@
 site: http://www.beigesoft.org
 or https://sites.google.com/site/beigesoftware
 
+version 1.1.3.
+Change conformation dialog
+Fix ID appearance
+Fix several mistakes
+
 version 1.1.2.
+!05 Dec 2016 fixed error that raised only on MS Windows "not found \beige-orm\persistance-sqlite.xml"
 Added balance sheet report.
 Added import data from Tax accounting into Market (business) one.
 Added Other loses, Retained looses accounts
@@ -48,13 +54,14 @@ Prerequisites for building from source:
 * JDK7 (not 8, jdk 8 can not compile a-javabeans, but can run it).
 * last of Apache Maven and Ant.
 * MySql 5.1.7+ with registered user/password "beigeaccounting/beigeaccounting" and created databases "beigeaccounting" and "beigeaccountingtest".
-* SqlLite last version.
 * Android SDK without Studio and downloaded last version and 19 API. It requires some 32bit libs for 64bit Fedora (dnf install glibc.i686 glibc-devel.i686 libstdc++.i686 zlib-devel.i686 ncurses-devel.i686 libX11-devel.i686 libXrender.i686 libXrandr.i686)
-* Google Chrome browser (html5-dialog ready).
+* Google Chrome, Opera, or Chromium browser (html5-dialog ready).
+
+SQlite is already inside JDBC driver (its size is 5MB)
 
 Installation:
 All software are installed by simple "mvn clean install".
-Test web application Beige-WEB can be started by "mvn clean install tomcat7:run -P webtest"
+Test web application Beige-WEB can be started by "mvn clean install tomcat7:run -P webtest" then open "http://localhost:8080/beige-web/"
 but after that run "mvn clean install" to install it as WEB library.
 Web application beige-accounting-web can be started by "mvn clean install tomcat7:run -P mysql"
 or just copy war file inside a JEE server, also copy mysql-jdbc-connector5.1.40.jar and HikariCP-2.4.3.jar into [server]/lib.

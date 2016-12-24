@@ -12,12 +12,14 @@ package org.beigesoft.accounting.service;
 
 import java.util.Date;
 import java.util.Map;
+import java.text.DateFormat;
 
 import org.beigesoft.holder.IAttributes;
 import org.beigesoft.exception.ExceptionWithCode;
 import org.beigesoft.accounting.persistable.SalesInvoice;
 import org.beigesoft.accounting.persistable.PaymentFrom;
 import org.beigesoft.orm.service.ISrvOrm;
+import org.beigesoft.service.ISrvI18n;
 
 /**
  * <p>Business service for prepayment for sales.
@@ -53,14 +55,18 @@ public class SrvPaymentFrom<RS>
    * @param pSrvOrm ORM service
    * @param pSrvAccSettings AccSettings service
    * @param pSrvAccEntry Accounting entries service
+   * @param pSrvI18n I18N service
+   * @param pDateFormatter for description
    * @param pSrvTypeCodeSubacc Type Codes of sub-accounts service
    * @param pSrvSalesInvoice Sales Invoice service
    **/
   public SrvPaymentFrom(final ISrvOrm<RS> pSrvOrm,
     final SrvSalesInvoice pSrvSalesInvoice,
       final ISrvAccSettings pSrvAccSettings, final ISrvAccEntry pSrvAccEntry,
-        final ISrvSubaccCode pSrvTypeCodeSubacc) {
-    super(PaymentFrom.class, pSrvOrm, pSrvAccSettings, pSrvAccEntry);
+        final ISrvI18n pSrvI18n, final DateFormat pDateFormatter,
+          final ISrvSubaccCode pSrvTypeCodeSubacc) {
+    super(PaymentFrom.class, pSrvOrm, pSrvAccSettings, pSrvAccEntry,
+      pSrvI18n, pDateFormatter);
     this.srvTypeCode = pSrvTypeCodeSubacc;
     this.srvSalesInvoice = pSrvSalesInvoice;
   }

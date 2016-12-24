@@ -3,7 +3,12 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <c:if test="${not empty entity[fieldName]}">
   <fmt:formatDate value="${entity[fieldName].itsDate}" type="both" timeStyle="medium" var="dateAppr"/>
-  <c:set var="docAppr" value="# ${entity[fieldName].itsId}, ${dateAppr}, ${entity[fieldName].itsTotal}"/>
+  <c:if test="${empty entity[fieldName].idBirth}">
+    <c:set var="docAppr" value="# ${entity[fieldName].idDatabaseBirth}-${entity[fieldName].itsId}, ${dateAppr}, ${entity[fieldName].itsTotal}"/>
+  </c:if>
+  <c:if test="${not empty entity[fieldName].idBirth}">
+    <c:set var="docAppr" value="# ${entity[fieldName].idDatabaseBirth}-${entity[fieldName].idBirth}, ${dateAppr}, ${entity[fieldName].itsTotal}"/>
+  </c:if>
 </c:if>
 <tr>
   <td>

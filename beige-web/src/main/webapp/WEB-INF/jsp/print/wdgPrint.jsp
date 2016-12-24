@@ -3,4 +3,5 @@
 <c:set var="title" value="Report" scope="request"/>
 <c:set var="orderPrintForm" value="orderPrintForm" scope="request"/>
 <c:set var="orderPrintList" value="orderPrintList" scope="request"/>
+<c:set var="printOwnedList" value="printOwnedList" scope="request"/>
 <jsp:include page="printEntity.jsp"/>

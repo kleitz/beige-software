@@ -41,6 +41,8 @@
         <c:set var="fieldName" value="unitOfMeasure" scope="request"/>
         <jsp:include page="${param.mobile}inputs/inputEntityHasNameReadOnly.jsp"/>
         <jsp:include page="${param.mobile}inputs/inputKnownCostQuantityTotal.jsp"/>
+        <c:set var="fieldName" value="description" scope="request"/>
+        <jsp:include page="${param.mobile}inputs/inputText.jsp"/>
       </table>
       <div class="form-actions">
         <input style="display: none" id="${namePlaceSubForm}EditFrmFakeSubmit" type="submit"/>

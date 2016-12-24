@@ -70,6 +70,11 @@ public class Manufacture extends AInvItemMovementCost
   private Long reversedId;
 
   /**
+   * <p>ID database birth of reversed/reversing document.</p>
+   **/
+  private Integer reversedIdDatabaseBirth;
+
+  /**
    * <p>Description.</p>
    **/
   private String description;
@@ -126,6 +131,25 @@ public class Manufacture extends AInvItemMovementCost
   @Override
   public final void setReversedId(final Long pReversedId) {
     this.reversedId = pReversedId;
+  }
+
+  /**
+   * <p>Geter for reversed database Id.</p>
+   * @return Integer DB birth ID
+   **/
+  @Override
+  public final Integer getReversedIdDatabaseBirth() {
+    return this.reversedIdDatabaseBirth;
+  }
+
+  /**
+   * <p>Setter for reversed database Id.</p>
+   * @param pReversedIdDatabaseBirth reference
+   **/
+  @Override
+  public final void setReversedIdDatabaseBirth(
+    final Integer pReversedIdDatabaseBirth) {
+    this.reversedIdDatabaseBirth = pReversedIdDatabaseBirth;
   }
 
   /**

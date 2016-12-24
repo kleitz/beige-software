@@ -34,7 +34,7 @@
       </p>
       <p>
         As you can see Bob made another mistake. He set Sales date less than Manufacture date for that pizza, so
-        balance of Inventory.Pizza Cheese Frozen is  -23.0574 at 4:43 PM because it(pizza) was made at 6:59 PM.
+        balance of Inventory.Pizza Cheese Frozen is -22.986 at 4:42 PM because it(pizza) was made at 6:40 PM.
         So it's reasonable to make database copy more frequently, he need to copy beigeaccounting.sqlite
         by file explorer without exiting from accounting (on Android he should do it in the Database manager).
         Otherwise he should reverse whole document. For warehouse document date means nothing cause warehouse

@@ -84,7 +84,7 @@ public final class wdgFormDocNoLinesActions_jsp extends org.apache.jasper.runtim
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${namePlaceForm}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
       out.write("EditFrm', true, '&nameRenderer=editEntitySavedJson');\">");
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${srvI18n.getMsg(\"Save\")}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
-      out.write("</button>\n  <button type=\"button\" onclick=\"if (confirm(MSGS['are_you_sure'])) submitFormByAjax('");
+      out.write("</button>\n  <button type=\"button\" onclick=\"submitFormByAjaxConfirm('");
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${namePlaceForm}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
       out.write("EditFrm', false, '&nameRenderer=listAfterAccountJson&actionAdd=makeAccEntries');\">");
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${srvI18n.getMsg(\"MakeAccEntries\")}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));

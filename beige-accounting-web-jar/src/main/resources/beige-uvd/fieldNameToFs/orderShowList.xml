@@ -25,6 +25,7 @@
 <entry key="subaccCreditId">-1</entry>
 <entry key="idDatabaseBirth">-1</entry>
 <entry key="reversedId">-1</entry>
+<entry key="reversedIdDatabaseBirth">-1</entry>
 <entry key="idBirth">-1</entry>
 <entry key="itsOwner">-1</entry>
 <entry key="isNew">-1</entry>

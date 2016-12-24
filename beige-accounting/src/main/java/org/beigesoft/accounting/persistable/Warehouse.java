@@ -10,7 +10,7 @@ package org.beigesoft.accounting.persistable;
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-import org.beigesoft.persistable.AHasNameIdLong;
+import org.beigesoft.persistable.AHasNameIdLongVersion;
 
 /**
  * <pre>
@@ -19,6 +19,6 @@ import org.beigesoft.persistable.AHasNameIdLong;
  *
  * @author Yury Demidenko
  */
-public class Warehouse  extends AHasNameIdLong {
+public class Warehouse  extends AHasNameIdLongVersion {
 
 }

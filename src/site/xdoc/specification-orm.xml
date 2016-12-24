@@ -10,7 +10,7 @@
   <body>
 
     <!-- The body of the document contains a number of sections -->
-    <section name="Specification Beige-ORM version #2">
+    <section name="Specification Beige-ORM version #3">
       <p>It use Reflection API to generate SQL queries (DDL and DML).</p>
       <p>It use standard Beige-Settings to describe ORM configuration with standard Properties XML.
       All <b>current</b> configuration files are located in <b>beige-orm</b> folder.</p>
@@ -52,7 +52,7 @@
       <p>excludeFields - array of non-persistable fields names for all classes, e.g. <b>isNew</b>.</p>
       
       <h4>Application settings file <b>[RDBMS]/app-settings.xml</b> consist of:</h4>
-      <p>databaseVersion - current database version to create new database, must be equals with DataInfo</p>
+      <p>databaseVersion - current database version to create new database, must be equals to DataInfo</p>
       <p>useSubFolder - e.g. sqlite</p>
       <p>jdbcDriverClass - SQL driver class name.</p>
       <p>databaseUrl - a database url of the form jdbc:subprotocol:subname.</p>
@@ -111,8 +111,8 @@
       <p>ID always defined with XML. See Beige-Accounting WarehouseRest for complex ID example.</p>
 
       <h4>Reveal DDL for foreign ID automatically.</h4>
-      <p>Foreign (owned) entity revials automatically along with restriction foreign key. E.g. column "itsDepartment" - "integer"
-      will be same tape as primapy key entity "Department". Also constraint "foreign key (ITSDEPARTMENT)
+      <p>Foreign (owned) entity reveals automatically along with restriction foreign key. E.g. column "itsDepartment" - "integer"
+      will be same tape as primary key entity "Department". Also constraint "foreign key (ITSDEPARTMENT)
       references DEPARTMENT (ITSID)" will be added.</p>
       <p>If field type simple name exist in tablesMap that means it's foreign entity.
       To make such field NOT NULL add its setting isNullable = false. Class settings idName and idDefinitionForeign must be filled.</p>
@@ -139,7 +139,8 @@
           <li>description - String</li>
         </ul>
         This is only row existed in table. If database has been just created then only entry DatabaseInfo
-        will be inserted, databaseId is randomly generated, databaseVersion=1 of course, description="a database".
+        will be inserted, databaseId is given from ISrvOrm.getNewDatabaseId() (it's settled in web.xml),
+        databaseVersion=1 of course, description= App Settings - title.
         You can change database description (only!!!) by hand.
       </p>
 
@@ -219,7 +220,8 @@
       </p>
       <p>Conclusion - RDBMS automatically makes index for constraint <b>primary key</b> for both composite and non-composite.
         According test <a href="http://stackoverflow.com/questions/2346920/sql-select-speed-int-vs-varchar">http://stackoverflow.com/questions/2346920/sql-select-speed-int-vs-varchar</a>
-        that made by Grzegorz Luczywo, 4 million records in Postgres 9.x for "text" and "bigint" ID, there is no difference in performance.
+        that made by Grzegorz Luczywo, 4 million records in Postgres 9.x for "text" and "bigint" ID, there is no difference in performance for select command.
+        But insert command is expensive for composite and string ID cause reindexing, so avoid such ID types for entities like Invoice Line or Accounting entry.
       </p>
       
 
@@ -233,8 +235,14 @@
         <li>1153 - BAD_PARAMS bad parameters e.g. isolation level</li>
         <li>1154 - SQL_EXEC_ERROR SQL exception</li>
       </ul>
+      
+      <h4>TODO specification #3</h4>
+      <p>Cause Beige-ORM retrieves unneeded owned entities, it is need to add <b>entity retriever descriptor</b>.
+        This descriptor consist of tree of owned entities that should be retrieved. This tree can be in any depth.
+        The simplest model of this tree is Map&lt;String, List&lt;String&gt;&gt; [Entity name]-[List of owned entities names that should be retrieved (not only ID)].
+        Beige-ORM version 2 doesn't uses super-abstraction parameter <b>params Map&lt;String, Object&gt;</b>, so its needs to add new methods into <b>ISrvOrm</b>.
+      </p>
     </section>
-
 
   </body>
 

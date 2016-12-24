@@ -118,11 +118,20 @@ public class MngDatabaseAndroid implements IMngDatabaseExt {
   /**
    * <p>Create new database.</p>
    * @param pDbName database name without extension
+   * @param pDbId database ID
    * @throws Exception - an exception
    **/
   @Override
-  public final void createDatabase(final String pDbName) throws Exception {
-    changeToDatabase(pDbName);
+  public final void createDatabase(final String pDbName,
+    final int pDbId) throws Exception {
+    String dbNm = pDbName + ".sqlite";
+    synchronized (this.factoryAppBeansAndroid) {
+      if (!this.factoryAppBeansAndroid.getDatabaseName().equals(dbNm)) {
+        this.factoryAppBeansAndroid.setDatabaseName(dbNm);
+        this.factoryAppBeansAndroid.setNewDatabaseId(pDbId);
+        this.factoryAppBeansAndroid.handleDatabaseChanged();
+      }
+    }
   }
 
   /**
@@ -132,7 +141,13 @@ public class MngDatabaseAndroid implements IMngDatabaseExt {
    **/
   @Override
   public final void changeDatabase(final String pDbName) throws Exception {
-    changeToDatabase(pDbName);
+    String dbNm = pDbName + ".sqlite";
+    synchronized (this.factoryAppBeansAndroid) {
+      if (!this.factoryAppBeansAndroid.getDatabaseName().equals(dbNm)) {
+        this.factoryAppBeansAndroid.setDatabaseName(dbNm);
+        this.factoryAppBeansAndroid.handleDatabaseChanged();
+      }
+    }
   }
 
   /**
@@ -152,7 +167,7 @@ public class MngDatabaseAndroid implements IMngDatabaseExt {
           .setSqliteDatabase(null);
       }
     }
-    File dbFile = new File(this.databaseDir + File.separator + dbNm);
+    File dbFile = new File(this.databaseDir + "/" + dbNm);
     if (dbFile.exists() && !dbFile.delete()) {
       throw new ExceptionWithCode(ExceptionWithCode.SOMETHING_WRONG,
         "Can't delete file: " + dbFile);
@@ -167,12 +182,12 @@ public class MngDatabaseAndroid implements IMngDatabaseExt {
   @Override
   public final void backupDatabase(final String pDbName) throws Exception {
     String dbNm = pDbName + ".sqlite";
-    File dbFile = new File(this.databaseDir + File.separator + dbNm);
+    File dbFile = new File(this.databaseDir + "/" + dbNm);
     if (dbFile.exists()) {
-      File dbBkFile = new File(this.backupDir + File.separator + dbNm);
+      File dbBkFile = new File(this.backupDir + "/" + dbNm);
       if (dbBkFile.exists()) {
         Long time = new Date().getTime();
-        dbBkFile = new File(this.backupDir + File.separator + pDbName
+        dbBkFile = new File(this.backupDir + "/" + pDbName
           + time + ".sqlite");
       }
       copyFile(dbFile, dbBkFile);
@@ -187,17 +202,17 @@ public class MngDatabaseAndroid implements IMngDatabaseExt {
   @Override
   public final void restoreDatabase(final String pDbName) throws Exception {
     String dbNm = pDbName + ".sqlite";
-    File dbBkFile = new File(this.backupDir + File.separator + dbNm);
+    File dbBkFile = new File(this.backupDir + "/" + dbNm);
     if (dbBkFile.exists()) {
-      File dbFile = new File(this.databaseDir + File.separator + dbNm);
+      File dbFile = new File(this.databaseDir + "/" + dbNm);
       if (dbFile.exists()) {
         Long time = new Date().getTime();
-        dbFile = new File(this.databaseDir + File.separator + pDbName
+        dbFile = new File(this.databaseDir + "/" + pDbName
           + time + ".sqlite");
       }
       copyFile(dbBkFile, dbFile);
     }
-    changeToDatabase(pDbName);
+    changeDatabase(pDbName);
   }
 
   /**
@@ -216,21 +231,6 @@ public class MngDatabaseAndroid implements IMngDatabaseExt {
   @Override
   public final void setBackupDir(final String pBackupDir) {
     this.backupDir = pBackupDir;
-  }
-
-  /**
-   * <p>Close current database then create/open new one.</p>
-   * @param pDbName database name without extension
-   * @throws Exception - an exception
-   **/
-  public final void changeToDatabase(final String pDbName) throws Exception {
-    String dbNm = pDbName + ".sqlite";
-    synchronized (this.factoryAppBeansAndroid) {
-      if (!this.factoryAppBeansAndroid.getDatabaseName().equals(dbNm)) {
-        this.factoryAppBeansAndroid.setDatabaseName(dbNm);
-        this.factoryAppBeansAndroid.handleDatabaseChanged();
-      }
-    }
   }
 
   /**

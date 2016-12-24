@@ -39,16 +39,6 @@ public class SrvSalesInvoice<RS>
   extends ASrvDocumentCogs<RS, SalesInvoice> {
 
   /**
-   * <p>I18N service.</p>
-   **/
-  private ISrvI18n srvI18n;
-
-  /**
-   * <p>Date Formatter.</p>
-   **/
-  private DateFormat dateFormatter;
-
-  /**
    * <p>minimum constructor.</p>
    **/
   public SrvSalesInvoice() {
@@ -60,21 +50,20 @@ public class SrvSalesInvoice<RS>
    * @param pSrvOrm ORM service
    * @param pSrvAccSettings AccSettings service
    * @param pSrvAccEntry Accounting entries service
-   * @param pSrvWarehouseEntry Warehouse service
-   * @param pSrvCogsEntry Draw merchandise service
    * @param pSrvI18n I18N service
    * @param pDateFormatter for description
+   * @param pSrvWarehouseEntry Warehouse service
+   * @param pSrvCogsEntry Draw merchandise service
    **/
   public SrvSalesInvoice(final ISrvOrm<RS> pSrvOrm,
     final ISrvAccSettings pSrvAccSettings,
       final ISrvAccEntry pSrvAccEntry,
-        final ISrvWarehouseEntry pSrvWarehouseEntry,
-          final ISrvDrawItemEntry<CogsEntry> pSrvCogsEntry,
-            final ISrvI18n pSrvI18n, final DateFormat pDateFormatter) {
+        final ISrvI18n pSrvI18n, final DateFormat pDateFormatter,
+          final ISrvWarehouseEntry pSrvWarehouseEntry,
+            final ISrvDrawItemEntry<CogsEntry> pSrvCogsEntry) {
     super(SalesInvoice.class, pSrvOrm, pSrvAccSettings, pSrvAccEntry,
-      pSrvWarehouseEntry, pSrvCogsEntry);
-    this.srvI18n = pSrvI18n;
-    this.dateFormatter = pDateFormatter;
+      pSrvI18n, pDateFormatter,
+        pSrvWarehouseEntry, pSrvCogsEntry);
   }
 
   /**
@@ -149,8 +138,9 @@ public class SrvSalesInvoice<RS>
               .getTaxesDescription());
             reversingLine.setIsNew(true);
             reversingLine.setItsOwner(pEntity);
-            reversingLine.setDescription("Reversed ID: "
-              + reversedLine.getItsId());
+            reversingLine.setDescription(getSrvI18n().getMsg("reversed_n")
+              + reversedLine.getIdDatabaseBirth() + "-"
+                + reversedLine.getItsId()); //local
             getSrvOrm().insertEntity(reversingLine);
             getSrvWarehouseEntry().reverseDraw(pAddParam, reversingLine);
             getSrvCogsEntry().reverseDraw(pAddParam, reversingLine,
@@ -162,7 +152,9 @@ public class SrvSalesInvoice<RS>
               descr = reversedLine.getDescription();
             }
             reversedLine.setDescription(descr
-              + " reversing ID: " + reversingLine.getItsId());
+              + " " + getSrvI18n().getMsg("reversing_n")
+                + reversingLine.getIdDatabaseBirth() + "-"
+                  + reversingLine.getItsId());
             reversedLine.setReversedId(reversingLine.getItsId());
             getSrvOrm().updateEntity(reversedLine);
           }
@@ -274,10 +266,10 @@ public class SrvSalesInvoice<RS>
     if (pEntity.getPrepaymentFrom() != null) {
       pEntity.setPaymentTotal(pEntity.getPrepaymentFrom().getItsTotal());
       pEntity.setPaymentDescription(getSrvI18n().getMsg(PrepaymentFrom
-        .class.getSimpleName()) + " # " + pEntity.getPrepaymentFrom()
-          .getItsId() + ", " + getDateFormatter().format(pEntity
-            .getPrepaymentFrom().getItsDate()) + ", "
-              + pEntity.getPaymentTotal());
+        .class.getSimpleName() + "short") + " #" + pEntity.getPrepaymentFrom()
+          .getIdDatabaseBirth() + "-" + pEntity.getPrepaymentFrom().getItsId()
+            + ", " + getDateFormatter().format(pEntity.getPrepaymentFrom()
+              .getItsDate()) + ", " + pEntity.getPaymentTotal());
     } else {
       pEntity.setPaymentTotal(BigDecimal.ZERO);
       pEntity.setPaymentDescription("");
@@ -290,42 +282,10 @@ public class SrvSalesInvoice<RS>
       pEntity.setPaymentTotal(pEntity.getPaymentTotal()
         .add(payment.getItsTotal()));
       pEntity.setPaymentDescription(pEntity.getPaymentDescription() + " "
-        + getSrvI18n().getMsg(PaymentFrom.class.getSimpleName()) + " # "
-          + payment.getItsId() + ", " + getDateFormatter()
-            .format(payment.getItsDate()) + ", " + payment.getItsTotal());
+        + getSrvI18n().getMsg(PaymentFrom.class.getSimpleName() + "short")
+          + " #" + payment.getIdDatabaseBirth() + "-" + payment.getItsId()
+            + ", " + getDateFormatter().format(payment.getItsDate())
+              + ", " + payment.getItsTotal());
     }
-  }
-
-  //Simple getters and setters:
-  /**
-   * <p>Geter for srvI18n.</p>
-   * @return ISrvI18n
-   **/
-  public final ISrvI18n getSrvI18n() {
-    return this.srvI18n;
-  }
-
-  /**
-   * <p>Setter for srvI18n.</p>
-   * @param pSrvI18n reference
-   **/
-  public final void setSrvI18n(final ISrvI18n pSrvI18n) {
-    this.srvI18n = pSrvI18n;
-  }
-
-  /**
-   * <p>Getter for dateFormatter.</p>
-   * @return DateFormat
-   **/
-  public final DateFormat getDateFormatter() {
-    return this.dateFormatter;
-  }
-
-  /**
-   * <p>Setter for dateFormatter.</p>
-   * @param pDateFormatter reference
-   **/
-  public final void setDateFormatter(final DateFormat pDateFormatter) {
-    this.dateFormatter = pDateFormatter;
   }
 }

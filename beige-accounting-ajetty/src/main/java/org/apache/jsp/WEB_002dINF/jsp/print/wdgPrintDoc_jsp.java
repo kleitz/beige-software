@@ -91,7 +91,7 @@ public final class wdgPrintDoc_jsp extends org.apache.jasper.runtime.HttpJspBase
       if (_jspx_meth_c_005fset_005f2(_jspx_page_context))
         return;
       out.write('\n');
-      org.apache.jasper.runtime.JspRuntimeLibrary.include(request, response, "printEntity.jsp", out, false);
+      org.apache.jasper.runtime.JspRuntimeLibrary.include(request, response, "printDoc.jsp", out, false);
       out.write('\n');
     } catch (java.lang.Throwable t) {
       if (!(t instanceof javax.servlet.jsp.SkipPageException)){

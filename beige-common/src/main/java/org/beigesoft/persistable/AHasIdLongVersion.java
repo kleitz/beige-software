@@ -22,7 +22,7 @@ public abstract class AHasIdLongVersion extends AHasIdLong
     implements IHasVersion {
 
   /**
-   * <p>Version to check dirty.</p>
+   * <p>Version to check dirty or replication.</p>
    **/
   private Long itsVersion;
 

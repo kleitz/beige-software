@@ -13,12 +13,14 @@ package org.beigesoft.accounting.service;
 import java.util.Date;
 import java.util.Map;
 import java.util.List;
+import java.text.DateFormat;
 
 import org.beigesoft.accounting.persistable.UseMaterialEntry;
 import org.beigesoft.accounting.persistable.PurchaseReturn;
 import org.beigesoft.accounting.persistable.PurchaseReturnTaxLine;
 import org.beigesoft.accounting.persistable.PurchaseReturnLine;
 import org.beigesoft.orm.service.ISrvOrm;
+import org.beigesoft.service.ISrvI18n;
 
 /**
  * <p>Business service for Purchase Return.</p>
@@ -41,15 +43,19 @@ public class SrvPurchaseReturn<RS>
    * @param pSrvOrm ORM service
    * @param pSrvAccSettings AccSettings service
    * @param pSrvAccEntry Accounting entries service
+   * @param pSrvI18n I18N service
+   * @param pDateFormatter for description
    * @param pSrvWarehouseEntry Warehouse service
    * @param pSrvUseMaterialEntry Draw material service
    **/
   public SrvPurchaseReturn(final ISrvOrm<RS> pSrvOrm,
     final ISrvAccSettings pSrvAccSettings, final ISrvAccEntry pSrvAccEntry,
-      final ISrvWarehouseEntry pSrvWarehouseEntry,
-        final ISrvDrawItemEntry<UseMaterialEntry> pSrvUseMaterialEntry) {
+      final ISrvI18n pSrvI18n, final DateFormat pDateFormatter,
+        final ISrvWarehouseEntry pSrvWarehouseEntry,
+          final ISrvDrawItemEntry<UseMaterialEntry> pSrvUseMaterialEntry) {
     super(PurchaseReturn.class, pSrvOrm, pSrvAccSettings, pSrvAccEntry,
-      pSrvWarehouseEntry, pSrvUseMaterialEntry);
+      pSrvI18n, pDateFormatter,
+        pSrvWarehouseEntry, pSrvUseMaterialEntry);
   }
 
   /**
@@ -117,8 +123,9 @@ public class SrvPurchaseReturn<RS>
             .getTaxesDescription());
           reversingLine.setIsNew(true);
           reversingLine.setItsOwner(pEntity);
-          reversingLine.setDescription("Reversed ID: "
-            + reversedLine.getItsId());
+          reversingLine.setDescription(getSrvI18n().getMsg("reversed_n")
+            + reversedLine.getIdDatabaseBirth() + "-"
+              + reversedLine.getItsId());
           getSrvOrm().insertEntity(reversingLine);
           getSrvWarehouseEntry().reverseDraw(pAddParam, reversingLine);
           getSrvUseMaterialEntry().reverseDraw(pAddParam, reversingLine,
@@ -129,8 +136,9 @@ public class SrvPurchaseReturn<RS>
           } else {
             descr = reversedLine.getDescription();
           }
-          reversedLine.setDescription(descr
-            + " reversing ID: " + reversingLine.getItsId());
+          reversedLine.setDescription(descr + " " + getSrvI18n()
+            .getMsg("reversing_n") + reversingLine.getIdDatabaseBirth()
+              + "-" + reversingLine.getItsId()); //local
           reversedLine.setReversedId(reversingLine.getItsId());
           getSrvOrm().updateEntity(reversedLine);
         }

@@ -81,6 +81,9 @@ public final class printDocFull_jsp extends org.apache.jasper.runtime.HttpJspBas
       out.write(' ');
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${srvI18n.getMsg(entity.getClass().simpleName)}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
       out.write("</title>\n</head>\n<body>\n\n<div class=\"entity-title\">");
+      out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${accSettings.organization}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
+      out.write(',');
+      out.write(' ');
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${srvI18n.getMsg(title)}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
       out.write(' ');
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${srvI18n.getMsg(entity.getClass().simpleName)}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
@@ -89,7 +92,7 @@ public final class printDocFull_jsp extends org.apache.jasper.runtime.HttpJspBas
       out.write('\n');
       out.write(' ');
       out.write(' ');
-      org.apache.jasper.runtime.JspRuntimeLibrary.include(request, response, "printOwnedList.jsp", out, false);
+      org.apache.jasper.runtime.JspRuntimeLibrary.include(request, response, "printOwnedListFull.jsp", out, false);
       out.write('\n');
       out.write(' ');
       out.write(' ');

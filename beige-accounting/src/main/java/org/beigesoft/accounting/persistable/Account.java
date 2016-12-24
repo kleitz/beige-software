@@ -14,7 +14,7 @@ import java.util.List;
 
 import org.beigesoft.accounting.model.EAccountType;
 import org.beigesoft.accounting.model.ENormalBalanceType;
-import org.beigesoft.persistable.AHasNameIdString;
+import org.beigesoft.persistable.AHasNameIdStringVersion;
 
 /**
  * <pre>
@@ -23,7 +23,7 @@ import org.beigesoft.persistable.AHasNameIdString;
  *
  * @author Yury Demidenko
  */
- public class Account extends AHasNameIdString {
+ public class Account extends AHasNameIdStringVersion {
 
   /**
    * <p>Number.</p>

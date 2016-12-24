@@ -7,6 +7,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   <link rel="shortcut icon" href="../static/img/favicon.png">
+  <script type="text/javascript" src="../static/js/beige.form.js"></script>
+  <script type="text/javascript" src="../static/js/beige.i18n.en.js"></script>
   <link rel="stylesheet" href="../static/css/beige.common.css">
   <title>${srvI18n.getMsg("mngDatabase")}</title>
 </head>
@@ -27,7 +29,7 @@
               ${database}.sqlite
             </td>
             <td style="padding: 5px;">
-              <a class="btn" href="?nameRenderer=mngDatabase&nameAction=change&nameDatabase=${database}" onclick="return confirm('Change?');">${srvI18n.getMsg("change_db_curr")}</a>
+              <a class="btn" href="?nameRenderer=mngDatabase&nameAction=change&nameDatabase=${database}" onclick="confirmHref(this, 'Change?'); return false;">${srvI18n.getMsg("change_db_curr")}</a>
             </td>
           </tr>
       </c:forEach>
@@ -53,12 +55,37 @@
             </div>
           </td>
         </tr>
+        <tr>
+          <td>
+            <label>${srvI18n.getMsg("idDatabase")}:</label>
+          </td>
+          <td>
+            <div style="display: flex;">
+              <input type="number" name="idDatabase" value="2">
+            </div>
+          </td>
+        </tr>
       </table>
-      <div>
-        <input type="submit" onclick="return confirm('Create?');"/>
+      <div class="form-actions">
+        <button onclick="confirmSubmit(this, 'Create?'); return false;" class="btn">Create</button>
       </div>
     </form>
   </div>
+
+  <dialog id="dlgConfirm" class="dlg dlg-alert">
+      <div class="confirm">
+        <div class="dialog-title confirm-title">
+          Conformation.
+          <button onclick="document.getElementById('dlgConfirm').close();" class="btn-close btn-confirm">x</button>
+        </div>
+        <div id="confirmPlace" class="msg-place">
+        </div>
+        <div class="dlg-actions">
+          <button id="confirmYes" class="btn btn-act btn-confirm">${srvI18n.getMsg("Yes")}</button>
+          <button onclick="document.getElementById('dlgConfirm').close();" class="btn btn-act btn-confirm">${srvI18n.getMsg("No")}</button>
+        </div>
+     </div>
+  </dialog>
 
 </body>
 </html>

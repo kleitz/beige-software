@@ -12,6 +12,8 @@ package org.beigesoft.accounting.service;
 
 import java.util.Map;
 
+import org.beigesoft.persistable.APersistableBase;
+import org.beigesoft.exception.ExceptionWithCode;
 import org.beigesoft.model.IHasId;
 import org.beigesoft.orm.service.ISrvOrm;
 
@@ -84,6 +86,12 @@ public abstract class ASrvAccEntityExt<RS, T extends IHasId<?>>
   @Override
   public final void deleteEntity(final Map<String, Object> pAddParam,
     final T pEntity) throws Exception {
+    if (APersistableBase.class.isAssignableFrom(pEntity.getClass())
+      && !((APersistableBase) pEntity).getIdDatabaseBirth()
+        .equals(getSrvOrm().getIdDatabase())) {
+      throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
+        "can_not_delete_foreign_src");
+    }
     getSrvOrm().deleteEntity(getEntityClass(), pEntity.getItsId());
   }
 
@@ -96,6 +104,7 @@ public abstract class ASrvAccEntityExt<RS, T extends IHasId<?>>
   @Override
   public final void deleteEntity(final Map<String, Object> pAddParam,
     final Object pId) throws Exception {
-    getSrvOrm().deleteEntity(getEntityClass(), pId);
+    T entity = retrieveEntityById(pAddParam, pId);
+    deleteEntity(pAddParam, entity);
   }
 }

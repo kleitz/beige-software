@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.Map;
 
+import org.beigesoft.exception.ExceptionWithCode;
 import org.beigesoft.accounting.persistable.ReplicationAccMethod;
 import org.beigesoft.accounting.service.ISrvAccSettings;
 import org.beigesoft.holder.IAttributes;
@@ -221,6 +222,10 @@ public class SrvReplicationAccMethod<RS>
   public final void saveEntity(
     final Map<String, Object> pAddParam, final ReplicationAccMethod pEntity,
       final boolean isEntityDetached) throws Exception {
+    if (pEntity.getRequestedDatabaseId() == getSrvOrm().getIdDatabase()) {
+      throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
+        "requested_database_must_be_different");
+    }
     if (pEntity.getIsNew()) {
       getSrvOrm().insertEntity(pEntity);
     } else {

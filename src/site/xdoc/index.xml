@@ -27,7 +27,7 @@
           <li>Standard JEE web-application on any JEE server (cloud).</li>
         </ul>
       </p>
-      <p>It requires Google Chrome browser!</p>
+      <p>It requires Google Chrome, Opera, or Chromium browser (html5-dialog ready).</p>
       <p>
         Features:
         <ul>
@@ -40,7 +40,7 @@
           <li>Payroll - automatically taxes calculation (by percentage tax table method) and accounting entries.</li>
           <li>Manufacturing - automatically cost calculation from used materials and direct labor (and other) costs.</li>
           <li>Multi-databases (organizations) on standalone web-app version which uses SQlite database.</li>
-          <li>Strong warehouse items control per site.</li>
+          <li>and more.</li>
         </ul>
       </p>
       <p>

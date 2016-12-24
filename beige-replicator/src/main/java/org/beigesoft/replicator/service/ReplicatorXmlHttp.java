@@ -227,6 +227,11 @@ public class ReplicatorXmlHttp<RS>
           conditions += " limit " + maxRecords + " offset " + firstRecord;
           String requestedDatabaseIdStr = "";
           if (requestedDatabaseId != null) {
+            if (Integer.parseInt(requestedDatabaseId)
+              == getSrvDatabase().getIdDatabase()) {
+              throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
+                "requested_database_must_be_different");
+            }
             requestedDatabaseIdStr = "&requestedDatabaseId="
                 + requestedDatabaseId;
           }

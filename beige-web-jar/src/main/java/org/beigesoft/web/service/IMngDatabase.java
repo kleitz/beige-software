@@ -45,9 +45,10 @@ public interface IMngDatabase {
   /**
    * <p>Create new database.</p>
    * @param pDbName database name without extension
+   * @param pDbId database ID
    * @throws Exception - an exception
    **/
-  void createDatabase(String pDbName) throws Exception;
+  void createDatabase(String pDbName, int pDbId) throws Exception;
 
   /**
    * <p>Change database.</p>

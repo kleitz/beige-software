@@ -13,7 +13,6 @@ package org.beigesoft.accounting.service;
 import java.util.List;
 import java.math.BigDecimal;
 import java.util.Map;
-import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
 import java.net.URL;
@@ -199,14 +198,15 @@ public class SrvPurchaseReturnLine<RS>
           "wrong_purchaseInvoiceLine");
       }
       pEntity.setPurchInvLnAppearance(getSrvI18n().getMsg(PurchaseInvoiceLine
-        .class.getSimpleName() + "short") + " #"
-          + pEntity.getPurchaseInvoiceLine().getItsId() + ", " + pEntity
-            .getPurchaseInvoiceLine().getInvItem().getItsName() + ", " + pEntity
-              .getPurchaseInvoiceLine().getUnitOfMeasure().getItsName() + ", "
-            + getSrvI18n().getMsg("itsCost") + "=" + pEntity
-          .getPurchaseInvoiceLine().getItsCost() + ", " + getSrvI18n()
-        .getMsg("rest_was") + "=" + pEntity.getPurchaseInvoiceLine()
-      .getTheRest());
+        .class.getSimpleName() + "short") + " #" + pEntity
+          .getPurchaseInvoiceLine().getIdDatabaseBirth() + "-" //local
+            + pEntity.getPurchaseInvoiceLine().getItsId() + ", " + pEntity
+          .getPurchaseInvoiceLine().getInvItem().getItsName() + ", " + pEntity
+            .getPurchaseInvoiceLine().getUnitOfMeasure().getItsName() + ", "
+          + getSrvI18n().getMsg("itsCost") + "=" + pEntity
+            .getPurchaseInvoiceLine().getItsCost() + ", " + getSrvI18n()
+          .getMsg("rest_was") + "=" + pEntity.getPurchaseInvoiceLine()
+            .getTheRest());
       pEntity.setSubtotal(pEntity.getItsQuantity().multiply(pEntity
         .getPurchaseInvoiceLine().getItsCost()).setScale(getSrvAccSettings()
           .lazyGetAccSettings().getPricePrecision(), getSrvAccSettings()
@@ -436,8 +436,8 @@ public class SrvPurchaseReturnLine<RS>
   public final String
     lazyGetQueryPurchaseReturnLineTaxes() throws Exception {
     if (this.queryPurchaseReturnLineTaxes == null) {
-      String flName = File.separator + "accounting" + File.separator + "trade"
-        + File.separator + "purchaseReturnLineTaxes.sql";
+      String flName = "/" + "accounting" + "/" + "trade"
+        + "/" + "purchaseReturnLineTaxes.sql";
       this.queryPurchaseReturnLineTaxes = loadString(flName);
     }
     return this.queryPurchaseReturnLineTaxes;

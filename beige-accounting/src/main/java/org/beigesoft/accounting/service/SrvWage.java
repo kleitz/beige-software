@@ -14,6 +14,7 @@ import java.util.Date;
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.List;
+import java.text.DateFormat;
 
 import org.beigesoft.factory.IFactoryAppBeans;
 import org.beigesoft.accounting.persistable.Wage;
@@ -21,6 +22,7 @@ import org.beigesoft.accounting.persistable.WageLine;
 import org.beigesoft.accounting.persistable.Employee;
 import org.beigesoft.accounting.persistable.EmployeeYearWage;
 import org.beigesoft.orm.service.ISrvOrm;
+import org.beigesoft.service.ISrvI18n;
 
 /**
  * <p>Business service for wage.</p>
@@ -48,13 +50,17 @@ public class SrvWage<RS>
    * @param pSrvOrm ORM service
    * @param pSrvAccSettings AccSettings service
    * @param pSrvAccEntry Accounting entries service
+   * @param pSrvI18n I18N service
+   * @param pDateFormatter for description
    * @param pFactoryAppBeans Factory of App-Beans
    **/
   public SrvWage(final ISrvOrm<RS> pSrvOrm,
     final ISrvAccSettings pSrvAccSettings,
       final ISrvAccEntry pSrvAccEntry,
-        final IFactoryAppBeans pFactoryAppBeans) {
-    super(Wage.class, pSrvOrm, pSrvAccSettings, pSrvAccEntry);
+        final ISrvI18n pSrvI18n, final DateFormat pDateFormatter,
+          final IFactoryAppBeans pFactoryAppBeans) {
+    super(Wage.class, pSrvOrm, pSrvAccSettings, pSrvAccEntry,
+      pSrvI18n, pDateFormatter);
     this.factoryAppBeans = pFactoryAppBeans;
   }
 

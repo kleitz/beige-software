@@ -99,6 +99,7 @@ public class SrvAccountingEntriesLine<RS>
     final Map<String, Object> pAddParam) throws Exception {
     AccountingEntry entity = new AccountingEntry();
     entity.setIdDatabaseBirth(getSrvDatabase().getIdDatabase());
+    entity.setSourceDatabaseBirth(getSrvDatabase().getIdDatabase());
     entity.setIsNew(true);
     entity.setItsDate(new Date());
     addAccSettingsIntoAttrs(pAddParam);
@@ -118,7 +119,13 @@ public class SrvAccountingEntriesLine<RS>
       final Object pId) throws Exception {
     AccountingEntry entity = getSrvOrm().retrieveCopyEntity(
       AccountingEntry.class, pId);
+    if (!entity.getIdDatabaseBirth()
+      .equals(getSrvOrm().getIdDatabase())) {
+      throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
+        "can_not_make_entry_for_foreign_src");
+    }
     entity.setIdDatabaseBirth(getSrvDatabase().getIdDatabase());
+    entity.setSourceDatabaseBirth(getSrvDatabase().getIdDatabase());
     entity.setIsNew(true);
     addAccSettingsIntoAttrs(pAddParam);
     return entity;
@@ -163,7 +170,7 @@ public class SrvAccountingEntriesLine<RS>
   public final void deleteEntity(final Map<String, Object> pAddParam,
     final AccountingEntry pEntity) throws Exception {
     throw new ExceptionWithCode(ExceptionWithCode.FORBIDDEN,
-      "Attempt to delete line by " + pAddParam.get("user"));
+      "delete_not_allowed::" + pAddParam.get("user"));
   }
 
   /**
@@ -190,6 +197,11 @@ public class SrvAccountingEntriesLine<RS>
   public final void saveEntity(final Map<String, Object> pAddParam,
     final AccountingEntry pEntity,
       final boolean isEntityDetached) throws Exception {
+    if (!pEntity.getIdDatabaseBirth()
+      .equals(getSrvOrm().getIdDatabase())) {
+      throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
+        "can_not_make_entry_for_foreign_src");
+    }
     Calendar calCurrYear = Calendar.getInstance();
     calCurrYear.setTime(getSrvAccSettings().lazyGetAccSettings()
       .getCurrentAccYear());
@@ -295,17 +307,24 @@ public class SrvAccountingEntriesLine<RS>
   public final AccountingEntry createEntityWithOwnerById(
     final Map<String, Object> pAddParam,
       final Object pIdOwner) throws Exception {
+    AccountingEntries doc = getSrvOrm().retrieveEntityById(
+      AccountingEntries.class, pIdOwner);
+    if (!doc.getIdDatabaseBirth()
+      .equals(getSrvOrm().getIdDatabase())) {
+      throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
+        "can_not_make_entry_for_foreign_src");
+    }
     AccountingEntry entity = new AccountingEntry();
     entity.setIdDatabaseBirth(getSrvDatabase().getIdDatabase());
+    entity.setSourceDatabaseBirth(getSrvDatabase().getIdDatabase());
     entity.setIsNew(true);
     entity.setItsDate(new Date());
     entity.setSourceId(Long.valueOf(pIdOwner.toString()));
     entity.setSourceType(this.accountingEntriesTypeCode);
-    AccountingEntries doc = getSrvOrm().retrieveEntityById(
-      AccountingEntries.class, pIdOwner);
     entity.setDescription(getSrvI18n().getMsg(AccountingEntries.class
-        .getSimpleName()) + " ID " + doc.getItsId() + ", "
-          + getDateFormatter().format(doc.getItsDate()));
+      .getSimpleName() + "short") + " #" + doc.getIdDatabaseBirth() + "-"
+        + doc.getItsId() + ", " + getDateFormatter().format(doc.getItsDate())
+          + ". " + doc.getDescription()); //only local allowed
     addAccSettingsIntoAttrs(pAddParam);
     return entity;
   }
@@ -322,6 +341,11 @@ public class SrvAccountingEntriesLine<RS>
   public final AccountingEntry createEntityWithOwner(
     final Map<String, Object> pAddParam,
       final AccountingEntries pEntityItsOwner) throws Exception {
+    if (!pEntityItsOwner.getIdDatabaseBirth()
+      .equals(getSrvOrm().getIdDatabase())) {
+      throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
+        "can_not_make_entry_for_foreign_src");
+    }
     AccountingEntry entity = new AccountingEntry();
     entity.setIsNew(true);
     entity.setItsDate(new Date());

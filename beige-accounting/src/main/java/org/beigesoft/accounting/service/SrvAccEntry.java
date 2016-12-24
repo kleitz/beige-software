@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Calendar;
-import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
 import java.net.URL;
@@ -154,6 +153,12 @@ public class SrvAccEntry<RS> implements ISrvAccEntry {
       if (sourcesLine.getIsUsed()
         && sourcesLine.getSourceType().equals(pEntity.constTypeCode())) {
         String query = lazyGetQuery(sourcesLine.getFileName());
+        String idName = "ITSID";
+        if (pEntity.getIdBirth() != null) {
+          idName = "IDBIRTH";
+        }
+        query = query.replace(":IDNAME", idName);
+        //for foreign document this algorithm is also right:
         String strWhereDocId = sourcesLine.getSourceIdName() + " = "
           + pEntity.getItsId().toString();
         if (query.contains(":WHEREADD")) {
@@ -189,7 +194,11 @@ public class SrvAccEntry<RS> implements ISrvAccEntry {
           Date itsDate = new Date(itsDateLong++);
           accEntry.setItsDate(itsDate);
           accEntry.setSourceType(pEntity.constTypeCode());
-          accEntry.setSourceId(pEntity.getItsId());
+          if (pEntity.getIdBirth() != null) { //accounting foreign document
+            accEntry.setSourceId(pEntity.getIdBirth());
+          } else {
+            accEntry.setSourceId(pEntity.getItsId());
+          }
           accEntry.setSourceDatabaseBirth(pEntity.getIdDatabaseBirth());
           String accDebitId = getSrvDatabase().getSrvRecordRetriever()
             .getString(recordSet.getRecordSet(), "ACCDEBIT");
@@ -221,10 +230,14 @@ public class SrvAccEntry<RS> implements ISrvAccEntry {
             .getBigDecimal(recordSet.getRecordSet(), "CREDIT").setScale(
               getSrvAccSettings().lazyGetAccSettings().getCostPrecision(),
                 getSrvAccSettings().lazyGetAccSettings().getRoundingMode()));
+          String docId = pEntity.getItsId().toString();
+          if (pEntity.getIdBirth() != null) {
+            docId = pEntity.getIdBirth().toString();
+          }
           accEntry.setDescription(getSrvI18n().getMsg(pEntity.getClass()
-              .getSimpleName()) + " # " + pEntity.getItsId() + ", "
-                + getDateFormatter().format(pEntity.getItsDate())
-                  + " " + pEntity.getDescription());
+              .getSimpleName() + "short") + " #" + pEntity.getIdDatabaseBirth()
+                + "-" + docId + ", " + getDateFormatter()
+              .format(pEntity.getItsDate()) + " " + pEntity.getDescription());
           this.srvOrm.insertEntity(accEntry);
         } while (recordSet.moveToNext());
       }
@@ -250,7 +263,8 @@ public class SrvAccEntry<RS> implements ISrvAccEntry {
       final IDoc pReversed) throws Exception {
     List<AccountingEntry> sources = getSrvOrm().retrieveListWithConditions(
       AccountingEntry.class, " where SOURCETYPE=" + pReversing.constTypeCode()
-        + " and SOURCEID=" + pReversing.getReversedId());
+        + " and SOURCEID=" + pReversing.getReversedId()
+      + " and SOURCEDATABASEBIRTH=" + pReversing.getReversedIdDatabaseBirth());
     Long itsDateLong = null;
     for (AccountingEntry source : sources) {
       if (!source.getIdDatabaseBirth()
@@ -267,7 +281,11 @@ public class SrvAccEntry<RS> implements ISrvAccEntry {
       accEntry.setItsDate(new Date(itsDateLong++));
       accEntry.setIdDatabaseBirth(getSrvDatabase().getIdDatabase());
       accEntry.setSourceType(pReversing.constTypeCode());
-      accEntry.setSourceId(pReversing.getItsId());
+      Long reversingDocId = pReversing.getItsId();
+      if (pReversing.getIdBirth() != null) {
+        reversingDocId = pReversing.getIdBirth();
+      }
+      accEntry.setSourceId(reversingDocId);
       accEntry.setSourceDatabaseBirth(pReversing.getIdDatabaseBirth());
       accEntry.setAccDebit(source.getAccDebit());
       accEntry.setSubaccDebitType(source.getSubaccDebitType());
@@ -283,17 +301,25 @@ public class SrvAccEntry<RS> implements ISrvAccEntry {
       if (source.getCredit() != null) {
         accEntry.setCredit(source.getCredit().negate());
       }
-      accEntry.setDescription("Made at " + getDateFormatter().format(
-        new Date()) + " by " + getSrvI18n().getMsg(pReversing.getClass()
-          .getSimpleName()) + " ID, date: " + pReversing.getItsId() + ", "
-            + getDateFormatter().format(pReversing.getItsDate())
-              + " reversed entry ID: " + source.getItsId()
-                + " " + pReversing.getDescription());
+      accEntry.setDescription(getSrvI18n().getMsg("made_at") + " "
+        + getDateFormatter().format(new Date()) + " " + getSrvI18n()
+          .getMsg("by") + " " + getSrvI18n().getMsg(pReversing.getClass()
+            .getSimpleName() + "short") + " #" + pReversing.getIdDatabaseBirth()
+              + "-" + reversingDocId + ", " + getDateFormatter()
+                .format(pReversing.getItsDate())
+              // reversed from  current DB:
+              + ", " + getSrvI18n().getMsg("reversed_entry_n") + source
+            .getIdDatabaseBirth() + "-" + source.getItsId()
+          + " " + pReversing.getDescription());
       accEntry.setReversedId(source.getItsId());
+      accEntry.setReversedIdDatabaseBirth(source.getIdDatabaseBirth());
       srvOrm.insertEntity(accEntry);
       source.setDescription(source.getDescription().trim()
-        + " reversing entry ID: " + accEntry.getItsId());
+        + " " + getSrvI18n().getMsg("reversing_entry_n") + accEntry
+          .getIdDatabaseBirth() + "-"
+            + accEntry.getItsId()); // new in current DB
       source.setReversedId(accEntry.getItsId());
+      source.setReversedIdDatabaseBirth(accEntry.getIdDatabaseBirth());
       srvOrm.updateEntity(source);
     }
     pReversing.setHasMadeAccEntries(true);
@@ -310,9 +336,14 @@ public class SrvAccEntry<RS> implements ISrvAccEntry {
   public final List<AccountingEntry> retrieveAccEntriesFor(
     final Map<String, Object> pAddParam,
       final IDoc pEntity) throws Exception {
+    Long docId = pEntity.getItsId();
+    if (pEntity.getIdBirth() != null) {
+      docId = pEntity.getIdBirth();
+    }
     List<AccountingEntry> result = getSrvOrm().retrieveListWithConditions(
       AccountingEntry.class, " where SOURCETYPE=" + pEntity.constTypeCode()
-        + " and SOURCEID=" + pEntity.getItsId());
+        + " and SOURCEID=" + docId + " and SOURCEDATABASEBIRTH="
+          + pEntity.getIdDatabaseBirth());
     return result;
   }
 
@@ -328,6 +359,7 @@ public class SrvAccEntry<RS> implements ISrvAccEntry {
   public final void makeEntriesAll(
     final Map<String, Object> pAddParam) throws Exception {
     //TODO
+    throw new Exception("Doesn't implemented yet");
   }
 
   //Utils:
@@ -339,8 +371,8 @@ public class SrvAccEntry<RS> implements ISrvAccEntry {
    **/
   public final String lazyGetQuery(final String pFileName) throws Exception {
     if (this.queries.get(pFileName) == null) {
-      String flName = File.separator + "accounting" + File.separator
-        + "journalEntries" + File.separator + pFileName + ".sql";
+      String flName = "/" + "accounting" + "/"
+        + "journalEntries" + "/" + pFileName + ".sql";
       this.queries.put(pFileName, loadString(flName));
     }
     return this.queries.get(pFileName);

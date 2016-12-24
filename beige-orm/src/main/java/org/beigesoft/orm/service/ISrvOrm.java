@@ -14,7 +14,7 @@ import java.util.List;
 
 /**
  * <p>Abstraction of ORM service.
- * According specification Beige-ORM version #2.
+ * According specification Beige-ORM version #3.
  * It evaluate tables descriptors
  * from properties files. It generates DDL and DML queries.
  * It perform SQL queries through database service.
@@ -289,6 +289,22 @@ public interface ISrvOrm<RS> {
    */
   <T> List<T> retrieveEntityOwnedlist(Class<T> pEntityClass,
     Class<?> pOwnerClass, Object pEntityOwnerId) throws Exception;
+
+  /**
+   * <p>Getter for new database ID.
+   * Any database mist has ID, int is suitable type for that cause
+   * its range is enough and it's faster than String.</p>
+   * @return ID for new database
+   **/
+  int getNewDatabaseId();
+
+  /**
+   * <p>Setter for new database ID.
+   * Any database mist has ID, int is suitable type for that cause
+   * its range is enough and it's faster than String.</p>
+   * @param pNewDatabaseId ID for new database
+   **/
+  void setNewDatabaseId(int pNewDatabaseId);
 
   //to srv-database delegators:
   /**

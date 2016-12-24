@@ -76,7 +76,7 @@ public final class mngSoftware_jsp extends org.apache.jasper.runtime.HttpJspBase
       out = pageContext.getOut();
       _jspx_out = out;
 
-      out.write("\n\n\n<!DOCTYPE html>\n<html>\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no\">\n  <link rel=\"shortcut icon\" href=\"../static/img/favicon.png\">\n  <link rel=\"stylesheet\" href=\"../static/css/beige.common.css\">\n  <title>");
+      out.write("\n\n\n<!DOCTYPE html>\n<html>\n<head>\n  <meta charset=\"UTF-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no\">\n  <link rel=\"shortcut icon\" href=\"../static/img/favicon.png\">\n  <script type=\"text/javascript\" src=\"../static/js/beige.form.js\"></script>\n  <script type=\"text/javascript\" src=\"../static/js/beige.i18n.en.js\"></script>\n  <link rel=\"stylesheet\" href=\"../static/css/beige.common.css\">\n  <title>");
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${srvI18n.getMsg(\"mngSoftware\")}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
       out.write("</title>\n</head>\n<body style=\"padding: 20px;\" >\n\n  <a class=\"btn\" href=\"../\">");
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${srvI18n.getMsg(\"home\")}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
@@ -91,7 +91,7 @@ public final class mngSoftware_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write(':');
       out.write(' ');
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${mngSoftware.isShowDebugMessages}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
-      out.write("\n        </td>\n        <td style=\"padding: 5px;\">\n          <a class=\"btn\" href=\"?nameRenderer=mngSoftware&isShowDebugMessages=change\" onclick=\"return confirm('Change?');\">");
+      out.write("\n        </td>\n        <td style=\"padding: 5px;\">\n          <a class=\"btn\" href=\"?nameRenderer=mngSoftware&isShowDebugMessages=change\" onclick=\"confirmHref(this, 'Change?'); return false;\">");
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${srvI18n.getMsg(\"change\")}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
       out.write("</a>\n        </td>\n      </tr>\n    </table>\n  </div>\n\n</body>\n</html>\n\n");
     } catch (java.lang.Throwable t) {

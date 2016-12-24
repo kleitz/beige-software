@@ -144,12 +144,12 @@ public class BeigeAccounting extends Activity implements OnClickListener {
     this.btnStop.setOnClickListener(this);
     try {
       File jettyBase = new File(getFilesDir().getAbsolutePath()
-       + File.separator + APP_BASE);
+       + "/" + APP_BASE);
       PackageInfo packageInfo = getPackageManager()
         .getPackageInfo(getPackageName(), 0);
       String nameFileVersion = "version" + packageInfo.versionCode;
       File fileVersion = new File(getFilesDir().getAbsolutePath()
-       + File.separator + APP_BASE + File.separator + nameFileVersion);
+       + "/" + APP_BASE + "/" + nameFileVersion);
       if (!jettyBase.exists()) {
         if (!jettyBase.mkdirs()) {
           throw new ExceptionWithCode(ExceptionWithCode.SOMETHING_WRONG,
@@ -283,7 +283,7 @@ public class BeigeAccounting extends Activity implements OnClickListener {
     } else { // initialize:
       bootStrap = new BootStrapEmbedded();
       bootStrap.setWebAppPath(getFilesDir().getAbsolutePath()
-        + File.separator + APP_BASE);
+        + "/" + APP_BASE);
       try {
         bootStrap.setFactoryAppBeans(jettyFactoryAppBeans);
         bootStrap.createServer(false);
@@ -310,7 +310,7 @@ public class BeigeAccounting extends Activity implements OnClickListener {
     String[] files = assetManager.list(pCurrDir);
     for (String fileName : files) {
       String createdPath = getFilesDir().getAbsolutePath()
-        + File.separator + pCurrDir + File.separator + fileName;
+        + "/" + pCurrDir + "/" + fileName;
       if (!fileName.contains(".")) {
         File subdir = new File(createdPath);
         if (!subdir.exists()) {
@@ -322,12 +322,12 @@ public class BeigeAccounting extends Activity implements OnClickListener {
               "Created : " + subdir);
           }
         }
-        copyAssets(pCurrDir + File.separator + fileName);
+        copyAssets(pCurrDir + "/" + fileName);
       } else {
         InputStream ins = null;
         OutputStream outs = null;
         try {
-          ins = getAssets().open(pCurrDir + File.separator + fileName);
+          ins = getAssets().open(pCurrDir + "/" + fileName);
           outs = new BufferedOutputStream(
             new FileOutputStream(createdPath));
           byte[] data = new byte[1024];
@@ -337,7 +337,7 @@ public class BeigeAccounting extends Activity implements OnClickListener {
           }
           outs.flush();
           Log.i(BeigeAccounting.class.getSimpleName(),
-            "Copied: " + pCurrDir + File.separator + fileName);
+            "Copied: " + pCurrDir + "/" + fileName);
         } finally {
           if (ins != null) {
             try {

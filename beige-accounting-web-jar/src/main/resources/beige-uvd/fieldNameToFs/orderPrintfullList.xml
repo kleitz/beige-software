@@ -13,6 +13,7 @@
 <entry key="subaccExpenseType">-1</entry>
 <entry key="subaccExpenseId">-1</entry>
 <entry key="reversedId">-1</entry>
+<entry key="reversedIdDatabaseBirth">-1</entry>
 <entry key="subaccCashId">-1</entry>
 <entry key="subaccCashType">-1</entry>
 <entry key="idBirth">-1</entry>

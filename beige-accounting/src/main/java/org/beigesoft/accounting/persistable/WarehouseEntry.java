@@ -21,6 +21,7 @@ import org.beigesoft.accounting.persistable.base.AInvItemMovement;
  * It is for reverse deriving lines cause a deriving line
  * can change several warehouse rests.
  * All deriving lines are immutable.
+ * It can't be created by foreign source!
  * </pre>
  *
  * @author Yury Demidenko

@@ -13,7 +13,6 @@ package org.beigesoft.accounting.service;
 import java.util.List;
 import java.util.Map;
 import java.math.BigDecimal;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -343,8 +342,8 @@ public class SrvSalesReturnLine<RS>
    **/
   public final String lazyGetQuerySalesReturnLineTaxes() throws Exception {
     if (this.querySalesReturnLineTaxes == null) {
-      String flName = File.separator + "accounting" + File.separator + "trade"
-        + File.separator + "salesReturnLineTaxes.sql";
+      String flName = "/" + "accounting" + "/" + "trade"
+        + "/" + "salesReturnLineTaxes.sql";
       this.querySalesReturnLineTaxes = loadString(flName);
     }
     return this.querySalesReturnLineTaxes;

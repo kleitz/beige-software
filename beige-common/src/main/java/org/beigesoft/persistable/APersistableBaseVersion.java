@@ -21,7 +21,7 @@ public abstract class APersistableBaseVersion extends APersistableBase
   implements IHasVersion {
 
   /**
-   * <p>Version to check dirty.</p>
+   * <p>Version to check dirty or replication.</p>
    **/
   private Long itsVersion;
 

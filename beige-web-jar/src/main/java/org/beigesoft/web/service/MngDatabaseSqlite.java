@@ -80,11 +80,19 @@ public class MngDatabaseSqlite implements IMngDatabase {
   /**
    * <p>Create new database.</p>
    * @param pDbName database name without extension
+   * @param pDbId database ID
    * @throws Exception - an exception
    **/
   @Override
-  public final void createDatabase(final String pDbName) throws Exception {
-    changeToDatabase(pDbName);
+  public final void createDatabase(final String pDbName,
+    final int pDbId) throws Exception {
+    String dbUrl = "jdbc:sqlite:" + this.databaseDir + File.separator
+      + pDbName + ".sqlite";
+    if (!this.factoryAppBeansSqlite.getDatabaseName().equals(dbUrl)) {
+      this.factoryAppBeansSqlite.setDatabaseName(dbUrl);
+      this.factoryAppBeansSqlite.setNewDatabaseId(pDbId);
+      this.factoryAppBeansSqlite.handleDatabaseChanged();
+    }
   }
 
   /**
@@ -94,15 +102,6 @@ public class MngDatabaseSqlite implements IMngDatabase {
    **/
   @Override
   public final void changeDatabase(final String pDbName) throws Exception {
-    changeToDatabase(pDbName);
-  }
-
-  /**
-   * <p>Close current database then create/open new one.</p>
-   * @param pDbName database name without extension
-   * @throws Exception - an exception
-   **/
-  public final void changeToDatabase(final String pDbName) throws Exception {
     String dbUrl = "jdbc:sqlite:" + this.databaseDir + File.separator
       + pDbName + ".sqlite";
     if (!this.factoryAppBeansSqlite.getDatabaseName().equals(dbUrl)) {

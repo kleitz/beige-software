@@ -30,14 +30,20 @@ Bob has read <a href="https://www.irs.gov/pub/irs-pdf/p583.pdf">IRS 583 Starting
   by using WEB-service (see <a href="import-db-web.html">Import database with WEB-service</a>).
 </p>
 <p>
-  Bob install Java 7, SQLite and Google Chrome on his notebook. 
+  Bob install Java (Oracle) and Google Chrome on his notebook. 
   Bob download file <b>beige-accounting-ajetty.zip</b> from <a href="https://sourceforge.net/projects/beige-accounting/">https://sourceforge.net/projects/beige-accounting/</a>.
-  He unzip it into <b>C:/beige-accounting</b>, then open "Command Prompt Line": click <b>start</b> and type <b>cmd</b> and press Enter
-  (in Linux and Mac it's called "Terminal"). In cmd (terminal) he type command <b>cd C:/beige-accounting</b> then type 
+  He right-click on this file then select <b>Extract All</b> and choose destination <b>C:/beige-accounting-ajetty</b>, after extracting folder <b>C:/beige-accounting-ajetty</b> will be opened
+  and he can open "Command Prompt Line" from <b>menu-file</b>.
+  In cmd (terminal) he type command  
   <b>startup.bat</b> or <b>java -jar beige-accounting-ajetty-jar-with-dependencies.jar port=8080</b>
 </p>
   Bob should see window like this:
-  <p align="center"><img alt="Beige-Accounting start in terminal" style="max-width: 100%" src="images/start-ajetty.png" /></p>
+  <p align="center"><img alt="Beige-Accounting start in terminal" style="max-width: 100%" src="images/beige-acc-windows.PNG" /></p>
+<p>* in any MS Windows version you can right-click on the Start button then choose "command prompt", it will open command prompt in folder "c:/users/[YUOR_NAME]", to change folder
+ enter command <b>cd C:/beige-accounting-ajetty</b>. You can launch application in very simple way - just double click on <b>startup.bat</b>.
+ In Linux and Mac "Command prompt" called "Terminal" and you can launch <b>startup.sh</b> with double click (except odd Gnome interface).
+ <b>startup8081.bat</b> and <b>startup8081.sh</b> will launch <b>A-Jetty</b> on port <b>8081</b>.
+</p>
 <p>
   Then he open address <a href="http://localhost:8080">http://localhost:8080</a> in Google Chrome.
   At first Bob change organization name in accounting settings:

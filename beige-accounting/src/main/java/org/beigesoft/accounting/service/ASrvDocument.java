@@ -13,11 +13,13 @@ package org.beigesoft.accounting.service;
 import java.util.Date;
 import java.math.BigDecimal;
 import java.util.Map;
+import java.text.DateFormat;
 
 import org.beigesoft.holder.IAttributes;
 import org.beigesoft.exception.ExceptionWithCode;
 import org.beigesoft.accounting.persistable.IDoc;
 import org.beigesoft.orm.service.ISrvOrm;
+import org.beigesoft.service.ISrvI18n;
 
 /**
  * <p>Business service for accounting document
@@ -29,6 +31,16 @@ import org.beigesoft.orm.service.ISrvOrm;
  */
 public abstract class ASrvDocument<RS, T extends IDoc>
   extends ASrvAccEntitySimple<RS, T> {
+
+  /**
+   * <p>I18N service.</p>
+   **/
+  private ISrvI18n srvI18n;
+
+  /**
+   * <p>Date Formatter.</p>
+   **/
+  private DateFormat dateFormatter;
 
   /**
    * <p>Business service for accounting entries.</p>
@@ -49,12 +61,17 @@ public abstract class ASrvDocument<RS, T extends IDoc>
    * @param pSrvOrm ORM service
    * @param pSrvAccSettings AccSettings service
    * @param pSrvAccEntry Accounting entries service
+   * @param pSrvI18n I18N service
+   * @param pDateFormatter for description
    **/
   public ASrvDocument(final Class<T> pEntityClass, final ISrvOrm<RS> pSrvOrm,
     final ISrvAccSettings pSrvAccSettings,
-      final ISrvAccEntry pSrvAccEntry) {
+      final ISrvAccEntry pSrvAccEntry,
+        final ISrvI18n pSrvI18n, final DateFormat pDateFormatter) {
     super(pEntityClass, pSrvOrm, pSrvAccSettings);
     this.srvAccEntry = pSrvAccEntry;
+    this.srvI18n = pSrvI18n;
+    this.dateFormatter = pDateFormatter;
   }
 
   /**
@@ -130,23 +147,43 @@ public abstract class ASrvDocument<RS, T extends IDoc>
           descr = pEntity.getDescription();
         }
         pEntity.setDescription(descr
-          + " reversed ID: " + pEntity.getReversedId());
+          + " " + getSrvI18n().getMsg("reversed_n") + pEntity
+            .getReversedIdDatabaseBirth() + "-"
+              + pEntity.getReversedId());
       }
       getSrvOrm().insertEntity(pEntity);
       if (pEntity.getReversedId() != null) {
-        T reversed = getSrvOrm().retrieveEntityById(
-          getEntityClass(), pEntity.getReversedId());
+        T reversed;
+        if (pEntity.getIdDatabaseBirth().equals(pEntity
+          .getReversedIdDatabaseBirth())) { //both from current database
+          reversed = getSrvOrm().retrieveEntityById(
+            getEntityClass(), pEntity.getReversedId());
+        } else { //reversing foreign doc
+          String tblNm = getEntityClass().getSimpleName().toUpperCase();
+          String whereStr = " where " + tblNm + ".IDBIRTH=" + pEntity
+          .getReversedId() + " and " + tblNm + ".IDDATABASEBIRTH=" + pEntity
+          .getReversedIdDatabaseBirth();
+          reversed = getSrvOrm().retrieveEntityWithConditions(
+            getEntityClass(), whereStr);
+        }
         if (reversed.getReversedId() != null) {
           throw new ExceptionWithCode(ExceptionWithCode.FORBIDDEN,
             "Attempt to double reverse! " + pAddParam.get("user"));
         }
         reversed.setDescription(reversed.getDescription()
-          + " reversing ID: " + pEntity.getItsId());
+          + " " + getSrvI18n().getMsg("reversing_n") + pEntity
+            .getIdDatabaseBirth() + "-"
+              + pEntity.getItsId()); //reversing always new from current DB
         reversed.setReversedId(pEntity.getItsId());
+        reversed.setReversedIdDatabaseBirth(pEntity.getIdDatabaseBirth());
         getSrvOrm().updateEntity(reversed);
         srvAccEntry.reverseEntries(pAddParam, pEntity, reversed);
       }
     } else {
+      if (!pEntity.getIdDatabaseBirth().equals(getSrvOrm().getIdDatabase())) {
+        throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
+          "can_not_change_foreign_src");
+      }
       //Prevent any changes when document has accounting entries:
       T oldEntity = getSrvOrm()
         .retrieveEntityById(getEntityClass(), pEntity.getItsId());
@@ -195,11 +232,18 @@ public abstract class ASrvDocument<RS, T extends IDoc>
         throw new ExceptionWithCode(ExceptionWithCode.FORBIDDEN,
           "Attempt to double reverse! " + pAddParam.get("user"));
       }
-      entity.setReversedId(Long.valueOf(pId.toString()));
+      T entityReversed = getSrvOrm()
+        .retrieveEntityById(getEntityClass(), pId);
+      Long docId = entityReversed.getItsId();
+      if (entityReversed.getIdBirth() != null) {
+        docId = entityReversed.getIdBirth();
+      }
+      entity.setReversedId(docId);
+      entity.setReversedIdDatabaseBirth(entityReversed.getIdDatabaseBirth());
       entity.setItsTotal(entity.getItsTotal().negate());
       entity.setItsDate(new Date(entity.getItsDate().getTime() + 1));
     } else {
-      entity.setItsTotal(new BigDecimal("0.00"));
+      entity.setItsTotal(BigDecimal.ZERO);
       entity.setItsDate(new Date());
     }
     entity.setIdDatabaseBirth(getSrvOrm().getIdDatabase());
@@ -219,6 +263,10 @@ public abstract class ASrvDocument<RS, T extends IDoc>
   @Override
   public final void deleteEntity(final Map<String, Object> pAddParam,
     final T pEntity) throws Exception {
+    if (!pEntity.getIdDatabaseBirth().equals(getSrvOrm().getIdDatabase())) {
+      throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
+        "can_not_delete_foreign_src");
+    }
     deleteEntity(pAddParam, pEntity.getItsId());
   }
 
@@ -232,12 +280,7 @@ public abstract class ASrvDocument<RS, T extends IDoc>
   public final void deleteEntity(final Map<String, Object> pAddParam,
     final Object pId) throws Exception {
     T entity = retrieveEntityById(pAddParam, pId);
-    if (entity.getHasMadeAccEntries()
-      || entity.getItsTotal().doubleValue() > 0) {
-      throw new ExceptionWithCode(ExceptionWithCode.FORBIDDEN,
-        "Attempt to delete document by " + pAddParam.get("user"));
-    }
-    getSrvOrm().deleteEntity(getEntityClass(), pId);
+    deleteEntity(pAddParam, entity);
   }
 
   //To override:
@@ -313,5 +356,37 @@ public abstract class ASrvDocument<RS, T extends IDoc>
    **/
   public final void setSrvAccEntry(final ISrvAccEntry pSrvAccEntry) {
     this.srvAccEntry = pSrvAccEntry;
+  }
+
+  /**
+   * <p>Geter for srvI18n.</p>
+   * @return ISrvI18n
+   **/
+  public final ISrvI18n getSrvI18n() {
+    return this.srvI18n;
+  }
+
+  /**
+   * <p>Setter for srvI18n.</p>
+   * @param pSrvI18n reference
+   **/
+  public final void setSrvI18n(final ISrvI18n pSrvI18n) {
+    this.srvI18n = pSrvI18n;
+  }
+
+  /**
+   * <p>Getter for dateFormatter.</p>
+   * @return DateFormat
+   **/
+  public final DateFormat getDateFormatter() {
+    return this.dateFormatter;
+  }
+
+  /**
+   * <p>Setter for dateFormatter.</p>
+   * @param pDateFormatter reference
+   **/
+  public final void setDateFormatter(final DateFormat pDateFormatter) {
+    this.dateFormatter = pDateFormatter;
   }
 }

@@ -35,6 +35,11 @@ public class AccountingEntry extends APersistableBase {
   private Long reversedId;
 
   /**
+   * <p>ID database birth of reversed/reversing ACC.entry.</p>
+   **/
+  private Integer reversedIdDatabaseBirth;
+
+  /**
    * <p>Integer, Not Null Source Type e.g. 1 - PurchaseInvoice,
    * 2 - SalesInvoice, 3 - AccountingEntries.
    * This is constant [document/line].constTypeCode().</p>
@@ -148,6 +153,23 @@ public class AccountingEntry extends APersistableBase {
    **/
   public final void setReversedId(final Long pReversedId) {
     this.reversedId = pReversedId;
+  }
+
+  /**
+   * <p>Geter for reversed database Id.</p>
+   * @return Integer DB birth ID
+   **/
+  public final Integer getReversedIdDatabaseBirth() {
+    return this.reversedIdDatabaseBirth;
+  }
+
+  /**
+   * <p>Setter for reversed database Id.</p>
+   * @param pReversedIdDatabaseBirth reference
+   **/
+  public final void setReversedIdDatabaseBirth(
+    final Integer pReversedIdDatabaseBirth) {
+    this.reversedIdDatabaseBirth = pReversedIdDatabaseBirth;
   }
 
   /**
