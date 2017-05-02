@@ -9,5 +9,5 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 <comment>Correspondence of class types field name to widget new form. ORDER is essential, the LAST value will be used.</comment>
-<entry key="org.beigesoft.accounting.persistable.base.AReplExcludeAccountsDebitCredit">inputAccountOnly</entry>
+<entry key="org.beigesoft.replicator.persistable.base.AReplExcludeAccountsDebitCredit">inputAccountOnly</entry>
 </properties>

@@ -102,8 +102,6 @@ public final class inputBoolean_jsp extends org.apache.jasper.runtime.HttpJspBas
       if (_jspx_meth_c_005fif_005f0(_jspx_page_context))
         return;
       out.write("\n      <select ");
-      out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${required}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
-      out.write(' ');
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${autofocus}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
       out.write(" name=\"");
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${entity.getClass().simpleName}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
@@ -116,7 +114,7 @@ public final class inputBoolean_jsp extends org.apache.jasper.runtime.HttpJspBas
       if (_jspx_meth_c_005fif_005f1(_jspx_page_context))
         return;
       out.write("\n        <option value=\"true\" ");
-      out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${selectedDisabled}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
+      out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${selTrue}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
       out.write('>');
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${srvI18n.getMsg(\"Yes\")}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
       out.write("</option>\n        ");
@@ -126,7 +124,7 @@ public final class inputBoolean_jsp extends org.apache.jasper.runtime.HttpJspBas
       if (_jspx_meth_c_005fif_005f2(_jspx_page_context))
         return;
       out.write("\n        <option value=\"false\" ");
-      out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${selectedDisabled}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
+      out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${selF}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
       out.write('>');
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${srvI18n.getMsg(\"No\")}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
       out.write("</option>\n      </select>\n      ");
@@ -233,7 +231,7 @@ public final class inputBoolean_jsp extends org.apache.jasper.runtime.HttpJspBas
     _jspx_th_c_005fset_005f2.setPageContext(_jspx_page_context);
     _jspx_th_c_005fset_005f2.setParent(null);
     // /WEB-INF/jsp/inputs/inputBoolean.jsp(14,8) name = var type = java.lang.String reqTime = false required = false fragment = false deferredValue = false expectedTypeName = null deferredMethod = false methodSignature = null
-    _jspx_th_c_005fset_005f2.setVar("selectedDisabled");
+    _jspx_th_c_005fset_005f2.setVar("selTrue");
     // /WEB-INF/jsp/inputs/inputBoolean.jsp(14,8) name = value type = javax.el.ValueExpression reqTime = true required = false fragment = false deferredValue = true expectedTypeName = java.lang.Object deferredMethod = false methodSignature = null
     _jspx_th_c_005fset_005f2.setValue(new org.apache.jasper.el.JspValueExpression("/WEB-INF/jsp/inputs/inputBoolean.jsp(14,8) ''",_jsp_getExpressionFactory().createValueExpression("",java.lang.Object.class)).getValue(_jspx_page_context.getELContext()));
     int _jspx_eval_c_005fset_005f2 = _jspx_th_c_005fset_005f2.doStartTag();
@@ -284,7 +282,7 @@ public final class inputBoolean_jsp extends org.apache.jasper.runtime.HttpJspBas
     _jspx_th_c_005fset_005f3.setPageContext(_jspx_page_context);
     _jspx_th_c_005fset_005f3.setParent((javax.servlet.jsp.tagext.Tag) _jspx_th_c_005fif_005f1);
     // /WEB-INF/jsp/inputs/inputBoolean.jsp(15,43) name = var type = java.lang.String reqTime = false required = false fragment = false deferredValue = false expectedTypeName = null deferredMethod = false methodSignature = null
-    _jspx_th_c_005fset_005f3.setVar("selectedDisabled");
+    _jspx_th_c_005fset_005f3.setVar("selTrue");
     // /WEB-INF/jsp/inputs/inputBoolean.jsp(15,43) name = value type = javax.el.ValueExpression reqTime = true required = false fragment = false deferredValue = true expectedTypeName = java.lang.Object deferredMethod = false methodSignature = null
     _jspx_th_c_005fset_005f3.setValue(new org.apache.jasper.el.JspValueExpression("/WEB-INF/jsp/inputs/inputBoolean.jsp(15,43) 'selected'",_jsp_getExpressionFactory().createValueExpression("selected",java.lang.Object.class)).getValue(_jspx_page_context.getELContext()));
     int _jspx_eval_c_005fset_005f3 = _jspx_th_c_005fset_005f3.doStartTag();
@@ -305,7 +303,7 @@ public final class inputBoolean_jsp extends org.apache.jasper.runtime.HttpJspBas
     _jspx_th_c_005fset_005f4.setPageContext(_jspx_page_context);
     _jspx_th_c_005fset_005f4.setParent(null);
     // /WEB-INF/jsp/inputs/inputBoolean.jsp(17,8) name = var type = java.lang.String reqTime = false required = false fragment = false deferredValue = false expectedTypeName = null deferredMethod = false methodSignature = null
-    _jspx_th_c_005fset_005f4.setVar("selectedDisabled");
+    _jspx_th_c_005fset_005f4.setVar("selTrue");
     // /WEB-INF/jsp/inputs/inputBoolean.jsp(17,8) name = value type = javax.el.ValueExpression reqTime = true required = false fragment = false deferredValue = true expectedTypeName = java.lang.Object deferredMethod = false methodSignature = null
     _jspx_th_c_005fset_005f4.setValue(new org.apache.jasper.el.JspValueExpression("/WEB-INF/jsp/inputs/inputBoolean.jsp(17,8) ''",_jsp_getExpressionFactory().createValueExpression("",java.lang.Object.class)).getValue(_jspx_page_context.getELContext()));
     int _jspx_eval_c_005fset_005f4 = _jspx_th_c_005fset_005f4.doStartTag();
@@ -356,7 +354,7 @@ public final class inputBoolean_jsp extends org.apache.jasper.runtime.HttpJspBas
     _jspx_th_c_005fset_005f5.setPageContext(_jspx_page_context);
     _jspx_th_c_005fset_005f5.setParent((javax.servlet.jsp.tagext.Tag) _jspx_th_c_005fif_005f2);
     // /WEB-INF/jsp/inputs/inputBoolean.jsp(18,44) name = var type = java.lang.String reqTime = false required = false fragment = false deferredValue = false expectedTypeName = null deferredMethod = false methodSignature = null
-    _jspx_th_c_005fset_005f5.setVar("selectedDisabled");
+    _jspx_th_c_005fset_005f5.setVar("selF");
     // /WEB-INF/jsp/inputs/inputBoolean.jsp(18,44) name = value type = javax.el.ValueExpression reqTime = true required = false fragment = false deferredValue = true expectedTypeName = java.lang.Object deferredMethod = false methodSignature = null
     _jspx_th_c_005fset_005f5.setValue(new org.apache.jasper.el.JspValueExpression("/WEB-INF/jsp/inputs/inputBoolean.jsp(18,44) 'selected'",_jsp_getExpressionFactory().createValueExpression("selected",java.lang.Object.class)).getValue(_jspx_page_context.getELContext()));
     int _jspx_eval_c_005fset_005f5 = _jspx_th_c_005fset_005f5.doStartTag();

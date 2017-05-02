@@ -9,6 +9,8 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 <comment>Correspondence of field name to field setting.</comment>
+<entry key="registeredPassword">-1</entry>
+<entry key="userPassword">-1</entry>
 <entry key="sourceDatabaseBirth">-1</entry>
 <entry key="isSubaccFromMethod">-1</entry>
 <entry key="sourceIdName">-1</entry>

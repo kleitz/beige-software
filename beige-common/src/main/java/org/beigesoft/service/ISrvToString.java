@@ -19,7 +19,7 @@ package org.beigesoft.service;
 public interface ISrvToString<M> {
 
   /**
-   * <p>Say obout model.</p>
+   * <p>Say about model.</p>
    * @param model to be explained
    * @return String representation
    **/

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Beigesoft ™
+  Licensed under the Apache License, Version 2.0
+ 
+  You may obtain a copy of the License at
+ 
+  http://www.apache.org/licenses/LICENSE-2.0
+ -->
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Explicit final definition.</comment>
+<entry key="dateEndAucisNullable">true</entry>
+<entry key="dateStartAucisNullable">true</entry>
+<entry key="itsPriceisNullable">true</entry>
+<entry key="previousPriceisNullable">true</entry>
+<entry key="startPriceAucisNullable">true</entry>
+<entry key="minimumPriceAucisNullable">true</entry>
+<entry key="buyItNowPriceAucisNullable">true</entry>
+<entry key="currentPriceAucisNullable">true</entry>
+<entry key="soldPriceAucisNullable">true</entry>
+<entry key="itemIdisNullable">false</entry>
+<entry key="availableQuantityisNullable">false</entry>
+</properties>

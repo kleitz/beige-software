@@ -1,7 +1,8 @@
 <%@ page language="java" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <div class="pages">
-  <button onclick="getHtmlByAjaxCareful('GET', 'entity/?nameRenderer=editEntityFromOwnedListJson&nameAction=createFromOwnedListTransactional&nameEntityFromOwnedList=${entitySimpleName}${itsOwnerParams}');" class="btn btn-sm">
+  <c:set var="ownerFieldName" value="${srvOrm.tablesMap[entitySimpleName].ownerFieldName}"/>
+  <button onclick="getHtmlByAjaxCareful('GET', 'service/?nmHnd=${param.nmHnd}&nmRnd=editEntityFolJson&nmsAct=entityCreate&nmEnt=${entitySimpleName}&${entitySimpleName}.${ownerFieldName}=${ownerIdStr}${ownerVersion}${flyParams}');" class="btn btn-sm">
     ${srvI18n.getMsg("New")}
   </button>
 </div>

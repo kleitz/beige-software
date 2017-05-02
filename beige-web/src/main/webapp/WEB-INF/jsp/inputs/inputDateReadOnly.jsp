@@ -10,8 +10,12 @@
       <c:if test="${srvOrm.tablesMap[entity.getClass().simpleName].fieldsMap[fieldName].definition.contains('not null')}">
         <c:set var="required" value="required"/>
       </c:if>
-      <input type="date" disabled value="${utlJsp.dateToIso8601(entity[fieldName])}" onchange="inputHasBeenChanged(this);"/> 
-      <input type="hidden" ${required} name="${entity.getClass().simpleName}.${fieldName}" value="${entity[fieldName].time}"/> 
+      <c:set var="dtVal" value=""/>
+      <c:if test="${entity[fieldName] != null}">
+        <c:set var="dtVal" value="${srvDate.toIso8601DateNoTz(entity[fieldName], null)}"/>
+      </c:if>
+      <input type="date" disabled value="${dtVal}" onchange="inputHasBeenChanged(this);"/> 
+      <input type="hidden" ${required} name="${entity.getClass().simpleName}.${fieldName}" value="${dtVal}"/> 
     </div>
   </td>
 </tr>

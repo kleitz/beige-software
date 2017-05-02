@@ -105,7 +105,21 @@
           <groupId>org.beigesoft</groupId>
           <artifactId>beige-jdbc</artifactId>
         </exclusion>
+        <exclusion>
+          <groupId>com.sun.mail</groupId>
+          <artifactId>javax.mail</artifactId>
+        </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+        <groupId>com.sun.mail</groupId>
+        <artifactId>android-mail</artifactId>
+        <version>1.5.6</version>
+    </dependency>
+    <dependency>
+        <groupId>com.sun.mail</groupId>
+        <artifactId>android-activation</artifactId>
+        <version>1.5.6</version>
     </dependency>
     <dependency>
       <groupId>com.google.android</groupId>
@@ -148,6 +162,9 @@
       </resource>
       <resource>
         <directory>../beige-accounting/src/main/resources</directory>
+      </resource>
+      <resource>
+        <directory>../beige-webstore/src/main/resources</directory>
       </resource>
       <resource>
         <directory>../beige-accounting-web-jar/src/main/resources</directory>

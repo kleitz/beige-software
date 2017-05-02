@@ -43,7 +43,7 @@
     </dependency>
     <dependency>
       <groupId>org.beigesoft</groupId>
-      <artifactId>beige-settings</artifactId>
+      <artifactId>beige-common</artifactId>
       <version>${beige.version}</version>
       <type>test-jar</type>
       <scope>test</scope>

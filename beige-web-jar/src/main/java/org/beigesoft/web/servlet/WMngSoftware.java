@@ -66,8 +66,8 @@ public class WMngSoftware extends HttpServlet {
       pReq.setAttribute("mngSoftware", mngSoftware);
       pReq.setAttribute("srvI18n", srvI18n);
       pReq.setAttribute("utlJsp", utlJsp);
-      String nameRenderer = pReq.getParameter("nameRenderer");
-      String path = dirJsp + nameRenderer + ".jsp";
+      String nmRnd = pReq.getParameter("nmRnd");
+      String path = dirJsp + nmRnd + ".jsp";
       RequestDispatcher rd = getServletContext().getRequestDispatcher(path);
       rd.include(pReq, pResp);
     } catch (Exception e) {

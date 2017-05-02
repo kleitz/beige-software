@@ -28,6 +28,7 @@ public abstract class AEditable implements IEditable {
    * <p>Geter for isNew.</p>
    * @return boolean
    **/
+  @Override
   public final Boolean getIsNew() {
     return this.isNew;
   }

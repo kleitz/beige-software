@@ -25,22 +25,22 @@ public interface ISrvEntityReader {
    * Read entity(fill fields) from a stream (reader - file or through network).
    * It is invoked when it's start of &lt;entity
    * </p>
-   * @param pReader reader.
    * @param pAddParam additional params
+   * @param pReader reader.
    * @return entity filled/refreshed.
    * @throws Exception - an exception
    **/
-  Object read(Reader pReader, Map<String, Object> pAddParam) throws Exception;
+  Object read(Map<String, Object> pAddParam, Reader pReader) throws Exception;
 
   /**
    * <p>
    * Read entity attributes from stream.
    * </p>
-   * @param pReader reader.
    * @param pAddParam additional params
+   * @param pReader reader.
    * @return attributes map
    * @throws Exception - an exception
    **/
-  Map<String, String> readAttributes(Reader pReader,
-    Map<String, Object> pAddParam) throws Exception;
+  Map<String, String> readAttributes(Map<String, Object> pAddParam,
+    Reader pReader) throws Exception;
 }

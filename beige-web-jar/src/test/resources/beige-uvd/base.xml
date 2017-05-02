@@ -10,15 +10,31 @@
 <properties>
 <comment>Base Unified UI properties</comment>
 <entry key="classes">org.beigesoft.test.persistable.Department,
+  org.beigesoft.persistable.EmailConnect,
+  org.beigesoft.persistable.EmailStringProperty,
+  org.beigesoft.persistable.EmailIntegerProperty,
+  org.beigesoft.persistable.EmailMsg,
+  org.beigesoft.persistable.Eattachment,
+  org.beigesoft.persistable.Erecipient,
+  org.beigesoft.persistable.UserJetty,
+  org.beigesoft.persistable.RoleJetty,
+  org.beigesoft.persistable.UserRoleJetty,
+  org.beigesoft.persistable.IdUserRoleJetty,
+  org.beigesoft.persistable.UserTomcat,
+  org.beigesoft.persistable.UserRoleTomcat,
+  org.beigesoft.persistable.IdUserRoleTomcat,
+  org.beigesoft.test.persistable.UserRoleTomcatLine,
+  org.beigesoft.test.persistable.UserRoleTomcatPriority,
   org.beigesoft.test.persistable.GoodVersionTime,
+  org.beigesoft.test.persistable.GoodsRating,
   org.beigesoft.test.persistable.PersistableHead,
   org.beigesoft.test.persistable.PersistableLine</entry>
-<entry key="settingsKeysForClasses">wdgListActions, wdgOwnedList, wdgFilterOrder, wdgToString, wdgPick,
-  orderByDefault, orderByDescDefault, ownedLists, wdgOwnedListFooter, wdgListHeader, wdgListFooter, wdgFormActions, wdgPrint</entry>
+<entry key="settingsKeysForClasses">excludeFields, wdgListActions, wdgOwnedList, wdgFilterOrder, wdgToString, wdgPick,
+  orderByDefault, orderByDescDefault, ownedLists, wdgOwnedListFooter, wdgListHeader, wdgListFooter, wdgFormActions, wdgFormActionsDelete, wdgPrint</entry>
 <entry key="settingsKeysForFields">wdgNewForm, wdgEditForm, wdgDeleteForm,
   wdgToString, wdgFilter, wdgOrder, orderShowForm, orderPrintForm, orderPrintfullForm, orderPrintList, orderPrintfullList,
   orderShowList,<!-- (minus "-" no show, 1, 4... - order) -->
-  orderShowPicker, wdgInputWrapper, wdgToCellDetail, wdgToCellHeader
-  </entry>
-<entry key="excludeFields">persistableLines</entry>
+  orderShowPicker, wdgInputWrapper, wdgToCellDetail, wdgToCellHeader, fieldFromToStringConverter
+</entry>
+<entry key="excludeFields"></entry>
 </properties>

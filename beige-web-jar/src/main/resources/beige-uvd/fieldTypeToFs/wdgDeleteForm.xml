@@ -11,5 +11,6 @@
 <comment>Correspondence of Java types to widget base names. ORDER is essential, the LAST value will be used.</comment>
 <entry key="java.lang.Object">inputDisabled</entry>
 <entry key="java.util.Date">inputDisabledDateTime</entry>
-<entry key="org.beigesoft.model.IHasName">inputDisabledHasName</entry>
+<entry key="org.beigesoft.model.IHasName">inputEntityHasNameForDelete</entry>
+<entry key="org.beigesoft.persistable.UserTomcat">inputUserTomcatReadOnly</entry>
 </properties>

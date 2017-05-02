@@ -71,8 +71,8 @@ public class WMngDatabase extends HttpServlet {
       pReq.setAttribute("currDb", mngDatabase.retrieveCurrentDbName());
       pReq.setAttribute("srvI18n", srvI18n);
       pReq.setAttribute("utlJsp", utlJsp);
-      String nameRenderer = pReq.getParameter("nameRenderer");
-      String path = dirJsp + nameRenderer + ".jsp";
+      String nmRnd = pReq.getParameter("nmRnd");
+      String path = dirJsp + nmRnd + ".jsp";
       RequestDispatcher rd = getServletContext().getRequestDispatcher(path);
       rd.include(pReq, pResp);
     } catch (Exception e) {
@@ -127,8 +127,8 @@ public class WMngDatabase extends HttpServlet {
       pReq.setAttribute("currDb", mngDatabase.retrieveCurrentDbName());
       pReq.setAttribute("srvI18n", srvI18n);
       pReq.setAttribute("utlJsp", utlJsp);
-      String nameRenderer = pReq.getParameter("nameRenderer");
-      String path = dirJsp + nameRenderer + ".jsp";
+      String nmRnd = pReq.getParameter("nmRnd");
+      String path = dirJsp + nmRnd + ".jsp";
       RequestDispatcher rd = getServletContext().getRequestDispatcher(path);
       rd.include(pReq, pResp);
     } catch (Exception e) {

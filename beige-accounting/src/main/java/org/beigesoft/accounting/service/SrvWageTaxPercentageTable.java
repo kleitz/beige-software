@@ -84,7 +84,7 @@ public class SrvWageTaxPercentageTable<RS> implements ISrvFillWageLines {
   public final void fillWageLines(final Map<String, Object> pAddParam,
     final Wage pWage) throws Exception {
     List<WageTaxTableEmployee> wttel = getSrvOrm()
-      .retrieveListWithConditions(WageTaxTableEmployee.class,
+      .retrieveListWithConditions(pAddParam, WageTaxTableEmployee.class,
         "where EMPLOYEE=" + pWage.getEmployee().getItsId());
     if (wttel != null && wttel.size() > 0) {
       String queryTotalWageYear =
@@ -97,14 +97,17 @@ public class SrvWageTaxPercentageTable<RS> implements ISrvFillWageLines {
         totalWageYearDbl = 0d;
       }
       BigDecimal totalWageYear = BigDecimal.valueOf(totalWageYearDbl);
-      getSrvOrm().deleteEntityWhere(WageTaxLine.class,
+      getSrvOrm().deleteEntityWhere(pAddParam, WageTaxLine.class,
         "ITSOWNER=" + pWage.getItsId());
       BigDecimal bigDecimal100 = new BigDecimal("100.00");
       BigDecimal totalTaxesEmployee = BigDecimal.ZERO;
       BigDecimal totalTaxesEmployer = BigDecimal.ZERO;
       //BeigeORM refresh lines:
-      pWage.setItsLines(getSrvOrm().retrieveEntityOwnedlist(WageLine.class,
-        Wage.class, pWage.getItsId()));
+      WageLine wlfr = new WageLine();
+      wlfr.setItsOwner(pWage);
+      String ownerFldName = "itsOwner";
+      pWage.setItsLines(getSrvOrm()
+        .retrieveListForField(pAddParam, wlfr, ownerFldName));
       Map<WageType, BigDecimal> empleeTotTaxLnMap =
         new  HashMap<WageType, BigDecimal>();
       for (WageLine wl : pWage.getItsLines()) {
@@ -113,15 +116,17 @@ public class SrvWageTaxPercentageTable<RS> implements ISrvFillWageLines {
       for (WageTaxTableEmployee wtte : wttel) {
         //BeigeORM refresh lines:
         wtte.getItsOwner().setTax(getSrvOrm()
-          .retrieveEntity(wtte.getItsOwner().getTax()));
+          .retrieveEntity(pAddParam, wtte.getItsOwner().getTax()));
         //BeigeORM refresh lines:
+        WageTaxTableLine wttlfr = new WageTaxTableLine();
+        wttlfr.setItsOwner(wtte.getItsOwner());
         wtte.getItsOwner().setItsLines(getSrvOrm()
-          .retrieveEntityOwnedlist(WageTaxTableLine.class,
-            WageTaxTable.class, wtte.getItsOwner().getItsId()));
+          .retrieveListForField(pAddParam, wttlfr, ownerFldName));
         //BeigeORM refresh lines:
+        WageTaxTableType wttt = new WageTaxTableType();
+        wttt.setItsOwner(wtte.getItsOwner());
         wtte.getItsOwner().setWageTypes(getSrvOrm()
-          .retrieveEntityOwnedlist(WageTaxTableType.class,
-            WageTaxTable.class, wtte.getItsOwner().getItsId()));
+          .retrieveListForField(pAddParam, wttt, ownerFldName));
         BigDecimal totalTaxableForTax = BigDecimal.ZERO;
         for (WageLine wl : pWage.getItsLines()) {
           if (isWageApplied(wl.getWageType(), wtte.getItsOwner())) {
@@ -139,7 +144,9 @@ public class SrvWageTaxPercentageTable<RS> implements ISrvFillWageLines {
                   .compareTo(wttl.getYearWageFrom()) >= 0
                     && totalWageYear
                       .compareTo(wttl.getYearWageTo()) < 0) {
-              WageTaxLine wtl = getSrvOrm().createEntity(WageTaxLine.class);
+              WageTaxLine wtl = new WageTaxLine();
+              wtl.setIsNew(true);
+              wtl.setIdDatabaseBirth(getSrvOrm().getIdDatabase());
               wtl.setItsOwner(pWage);
               wtl.setAllowance(wtte.getAllowance());
               wtl.setPlusAmount(wttl.getPlusAmount());
@@ -147,13 +154,14 @@ public class SrvWageTaxPercentageTable<RS> implements ISrvFillWageLines {
               wtl.setItsPercentage(wttl.getItsPercentage());
               wtl.setItsTotal(wageMinusAllowance.subtract(wttl.getAllowance())
                 .multiply(wttl.getItsPercentage()).divide(bigDecimal100,
-                  getSrvAccSettings().lazyGetAccSettings().getPricePrecision(),
-                    getSrvAccSettings().lazyGetAccSettings()
-                      .getRoundingMode()).add(wttl.getPlusAmount()));
+                  getSrvAccSettings().lazyGetAccSettings(pAddParam)
+                    .getPricePrecision(), getSrvAccSettings()
+                      .lazyGetAccSettings(pAddParam).getRoundingMode())
+                        .add(wttl.getPlusAmount()));
               wtl.setDescription("TableID/Name/taxable: " + wtte.getItsOwner()
                 .getItsId() + "/" + wtte.getItsOwner().getItsName() + "/"
                   + totalTaxableForTax);
-              getSrvOrm().insertEntity(wtl);
+              getSrvOrm().insertEntity(pAddParam, wtl);
               if (wtl.getTax().getItsType()
                 .equals(ETaxType.EMPLOYMENT_TAX_EMPLOYEE)) {
                 totalTaxesEmployee = totalTaxesEmployee.add(wtl.getItsTotal());
@@ -161,9 +169,9 @@ public class SrvWageTaxPercentageTable<RS> implements ISrvFillWageLines {
                   BigDecimal newTotalTaxEmpleeLn = empleeTotTaxLnMap.get(wl
                     .getWageType()).add(wl.getGrossWage().multiply(wtl
                       .getItsTotal()).divide(totalTaxableForTax,
-                        getSrvAccSettings().lazyGetAccSettings()
+                        getSrvAccSettings().lazyGetAccSettings(pAddParam)
                           .getPricePrecision(), getSrvAccSettings()
-                            .lazyGetAccSettings().getRoundingMode()));
+                            .lazyGetAccSettings(pAddParam).getRoundingMode()));
                   empleeTotTaxLnMap.put(wl.getWageType(), newTotalTaxEmpleeLn);
                 }
               } else if (wtl.getTax().getItsType()
@@ -176,20 +184,20 @@ public class SrvWageTaxPercentageTable<RS> implements ISrvFillWageLines {
           }
           if (!isFilled) {
             throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
-              "where_is_no_suitable_tax_percent_entry_for---"
+              "where_is_no_suitable_tax_percent_entry_for::"
                 + wtte.getItsOwner().getTax().getItsName());
           }
         }
       }
       for (WageLine wl : pWage.getItsLines()) {
         wl.setTaxesEmployee(empleeTotTaxLnMap.get(wl.getWageType()));
-        getSrvOrm().updateEntity(wl);
+        getSrvOrm().updateEntity(pAddParam, wl);
       }
       pWage.setTotalTaxesEmployee(totalTaxesEmployee);
       pWage.setTotalTaxesEmployer(totalTaxesEmployer);
       pWage.setNetWage(pWage.getItsTotal()
         .subtract(pWage.getTotalTaxesEmployee()));
-      getSrvOrm().updateEntity(pWage);
+      getSrvOrm().updateEntity(pAddParam, pWage);
     }
   }
 

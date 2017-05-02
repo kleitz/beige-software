@@ -93,7 +93,7 @@ public class MoveItemsLine extends AInvItemMovement
    **/
   @Override
   public final Integer getOwnerType() {
-    return new MoveItems().constTypeCode();
+    return this.getItsOwner().constTypeCode();
   }
 
   /**

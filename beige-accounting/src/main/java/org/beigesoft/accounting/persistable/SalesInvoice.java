@@ -10,11 +10,9 @@ package org.beigesoft.accounting.persistable;
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-import java.util.Date;
 import java.util.List;
-import java.math.BigDecimal;
 
-import org.beigesoft.accounting.persistable.base.ADocWithTaxes;
+import org.beigesoft.accounting.persistable.base.ADocWithTaxesPayments;
 import org.beigesoft.accounting.model.EWarehouseMovementType;
 
 /**
@@ -24,7 +22,7 @@ import org.beigesoft.accounting.model.EWarehouseMovementType;
  *
  * @author Yury Demidenko
  */
-public class SalesInvoice extends ADocWithTaxes
+public class SalesInvoice extends ADocWithTaxesPayments
   implements IDocWarehouse {
 
   /**
@@ -53,21 +51,6 @@ public class SalesInvoice extends ADocWithTaxes
   private PrepaymentFrom prepaymentFrom;
 
   /**
-   * <p>Payment total (prepayment and afterpayment).</p>
-   **/
-  private BigDecimal paymentTotal = BigDecimal.ZERO;
-
-  /**
-   * <p>Payment description, read only.</p>
-   **/
-  private String paymentDescription;
-
-  /**
-   * <p>Payment done by date, if required.</p>
-   **/
-  private Date payByDate;
-
-  /**
    * <p>OOP friendly Constant of code type 2.</p>
    **/
   @Override
@@ -83,30 +66,6 @@ public class SalesInvoice extends ADocWithTaxes
   @Override
   public final EWarehouseMovementType getLinesWarehouseType() {
     return EWarehouseMovementType.WITHDRAWAL;
-  }
-
-  //Hiding references getters and setters:
-  /**
-   * <p>Getter for payByDate.</p>
-   * @return Date
-   **/
-  public final Date getPayByDate() {
-    if (this.payByDate == null) {
-      return null;
-    }
-    return new Date(this.payByDate.getTime());
-  }
-
-  /**
-   * <p>Setter for payByDate.</p>
-   * @param pPayByDate reference
-   **/
-  public final void setPayByDate(final Date pPayByDate) {
-    if (pPayByDate == null) {
-      this.payByDate = null;
-    } else {
-      this.payByDate = new Date(pPayByDate.getTime());
-    }
   }
 
   //Simple getters and setters:
@@ -190,37 +149,5 @@ public class SalesInvoice extends ADocWithTaxes
    **/
   public final void setPrepaymentFrom(final PrepaymentFrom pPrepaymentFrom) {
     this.prepaymentFrom = pPrepaymentFrom;
-  }
-
-  /**
-   * <p>Getter for paymentTotal.</p>
-   * @return BigDecimal
-   **/
-  public final BigDecimal getPaymentTotal() {
-    return this.paymentTotal;
-  }
-
-  /**
-   * <p>Setter for paymentTotal.</p>
-   * @param pPaymentTotal reference
-   **/
-  public final void setPaymentTotal(final BigDecimal pPaymentTotal) {
-    this.paymentTotal = pPaymentTotal;
-  }
-
-  /**
-   * <p>Getter for paymentDescription.</p>
-   * @return String
-   **/
-  public final String getPaymentDescription() {
-    return this.paymentDescription;
-  }
-
-  /**
-   * <p>Setter for paymentDescription.</p>
-   * @param pPaymentDescription reference
-   **/
-  public final void setPaymentDescription(final String pPaymentDescription) {
-    this.paymentDescription = pPaymentDescription;
   }
 }

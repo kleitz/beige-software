@@ -38,4 +38,37 @@
      <Class name="org.beigesoft.web.servlet.WReplicator" />
      <Bug pattern="XSS_REQUEST_PARAMETER_TO_SERVLET_WRITER" />
   </Match>
+  <!--Getting name is happened very frequency (e.g. 10 per second by multi-threads).
+    Setting is seldom (e.g. hot change configuration to fix program bug) or may not be happen.-->
+  <Match>
+     <Class name="org.beigesoft.orm.holder.HldProcessorNames" />
+     <Bug pattern="UG_SYNC_SET_UNSYNC_GET" />
+  </Match>
+  <Match>
+     <Class name="org.beigesoft.accounting.holder.HldAccProcessorNames" />
+     <Bug pattern="UG_SYNC_SET_UNSYNC_GET" />
+  </Match>
+  <Match>
+     <Class name="org.beigesoft.webstore.holder.HldTradeProcessorNames" />
+     <Bug pattern="UG_SYNC_SET_UNSYNC_GET" />
+  </Match>
+  <Match>
+     <Class name="org.beigesoft.orm.holder.HldEntitiesProcessorNames" />
+     <Bug pattern="UG_SYNC_SET_UNSYNC_GET" />
+  </Match>
+  <Match>
+     <Class name="org.beigesoft.accounting.holder.HldAccEntitiesProcessorNames" />
+     <Bug pattern="UG_SYNC_SET_UNSYNC_GET" />
+  </Match>
+  <!--This factory designed for high load job. All initialized beans from this
+   factory and sub-factories are in the beansMap. Client must invoke
+   only lazyGet([beanName]) method. Factory is locked only during requested
+   bean initialization (when it not exist in the beansMap).
+   All others lazyGet[beanName]() methods from this factory and sub-factories
+   are invoked internally by these factories only during bean initialization.
+   So there is no way to make inconsistent locking by concurrent clients.-->
+  <Match>
+     <Class name="org.beigesoft.web.factory.AFactoryAppBeans" />
+     <Bug pattern="IS2_INCONSISTENT_SYNC" />
+  </Match>
 </FindBugsFilter>

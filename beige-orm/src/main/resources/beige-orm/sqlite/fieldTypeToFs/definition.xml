@@ -8,6 +8,7 @@
  -->
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
+<!--Simple types:-->
 <comment>Correspondence of Java types to services that explain about property. ORDER is essential, the LAST value will be used.</comment>
 <entry key="java.lang.Integer">integer</entry>
 <entry key="java.lang.Long">integer</entry>
@@ -18,4 +19,9 @@
 <entry key="java.util.Date">integer</entry>
 <entry key="java.lang.Enum">integer</entry>
 <entry key="java.math.BigDecimal">real</entry>
+<!--Foreign entities:-->
+<entry key="org.beigesoft.persistable.AHasIdLong">integer</entry>
+<entry key="org.beigesoft.persistable.APersistableBase">integer</entry>
+<entry key="org.beigesoft.persistable.UserTomcat">text</entry>
+<entry key="org.beigesoft.persistable.AHasIdString">text</entry>
 </properties>

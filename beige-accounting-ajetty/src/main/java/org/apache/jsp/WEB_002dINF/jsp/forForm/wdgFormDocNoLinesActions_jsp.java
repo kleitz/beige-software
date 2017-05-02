@@ -82,11 +82,11 @@ public final class wdgFormDocNoLinesActions_jsp extends org.apache.jasper.runtim
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${namePlaceForm}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
       out.write("EditFrmFakeSubmit\" type=\"submit\"/>\n  <button type=\"button\" onclick=\"submitFormByAjax('");
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${namePlaceForm}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
-      out.write("EditFrm', true, '&nameRenderer=editEntitySavedJson');\">");
+      out.write("EditFrm', true, '&nmRnd=editEntitySavedJson');\">");
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${srvI18n.getMsg(\"Save\")}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
       out.write("</button>\n  <button type=\"button\" onclick=\"submitFormByAjaxConfirm('");
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${namePlaceForm}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
-      out.write("EditFrm', false, '&nameRenderer=listAfterAccountJson&actionAdd=makeAccEntries');\">");
+      out.write("EditFrm', false, '&nmRnd=listAfterAccountJson&actionAdd=makeAccEntries');\">");
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${srvI18n.getMsg(\"MakeAccEntries\")}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
       out.write("</button>\n  <a href=\"#\" onclick=\"closeDlgCareful('");
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${namePlaceForm}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));

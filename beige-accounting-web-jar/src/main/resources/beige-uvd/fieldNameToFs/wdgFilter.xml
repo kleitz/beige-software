@@ -14,4 +14,7 @@
 <entry key="purchaseInvoice">null</entry>
 <entry key="payByDate">filterDate</entry>
 <entry key="paymentDescription">null</entry>
+<entry key="stringValue2">null</entry>
+<entry key="longValue2">null</entry>
+<entry key="numericValue2">null</entry>
 </properties>

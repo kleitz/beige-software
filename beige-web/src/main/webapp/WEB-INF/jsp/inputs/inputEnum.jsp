@@ -13,8 +13,8 @@
       <c:set var="selectedDisabled" value=""/>
       <c:if test="${empty entity[fieldName]}"> <c:set var="selectedDisabled" value="selected"/> </c:if>
       <select ${required} ${autofocus} name="${entity.getClass().simpleName}.${fieldName}" onchange="inputHasBeenChanged(this);">
-        <option value="null" ${selectedDisabled}>-</option>
-        <c:forEach var="enm" items="${mngUvds.fieldsSettings[entity.getClass().canonicalName].get(fieldName).get('enumValues').split(',')}">
+        <option value="" ${selectedDisabled}>-</option>
+        <c:forEach var="enm" items="${mngUvds.fieldsSettings[entity.getClass()].get(fieldName).get('enumValues').split(',')}">
           <c:if test="${!entity[fieldName].toString().equals(enm)}"> <c:set var="selectedDisabled" value=""/> </c:if>
           <c:if test="${entity[fieldName].toString().equals(enm)}"> <c:set var="selectedDisabled" value="selected"/> </c:if>
           <option value="${enm}" ${selectedDisabled}>${srvI18n.getMsg(enm)}</option>

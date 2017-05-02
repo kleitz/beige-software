@@ -60,6 +60,7 @@ export PATH=$PATH:$HOME/programmer/java/apache-maven-3.3.9/bin:$ANDROID_HOME/pla
           >GRANT ALL ON beigeaccounting.* TO 'beigeaccounting'@'localhost';
           >GRANT ALL ON beigeaccountingtest.* TO 'beigeaccounting'@'localhost';
       </pre>
+      * after that (set root password) use <b>mysql -u root -p</b> command.
       <p>Get last source from <a href="https://github.com/demidenko05/beige-software">https://github.com/demidenko05/beige-software</a> (zip archive or git clone) into folder [HOME]/git/beige-software</p>
       <p>To install (compile) source open terminal, go to root source (beige-software folder where placed pom.xml), 
         then run "mvn clean install". Successfully installed applications will be at [home]/.m2/repository/org/beigesoft.
@@ -143,8 +144,8 @@ cat $1 | grep private | awk 'BEGIN { FS = "  | |;" }
 }'
 $SHELL
         </pre>
-        Make it executable. In PCManFM file manager right click on java file and choose "open with". Switch tab "custom command line"
-        then press "browse" and choose this script, check "execute in terminal" and "keep terminal window open" then type name "genGetSet"
+        Make it executable. Make sure that PCManFM - preferences - Advanced - Terminal emulator = <b>lxterminal -e %s</b>. In PCManFM file manager right click on java file and choose "open with". Switch tab "custom command line"
+        then press "browse" and choose this script, check "execute in terminal" then type name "genGetSet"
         then press "OK" to run script on java file.
         Terminal window with text of generated getter ans setters will appeared. Select entries then copy and paste them into java file. 
       </p>

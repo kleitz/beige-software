@@ -13,6 +13,7 @@ package org.beigesoft.accounting.service;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
+import java.math.BigDecimal;
 import java.io.InputStream;
 import java.io.IOException;
 import java.net.URL;
@@ -74,16 +75,12 @@ public class SrvWarehouseRests<RS> implements ISrvWarehouseRests {
       if (recordSet.moveToFirst()) {
         do {
           WarehouseRestLine wrl = new WarehouseRestLine();
-          wrl.setWarehouse(getSrvDatabase().getSrvRecordRetriever()
-            .getString(recordSet.getRecordSet(), "WAREHOUSE"));
-          wrl.setInvItemId(getSrvDatabase().getSrvRecordRetriever()
-            .getLong(recordSet.getRecordSet(), "INVITEMID"));
-          wrl.setInvItem(getSrvDatabase().getSrvRecordRetriever()
-            .getString(recordSet.getRecordSet(), "INVITEM"));
-          wrl.setUnitOfMeasure(getSrvDatabase().getSrvRecordRetriever()
-            .getString(recordSet.getRecordSet(), "UNITOFMEASURE"));
-          wrl.setTheRest(getSrvDatabase().getSrvRecordRetriever()
-            .getBigDecimal(recordSet.getRecordSet(), "THEREST"));
+          wrl.setWarehouse(recordSet.getString("WAREHOUSE"));
+          wrl.setInvItemId(recordSet.getLong("INVITEMID"));
+          wrl.setInvItem(recordSet.getString("INVITEM"));
+          wrl.setUnitOfMeasure(recordSet.getString("UNITOFMEASURE"));
+          wrl.setTheRest(BigDecimal
+              .valueOf(recordSet.getDouble("THEREST")));
           result.add(wrl);
         } while (recordSet.moveToNext());
       }

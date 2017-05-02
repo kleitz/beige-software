@@ -91,7 +91,7 @@ public class SrvLedger<RS> implements ISrvLedger {
   public final LedgerPrevious retrievePrevious(
     final Map<String, Object> pAddParam, final Account pAccount,
       final Date pDate1, final String pSubaccId) throws Exception {
-    getSrvBalance().recalculateAllIfNeed(pDate1);
+    getSrvBalance().recalculateAllIfNeed(pAddParam, pDate1);
     LedgerPrevious result = new LedgerPrevious();
     if (this.queryPrevious == null) {
       String flName = "/" + "accounting" + "/" + "ledger"
@@ -99,7 +99,8 @@ public class SrvLedger<RS> implements ISrvLedger {
       this.queryPrevious = loadString(flName);
     }
     String query = queryPrevious.replace(":DATEBALANCE",
-      String.valueOf(getSrvBalance().evalDatePeriodStartFor(pDate1).getTime()));
+      String.valueOf(getSrvBalance()
+        .evalDatePeriodStartFor(pAddParam, pDate1).getTime()));
     query = query.replace(":DATE1", String.valueOf(pDate1.getTime()));
     query = query.replace(":ACCID", "'" + pAccount.getItsId() + "'");
     String whereSubaccDebit = "";
@@ -119,18 +120,16 @@ public class SrvLedger<RS> implements ISrvLedger {
       if (recordSet.moveToFirst()) {
         do {
           LedgerPreviousLine lpl = new LedgerPreviousLine();
-          String subaccName = getSrvDatabase().getSrvRecordRetriever()
-            .getString(recordSet.getRecordSet(), "SUBACC");
-          lpl.setDebit(getSrvDatabase().getSrvRecordRetriever()
-            .getBigDecimal(recordSet.getRecordSet(), "DEBIT")
-              .setScale(getSrvAccSettings().lazyGetAccSettings()
-                .getCostPrecision(), getSrvAccSettings()
-                  .lazyGetAccSettings().getRoundingMode()));
-          lpl.setCredit(getSrvDatabase().getSrvRecordRetriever()
-            .getBigDecimal(recordSet.getRecordSet(), "CREDIT")
-              .setScale(getSrvAccSettings().lazyGetAccSettings()
-                .getCostPrecision(), getSrvAccSettings()
-                  .lazyGetAccSettings().getRoundingMode()));
+          String subaccName = recordSet
+            .getString("SUBACC");
+          lpl.setDebit(BigDecimal.valueOf(recordSet.getDouble("DEBIT"))
+            .setScale(getSrvAccSettings().lazyGetAccSettings(pAddParam)
+              .getCostPrecision(), getSrvAccSettings()
+                .lazyGetAccSettings(pAddParam).getRoundingMode()));
+          lpl.setCredit(BigDecimal.valueOf(recordSet.getDouble("CREDIT"))
+            .setScale(getSrvAccSettings().lazyGetAccSettings(pAddParam)
+              .getCostPrecision(), getSrvAccSettings()
+                .lazyGetAccSettings(pAddParam).getRoundingMode()));
           if (pAccount.getNormalBalanceType() == ENormalBalanceType.DEBIT) {
             lpl.setBalance(lpl.getDebit().subtract(lpl.getCredit()));
           } else {
@@ -196,36 +195,27 @@ public class SrvLedger<RS> implements ISrvLedger {
       if (recordSet.moveToFirst()) {
         do {
           LedgerDetailLine ldl = new LedgerDetailLine();
-          ldl.setItsDate(getSrvDatabase().getSrvRecordRetriever()
-            .getDate(recordSet.getRecordSet(), "ITSDATE"));
-          ldl.setSourceId(getSrvDatabase().getSrvRecordRetriever()
-            .getLong(recordSet.getRecordSet(), "SOURCEID"));
-          ldl.setSourceType(getSrvDatabase().getSrvRecordRetriever()
-            .getInteger(recordSet.getRecordSet(), "SOURCETYPE"));
-          ldl.setDescription(getSrvDatabase().getSrvRecordRetriever()
-            .getString(recordSet.getRecordSet(), "DESCRIPTION"));
-          ldl.setSubaccName(getSrvDatabase().getSrvRecordRetriever()
-            .getString(recordSet.getRecordSet(), "SUBACC"));
-          ldl.setCorrAccName(getSrvDatabase().getSrvRecordRetriever()
-            .getString(recordSet.getRecordSet(), "CORACC"));
-         ldl.setCorrSubaccName(getSrvDatabase().getSrvRecordRetriever()
-            .getString(recordSet.getRecordSet(), "CORSUBACC"));
-         ldl.setCorrAccNumber(getSrvDatabase().getSrvRecordRetriever()
-            .getString(recordSet.getRecordSet(), "CORACCNUMBER"));
-          Boolean isDebit = getSrvDatabase().getSrvRecordRetriever()
-            .getBoolean(recordSet.getRecordSet(), "ISDEBIT");
+          ldl.setItsDate(new Date(recordSet.getLong("ITSDATE")));
+          ldl.setSourceId(recordSet.getLong("SOURCEID"));
+          ldl.setSourceType(recordSet.getInteger("SOURCETYPE"));
+          ldl.setDescription(recordSet.getString("DESCRIPTION"));
+          ldl.setSubaccName(recordSet.getString("SUBACC"));
+          ldl.setCorrAccName(recordSet.getString("CORACC"));
+          ldl.setCorrSubaccName(recordSet.getString("CORSUBACC"));
+          ldl.setCorrAccNumber(recordSet.getString("CORACCNUMBER"));
+          Boolean isDebit = recordSet.getInteger("ISDEBIT") == 1;
           if (isDebit) {
-            ldl.setDebit(getSrvDatabase().getSrvRecordRetriever()
-              .getBigDecimal(recordSet.getRecordSet(), "ITSTOTAL")
-                .setScale(getSrvAccSettings().lazyGetAccSettings()
+            ldl.setDebit(BigDecimal
+              .valueOf(recordSet.getDouble("ITSTOTAL"))
+                .setScale(getSrvAccSettings().lazyGetAccSettings(pAddParam)
                   .getCostPrecision(), getSrvAccSettings()
-                    .lazyGetAccSettings().getRoundingMode()));
+                    .lazyGetAccSettings(pAddParam).getRoundingMode()));
           } else {
-            ldl.setCredit(getSrvDatabase().getSrvRecordRetriever()
-              .getBigDecimal(recordSet.getRecordSet(), "ITSTOTAL")
-                .setScale(getSrvAccSettings().lazyGetAccSettings()
+            ldl.setCredit(BigDecimal
+              .valueOf(recordSet.getDouble("ITSTOTAL"))
+                .setScale(getSrvAccSettings().lazyGetAccSettings(pAddParam)
                   .getCostPrecision(), getSrvAccSettings()
-                    .lazyGetAccSettings().getRoundingMode()));
+                    .lazyGetAccSettings(pAddParam).getRoundingMode()));
           }
           result.setDebitAcc(result.getDebitAcc().add(ldl.getDebit()));
           result.setCreditAcc(result.getCreditAcc().add(ldl.getCredit()));

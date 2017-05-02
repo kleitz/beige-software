@@ -10,14 +10,11 @@ package org.beigesoft.accounting.service;
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
+import java.util.Map;
 import java.util.List;
-import java.text.DateFormat;
 
-import org.beigesoft.service.ISrvI18n;
 import org.beigesoft.accounting.persistable.base.ADrawItemSourcesLine;
 import org.beigesoft.accounting.persistable.CogsEntry;
-import org.beigesoft.orm.service.ISrvOrm;
-import org.beigesoft.orm.service.ISrvDatabase;
 
 /**
  * <p>Business service for draw warehouse item for sale/loss/stole.</p>
@@ -27,29 +24,6 @@ import org.beigesoft.orm.service.ISrvDatabase;
  */
 public class SrvCogsEntry<RS>
   extends ASrvDrawItemEntry<CogsEntry, RS> {
-
-  /**
-   * <p>minimum constructor.</p>
-   **/
-  public SrvCogsEntry() {
-  }
-
-  /**
-   * <p>Useful constructor.</p>
-   * @param pSrvOrm ORM service
-   * @param pSrvDatabase Database service
-   * @param pSrvTypeCode service for code - java type map of material holders
-   * @param pSrvAccSettings AccSettings service
-   * @param pSrvI18n I18N service
-   * @param pDateFormatter for description
-   **/
-  public SrvCogsEntry(final ISrvOrm<RS> pSrvOrm,
-    final ISrvDatabase<RS> pSrvDatabase, final ISrvTypeCode pSrvTypeCode,
-      final ISrvAccSettings pSrvAccSettings,
-        final ISrvI18n pSrvI18n, final DateFormat pDateFormatter) {
-    super(pSrvOrm, pSrvDatabase, pSrvTypeCode, pSrvAccSettings, pSrvI18n,
-      pDateFormatter);
-  }
 
   /**
    * <p>Get draw item entry class.</p>
@@ -62,22 +36,26 @@ public class SrvCogsEntry<RS>
 
   /**
    * <p>Create draw item entry.</p>
+   * @param pAddParam additional param
    * @return draw item entry
    **/
   @Override
-  public final CogsEntry createDrawItemEntry() {
+  public final CogsEntry createDrawItemEntry(
+    final Map<String, Object> pAddParam) {
     return new CogsEntry();
   }
 
   /**
    * <p>Get draw item sources.</p>
+   * @param pAddParam additional param
    * @return draw item sources
    * @throws Exception - an exception
    **/
   @Override
   public final List<? extends ADrawItemSourcesLine>
-    getDrawItemSources() throws Exception {
-    return getSrvAccSettings().lazyGetAccSettings()
+    getDrawItemSources(
+      final Map<String, Object> pAddParam) throws Exception {
+    return getSrvAccSettings().lazyGetAccSettings(pAddParam)
       .getCogsItemSources();
   }
 }

@@ -45,14 +45,34 @@ public class ExceptionWithCode extends Exception {
   public static final int WRONG_PARAMETER = 1003;
 
   /**
+   * <p>Wrong assemble, e.g.
+   * @see org.beigesoft.converter.HasSimpleIdConverter#init(Class, String),
+   * that throws this exception
+   * then entity's ID type is not of Integer/Long/String.</p>
+   **/
+  public static final int WRONG_ASSEMBLE = 1004;
+
+  /**
+   * <p>When factory application beans has been changed
+   * during runtime then it lock factory for clients.</p>
+   **/
+  public static final int SYSTEM_RECONFIGURING = 1005;
+
+  /**
    * <p>Code.</p>
    **/
   private int code;
 
   /**
-   * <p>Short message (code).</p>
+   * <p>Short message, it's usually i18n message code.</p>
    **/
   private String shortMessage;
+
+  /**
+   * <p>Add message, it's usually user name whose action
+   * cause exception.</p>
+   **/
+  private String addMessage;
 
   /**
    * <p>Constructor default.</p>
@@ -93,6 +113,20 @@ public class ExceptionWithCode extends Exception {
    * <p>Constructor useful.</p>
    * @param pCode Code
    * @param pMsg message
+   * @param pAddMsg add message
+   **/
+  public ExceptionWithCode(final int pCode, final String pMsg,
+    final String pAddMsg) {
+    super(pMsg);
+    this.code = pCode;
+    this.shortMessage = pMsg;
+    this.addMessage = pAddMsg;
+  }
+
+  /**
+   * <p>Constructor useful.</p>
+   * @param pCode Code
+   * @param pMsg message
    * @param pCause parent exception
    **/
   public ExceptionWithCode(final int pCode, final String pMsg,
@@ -100,6 +134,21 @@ public class ExceptionWithCode extends Exception {
     super(pMsg, pCause);
     this.code = pCode;
     this.shortMessage = pMsg;
+  }
+
+  /**
+   * <p>Constructor useful.</p>
+   * @param pCode Code
+   * @param pMsg message
+   * @param pAddMsg add message
+   * @param pCause parent exception
+   **/
+  public ExceptionWithCode(final int pCode, final String pMsg,
+    final String pAddMsg, final Throwable pCause) {
+    super(pMsg, pCause);
+    this.code = pCode;
+    this.shortMessage = pMsg;
+    this.addMessage = pAddMsg;
   }
 
   //Simple getters and setters:
@@ -133,5 +182,21 @@ public class ExceptionWithCode extends Exception {
    **/
   public final void setShortMessage(final String pShortMessage) {
     this.shortMessage = pShortMessage;
+  }
+
+  /**
+   * <p>Getter for addMessage.</p>
+   * @return String
+   **/
+  public final String getAddMessage() {
+    return this.addMessage;
+  }
+
+  /**
+   * <p>Setter for addMessage.</p>
+   * @param pAddMessage reference
+   **/
+  public final void setAddMessage(final String pAddMessage) {
+    this.addMessage = pAddMessage;
   }
 }

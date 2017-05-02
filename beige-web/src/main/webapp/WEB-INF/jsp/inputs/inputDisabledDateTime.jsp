@@ -6,7 +6,11 @@
   </td>
   <td>
     <div class="input-line">
-      <input type="datetime-local" disabled value="${utlJsp.dateTimeToIso8601(entity[fieldName])}"/> 
+      <c:set var="dtVal" value=""/>
+      <c:if test="${entity[fieldName] != null}">
+        <c:set var="dtVal" value="${srvDate.toIso8601DateTimeNoTz(entity[fieldName], null)}"/>
+      </c:if>
+      <input type="datetime-local" disabled value="${dtVal}"/> 
     </div>
   </td>
 </tr>

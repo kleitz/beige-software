@@ -10,7 +10,7 @@
 <properties>
 <comment>Correspondence of field name to field setting.</comment>
 <entry key="java.lang.Object">inputDisabled</entry>
-<entry key="org.beigesoft.accounting.persistable.base.ADoc">inputEntityHasIdHidden</entry>
 <entry key="java.util.Date">inputDisabledDateTime</entry>
 <entry key="org.beigesoft.model.IHasName">inputDisabledHasName</entry>
+<entry key="org.beigesoft.accounting.persistable.IDoc">inputEntityHasIdHidden</entry>
 </properties>

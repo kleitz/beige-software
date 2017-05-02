@@ -23,11 +23,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.RequestDispatcher;
 
 import org.beigesoft.service.ISrvI18n;
+import org.beigesoft.service.ISrvDate;
 import org.beigesoft.accounting.model.TrialBalanceLine;
 import org.beigesoft.accounting.service.ISrvBalance;
 import org.beigesoft.orm.service.ISrvDatabase;
 import org.beigesoft.factory.IFactoryAppBeans;
-import org.beigesoft.accounting.service.SrvAccSettings;
+import org.beigesoft.accounting.service.ISrvAccSettings;
 import org.beigesoft.exception.ExceptionWithCode;
 
 /**
@@ -79,7 +80,10 @@ public class WBalance extends HttpServlet {
       Map<String, Object> addParams = new HashMap<String, Object>();
       addParams.put("user", userName);
       addParams.put("parameterMap", pReq.getParameterMap());
-      Date date2 = new Date(Long.parseLong(pReq.getParameter("date2")));
+      ISrvDate srvDate = (ISrvDate) this.factoryAppBeans
+        .lazyGet("ISrvDate");
+      Date date2 = srvDate
+        .fromIso8601DateTimeNoTz(pReq.getParameter("date2"), null);
       List<TrialBalanceLine> balanceLines = null;
       try {
         srvDatabase.setIsAutocommit(false);
@@ -95,17 +99,19 @@ public class WBalance extends HttpServlet {
       } finally {
         srvDatabase.releaseResources();
       }
-      String nameRenderer = pReq.getParameter("nameRenderer");
-      String path = dirJsp + nameRenderer + ".jsp";
+      String nmRnd = pReq.getParameter("nmRnd");
+      String path = dirJsp + nmRnd + ".jsp";
       RequestDispatcher rd = getServletContext().getRequestDispatcher(path);
       ISrvI18n srvI18n = (ISrvI18n) this.factoryAppBeans
         .lazyGet("ISrvI18n");
       pReq.setAttribute("srvI18n", srvI18n);
+      pReq.setAttribute("srvDate", srvDate);
       pReq.setAttribute("balanceLines", balanceLines);
       pReq.setAttribute("date2", date2);
-      SrvAccSettings srvAccSettings = (SrvAccSettings) this.factoryAppBeans
-        .lazyGet("srvAccSettings");
-      pReq.setAttribute("accSettings", srvAccSettings.lazyGetAccSettings());
+      ISrvAccSettings srvAccSettings = (ISrvAccSettings) this.factoryAppBeans
+        .lazyGet("ISrvAccSettings");
+      pReq.setAttribute("accSettings",
+        srvAccSettings.lazyGetAccSettings(addParams));
       rd.include(pReq, pResp);
     } catch (Exception e) {
       e.printStackTrace();

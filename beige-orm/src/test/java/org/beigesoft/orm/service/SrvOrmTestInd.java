@@ -28,7 +28,9 @@ import org.beigesoft.orm.model.ColumnsValues;
 import org.beigesoft.orm.model.TableSql;
 import org.beigesoft.test.persistable.PersistableHead;
 import org.beigesoft.test.persistable.PersistableLine;
+import org.beigesoft.test.persistable.UserRoleTomcatPriority;
 import org.beigesoft.test.persistable.GoodVersionTime;
+import org.beigesoft.test.persistable.GoodsRating;
 import org.beigesoft.persistable.UserTomcat;
 import org.beigesoft.persistable.UserRoleTomcat;
 
@@ -78,7 +80,7 @@ public class SrvOrmTestInd {
     for (String lKey : tblSqlUserTomcat.getFieldsMap().keySet()) {
       System.out.println(lKey + " - " + tblSqlUserTomcat.getFieldsMap().get(lKey));
     }
-    assertEquals("itsUser", tblSqlUserTomcat.getIdName());
+    assertEquals("itsUser", tblSqlUserTomcat.getIdColumnsNames()[0]);
     assertEquals(2, tblSqlUserTomcat.getFieldsMap().size());
 
     String usRolTomcatNm = UserRoleTomcat.class.getSimpleName();
@@ -90,8 +92,6 @@ public class SrvOrmTestInd {
     for (String lKey : tblSqlUserRolTomcat.getFieldsMap().keySet()) {
       System.out.println(lKey + " - " + tblSqlUserRolTomcat.getFieldsMap().get(lKey));
     }
-    assertNull(tblSqlUserRolTomcat.getIdName());
-    assertNull(tblSqlUserRolTomcat.getIdDefinitionForeign());
     assertEquals(2, tblSqlUserRolTomcat.getFieldsMap().size());
 
     UserTomcat userTomcat = new UserTomcat();
@@ -100,10 +100,11 @@ public class SrvOrmTestInd {
     UserRoleTomcat userRoleTomcat = new UserRoleTomcat();
     userRoleTomcat.setItsUser(userTomcat);
     userRoleTomcat.setItsRole("rl1");
-    String sqlSelectUrt = srvOrm.evalSqlSelect(UserRoleTomcat.class);
+    Map<String, Object> addParam = new HashMap<String, Object>();
+    String sqlSelectUrt = srvOrm.evalSqlSelect(addParam, UserRoleTomcat.class);
     System.out.println(sqlSelectUrt);
     assertTrue(sqlSelectUrt.contains("left join USERTOMCAT as ITSUSER on USERROLETOMCAT.ITSUSER=ITSUSER.ITSUSER"));
-    ColumnsValues colValUrt = srvOrm.evalColumnsValuesAndFillNewVersion(userRoleTomcat);
+    ColumnsValues colValUrt = srvOrm.evalColumnsValues(addParam, userRoleTomcat);
     String sqlInsertUrt = srvOrm.getHlpInsertUpdate().evalSqlInsert(UserRoleTomcat.class.getSimpleName()
       .toUpperCase(), colValUrt);
     System.out.println(sqlInsertUrt);
@@ -132,25 +133,8 @@ public class SrvOrmTestInd {
     for (String lKey : tblSqlUserRolJet.getFieldsMap().keySet()) {
       System.out.println(lKey + " - " + tblSqlUserRolJet.getFieldsMap().get(lKey));
     }
-    assertNull(tblSqlUserRolJet.getIdName());
-    assertNull(tblSqlUserRolJet.getIdDefinitionForeign());
     assertEquals(2, tblSqlUserRolJet.getFieldsMap().size());
-    assertTrue(tblSqlUserRolJet.getConstraint().contains("primary key (ITSUSER, ITSROLE)"));
-
-    Class<?> clazzPersLineTest = org.beigesoft.test.persistable.PersistableLine.class;
-    String namePersLineTest = clazzPersLineTest.getSimpleName();
-    System.out.println("Test for class - " + namePersLineTest);
-    TableSql tblSqlPersLineTest = srvOrm.getTablesMap().get(namePersLineTest);
-    assertTrue(tblSqlPersLineTest != null);
-    System.out.println("table name - " + namePersLineTest);
-    System.out.println(tblSqlPersLineTest.toString());
-    for (String lKey : tblSqlPersLineTest.getFieldsMap().keySet()) {
-      System.out.println(lKey + " - " + tblSqlPersLineTest.getFieldsMap().get(lKey));
-    }
-    assertEquals(tblSqlPersLineTest.getConstraint().indexOf("perlnpriquangrt0"),
-      tblSqlPersLineTest.getConstraint().lastIndexOf("perlnpriquangrt0"));
-    assertTrue(tblSqlPersLineTest.getFieldsMap().get("idDatabaseBirth")
-      .getDefinition().contains("not null"));
+    assertTrue(tblSqlUserRolJet.getConstraint().contains("primary key (ITSUSER,ITSROLE)"));
 
     Class<?> clazzPersTest = org.beigesoft.test.persistable.PersistableHead.class;
     String namePersTest = clazzPersTest.getSimpleName();
@@ -167,36 +151,106 @@ public class SrvOrmTestInd {
     assertTrue(tblSqlPersTest.getConstraint().contains("foreign key (ITSDEPARTMENT) references DEPARTMENT (ITSID)"));
     assertTrue(tblSqlPersTest.getConstraint().contains("constraint agef1to200 check (WAITINGTIME > 0 and WAITINGTIME < 201)"));
 
+    Class<?> clazzPersLineTest = org.beigesoft.test.persistable.PersistableLine.class;
+    String namePersLineTest = clazzPersLineTest.getSimpleName();
+    System.out.println("Test for class - " + namePersLineTest);
+    TableSql tblSqlPersLineTest = srvOrm.getTablesMap().get(namePersLineTest);
+    assertTrue(tblSqlPersLineTest != null);
+    System.out.println("table name - " + namePersLineTest);
+    System.out.println(tblSqlPersLineTest.toString());
+    for (String lKey : tblSqlPersLineTest.getFieldsMap().keySet()) {
+      System.out.println(lKey + " - " + tblSqlPersLineTest.getFieldsMap().get(lKey));
+    }
+    assertEquals(tblSqlPersLineTest.getConstraint().indexOf("perlnpriquangrt0"),
+      tblSqlPersLineTest.getConstraint().lastIndexOf("perlnpriquangrt0"));
+    assertTrue(tblSqlPersLineTest.getFieldsMap().get("idDatabaseBirth")
+      .getDefinition().contains("not null"));
+    PersistableHead ph = new PersistableHead();
+    ph.setItsId(1L);
+    PersistableLine pl = new PersistableLine();
+    pl.setPersistableHead(ph);
+    String selectPhLines = srvOrm.evalSqlSelect(addParam, PersistableLine.class)
+     + srvOrm.evalWhereForField(addParam, pl, "persistableHead");
+    System.out.println(selectPhLines);
+    assertTrue(selectPhLines.contains("PERSISTABLEHEAD=1"));
+
     TableSql tblGoodVersionTime = srvOrm.getTablesMap().get(GoodVersionTime.class.getSimpleName());
     assertTrue(tblGoodVersionTime.getVersionAlgorithm() == 1);
+    assertTrue(tblGoodVersionTime.getFieldsMap().containsKey(ISrvOrm.VERSION_NAME));
     assertTrue(tblGoodVersionTime.getFieldsMap().get("itsName")
       .getDefinition().contains("not null"));
     GoodVersionTime cake = new GoodVersionTime();
     cake.setItsName("cake");
     cake.setIdDatabaseBirth(999);
     assertNull(cake.getItsVersion());
-    ColumnsValues colVal = srvOrm.evalColumnsValuesAndFillNewVersion(cake);
+    ColumnsValues colVal = srvOrm.evalColumnsValues(addParam, cake);
     String insStr = srvOrm.getHlpInsertUpdate().evalSqlInsert(cake.getClass().getSimpleName()
       .toUpperCase(), colVal);
     System.out.println(insStr);
     assertTrue(!insStr.contains("ITSID"));
     assertTrue(insStr.contains(ISrvOrm.VERSION_NAME.toUpperCase()));
-    assertNotNull(cake.getItsVersion());
-    Long versionOld = cake.getItsVersion(); 
-    colVal = srvOrm.evalColumnsValuesAndFillNewVersion(cake);
+    Long versionOld = colVal.getLong(ISrvOrm.VERSION_NAME);
+    cake.setItsVersion(versionOld);
+    cake.setItsId(1L); // pretend that is assigned by DB
+    cake.setItsName("cake updated");
+    colVal = srvOrm.evalColumnsValues(addParam, cake);
     String whereUpd = srvOrm.evalWhereForUpdate(cake, colVal);
     String insUpd = srvOrm.getHlpInsertUpdate().evalSqlUpdate(cake.getClass().getSimpleName()
       .toUpperCase(), colVal, whereUpd);
-    assertNotSame(versionOld, cake.getItsVersion());
+    assertNotSame(versionOld, colVal.getLong(ISrvOrm.VERSION_NAME));
     System.out.println(insUpd);
     assertTrue(insUpd.contains(" and " + ISrvOrm.VERSION_NAME.toUpperCase() + "=" + versionOld));
-    //Create:
-    PersistableHead persistableHead = srvOrm.createEntity(PersistableHead.class);
-    //assertEquals(Integer.valueOf(999), persistableHead.getIdDatabaseBirth()); srvDatabase is null it's need a stub to test it
-    persistableHead.setItsId(1L);
-    PersistableLine persistableLine = srvOrm.createEntityWithOwner(PersistableLine.class, 
-      PersistableHead.class, persistableHead.getItsId().toString());
-    //assertEquals(Integer.valueOf(999), persistableLine.getIdDatabaseBirth());
-    assertEquals(Long.valueOf(1), persistableLine.getPersistableHead().getItsId());
+    //foreign key is primary key
+    Class<?> clazzGr = org.beigesoft.test.persistable.GoodsRating.class;
+    String nameGr = clazzGr.getSimpleName();
+    TableSql tblSqlGr = srvOrm.getTablesMap().get(nameGr);
+    System.out.println("table name - " + nameGr);
+    System.out.println(tblSqlGr.toString());
+    for (String lKey : tblSqlGr.getFieldsMap().keySet()) {
+      System.out.println(lKey + " - " + tblSqlGr.getFieldsMap().get(lKey));
+    }
+    GoodsRating gr = new GoodsRating();
+    gr.setGoods(cake);
+    gr.setAverageRating(7);
+    ColumnsValues colValGr = srvOrm.evalColumnsValues(addParam, gr);
+    String insStrGr = srvOrm.getHlpInsertUpdate().evalSqlInsert(gr.getClass().getSimpleName()
+      .toUpperCase(), colValGr);
+    System.out.println(insStrGr);
+    String whereUpdGr = srvOrm.evalWhereForUpdate(gr, colValGr);
+    System.out.println(whereUpdGr);
+    assertTrue(whereUpdGr.contains("GOODS=1"));
+    String updStrGr = srvOrm.getHlpInsertUpdate().evalSqlUpdate(gr.getClass().getSimpleName()
+      .toUpperCase(), colValGr, whereUpdGr);
+    System.out.println(updStrGr);
+    //Composite primary and foreign ID:
+    String nameUrtp = UserRoleTomcatPriority.class.getSimpleName();
+    TableSql tblSqlUrtp = srvOrm.getTablesMap().get(nameUrtp);
+    System.out.println("table name - " + nameUrtp);
+    System.out.println(tblSqlUrtp.toString());
+    for (String lKey : tblSqlUrtp.getFieldsMap().keySet()) {
+      System.out.println(lKey + " - " + tblSqlUrtp.getFieldsMap().get(lKey));
+    }
+    UserRoleTomcatPriority urtp = new UserRoleTomcatPriority();
+    urtp.setUserRoleTomcat(userRoleTomcat);
+    urtp.setPriority(4);
+    ColumnsValues colValUrtp = srvOrm.evalColumnsValues(addParam, urtp);
+    String selectUrtp = srvOrm.evalSqlSelect(addParam, UserRoleTomcatPriority.class)
+      + " where " + srvOrm.evalWhereId(urtp, colValUrtp) + ";";
+    System.out.println(selectUrtp);
+    assertTrue(selectUrtp.contains("where USERROLETOMCATPRIORITY.ITSUSER='ut1' and USERROLETOMCATPRIORITY.ITSROLE='rl1'"));
+    assertTrue(colValUrtp.ifContains("itsUser"));
+    assertTrue(colValUrtp.ifContains("itsRole"));
+    String insStrUrtp = srvOrm.getHlpInsertUpdate().evalSqlInsert(gr.getClass().getSimpleName()
+      .toUpperCase(), colValUrtp);
+    System.out.println(insStrUrtp);
+    String whereUpdUrtp = srvOrm.evalWhereForUpdate(urtp, colValUrtp);
+    System.out.println(whereUpdUrtp);
+    assertTrue(whereUpdUrtp.contains("USERROLETOMCATPRIORITY.ITSUSER='ut1' and USERROLETOMCATPRIORITY.ITSROLE='rl1'"));
+    srvOrm.prepareColumnValuesForUpdate(colValUrtp, urtp);
+    assertTrue(!colValUrtp.ifContains("itsUser"));
+    assertTrue(!colValUrtp.ifContains("itsRole"));
+    String updStrUrtp = srvOrm.getHlpInsertUpdate().evalSqlUpdate(urtp.getClass().getSimpleName()
+      .toUpperCase(), colValUrtp, whereUpdUrtp);
+    System.out.println(updStrUrtp);
   }
 }

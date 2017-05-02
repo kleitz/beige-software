@@ -5,24 +5,27 @@
 <dialog id="${namePlaceSubForm}EditDlg" class="dlg dlg-sub">
   <div class="form-std">
     <div class="dialog-title">
-      ${srvI18n.getMsg(actTitle)} ${srvI18n.getMsg(param.nameEntityFromOwnedList)}
+      ${srvI18n.getMsg(actTitle)} ${srvI18n.getMsg(entity.getClass().simpleName)}
       <button onclick="closeDlgCareful('${namePlaceSubForm}Edit')" class="btn-close">x</button>
     </div>
-    <form id="${namePlaceSubForm}EditFrm" action="entity/" method="POST">
-      <input type="hidden" name="nameAction" value="saveFromOwnedList">
-      <input type="hidden" name="nameEntity" value="${param.nameEntity}">
-      <input type="hidden" name="idEntity" value="${param.idEntity}">
-      <input type="hidden" name="nameEntityFromOwnedList" value="${param.nameEntityFromOwnedList}">
+    <form id="${namePlaceSubForm}EditFrm" action="service/" method="POST" enctype="multipart/form-data">
+      <input type="hidden" name="nmsAct" value="entityFolSave,entityEdit,list">
+      <input type="hidden" name="nmHnd" value="${param.nmHnd}">
+      <input type="hidden" name="nmEnt" value="${entity.getClass().simpleName}">
+      <input type="hidden" name="nmRnd" value="editEntityFolSavedJson">
+      <input type="hidden" name="nmRndList" value="${param.nmRndList}">
+      <input type="hidden" name="msgSuccess" value="reverse_ok">
       <input type="hidden" name="page" value="${param.page}">
-      <input type="hidden" name="nameRenderer" value="editEntityFromOwnedListSavedJson">
-      <input type="hidden" name="mobile" value="${param.mobile}">
+      <c:if test="${not empty param.mobile}">
+        <input type="hidden" name="mobile" value="${param.mobile}">
+      </c:if>
       <c:forEach items="${param}" var="par">
         <c:if test="${par.key.startsWith('fltordM')}">
           <input type="hidden" name="${par.key}" value="${par.value}">
         </c:if>
       </c:forEach>
       <table class="tbl-fieldset">
-        <c:forEach var="entry" items="${mngUvds.makeFldPropLst(entity.getClass().canonicalName, 'orderShowForm')}">
+        <c:forEach var="entry" items="${mngUvds.makeFldPropLst(entity.getClass(), 'orderShowForm')}">
           <c:if test="${not empty entry.value.get(wdgName)}">
             <c:set var="fieldName" value="${entry.key}" scope="request"/>
             <c:set var="fieldSettings" value="${entry.value}" scope="request"/>

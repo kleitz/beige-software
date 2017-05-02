@@ -33,69 +33,126 @@ public class TableSql {
   private int versionAlgorithm;
 
   /**
-   * <p>Key for Version algorithm.</p>
-   **/
-  public static final String KEY_VERSION_ALGORITHM = "versionAlgorithm";
-
-  /**
    * <p>Table all CONSTRAINTs e.g. PRIMARY KEY ("id"), FOREIGN KEY....</p>
    **/
   private String constraint;
 
   /**
-   * <p>Key for constraint in full table definition properties file.</p>
+   * <p>ID names from XML-setting <b>idColumnsNames</b> e.g. "itsId"
+   * or comma separated names for composite ID,
+   * e.g. "goods,priceCategory".
+   * It's used to make DDL/DML and filling/retrieving ID.</p>
    **/
-  public static final String KEY_CONSTRAINT = "constraint";
+  private String[] idColumnsNames;
 
   /**
-   * <p>Key for additional constraint.</p>
+   * <p>ID field (in class) name, e.g. composite ID in class "itsId"
+   * but in table ID columns {"goods","place"}.</p>
    **/
-  public static final String KEY_CONSTRAINT_ADD = "constraintAdd";
+  private String idFieldName;
 
   /**
-   * <p>ID name (field primary non-complex key) e.g. "itsId".</p>
+   * <p>Owner's field (in class) name if exist,
+   * e.g. "customerIncoice" for InvoiceLine.</p>
    **/
-  private String idName;
-
-  /**
-   * <p>Key for simple ID name (complex is always null!!!).</p>
-   **/
-  public static final String KEY_ID_NAME = "idName";
-
-  /**
-   * <p>idDefinitionForeign - ID SQL definition for foreign key
-   * (complex is always null!!!).
-   * e.g. Customer.itsId has SQL definition "bigserial primary key",
-   * but Invoice.Customer has definition "bigint".</p>
-   **/
-  private String idDefinitionForeign;
-
-  /**
-   * <p>Key for ID type.</p>
-   **/
-  public static final String KEY_ID_DEFINITION_FOREIGN = "idDefinitionForeign";
-
-  /**
-   * <p>If this table doesn't need to farther define by program.</p>
-   **/
-  private boolean isFullDefinedInXml;
-
-  /**
-   * <p>Key for "is full define in XML".</p>
-   **/
-  public static final String KEY_IF_FULL_DEFINE_IN_XML = "isFullDefinedInXml";
+  private String ownerFieldName;
 
 
   @Override
   public final String toString() {
-    return "ID name: " + this.idName + "\n"
-      + "ID SQL definition for foreign key: " + this.idDefinitionForeign + "\n"
+    StringBuffer sbIdNames = new StringBuffer("");
+    if (this.idColumnsNames != null) {
+      boolean isFirst = true;
+      for (String idNm : this.idColumnsNames) {
+        if (isFirst) {
+          isFirst = false;
+        } else {
+          sbIdNames.append(",");
+        }
+        sbIdNames.append(idNm);
+      }
+    }
+    return "ID name: " + sbIdNames + "\n"
       + "constraint: " + this.constraint + "\n"
-      + "is full defined in Xml: " + this.isFullDefinedInXml + "\n"
       + "version algorithm: " + this.versionAlgorithm;
   }
 
+  //Hiding source getters and setters:
+  /**
+   * <p>Getter for idColumnsNames.</p>
+   * @return String[]
+   **/
+  public final String[] getIdColumnsNames() {
+    if (this.idColumnsNames == null) {
+      return null;
+    } else {
+      return java.util.Arrays.copyOf(this.idColumnsNames,
+        this.idColumnsNames.length);
+    }
+  }
+
+  /**
+   * <p>Setter for idColumnsNames.</p>
+   * @param pIdColumnsNames reference
+   **/
+  public final void setIdColumnsNames(final String[] pIdColumnsNames) {
+    if (pIdColumnsNames == null) {
+      this.idColumnsNames = null;
+    } else {
+      this.idColumnsNames = java.util.Arrays.copyOf(pIdColumnsNames,
+        pIdColumnsNames.length);
+    }
+  }
+
+  //Utils:
+  /**
+   * <p>Getter for comma separated string of ID columns.</p>
+   * @return String
+   **/
+  public final String getIdColumnsString() {
+    StringBuffer sb = new StringBuffer("");
+    for (int i = 0; i < this.idColumnsNames.length; i++) {
+      if (i > 0) {
+        sb.append(",");
+      }
+      sb.append(this.idColumnsNames[i]);
+    }
+    return sb.toString();
+  }
+
   //Simple getters and setters:
+  /**
+   * <p>Getter for ownerFieldName.</p>
+   * @return String
+   **/
+  public final String getOwnerFieldName() {
+    return this.ownerFieldName;
+  }
+
+  /**
+   * <p>Setter for ownerFieldName.</p>
+   * @param pOwnerFieldName reference
+   **/
+  public final void setOwnerFieldName(final String pOwnerFieldName) {
+    this.ownerFieldName = pOwnerFieldName;
+  }
+
+  /**
+   * <p>Getter for idFieldName.</p>
+   * @return String
+   **/
+  public final String getIdFieldName() {
+    return this.idFieldName;
+  }
+
+  /**
+   * <p>Setter for idFieldName.</p>
+   * @param pIdFieldName reference
+   **/
+  public final void setIdFieldName(final String pIdFieldName) {
+    this.idFieldName = pIdFieldName;
+  }
+
   /**
    * <p>Geter for fieldsMap.</p>
    * @return LinkedHashMap<String, FieldSql>
@@ -143,53 +200,5 @@ public class TableSql {
    **/
   public final void setVersionAlgorithm(final int pVersionAlgorithm) {
     this.versionAlgorithm = pVersionAlgorithm;
-  }
-
-  /**
-   * <p>Geter for idName.</p>
-   * @return String
-   **/
-  public final String getIdName() {
-    return this.idName;
-  }
-
-  /**
-   * <p>Setter for idName.</p>
-   * @param pIdName reference/value
-   **/
-  public final void setIdName(final String pIdName) {
-    this.idName = pIdName;
-  }
-
-  /**
-   * <p>Geter for idDefinitionForeign.</p>
-   * @return String
-   **/
-  public final String getIdDefinitionForeign() {
-    return this.idDefinitionForeign;
-  }
-
-  /**
-   * <p>Setter for idDefinitionForeign.</p>
-   * @param pIdDefinitionForeign reference/value
-   **/
-  public final void setIdDefinitionForeign(final String pIdDefinitionForeign) {
-    this.idDefinitionForeign = pIdDefinitionForeign;
-  }
-
-  /**
-   * <p>Geter for isFullDefinedInXml.</p>
-   * @return boolean
-   **/
-  public final boolean getIsFullDefinedInXml() {
-    return this.isFullDefinedInXml;
-  }
-
-  /**
-   * <p>Setter for isFullDefinedInXml.</p>
-   * @param pIsFullDefinedInXml reference/value
-   **/
-  public final void setIsFullDefinedInXml(final boolean pIsFullDefinedInXml) {
-    this.isFullDefinedInXml = pIsFullDefinedInXml;
   }
 }

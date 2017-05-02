@@ -12,4 +12,5 @@
 <entry key="java.lang.Object">inputReadOnly</entry>
 <entry key="org.beigesoft.model.IHasName">inputEntityHasNameReadOnly</entry>
 <entry key="org.beigesoft.accounting.persistable.IDoc">inputDocumentReadOnly</entry>
+<entry key="org.beigesoft.accounting.persistable.PurchaseInvoiceLine">inputPurchaseInvoiceLineReadOnly</entry>
 </properties>

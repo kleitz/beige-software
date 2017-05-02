@@ -56,16 +56,16 @@ public class DatabaseWriterXml<RS> implements IDatabaseWriter {
    * by given writer.
    * </p>
    * @param T Entity Class
+   * @param pAddParam additional params (e.g. where and order clause)
    * @param pEntityClass Entity Class
    * @param pWriter writer
-   * @param pAddParam additional params (e.g. where and order clause)
    * @return entities count
    * @throws Exception - an exception
    **/
   @Override
-  public final <T> int retrieveAndWriteEntities(final Class<T> pEntityClass,
-    final Writer pWriter,
-      final Map<String, Object> pAddParam) throws Exception {
+  public final <T> int retrieveAndWriteEntities(
+    final Map<String, Object> pAddParam,
+      final Class<T> pEntityClass, final Writer pWriter) throws Exception {
     //e.g. "limit 20 offset 19":
     //e.g. "where (ITSID>0 and IDDATABASEBIRTH=2135) limit 20 offset 19":
     String conditions = (String) pAddParam.get("conditions");
@@ -81,7 +81,8 @@ public class DatabaseWriterXml<RS> implements IDatabaseWriter {
         this.srvDatabase.
           setTransactionIsolation(ISrvDatabase.TRANSACTION_READ_UNCOMMITTED);
         this.srvDatabase.beginTransaction();
-        di = getSrvOrm().retrieveEntityWithConditions(DatabaseInfo.class, "");
+        di = getSrvOrm()
+          .retrieveEntityWithConditions(pAddParam, DatabaseInfo.class, "");
         String requestedDatabaseIdStr = (String) pAddParam
           .get("requestedDatabaseId");
         if (requestedDatabaseIdStr != null) {
@@ -97,10 +98,10 @@ public class DatabaseWriterXml<RS> implements IDatabaseWriter {
           }
         }
         if (conditions == null) {
-          entities = getSrvOrm().retrieveList(pEntityClass);
+          entities = getSrvOrm().retrieveList(pAddParam, pEntityClass);
         } else {
-          entities = getSrvOrm().retrieveListWithConditions(pEntityClass,
-            conditions);
+          entities = getSrvOrm()
+            .retrieveListWithConditions(pAddParam, pEntityClass, conditions);
         }
         entitiesCount = entities.size();
         this.srvDatabase.commitTransaction();
@@ -118,7 +119,7 @@ public class DatabaseWriterXml<RS> implements IDatabaseWriter {
           + "\" description=\"" + di.getDescription() + "\" entitiesCount=\""
             + entitiesCount + "\">\n");
       for (T entity : entities) {
-        this.srvEntityWriter.write(entity, pWriter, null);
+        this.srvEntityWriter.write(pAddParam, entity, pWriter);
       }
       pWriter.write("</message>\n");
       this.logger.info(DatabaseWriterXml.class, "Entities has been wrote");

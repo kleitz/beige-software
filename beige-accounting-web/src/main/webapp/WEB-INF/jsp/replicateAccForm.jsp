@@ -6,7 +6,7 @@
       ${srvI18n.getMsg('Import_acc_entries')}
       <button onclick="closeDlgCareful('frmReplicateEdit')" class="btn-close">x</button>
     </div>
-    <form id="frmReplicateEditFrm" action="replicator" method="POST" target="_blank">
+    <form id="frmReplicateEditFrm" action="replicator" method="POST" target="_blank" enctype="multipart/form-data">
       <table class="tbl-fieldset">
         <tr>
           <td>

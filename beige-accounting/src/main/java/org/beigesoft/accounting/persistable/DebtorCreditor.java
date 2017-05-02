@@ -27,14 +27,49 @@ public class DebtorCreditor extends ASubaccount {
   private DebtorCreditorCategory itsCategory;
 
   /**
-   * <p>Phone.</p>
+   * <p>Registered email.</p>
    **/
-  private String itsPhone;
+  private String regEmail;
 
   /**
-   * <p>Address.</p>
+   * <p>Registered address1.</p>
    **/
-  private String itsAddress;
+  private String regAddress1;
+
+  /**
+   * <p>Registered address2.</p>
+   **/
+  private String regAddress2;
+
+  /**
+   * <p>Registered Zip.</p>
+   **/
+  private String regZip;
+
+  /**
+   * <p>Registered Country.</p>
+   **/
+  private String regCountry;
+
+  /**
+   * <p>Registered State.</p>
+   **/
+  private String regState;
+
+  /**
+   * <p>Registered City.</p>
+   **/
+  private String regCity;
+
+  /**
+   * <p>Registered Phone.</p>
+   **/
+  private String regPhone;
+
+  /**
+   * <p>Tax identification number e.g. SSN for US.</p>
+   **/
+  private String taxIdentificationNumber;
 
   /**
    * <p>Description.</p>
@@ -69,38 +104,6 @@ public class DebtorCreditor extends ASubaccount {
   }
 
   /**
-   * <p>Getter for itsPhone.</p>
-   * @return String
-   **/
-  public final String getItsPhone() {
-    return this.itsPhone;
-  }
-
-  /**
-   * <p>Setter for itsPhone.</p>
-   * @param pItsPhone reference
-   **/
-  public final void setItsPhone(final String pItsPhone) {
-    this.itsPhone = pItsPhone;
-  }
-
-  /**
-   * <p>Getter for itsAddress.</p>
-   * @return String
-   **/
-  public final String getItsAddress() {
-    return this.itsAddress;
-  }
-
-  /**
-   * <p>Setter for itsAddress.</p>
-   * @param pItsAddress reference
-   **/
-  public final void setItsAddress(final String pItsAddress) {
-    this.itsAddress = pItsAddress;
-  }
-
-  /**
    * <p>Getter for description.</p>
    * @return String
    **/
@@ -114,5 +117,150 @@ public class DebtorCreditor extends ASubaccount {
    **/
   public final void setDescription(final String pDescription) {
     this.description = pDescription;
+  }
+
+  /**
+   * <p>Getter for regEmail.</p>
+   * @return String
+   **/
+  public final String getRegEmail() {
+    return this.regEmail;
+  }
+
+  /**
+   * <p>Setter for regEmail.</p>
+   * @param pRegEmail reference
+   **/
+  public final void setRegEmail(final String pRegEmail) {
+    this.regEmail = pRegEmail;
+  }
+
+  /**
+   * <p>Getter for regAddress1.</p>
+   * @return String
+   **/
+  public final String getRegAddress1() {
+    return this.regAddress1;
+  }
+
+  /**
+   * <p>Setter for regAddress1.</p>
+   * @param pRegAddress1 reference
+   **/
+  public final void setRegAddress1(final String pRegAddress1) {
+    this.regAddress1 = pRegAddress1;
+  }
+
+  /**
+   * <p>Getter for regAddress2.</p>
+   * @return String
+   **/
+  public final String getRegAddress2() {
+    return this.regAddress2;
+  }
+
+  /**
+   * <p>Setter for regAddress2.</p>
+   * @param pRegAddress2 reference
+   **/
+  public final void setRegAddress2(final String pRegAddress2) {
+    this.regAddress2 = pRegAddress2;
+  }
+
+  /**
+   * <p>Getter for regZip.</p>
+   * @return String
+   **/
+  public final String getRegZip() {
+    return this.regZip;
+  }
+
+  /**
+   * <p>Setter for regZip.</p>
+   * @param pRegZip reference
+   **/
+  public final void setRegZip(final String pRegZip) {
+    this.regZip = pRegZip;
+  }
+
+  /**
+   * <p>Getter for regCountry.</p>
+   * @return String
+   **/
+  public final String getRegCountry() {
+    return this.regCountry;
+  }
+
+  /**
+   * <p>Setter for regCountry.</p>
+   * @param pRegCountry reference
+   **/
+  public final void setRegCountry(final String pRegCountry) {
+    this.regCountry = pRegCountry;
+  }
+
+  /**
+   * <p>Getter for regState.</p>
+   * @return String
+   **/
+  public final String getRegState() {
+    return this.regState;
+  }
+
+  /**
+   * <p>Setter for regState.</p>
+   * @param pRegState reference
+   **/
+  public final void setRegState(final String pRegState) {
+    this.regState = pRegState;
+  }
+
+  /**
+   * <p>Getter for regCity.</p>
+   * @return String
+   **/
+  public final String getRegCity() {
+    return this.regCity;
+  }
+
+  /**
+   * <p>Setter for regCity.</p>
+   * @param pRegCity reference
+   **/
+  public final void setRegCity(final String pRegCity) {
+    this.regCity = pRegCity;
+  }
+
+  /**
+   * <p>Getter for regPhone.</p>
+   * @return Long
+   **/
+  public final String getRegPhone() {
+    return this.regPhone;
+  }
+
+  /**
+   * <p>Setter for regPhone.</p>
+   * @param pRegPhone reference
+   **/
+  public final void setRegPhone(final String pRegPhone) {
+    this.regPhone = pRegPhone;
+  }
+
+  /**
+   * <p>Getter for taxIdentificationNumber.</p>
+   * @return String
+   **/
+  public final String getTaxIdentificationNumber() {
+    return this.taxIdentificationNumber;
+  }
+
+  /**
+   * <p>Setter for taxIdentificationNumber.</p>
+   * @param pTaxIdentificationNumber reference
+   **/
+  public final void setTaxIdentificationNumber(
+    final String pTaxIdentificationNumber) {
+    this.taxIdentificationNumber = pTaxIdentificationNumber;
   }
 }

@@ -10,4 +10,9 @@
 <properties>
 <comment>Correspondence of Java types to services that explain about property. ORDER is essential, the LAST value will be used.</comment>
 <entry key="org.beigesoft.test.persistable.PersistableHead">org.beigesoft.test.persistable.PersistableLine</entry>
+<entry key="org.beigesoft.persistable.EmailConnect">org.beigesoft.persistable.EmailIntegerProperty,
+  org.beigesoft.persistable.EmailStringProperty</entry>
+<entry key="org.beigesoft.persistable.EmailMsg">org.beigesoft.persistable.Erecipient,
+  org.beigesoft.persistable.Eattachment</entry>
+<entry key="org.beigesoft.persistable.UserRoleTomcat">org.beigesoft.test.persistable.UserRoleTomcatLine</entry>
 </properties>

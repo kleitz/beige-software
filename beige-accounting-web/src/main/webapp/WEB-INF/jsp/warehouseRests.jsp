@@ -9,12 +9,12 @@
   <link rel="stylesheet" type="text/css" media="print" href="../../static/css/beige.print-a4.css" />
   <link rel="stylesheet" type="text/css" href="../../static/css/beige.reports.css" />
   <link rel="icon" type="image/png" href="../../static/img/favicon.png">
-  <title>${srvI18n.getMsg("warehouse_rests")} <fmt:formatDate value="${now}"/></title>
+  <title>${srvI18n.getMsg("warehouse_rests")} <fmt:formatDate value="${now}" type="both" timeStyle="short"/></title>
 </head>
 <body>
   <div style="text-align: center;">
     <h4>
-      ${srvI18n.getMsg("warehouse_rests")} <fmt:formatDate value="${now}"/> <br>
+      ${srvI18n.getMsg("warehouse_rests")} <fmt:formatDate value="${now}" type="both" timeStyle="short"/> <br>
       ${accSettings.organization}
     </h4>
   </div>

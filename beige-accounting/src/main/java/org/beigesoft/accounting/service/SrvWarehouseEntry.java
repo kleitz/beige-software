@@ -95,11 +95,11 @@ public class SrvWarehouseEntry<RS> implements ISrvWarehouseEntry {
     WarehouseEntry wms = null;
     if (pEntity.getReversedId() != null) {
       String tblNm = WarehouseEntry.class.getSimpleName().toUpperCase();
-      wms = getSrvOrm().retrieveEntityWithConditions(WarehouseEntry.class,
-        " where SOURCETYPE=" + pEntity.constTypeCode()
+      wms = getSrvOrm().retrieveEntityWithConditions(pAddParam,
+        WarehouseEntry.class, " where SOURCETYPE=" + pEntity.constTypeCode()
           + " and SOURCEID=" + pEntity.getReversedId()
-          + " and " + tblNm + ".IDDATABASEBIRTH=" + getSrvOrm().getIdDatabase()
-              + " and WAREHOUSESITETO=" + pWhSiteTo.getItsId()
+            + " and " + tblNm + ".IDDATABASEBIRTH=" + getSrvOrm()
+              .getIdDatabase() + " and WAREHOUSESITETO=" + pWhSiteTo.getItsId()
                 + " and INVITEM=" + pEntity.getInvItem()
         .getItsId());
       if (wms == null) {
@@ -125,14 +125,14 @@ public class SrvWarehouseEntry<RS> implements ISrvWarehouseEntry {
     } else {
       wm.setDescription(makeDescription(pEntity));
     }
-    getSrvOrm().insertEntity(wm);
+    getSrvOrm().insertEntity(pAddParam, wm);
     makeWarehouseRest(pAddParam, pEntity, pWhSiteTo, pEntity.getItsQuantity());
     if (wms != null) {
       wms.setReversedId(wm.getItsId());
       wms.setDescription(wms.getDescription() + " " + getSrvI18n()
         .getMsg("reversing_entry_n") + getSrvOrm().getIdDatabase()
           + "-" + wm.getItsId());
-      getSrvOrm().updateEntity(wms);
+      getSrvOrm().updateEntity(pAddParam, wms);
     }
   }
 
@@ -156,8 +156,8 @@ public class SrvWarehouseEntry<RS> implements ISrvWarehouseEntry {
     }
     if (pEntity.getReversedId() != null) {
       String tblNm = WarehouseEntry.class.getSimpleName().toUpperCase();
-      wms = getSrvOrm().retrieveEntityWithConditions(WarehouseEntry.class,
-        " where SOURCETYPE=" + pEntity.constTypeCode()
+      wms = getSrvOrm().retrieveEntityWithConditions(pAddParam,
+        WarehouseEntry.class, " where SOURCETYPE=" + pEntity.constTypeCode()
           + " and " + tblNm + ".IDDATABASEBIRTH=" + getSrvOrm().getIdDatabase()
             + " and SOURCEID=" + pEntity.getReversedId());
       if (wms == null) {
@@ -184,7 +184,7 @@ public class SrvWarehouseEntry<RS> implements ISrvWarehouseEntry {
     } else {
       wm.setDescription(makeDescription(pEntity));
     }
-    getSrvOrm().insertEntity(wm);
+    getSrvOrm().insertEntity(pAddParam, wm);
     makeWarehouseRest(pAddParam, pEntity, pWhSiteFrom,
       pEntity.getItsQuantity().negate());
     makeWarehouseRest(pAddParam, pEntity, pWhSiteTo, pEntity.getItsQuantity());
@@ -193,7 +193,7 @@ public class SrvWarehouseEntry<RS> implements ISrvWarehouseEntry {
       wms.setDescription(wms.getDescription() + " " + getSrvI18n()
         .getMsg("reversing_entry_n") + getSrvOrm().getIdDatabase()
           + "-" + wm.getItsId());
-      getSrvOrm().updateEntity(wms);
+      getSrvOrm().updateEntity(pAddParam, wms);
     }
   }
 
@@ -215,7 +215,7 @@ public class SrvWarehouseEntry<RS> implements ISrvWarehouseEntry {
       throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
         "can_not_make_ws_entry_for_foreign_src");
     }
-    WarehouseRest wr = getSrvOrm().retrieveEntityWithConditions(
+    WarehouseRest wr = getSrvOrm().retrieveEntityWithConditions(pAddParam,
       WarehouseRest.class, "where WAREHOUSESITE="
         + pWhSite.getItsId() + " and INVITEM="
           + pEntity.getInvItem().getItsId() + " and UNITOFMEASURE="
@@ -237,12 +237,9 @@ public class SrvWarehouseEntry<RS> implements ISrvWarehouseEntry {
         "there_is_no_goods_in_stock");
     }
     if (wr.getIsNew()) {
-      getSrvOrm().insertEntity(wr);
+      getSrvOrm().insertEntity(pAddParam, wr);
     } else {
-      String where = "INVITEM=" + wr.getInvItem().getItsId()
-        + " and WAREHOUSESITE=" + wr.getWarehouseSite().getItsId()
-           + " and UNITOFMEASURE=" + wr.getUnitOfMeasure().getItsId();
-      getSrvOrm().updateEntityWhere(wr, where);
+      getSrvOrm().updateEntity(pAddParam, wr);
     }
   }
 
@@ -263,38 +260,34 @@ public class SrvWarehouseEntry<RS> implements ISrvWarehouseEntry {
         "can_not_make_ws_entry_for_foreign_src");
     }
     if (pWhSiteFrom != null) {
-      WarehouseRest wr = getSrvOrm().retrieveEntityWithConditions(
+      WarehouseRest wr = getSrvOrm().retrieveEntityWithConditions(pAddParam,
         WarehouseRest.class, "where THEREST>0 and INVITEM="
           + pEntity.getInvItem().getItsId() + " and UNITOFMEASURE="
-              + pEntity.getUnitOfMeasure().getItsId() + " and WAREHOUSESITE="
+            + pEntity.getUnitOfMeasure().getItsId() + " and WAREHOUSESITE="
               + pWhSiteFrom.getItsId());
       if (wr.getTheRest().compareTo(pEntity.getItsQuantity()) < 0) {
         throw new ExceptionWithCode(PurchaseInvoice.THERE_IS_NO_GOODS,
           "there_is_no_goods_in_stock");
       }
-        wr.setTheRest(wr.getTheRest().subtract(pEntity.getItsQuantity()));
-        String where = "INVITEM=" + wr.getInvItem().getItsId()
-          + " and WAREHOUSESITE=" + wr.getWarehouseSite().getItsId()
-            + " and UNITOFMEASURE=" + wr.getUnitOfMeasure().getItsId()
-               + " and WAREHOUSESITE=" + pWhSiteFrom.getItsId();
-        getSrvOrm().updateEntityWhere(wr, where);
-        WarehouseEntry wm = new WarehouseEntry();
-        wm.setIdDatabaseBirth(getSrvOrm().getIdDatabase());
-        wm.setSourceId(pEntity.getItsId());
-        wm.setSourceType(pEntity.constTypeCode());
-        wm.setWarehouseSiteFrom(wr.getWarehouseSite());
-        wm.setUnitOfMeasure(wr.getUnitOfMeasure());
-        wm.setInvItem(wr.getInvItem());
-        wm.setItsQuantity(pEntity.getItsQuantity());
-        wm.setSourceOwnerId(pEntity.getOwnerId());
-        wm.setSourceOwnerType(pEntity.getOwnerType());
-        wm.setDescription(makeDescription(pEntity));
-        getSrvOrm().insertEntity(wm);
+      wr.setTheRest(wr.getTheRest().subtract(pEntity.getItsQuantity()));
+      getSrvOrm().updateEntity(pAddParam, wr);
+      WarehouseEntry wm = new WarehouseEntry();
+      wm.setIdDatabaseBirth(getSrvOrm().getIdDatabase());
+      wm.setSourceId(pEntity.getItsId());
+      wm.setSourceType(pEntity.constTypeCode());
+      wm.setWarehouseSiteFrom(wr.getWarehouseSite());
+      wm.setUnitOfMeasure(wr.getUnitOfMeasure());
+      wm.setInvItem(wr.getInvItem());
+      wm.setItsQuantity(pEntity.getItsQuantity());
+      wm.setSourceOwnerId(pEntity.getOwnerId());
+      wm.setSourceOwnerType(pEntity.getOwnerType());
+      wm.setDescription(makeDescription(pEntity));
+      getSrvOrm().insertEntity(pAddParam, wm);
     } else {
       List<WarehouseRest> wrl = getSrvOrm().retrieveListWithConditions(
-        WarehouseRest.class, "where THEREST>0 and INVITEM="
+        pAddParam, WarehouseRest.class, "where THEREST>0 and INVITEM="
           + pEntity.getInvItem().getItsId() + " and UNITOFMEASURE="
-              + pEntity.getUnitOfMeasure().getItsId());
+            + pEntity.getUnitOfMeasure().getItsId());
       BigDecimal theRest = BigDecimal.ZERO;
       for (WarehouseRest wr : wrl) {
         theRest = theRest.add(wr.getTheRest());
@@ -318,10 +311,7 @@ public class SrvWarehouseEntry<RS> implements ISrvWarehouseEntry {
           quantityToLeave = quantityToLeaveRest;
         }
         wr.setTheRest(wr.getTheRest().subtract(quantityToLeave));
-        String where = "INVITEM=" + wr.getInvItem().getItsId()
-          + " and WAREHOUSESITE=" + wr.getWarehouseSite().getItsId()
-            + " and UNITOFMEASURE=" + wr.getUnitOfMeasure().getItsId();
-        getSrvOrm().updateEntityWhere(wr, where);
+        getSrvOrm().updateEntity(pAddParam, wr);
         WarehouseEntry wm = new WarehouseEntry();
         wm.setIdDatabaseBirth(getSrvOrm().getIdDatabase());
         wm.setSourceId(pEntity.getItsId());
@@ -333,7 +323,7 @@ public class SrvWarehouseEntry<RS> implements ISrvWarehouseEntry {
         wm.setSourceOwnerId(pEntity.getOwnerId());
         wm.setSourceOwnerType(pEntity.getOwnerType());
         wm.setDescription(makeDescription(pEntity));
-        getSrvOrm().insertEntity(wm);
+        getSrvOrm().insertEntity(pAddParam, wm);
         quantityToLeaveRest = quantityToLeaveRest.subtract(quantityToLeave);
       }
     }
@@ -359,9 +349,9 @@ public class SrvWarehouseEntry<RS> implements ISrvWarehouseEntry {
     }
     String tblNm = WarehouseEntry.class.getSimpleName().toUpperCase();
     List<WarehouseEntry> wml = getSrvOrm().retrieveListWithConditions(
-      WarehouseEntry.class, "where SOURCETYPE=" + pEntity.constTypeCode()
-        + " and " + tblNm + ".IDDATABASEBIRTH=" + getSrvOrm().getIdDatabase()
-          + " and SOURCEID=" + pEntity.getReversedId()
+      pAddParam, WarehouseEntry.class, "where SOURCETYPE=" + pEntity
+        .constTypeCode() + " and " + tblNm + ".IDDATABASEBIRTH=" + getSrvOrm()
+          .getIdDatabase() + " and SOURCEID=" + pEntity.getReversedId()
             + " and INVITEM=" + pEntity.getInvItem().getItsId()
               +  " and WAREHOUSESITEFROM is not null");
     BigDecimal quantityToLeaveRst = pEntity.getItsQuantity();
@@ -389,14 +379,14 @@ public class SrvWarehouseEntry<RS> implements ISrvWarehouseEntry {
       wm.setDescription(makeDescription(pEntity) + " " + getSrvI18n()
         .getMsg("reversed_entry_n") + getSrvOrm().getIdDatabase()
           + "-" + wms.getItsId());
-      getSrvOrm().insertEntity(wm);
+      getSrvOrm().insertEntity(pAddParam, wm);
       makeWarehouseRest(pAddParam, pEntity, wm.getWarehouseSiteFrom(),
         wms.getItsQuantity());
       wms.setReversedId(wm.getItsId());
       wms.setDescription(wms.getDescription() + " " + getSrvI18n()
         .getMsg("reversing_entry_n") + getSrvOrm().getIdDatabase()
           + "-" + wm.getItsId());
-      getSrvOrm().updateEntity(wms);
+      getSrvOrm().updateEntity(pAddParam, wms);
     }
     if (quantityToLeaveRst.doubleValue() != 0) {
       throw new ExceptionWithCode(ExceptionWithCode.SOMETHING_WRONG,
@@ -416,32 +406,46 @@ public class SrvWarehouseEntry<RS> implements ISrvWarehouseEntry {
     final Map<String, Object> pAddParam,
       final IDocWarehouse pEntity) throws Exception {
     String tblNm = WarehouseEntry.class.getSimpleName().toUpperCase();
-    String where = null;
+    List<WarehouseEntry> result = null;
     if (pEntity instanceof IMakingWarehouseEntry) {
       //e.g. Manufacture
-      where = " where SOURCETYPE=" + pEntity.constTypeCode()
+      String where = " where SOURCETYPE=" + pEntity.constTypeCode()
         + " and " + tblNm + ".IDDATABASEBIRTH=" + getSrvOrm().getIdDatabase()
           + " and SOURCEID=" + pEntity.getItsId();
-    }
-    List<WarehouseEntry> result = null;
-    if (where != null) {
-      result = getSrvOrm().retrieveListWithConditions(WarehouseEntry.class,
-        where);
+      result = getSrvOrm().retrieveListWithConditions(pAddParam,
+        WarehouseEntry.class, where);
     }
     if (pEntity.getLinesWarehouseType() != null) {
       //e.g. PurchaseInvoice
-      where = " where SOURCEOWNERTYPE=" + pEntity.constTypeCode()
-        + " and " + tblNm + ".IDDATABASEBIRTH=" + getSrvOrm().getIdDatabase()
-          + " and SOURCEOWNERID=" + pEntity.getItsId();
       if (result == null) {
-        result = getSrvOrm().retrieveListWithConditions(WarehouseEntry.class,
-          where);
+        result = retrieveEntriesForOwner(pAddParam, pEntity.constTypeCode(),
+          pEntity.getItsId());
       } else {
-        result.addAll(getSrvOrm().retrieveListWithConditions(
-          WarehouseEntry.class, where));
+        result.addAll(retrieveEntriesForOwner(pAddParam,
+          pEntity.constTypeCode(), pEntity.getItsId()));
       }
     }
     return result;
+  }
+
+  /**
+   * <p>Retrieve entries for lines owner id/type.</p>
+   * @param pAddParam additional param
+   * @param pOwnerTypeCode Owner Type code
+   * @param pOwnerId Owner ID
+   * @return warehouse entries made by this document
+   * @throws Exception - an exception
+   **/
+  @Override
+  public final List<WarehouseEntry> retrieveEntriesForOwner(
+    final Map<String, Object> pAddParam,
+      final Integer pOwnerTypeCode, final Long pOwnerId) throws Exception {
+    String tblNm = WarehouseEntry.class.getSimpleName().toUpperCase();
+    String where = " where SOURCEOWNERTYPE=" + pOwnerTypeCode
+        + " and " + tblNm + ".IDDATABASEBIRTH=" + getSrvOrm().getIdDatabase()
+          + " and SOURCEOWNERID=" + pOwnerId;
+    return getSrvOrm()
+      .retrieveListWithConditions(pAddParam, WarehouseEntry.class, where);
   }
 
   //Utils:

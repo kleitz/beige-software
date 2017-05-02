@@ -16,15 +16,13 @@
     <c:if test="${filterMap[parOpr] eq 'eq'}"> <c:set var="selectedEq" value="selected"/> </c:if>
     <c:if test="${filterMap[parOpr] eq 'like'}"> <c:set var="selectedLike" value="selected"/> </c:if>
     <label for="${parOpr}">${srvI18n.getMsg(fieldName)}</label>
-    <div class="input-line">
-      <c:if test="${empty selectedEq && empty selectedLike}"> <c:set var="selectedDisabled" value="selected"/> </c:if>
-      <select name="${parOpr}" onchange="filterStringChanged(this, '${parVal}');">
-        <option value="disabled" ${selectedDisabled}>${srvI18n.getMsg("disabled")}</option>
-        <option value="eq" ${selectedEq}>=</option>
-        <option value="like" ${selectedLike}>Like</option>
-      </select>
-      <c:if test="${empty selectedEq && empty selectedLike}"> <c:set var="disabled" value="disabled"/> </c:if>
-      <input id="${parVal}" name="${parVal}" ${disabled} type="text" value="${filterMap[parVal]}" onchange="inputHasBeenChanged(this);">
-    </div>
+    <c:if test="${empty selectedEq && empty selectedLike}"> <c:set var="selectedDisabled" value="selected"/> </c:if>
+    <select name="${parOpr}" onchange="filterStringChanged(this, '${parVal}');">
+      <option value="disabled" ${selectedDisabled}>${srvI18n.getMsg("disabled")}</option>
+      <option value="eq" ${selectedEq}>=</option>
+      <option value="like" ${selectedLike}>Like</option>
+    </select>
+    <c:if test="${empty selectedEq && empty selectedLike}"> <c:set var="disabled" value="disabled"/> </c:if>
+    <input id="${parVal}" name="${parVal}" ${disabled} type="text" value="${filterMap[parVal]}" onchange="inputHasBeenChanged(this);">
   </c:if>
 </div>

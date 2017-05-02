@@ -91,7 +91,7 @@ public class SalesInvoiceLine extends AInvItemMovementPriceTax
    **/
   @Override
   public final Integer getOwnerType() {
-    return new SalesInvoice().constTypeCode();
+    return this.getItsOwner().constTypeCode();
   }
 
   /**

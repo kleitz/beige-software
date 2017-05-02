@@ -9,5 +9,6 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 <comment>Correspondence of class types to id input. ORDER is essential, the LAST value will be used.</comment>
-<entry key="org.beigesoft.persistable.APersistableBase">inputPersistableBaseIdReadOnly</entry>
+<entry key="java.lang.Object">inputReadOnly</entry>
+<entry key="org.beigesoft.persistable.IPersistableBase">inputPersistableBaseIdReadOnly</entry>
 </properties>

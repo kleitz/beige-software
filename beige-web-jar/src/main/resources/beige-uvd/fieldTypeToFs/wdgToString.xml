@@ -12,7 +12,8 @@
 <entry key="java.lang.Object">toStrSimple</entry>
 <entry key="java.lang.Boolean">toStrBoolean</entry>
 <entry key="java.lang.Enum">toStrEnum</entry>
-<entry key="java.util.Date">toStrDate</entry>
+<entry key="java.util.Date">toStrDateTime</entry>
 <entry key="org.beigesoft.model.IHasId">toStrHasId</entry>
 <entry key="org.beigesoft.model.IHasName">toStrHasName</entry>
+<entry key="org.beigesoft.persistable.UserRoleTomcat">toStrUserRoleTomcat</entry>
 </properties>

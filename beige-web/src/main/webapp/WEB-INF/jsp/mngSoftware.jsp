@@ -28,7 +28,7 @@
           ${srvI18n.getMsg("isShowDebugMessages")}: ${mngSoftware.isShowDebugMessages}
         </td>
         <td style="padding: 5px;">
-          <a class="btn" href="?nameRenderer=mngSoftware&isShowDebugMessages=change" onclick="confirmHref(this, 'Change?'); return false;">${srvI18n.getMsg("change")}</a>
+          <a class="btn" href="?nmRnd=mngSoftware&isShowDebugMessages=change" onclick="confirmHref(this, 'Change?'); return false;">${srvI18n.getMsg("change")}</a>
         </td>
       </tr>
     </table>

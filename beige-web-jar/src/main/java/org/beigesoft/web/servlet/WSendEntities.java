@@ -68,7 +68,7 @@ public class WSendEntities extends HttpServlet {
       params.put("requestedDatabaseId", requestedDatabaseId);
       String conditions = (String) pReq.getParameter("conditions");
       params.put("conditions", conditions);
-      databaseWriter.retrieveAndWriteEntities(entityClass, writer, params);
+      databaseWriter.retrieveAndWriteEntities(params, entityClass, writer);
       writer.close();
     } catch (Exception e) {
       e.printStackTrace();

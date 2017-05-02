@@ -10,11 +10,15 @@
 <properties>
 <comment>Correspondence of field name to is null-able.</comment>
 <entry key="itsVersion">false</entry>
-<entry key="itsName">false</entry>
-<entry key="itsPassword">false</entry>
 <entry key="idDatabaseBirth">false</entry>
-<entry key="itsTotal">false</entry>
-<entry key="itsQuantity">false</entry>
-<entry key="itsPrice">false</entry>
-<entry key="itsDate">false</entry>
+<entry key="itsName">false</entry>
+<entry key="itsPath">false</entry>
+<entry key="esubject">false</entry>
+<entry key="etext">false</entry>
+<entry key="userEmail">false</entry>
+<entry key="userPassword">false</entry>
+<entry key="propertyName">false</entry>
+<entry key="propretyValue">false</entry>
+<entry key="itsEmail">false</entry>
+<entry key="itsPassword">false</entry>
 </properties>

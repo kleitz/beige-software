@@ -91,7 +91,7 @@ public class UsedMaterialLine extends AInvItemMovementCost
    **/
   @Override
   public final Integer getOwnerType() {
-    return new ManufacturingProcess().constTypeCode();
+    return this.getItsOwner().constTypeCode();
   }
 
   /**

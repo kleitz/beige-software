@@ -13,8 +13,8 @@
         <c:set var="required" value="required"/>
       </c:if>
       <input class="picked-appearence" id="${entity.getClass().simpleName}${fieldName}AppearanceVisible" disabled="disabled" type="text" value="${entity[fieldName].itsName}" onchange="inputHasBeenChanged(this);">
-      <input id="${entity.getClass().simpleName}${fieldName}Id" ${required} type="hidden" name="${entity.getClass().simpleName}.${fieldName}.itsId" value="${entity[fieldName].itsId}">
-      <button type="button" class="btn" onclick="openEntityPicker('${srvOrm.tablesMap[entity.getClass().simpleName].fieldsMap[fieldName].foreignEntity}','${entity.getClass().simpleName}', '${fieldName}','&fltordPitsTypeOpr=in&fltordPitsTypeValId=1%2C2&fltordPitsTypeValAppearance=Merchandise%20or%20stock%20in%20trade%2CRaw%20materials&fltordPknownCostOpr1=isnull&fltordPforcedFor=knownCost%2CitsType&mobile=${param.mobile}');">...</button>
+      <input id="${entity.getClass().simpleName}${fieldName}Id" ${required} type="hidden" name="${entity.getClass().simpleName}.${fieldName}" value="${entity[fieldName].itsId}">
+      <button type="button" class="btn" onclick="openEntityPicker('${srvOrm.tablesMap[entity.getClass().simpleName].fieldsMap[fieldName].foreignEntity}','${entity.getClass().simpleName}', '${fieldName}','&nmHnd=${param.nmHnd}&fltordPitsTypeOpr=in&fltordPitsTypeValId=1,2&fltordPitsTypeValAppearance=Merchandise or stock in trade,Raw materials&fltordPknownCostOpr1=isnull&fltordPforcedFor=knownCost,itsType&mobile=${param.mobile}');">...</button>
       <button type="button" class="btn" onclick="clearSelectedEntity('${entity.getClass().simpleName}${fieldName}');">X</button>
     </div>
   </td>

@@ -4,54 +4,34 @@
   xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
 
   <properties>
-    <title>Beigesoft ORM specification version #2</title>
+    <title>Beigesoft ORM specification version #4</title>
   </properties>
 
   <body>
 
     <!-- The body of the document contains a number of sections -->
-    <section name="Specification Beige-ORM version #3">
-      <p>It use Reflection API to generate SQL queries (DDL and DML).</p>
-      <p>It use standard Beige-Settings to describe ORM configuration with standard Properties XML.
-      All <b>current</b> configuration files are located in <b>beige-orm</b> folder.</p>
-      RDBMS specific configuration files saved in <b>beige-orm/[RDBMSname]</b> folder, e.g. <b>beige-orm/sqlite</b>.
-      <p>DDL and SQL queries generated according simple SQL table descriptor that is assigned for every persistable class.</p>
-      <p>SQL descriptors a filled by Beige-Settings with XML files and programmatically.</p>
-
-      <h4>SQL descriptor TableSql</h4>
-      <p>Consist of:
-        <ul>
-          <li>Map[fieldName-FieldSql] - fields map there fieldName same as in the class, e.g. "itsName"</li>
-          <li>versionAlgorithm - optimistic locking version algorithm. 0 - autoincrement, 1 - date changed.</li>
-          <li>constraint - table all CONSTRAINTs e.g. PRIMARY KEY ("id"), FOREIGN KEY.....</li>
-          <li>idName - ID name (field primary non-complex key) e.g. "itsId" (complex is always null!!!).</li>
-          <li>idDefinitionForeign - ID SQL definition for foreign key non-complex (complex is always null!!!),
-          e.g. Customer.itsId has SQL type "bigserial primary key", but Invoice.Customer has definition "bigint".</li>
-          <li>isFullDefinedInXml - if this table doesn't need to farther define by program.</li>
-        </ul>
+    <section name="Specification Beige-ORM version #4">
+      
+      <h4>Goals And Requirements</h4>
+      <p>* it must be configurable through XML (Beige-Settings)</p>
+      <p>* it must be cross-platform</p>
+      <p>* it must be performance friendly</p>
+      
+      <h4>XML configuration</h4>
+      <p>It use Beige-Settings to describe ORM configuration with standard Properties XML.
+        All <b>current</b> configuration files are located in <b>beige-orm</b> folder.</p>
+        RDBMS specific configuration files saved in <b>beige-orm/[RDBMSname]</b> folder, e.g. <b>beige-orm/sqlite</b>.
       </p>
       
-      <h4>SQL descriptor FieldSql</h4>
-      <p>Consist of:
-        <ul>
-          <li>definition - DDL string e.g. "INTEGER NOT NULL"</li>
-          <li>foreignEntity - simple class name o foreign (owned) entity e.g. for itsDepartment "Department".
-          It used to resolve LEFT JOIN in SELECT statement.</li>
-        </ul>
-      </p>
-      
-      <h4>Tables descriptor.</h4>
-      <p>This is map ["EntitySimpleName - TableSql"]</p>
-        
-      <h4>Base configuration file <b>persistance-[RDBMS].xml</b> consist of:</h4>
+      <h5>Base configuration file <b>persistance-[RDBMS].xml</b> consist of:</h5>
       <p>useSubFolder - <b>sqlite</b> | <b>postgresql</b> | <b>h2</b>. It used as name of directory that contains RDBMS specific configuration files.</p>
       <p>classes - array of classes names(name include package same as getClass().getCanonicalName()) that
-      represent persistable models.</p>
-      <p>settingsKeysForClases - "idName, idDefinitionForeign, constraintAdd, constraint, isFullDefinedInXml, excludeFields", they are reserved settings, so don't change them.</p>
-      <p>settingsKeysForFields - "definition, isNullable, foreignEntity", they are reserved settings, so don't change them.</p>
+        represent persistable models.</p>
+      <p>settingsKeysForClases - "idColumnsNames, constraintAdd, excludeFields".</p>
+      <p>settingsKeysForFields - "definition, isNullable".</p>
       <p>excludeFields - array of non-persistable fields names for all classes, e.g. <b>isNew</b>.</p>
       
-      <h4>Application settings file <b>[RDBMS]/app-settings.xml</b> consist of:</h4>
+      <h5>Application settings file <b>[RDBMS]/app-settings.xml</b> consist of:</h5>
       <p>databaseVersion - current database version to create new database, must be equals to DataInfo</p>
       <p>useSubFolder - e.g. sqlite</p>
       <p>jdbcDriverClass - SQL driver class name.</p>
@@ -65,18 +45,18 @@
       So testing databases for JUnit used <b>#currentParentDir#</b> and will be at [sourceBeigeErp/]</p>
 
       <h4>Common rules to generate DDL and SQL statements for persistable models.</h4>
-      <p>ALTER TABLE not supported, so just run it manually.</p>
+      <p>ALTER TABLE not supported automatically yet, so just make upgrade.sql manually.</p>
       <p>SQL92 problemable standard says that tables and fields names are either without quotes case insensitive or in quotes case sensitive
-      <a href="https://pubs.vmware.com/vfabric5/index.jsp?topic=/com.vmware.vfabric.sqlfire.1.0/reference/language_ref/sql_identifiers.html">SQL identifiers</a>. 
-      But not all database services accept names with quotes e.g. Jetty JDBC realm.
-      H2, Oracle treated field name without quotes itsId as ITSID, but Postgresql as itsid.
-      So Beige ORM used upper case names of tables and fields.
-      To make SQL queries more readable SQL words are in lower case.
-      E.g. <b>create table USERJETTY (ITSID bigserial primary key, ITSNAME text not null).</b>.
-      I recommend very friendly and usefull H2 HTML based console utility.
-      With it you can quickly make huge SQL query as fast as with
-      a visual SQL query builder.
-      It insert upper case table and field name in query string when you click on a table or a field.
+        <a href="https://pubs.vmware.com/vfabric5/index.jsp?topic=/com.vmware.vfabric.sqlfire.1.0/reference/language_ref/sql_identifiers.html">SQL identifiers</a>. 
+        But not all database services accept names with quotes e.g. Jetty JDBC realm.
+        H2, Oracle treated field name without quotes itsId as ITSID, but Postgresql as itsid.
+        So Beige ORM used upper case names of tables and fields.
+        To make SQL queries more readable SQL words are in lower case.
+        E.g. <b>create table USERJETTY (ITSID bigserial primary key, ITSNAME text not null).</b>.
+        I recommend very friendly and usefull H2 HTML based console utility.
+        With it you can quickly make huge SQL query as fast as with
+        a visual SQL query builder.
+        It insert upper case table and field name in query string when you click on a table or a field.
       </p>
       <p>It would be better if SQL identifier standard was as Java one.
         In that case SQL queries (generated) will be more readable, e.g. "SELECT itsName FROM InvItem WHERE itsId=2;".
@@ -87,35 +67,157 @@
       prevent names collision.</p>
       <p>But in XML files and in descriptors fields names are same as in class
       cause use Java reflection API.</p>
-
       <p>For unification purpose RDBMS types are Sqlite-oriented i.e. 
-      <b>java.util.Date</b> stored as <b>Long</b> and <b>Boolean</b> stored as <b>Integer</b>
+        <b>java.util.Date</b> stored as <b>Long</b> and <b>Boolean</b> stored as <b>Integer</b>
        in all RDBMS</p>
             
       <h4>Reveal column definition automatically.</h4>
-      <p>Beige-Settings makes it from XML files:
+      <p>It use Beige-Settings fields settings <b>definition</b>,
+        e.g. for SQLite by field type file "beige-orm/sqlite/fieldTypeToFs/definition.xml":
+        <pre style="white-space: pre-wrap;">
+&lt;!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd"&gt;
+&lt;properties&gt;
+&lt;comment&gt;Correspondence of fields Java types to SQL field definition. ORDER is essential, the LAST value will be used.&lt;/comment&gt;
+&lt;!--Simple types:--&gt;
+&lt;entry key="java.lang.Integer"&gt;int&lt;/entry&gt;
+&lt;entry key="java.lang.Long"&gt;bigint&lt;/entry&gt;
+&lt;entry key="java.lang.Float"&gt;float&lt;/entry&gt;
+&lt;entry key="java.lang.Double"&gt;double&lt;/entry&gt;
+&lt;entry key="java.lang.String"&gt;varchar(255)&lt;/entry&gt;
+&lt;entry key="java.lang.Boolean"&gt;tinyint not null default 0&lt;/entry&gt;
+&lt;entry key="java.lang.Enum"&gt;tinyint&lt;/entry&gt;
+&lt;entry key="java.util.Date"&gt;bigint&lt;/entry&gt;
+&lt;entry key="java.math.BigDecimal"&gt;decimal(19,4)&lt;/entry&gt;
+&lt;!--Foreign entities:--&gt;
+&lt;entry key="org.beigesoft.persistable.AHasIdLong"&gt;bigint unsigned&lt;/entry&gt;
+&lt;entry key="org.beigesoft.persistable.APersistableBase"&gt;bigint unsigned&lt;/entry&gt;
+&lt;entry key="org.beigesoft.persistable.UserTomcat"&gt;char(25) not null&lt;/entry&gt;
+&lt;entry key="org.beigesoft.persistable.AHasIdString"&gt;char(25)&lt;/entry&gt;
+&lt;/properties&gt;
+        </pre>
+      </p>
+      
+      <h4>Example models (MySql dialect):</h4>
+      <p>org.beigesoft.test.persistable.UserTomcat:
         <ul>
-          <li>file <b>[RDBMS]/javaTypeToFs/definition.xml</b>.
-          It contains simple set of Java types and corresponded RDBMS types. 
-          E.g. for SQlite entries like - "java.lang.Integer" - "INTEGER", "java.util.Date" - "INTEGER"</li>
-          <li>file <b>[RDBMS]/fieldNameJavaTypeToFs/[fieldName]definition.xml</b>.
-          It contains set of Java types and corresponded RDBMS types. 
-          E.g. for primary key "itsId" on SQlite - "java.lang.Integer" - "integer not null primary key autoincrement"</li>
-          <li>file <b>[RDBMS]/fieldNameToFs/definition.xml</b>.
-          It contains set of field names corresponded RDBMS types. 
-          E.g. "itsName" - "string not null", "itsDate" - "integer not null"</li>
+          <li>itsUser - String ID (PK)</li>
+          <li>itsPassword - String</li>
         </ul>
+        DDL:
+        <pre style="white-space: pre-wrap;">
+CREATE TABLE USERTOMCAT (
+  ITSPASSWORD varchar(255) NOT NULL,
+  ITSUSER char(25) NOT NULL,
+  PRIMARY KEY (ITSUSER)
+)
+        </pre>
+      </p>
+      <p>org.beigesoft.persistable.UserRoleTomcat:
+        <ul>
+          <li>itsUser - UserTomcat</li>
+          <li>itsRole - String</li>
+        </ul>
+        composite ID - {itsUser,itsRole}, DDL:
+        <pre style="white-space: pre-wrap;">
+CREATE TABLE USERROLETOMCAT (
+  ITSROLE char(25) NOT NULL,
+  ITSUSER char(25) NOT NULL,
+  PRIMARY KEY (ITSUSER,ITSROLE),
+  CONSTRAINT fkUserRoleTomcatUserTomcatitsUser FOREIGN KEY (ITSUSER)
+    REFERENCES USERTOMCAT (ITSUSER)
+) 
+        </pre>
+      </p>
+      <p>org.beigesoft.test.persistable.UserRoleTomcatLine:
+        <ul>
+          <li>AHasIdLong fields</li>
+          <li>itsOwner - UserRoleTomcat foreign composite ID - it will be replaced with {itsUser,itsRole}</li>
+          <li>description - String</li>
+        </ul>
+        DDL:
+        <pre style="white-space: pre-wrap;">
+CREATE TABLE USERROLETOMCATLINE (
+  ITSID bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  ITSROLE char(25) NOT NULL,
+  ITSUSER char(25) NOT NULL,
+  DESCRIPTION varchar(255),
+  PRIMARY KEY (ITSID),
+  CONSTRAINT fkUserRoleTomcatLineUserRoleTomcatitsUseritsRole FOREIGN KEY (ITSUSER,ITSROLE)
+    REFERENCES USERROLETOMCAT (ITSUSER,ITSROLE)
+) 
+        </pre>
+      <p>org.beigesoft.test.persistable.UserRoleTomcatPriority:
+        <ul>
+          <li>AEditable fields</li>
+          <li>userRoleTomcat - UserRoleTomcat primary and foreign composite ID - it will be replaced with {itsUser,itsRole}</li>
+          <li>priority - Integer</li>
+        </ul>
+        DDL:
+        <pre style="white-space: pre-wrap;">
+CREATE TABLE USERROLETOMCATPRIORITY (
+  ITSROLE char(25) NOT NULL,
+  ITSUSER char(25) NOT NULL,
+  PRIORITY int(11) NOT NULL,
+  PRIMARY KEY (ITSUSER,ITSROLE),
+  CONSTRAINT fkUserRoleTomcatPriorityUserRoleTomcatitsUseritsRole FOREIGN KEY (ITSUSER,ITSROLE)
+    REFERENCES USERROLETOMCAT (ITSUSER,ITSROLE)
+) 
+        </pre>
+      </p>
+      <p>org.beigesoft.test.persistable.GoodsRating:
+        <ul>
+          <li>goods - GoodsVersionTime primary ID and foreign ID</li>
+          <li>averageRating - Integer</li>
+        </ul>
+        DDL:
+        <pre style="white-space: pre-wrap;">
+CREATE TABLE GOODSRATING (
+  GOODS bigint(20) unsigned NOT NULL,
+  AVERAGERATING int(11) DEFAULT NULL,
+  PRIMARY KEY (GOODS),
+  CONSTRAINT fkGoodsRatingGoodVersionTimegoods FOREIGN KEY (GOODS)
+    REFERENCES GOODVERSIONTIME (ITSID)
+)
+        </pre>
       </p>
 
       <h4>Reveal DDL primary ID automatically.</h4>
-      <p>ID always defined with XML. See Beige-Accounting WarehouseRest for complex ID example.</p>
+      <p>Simple ID fully defined (include constraint) with XML fields settings <b>definition</b>,
+        e.g. for SQLite by field type and name file "beige-orm/sqlite/fieldNameFieldTypeToFs/itsIddefinition.xml":
+        <pre style="white-space: pre-wrap;">
+&lt;?xml version="1.0" encoding="UTF-8"?&gt;
+&lt;!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd"&gt;
+&lt;properties&gt;
+&lt;comment&gt;Correspondence of Java types to services that explain about property. ORDER is essential, the LAST value will be used.&lt;/comment&gt;
+&lt;entry key="java.lang.Integer"&gt;integer not null primary key autoincrement&lt;/entry&gt;
+&lt;entry key="java.lang.Long"&gt;integer not null primary key autoincrement&lt;/entry&gt;
+&lt;entry key="java.lang.String"&gt;text not null primary key&lt;/entry&gt;
+&lt;/properties&gt;
+        </pre>
+      </p>
+      <p>Complex ID also defined by <b>definition</b> and additionally by <b>idName</b> setting,
+        Complex ID is either composite ID e.g. IdUserRoleTomcat{itsUser, itsRole},
+        or foreign entity is also primary key e.g. GoodsRating{goods, rating} where goods is foreign entity and PK.
+        <ul>
+          <li>idColumnsNames = itsUser,itsRole</li>
+          <li>itsUser definition = char(25)</li>
+          <li>itsRole definition = char(25) not null</li>
+        </ul>
+        idName used to automatically make constraint PK in case if idName not equals "itsId":
+        "CONSTRAINT pkUserRoleTomcatitsId PRIMARY KEY (ITSUSER,ITSROLE)".
+      </p>
 
       <h4>Reveal DDL for foreign ID automatically.</h4>
-      <p>Foreign (owned) entity reveals automatically along with restriction foreign key. E.g. column "itsDepartment" - "integer"
-      will be same tape as primary key entity "Department". Also constraint "foreign key (ITSDEPARTMENT)
-      references DEPARTMENT (ITSID)" will be added.</p>
-      <p>If field type simple name exist in tablesMap that means it's foreign entity.
-      To make such field NOT NULL add its setting isNullable = false. Class settings idName and idDefinitionForeign must be filled.</p>
+      <p>They reveals according XML class settings <b>idName</b> of foreign table and field's <b>definition</b>
+        E.g. field "itsDepartment" by reflection reveal type "Department", then get foreign table tableSql for this entity,
+        and get idName to make constraint FK, e.g:
+        "CONSTRAINT fkUserRoleTomcatUserTomcatitsUser FOREIGN KEY (ITSUSER) REFERENCES USERTOMCAT (ITSUSER)".
+      </p>
+      <p>Foreign entity with composite ID e.g. <b>org.beigesoft.test.persistable.UserRoleTomcatLine</b>,
+        their itsOwner - UserRoleTomcat foreign complex ID will be replaced with {itsUser,itsRole} from foreign tableSql,
+        and idName used to automatically make constraint FK:
+        "CONSTRAINT fkUserRoleTomcatLineUserRoleTomcatitsUseritsRole FOREIGN KEY (ITSUSER,ITSROLE) REFERENCES USERROLETOMCAT (ITSUSER,ITSROLE)".
+      </p>
       
       <h4>Create tables</h4>
       <p>Tables will be created automatically if no exist according app setting <b>checkTableExist</b>.</p>
@@ -123,13 +225,95 @@
       If query return 0 records - table not exist.</p>
             
       <h4>DML queries.</h4>
-      <p>Update/Insert queries are maked in usual way.</p>
+      <p>Update/Insert queries are made in usual way. Fields are filled by using reflection.</p>
       <p>Select never retrieve owned items set (these are Many to One composition e.g. invoice's lines). 
-      But SELECT always retrieve owned entities (1st level) (that is One to One aggregation e.g. invoice's organization).
-      E.g. retrieved SalesInvoice already has retrieved property Customer, but Customer has 2-d level entity
-      PreferCurrency only ID. So to retrieve full model Customer->PreferCurrency you should make 2-nd query (invoke ORM retrieve entity by ID).</p>
-      <p>Entities with complex ID are inserted in usual way, but they retrieved and updated with manually WHERE clause. 
-      See Beige-Accounting WarehouseRest in SrvPurchaseInvoiceLine for example</p>
+        But SELECT always retrieve owned entities (1st level) (that is One to One aggregation e.g. invoice's organization).
+        E.g. retrieved SalesInvoice already has retrieved property Customer, but Customer has 2-d level entity
+        PreferCurrency only ID. So to retrieve full model Customer->PreferCurrency you should make 2-nd query
+        (invoke ORM retrieve entity by ID).
+      </p>
+      
+      <h4>Reveal DML for foreign ID automatically.</h4>
+      <p>It's used foreign tableSql.idColumnsNames to make left join to foreign entity, e.g.:
+<pre style="white-space: pre-wrap;">
+  //for select GoodsRating:
+  ... left join GOODSVERSIONTIME on GOODSVERSIONTIME.ITSID=GOODSRATING.GOODS ...
+  //for select UserRoleTomcat:
+  ... left join USERTOMCAT on USERTOMCAT.ITSID=USERROLETOMCAT.ITSUSER ...
+  //for select UserRoleTomcatLine composite ID:
+  ... left join USERROLETOMCAT on USERROLETOMCATLINE.ITSUSER=USERROLETOMCAT.ITSUSER
+    and USERROLETOMCATLINE.ITSROLE=USERROLETOMCAT.ITSROLE ...
+</pre>
+      </p>
+      
+      <h4>Reveal INSERT/UPDATE statement</h4>
+      <p>Due Android update/insert non-SQL standard it's used Map-similar
+        "column name - column value" model <b>org.beigesoft.orm.model.ColumnValues</b></p>
+      <p>Foreign entity with composite ID represented as set of "fieldId-valueId", e.g. "itsUser=1" and "itsRole=1"
+      for UserRoleJetty which ID of type Long.</p>
+      <p>Some field types is represented by another type in column values,
+        e.g. Date converted into Long, BigDecimal into float.</p>
+      <p>It used org.beigesoft.converter.IConverterIntoByName&lt;[field-type],ColumnValues&gt; to fill column values
+        with field one.
+      </p>
+      <p>It's used IConverter&lt;[entity type], ColumnsValues&gt; to fill SQL column values
+        with IConverterToByName that convert field value
+        to SQL column one, e.g. foreign entity <b>invItemCategory</b> converted to ID column value of type Long.</p>
+      <p>Implementation this with reflection is represented in <b>org.beigesoft.orm.converter.CnvObjectToColumnValues</b></p>
+      <p>It's used simple service (holder) <b>org.beigesoft.orm.holderHldCnvToColumnsValuesNames</b> to assign  field's converter name depending of field's type,
+      because using beige-settings for every field is memory unfriendly (for this case) approach.</p>
+      
+      <h4>Retrieve entity from SQL request SELECT.</h4>
+      <p>JDBC and Android standard return values is result-set. It's used adapter org.beigesoft.orm.model.IRecordSet
+        that wrap platform dependent result-set and can go through RS and get column's values by name.
+        Fields values retrieved from it by name.
+        Some of types should be converted, e.g. field of type BigDecimal represented in result-set as <b>double</b>.
+        So it used org.beigesoft.converter.IConverterByName&lt;[result-set-type],[field-type]&gt;
+        to get fields values from result set by name. For simple fields like Long, BigDecimal it takes result-set
+        and column alias like "GOODSITSNAME". For Enum it requires "fieldClass" parameter to get Enum value by index.
+        For foreign ID (simple or composite) it requires "fieldClass" to get field's factory and ID name(s).
+      </p>
+      <p>It's used org.beigesoft.service.IFillerObjectsFrom.fill(pAddParams, pEntity, pResultSet) to retrieve
+       fields values from result set (Android or JDBC) that used IConverterToByName for every persistable field.</p>
+      
+      <h4>Retrieve entity's ID WHERE</h4>
+      <p>Entity is converted to ColumnValues, then simple method reveal where clause for TableSql.idColumnsNames e.g.:
+        "USERROLETOMCAT.ITSUSER='admin' and USERROLETOMCAT.ITSROLE='admin'"
+      </p>
+      <p>Services IFillFieldToSql and IEvalEntityIdWhere with reflection implementation must use shared
+      reflection methods (get field's values), i.e. IFactory must handle this</p>
+      
+      <h4>SQL descriptor TableSql</h4>
+      <p>Consist of classes settings:
+        <ul>
+          <li>Map[fieldName-FieldSql] - fields settings map there fieldName same as in the class, e.g. "itsName"</li>
+          <li>versionAlgorithm - optimistic locking version algorithm. 0 - autoincrement, 1 - date changed.</li>
+          <li>constraint - table all CONSTRAINTs e.g. PRIMARY KEY ("id"), FOREIGN KEY.....</li>
+          <li>idColumnsNames - String[] ID columns names from XML-setting <b>idColumnsNames</b> e.g. "itsId" or comma separated names for composite ID,
+            e.g. "goods,priceCategory". It's used to make DDL/DML and filling/retrieving ID.</li>
+          <li>idFieldName - ID field (in class) name, e.g. composite ID in class "itsId" but in table ID columns {"goods","place"}</li>
+          <li>ownerFieldName - owner's field (in class) name if exist, e.g. "customerIncoice" for  InvoiceLine</li>
+        </ul>
+      </p>
+      
+      <h4>SQL descriptor FieldSql</h4>
+      <p>Represent field of entity that reflect to column(s) of SQL table. Consist of fields settings:
+        <ul>
+          <li>definition - DDL string e.g. "INTEGER NOT NULL", may be null for deriving fields like composite FK</li>
+          <li>foreignEntity - simple class name o foreign (owned) entity e.g. for itsDepartment "Department".
+          It used to resolve LEFT JOIN in SELECT statement.</li>
+          <li>typeField - ETypeField.STANDARD/COMPOSITE_PK/COMPOSITE/DERIVED_FROM_COMPOSITE.
+            E.g. composite foreign ID that converted into ID-fields that not present in entity,
+            so it doesn't presents in any DML/DDL statement,
+            but used to convert to/from ID-fields.
+          </li>
+        </ul>
+      </p>
+      
+      <h4>Tables descriptor.</h4>
+      <p>This is map ["EntitySimpleName - TableSql"]</p>
+        
+
 
       <h5>Database Info persistable model</h5>
       <p>Persistable model org.beigesoft.persistable.DatabaseInfo consist of:
@@ -168,15 +352,15 @@
         But Postgresql for <b>Serializable</b> mode use checking (not exactly locking).
         During INSERT/UPDATE any record is locked.
         Performance depends of locking implementation in concrete RDBMS.
-        BeigeERP is designed for high-performance. It's time to go from abstraction to concrete business logic.
+        Beige-Accounting is designed for high-performance. It's time to go from abstraction to concrete business logic.
         Use <b>Read uncommitted</b> level and <b>check version</b> for an Invoice gives same result as <b>repeatable read</b>. 
         Maintenance <b>theRest</b> of a good with checking <b>CHECK theRest >= 0</b>
-        will not fail transaction if theRest has changed by another transaction but it still enought.
-        It's reliable and cheap way that reqired only <p>Read uncommitted</p> level.
+        will not fail transaction if theRest has changed by another transaction but it still enough.
+        It's reliable and cheap way that required only <p>Read uncommitted</p> level.
         Calculation Cost of Goods Sold is involving many records to be read. Any way there is no difference
-        data has been changed during calculation or after. So just maintain <b>invoicesVersion</b> that increments each time that
-        an invoice has inserted or updated (so do for receipt and other influencing data) and recalculate COGS when it need.
-        So use custom <b>dirty check</b> and <b>Read uncommitted</b> level is reliable way that gives performance adventages.
+        data (invoices) has been changed during calculation or after. So use <b>invoicesVersion</b> that holds time where
+        invoice has been updated, then check "invoices versions" against COGS calculation time and recalculate COGS if  when it need.
+        So use custom <b>dirty check</b> and <b>Read uncommitted</b> level is reliable way that gives performance advantages.
       </p>
       <p>A RDBMS may not implements all 4 isolation modes.
         Postgresql treated <b>read uncommited</b> as <b>read commited</b>.
@@ -195,7 +379,7 @@
 
       <p>
         Many ORM use "Lazy initialization" by default that required "transaction per request/view". But "Lazy" means 
-        many SQL requests, that's not good for performance. Also holding connection during whole request is not good for performance.
+        many SQL requests, that's not good for performance. Also holding connection during whole request-response is not good for performance.
         Beige-ORM retrieve almost full model through 2 level. E.g. an retrieved Invoice has already retrieved Customer(1st level),
         but in this Customer DefaultCurrency(2-nd level) has only ID. Beige-ORM never retrieved owned entities-list, e.g. InvoiceLines.
         So it's take 2 SQL queries to retrieve model Invoice. 

@@ -24,9 +24,9 @@ public class UserRoleTomcat extends AEditable
   implements IHasId<IdUserRoleTomcat> {
 
   /**
-   * <p>Complex ID.</p>
+   * <p>Complex ID. Must be initialized cause reflection use.</p>
    **/
-  private IdUserRoleTomcat itsId;
+  private IdUserRoleTomcat itsId = new IdUserRoleTomcat();
 
   /**
    * <p>User.</p>
@@ -54,6 +54,37 @@ public class UserRoleTomcat extends AEditable
   @Override
   public final void setItsId(final IdUserRoleTomcat pItsId) {
     this.itsId = pItsId;
+    if (this.itsId == null) {
+      this.itsUser = null;
+      this.itsRole = null;
+    } else {
+      this.itsUser = this.itsId.getItsUser();
+      this.itsRole = this.itsId.getItsRole();
+    }
+  }
+
+  /**
+   * <p>Setter for itsUser.</p>
+   * @param pItsUser reference/value
+   **/
+  public final void setItsUser(final UserTomcat pItsUser) {
+    this.itsUser = pItsUser;
+    if (this.itsId == null) {
+      this.itsId = new IdUserRoleTomcat();
+    }
+    this.itsId.setItsUser(this.itsUser);
+  }
+
+  /**
+   * <p>Setter for itsRole.</p>
+   * @param pItsRole reference
+   **/
+  public final void setItsRole(final String pItsRole) {
+    this.itsRole = pItsRole;
+    if (this.itsId == null) {
+      this.itsId = new IdUserRoleTomcat();
+    }
+    this.itsId.setItsRole(this.itsRole);
   }
 
   //Simple getters and setters:
@@ -66,26 +97,10 @@ public class UserRoleTomcat extends AEditable
   }
 
   /**
-   * <p>Setter for itsUser.</p>
-   * @param pItsUser reference/value
-   **/
-  public final void setItsUser(final UserTomcat pItsUser) {
-    this.itsUser = pItsUser;
-  }
-
-  /**
    * <p>Geter for itsRole.</p>
    * @return String
    **/
   public final String getItsRole() {
     return this.itsRole;
-  }
-
-  /**
-   * <p>Setter for itsRole.</p>
-   * @param pItsRole reference
-   **/
-  public final void setItsRole(final String pItsRole) {
-    this.itsRole = pItsRole;
   }
 }

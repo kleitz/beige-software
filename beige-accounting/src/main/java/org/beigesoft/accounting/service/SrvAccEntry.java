@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Calendar;
+import java.math.BigDecimal;
 import java.io.InputStream;
 import java.io.IOException;
 import java.net.URL;
@@ -124,7 +125,7 @@ public class SrvAccEntry<RS> implements ISrvAccEntry {
   public final void makeEntries(final Map<String, Object> pAddParam,
     final IDoc pEntity) throws Exception {
     Calendar calCurrYear = Calendar.getInstance();
-    calCurrYear.setTime(getSrvAccSettings().lazyGetAccSettings()
+    calCurrYear.setTime(getSrvAccSettings().lazyGetAccSettings(pAddParam)
       .getCurrentAccYear());
     calCurrYear.set(Calendar.MONTH, 0);
     calCurrYear.set(Calendar.DAY_OF_MONTH, 1);
@@ -146,7 +147,7 @@ public class SrvAccEntry<RS> implements ISrvAccEntry {
     }
     StringBuffer sb = new StringBuffer();
     List<AccEntriesSourcesLine> sourcesLines = srvAccSettings
-      .lazyGetAccSettings().getAccEntriesSources();
+      .lazyGetAccSettings(pAddParam).getAccEntriesSources();
     java.util.Collections.sort(sourcesLines, this.cmprAccSourcesByType);
     int i = 0;
     for (AccEntriesSourcesLine sourcesLine : sourcesLines) {
@@ -186,9 +187,9 @@ public class SrvAccEntry<RS> implements ISrvAccEntry {
           AccountingEntry accEntry = new AccountingEntry();
           accEntry.setIdDatabaseBirth(getSrvDatabase().getIdDatabase());
           if (itsDateLong == null) {
-            itsDateLong = getSrvDatabase().getSrvRecordRetriever()
-              .getDate(recordSet.getRecordSet(), "ITSDATE").getTime();
-            getSrvBalance().handleNewAccountEntry(null, null,
+            itsDateLong = recordSet
+              .getLong("ITSDATE");
+            getSrvBalance().handleNewAccountEntry(pAddParam, null, null,
               new Date(itsDateLong)); //This is for SrvBalanceStd only!!!
           }
           Date itsDate = new Date(itsDateLong++);
@@ -200,45 +201,43 @@ public class SrvAccEntry<RS> implements ISrvAccEntry {
             accEntry.setSourceId(pEntity.getItsId());
           }
           accEntry.setSourceDatabaseBirth(pEntity.getIdDatabaseBirth());
-          String accDebitId = getSrvDatabase().getSrvRecordRetriever()
-            .getString(recordSet.getRecordSet(), "ACCDEBIT");
+          String accDebitId = recordSet.getString("ACCDEBIT");
           Account accDebit = new Account();
           accDebit.setItsId(accDebitId);
           accEntry.setAccDebit(accDebit);
-          accEntry.setSubaccDebitType(getSrvDatabase().getSrvRecordRetriever()
-            .getInteger(recordSet.getRecordSet(), "SUBACCDEBITTYPE"));
-          accEntry.setSubaccDebitId(getSrvDatabase().getSrvRecordRetriever()
-            .getLong(recordSet.getRecordSet(), "SUBACCDEBITID"));
-          accEntry.setSubaccDebit(getSrvDatabase().getSrvRecordRetriever()
-            .getString(recordSet.getRecordSet(), "SUBACCDEBIT"));
-          accEntry.setDebit(getSrvDatabase().getSrvRecordRetriever()
-            .getBigDecimal(recordSet.getRecordSet(), "DEBIT").setScale(
-              getSrvAccSettings().lazyGetAccSettings().getCostPrecision(),
-                getSrvAccSettings().lazyGetAccSettings().getRoundingMode()));
-          String accCreditId = getSrvDatabase().getSrvRecordRetriever()
-            .getString(recordSet.getRecordSet(), "ACCCREDIT");
+          accEntry.setSubaccDebitType(recordSet.getInteger("SUBACCDEBITTYPE"));
+          accEntry.setSubaccDebitId(recordSet.getLong("SUBACCDEBITID"));
+          accEntry.setSubaccDebit(recordSet.getString("SUBACCDEBIT"));
+          accEntry.setDebit(BigDecimal.valueOf(recordSet.getDouble("DEBIT"))
+            .setScale(getSrvAccSettings().lazyGetAccSettings(pAddParam)
+              .getCostPrecision(), getSrvAccSettings()
+                .lazyGetAccSettings(pAddParam).getRoundingMode()));
+          String accCreditId = recordSet.getString("ACCCREDIT");
           Account accCredit = new Account();
           accCredit.setItsId(accCreditId);
           accEntry.setAccCredit(accCredit);
-          accEntry.setSubaccCreditType(getSrvDatabase().getSrvRecordRetriever()
-            .getInteger(recordSet.getRecordSet(), "SUBACCCREDITTYPE"));
-          accEntry.setSubaccCreditId(getSrvDatabase().getSrvRecordRetriever()
-            .getLong(recordSet.getRecordSet(), "SUBACCCREDITID"));
-          accEntry.setSubaccCredit(getSrvDatabase().getSrvRecordRetriever()
-            .getString(recordSet.getRecordSet(), "SUBACCCREDIT"));
-          accEntry.setCredit(getSrvDatabase().getSrvRecordRetriever()
-            .getBigDecimal(recordSet.getRecordSet(), "CREDIT").setScale(
-              getSrvAccSettings().lazyGetAccSettings().getCostPrecision(),
-                getSrvAccSettings().lazyGetAccSettings().getRoundingMode()));
+          accEntry
+            .setSubaccCreditType(recordSet.getInteger("SUBACCCREDITTYPE"));
+          accEntry.setSubaccCreditId(recordSet.getLong("SUBACCCREDITID"));
+          accEntry.setSubaccCredit(recordSet.getString("SUBACCCREDIT"));
+          accEntry.setCredit(BigDecimal
+            .valueOf(recordSet.getDouble("CREDIT")).setScale(
+              getSrvAccSettings().lazyGetAccSettings(pAddParam)
+                .getCostPrecision(), getSrvAccSettings()
+                  .lazyGetAccSettings(pAddParam).getRoundingMode()));
           String docId = pEntity.getItsId().toString();
           if (pEntity.getIdBirth() != null) {
             docId = pEntity.getIdBirth().toString();
           }
+          String descr = "";
+          if (pEntity.getDescription() != null) {
+            descr = " " + pEntity.getDescription();
+          }
           accEntry.setDescription(getSrvI18n().getMsg(pEntity.getClass()
               .getSimpleName() + "short") + " #" + pEntity.getIdDatabaseBirth()
                 + "-" + docId + ", " + getDateFormatter()
-              .format(pEntity.getItsDate()) + " " + pEntity.getDescription());
-          this.srvOrm.insertEntity(accEntry);
+              .format(pEntity.getItsDate()) + descr);
+          this.srvOrm.insertEntity(pAddParam, accEntry);
         } while (recordSet.moveToNext());
       }
     } finally {
@@ -247,7 +246,7 @@ public class SrvAccEntry<RS> implements ISrvAccEntry {
       }
     }
     pEntity.setHasMadeAccEntries(true);
-    srvOrm.updateEntity(pEntity);
+    srvOrm.updateEntity(pAddParam, pEntity);
   }
 
   /**
@@ -262,9 +261,10 @@ public class SrvAccEntry<RS> implements ISrvAccEntry {
     final IDoc pReversing,
       final IDoc pReversed) throws Exception {
     List<AccountingEntry> sources = getSrvOrm().retrieveListWithConditions(
-      AccountingEntry.class, " where SOURCETYPE=" + pReversing.constTypeCode()
-        + " and SOURCEID=" + pReversing.getReversedId()
-      + " and SOURCEDATABASEBIRTH=" + pReversing.getReversedIdDatabaseBirth());
+      pAddParam, AccountingEntry.class, " where SOURCETYPE="
+        + pReversing.constTypeCode() + " and SOURCEID="
+          + pReversing.getReversedId() + " and SOURCEDATABASEBIRTH="
+            + pReversing.getReversedIdDatabaseBirth());
     Long itsDateLong = null;
     for (AccountingEntry source : sources) {
       if (!source.getIdDatabaseBirth()
@@ -274,7 +274,7 @@ public class SrvAccEntry<RS> implements ISrvAccEntry {
       }
       if (itsDateLong == null) {
         itsDateLong = pReversing.getItsDate().getTime();
-        getSrvBalance().handleNewAccountEntry(null, null,
+        getSrvBalance().handleNewAccountEntry(pAddParam, null, null,
           new Date(itsDateLong)); //This is for SrvBalanceStd only!!!
       }
       AccountingEntry accEntry = new AccountingEntry();
@@ -301,6 +301,10 @@ public class SrvAccEntry<RS> implements ISrvAccEntry {
       if (source.getCredit() != null) {
         accEntry.setCredit(source.getCredit().negate());
       }
+      String descr = "";
+      if (pReversing.getDescription() != null) {
+        descr = " " + pReversing.getDescription();
+      }
       accEntry.setDescription(getSrvI18n().getMsg("made_at") + " "
         + getDateFormatter().format(new Date()) + " " + getSrvI18n()
           .getMsg("by") + " " + getSrvI18n().getMsg(pReversing.getClass()
@@ -309,21 +313,20 @@ public class SrvAccEntry<RS> implements ISrvAccEntry {
                 .format(pReversing.getItsDate())
               // reversed from  current DB:
               + ", " + getSrvI18n().getMsg("reversed_entry_n") + source
-            .getIdDatabaseBirth() + "-" + source.getItsId()
-          + " " + pReversing.getDescription());
+            .getIdDatabaseBirth() + "-" + source.getItsId() + descr);
       accEntry.setReversedId(source.getItsId());
       accEntry.setReversedIdDatabaseBirth(source.getIdDatabaseBirth());
-      srvOrm.insertEntity(accEntry);
+      srvOrm.insertEntity(pAddParam, accEntry);
       source.setDescription(source.getDescription().trim()
         + " " + getSrvI18n().getMsg("reversing_entry_n") + accEntry
           .getIdDatabaseBirth() + "-"
             + accEntry.getItsId()); // new in current DB
       source.setReversedId(accEntry.getItsId());
       source.setReversedIdDatabaseBirth(accEntry.getIdDatabaseBirth());
-      srvOrm.updateEntity(source);
+      srvOrm.updateEntity(pAddParam, source);
     }
     pReversing.setHasMadeAccEntries(true);
-    srvOrm.updateEntity(pReversing);
+    srvOrm.updateEntity(pAddParam, pReversing);
   }
 
   /**
@@ -341,9 +344,9 @@ public class SrvAccEntry<RS> implements ISrvAccEntry {
       docId = pEntity.getIdBirth();
     }
     List<AccountingEntry> result = getSrvOrm().retrieveListWithConditions(
-      AccountingEntry.class, " where SOURCETYPE=" + pEntity.constTypeCode()
-        + " and SOURCEID=" + docId + " and SOURCEDATABASEBIRTH="
-          + pEntity.getIdDatabaseBirth());
+      pAddParam, AccountingEntry.class, " where SOURCETYPE="
+        + pEntity.constTypeCode() + " and SOURCEID=" + docId
+          + " and SOURCEDATABASEBIRTH=" + pEntity.getIdDatabaseBirth());
     return result;
   }
 

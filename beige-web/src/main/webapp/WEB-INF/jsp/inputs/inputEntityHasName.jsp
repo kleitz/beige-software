@@ -11,8 +11,8 @@
         <c:set var="required" value="required"/>
       </c:if>
       <input class="picked-appearence" id="${entity.getClass().simpleName}${fieldName}AppearanceVisible" disabled="disabled" type="text" value="${entity[fieldName].itsName}" onchange="inputHasBeenChanged(this);">
-      <input id="${entity.getClass().simpleName}${fieldName}Id" ${required} type="hidden" name="${entity.getClass().simpleName}.${fieldName}.itsId" value="${entity[fieldName].itsId}">
-      <button type="button" ${autofocus} class="btn" onclick="openEntityPicker('${srvOrm.tablesMap[entity.getClass().simpleName].fieldsMap[fieldName].foreignEntity}','${entity.getClass().simpleName}','${fieldName}', '&mobile=${param.mobile}');">...</button>
+      <input id="${entity.getClass().simpleName}${fieldName}Id" ${required} type="hidden" name="${entity.getClass().simpleName}.${fieldName}" value="${entity[fieldName].itsId}">
+      <button type="button" ${autofocus} class="btn" onclick="openEntityPicker('${srvOrm.tablesMap[entity.getClass().simpleName].fieldsMap[fieldName].foreignEntity}','${entity.getClass().simpleName}','${fieldName}', '&nmHnd=${param.nmHnd}&mobile=${param.mobile}');">...</button>
       <c:set var="autofocus" value="" scope="request"/>
       <button type="button" class="btn" onclick="clearSelectedEntity('${entity.getClass().simpleName}${fieldName}');">X</button>
     </div>

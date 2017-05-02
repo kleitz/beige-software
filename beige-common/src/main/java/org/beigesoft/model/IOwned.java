@@ -17,7 +17,7 @@ package org.beigesoft.model;
  * @author Yury Demidenko
  * @param <O> type of owner
  */
-public interface IOwned<O> extends IEditable {
+public interface IOwned<O> {
 
   /**
    * <p>Usually it's simple getter that return owner.</p>

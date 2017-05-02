@@ -10,6 +10,7 @@
 <properties>
 <comment>Correspondence of Java types to services that explain about property. ORDER is essential, the LAST value will be used.</comment>
 <entry key="org.beigesoft.model.IHasId">filterOrderStd</entry>
+<entry key="org.beigesoft.model.IOwned">null</entry>
 <entry key="org.beigesoft.replicator.persistable.AReplicationMethod">null</entry>
 <entry key="org.beigesoft.accounting.persistable.Account">null</entry>
 <entry key="org.beigesoft.accounting.persistable.Tax">null</entry>
@@ -27,5 +28,5 @@
 <entry key="org.beigesoft.accounting.persistable.DebtorCreditorCategory">null</entry>
 <entry key="org.beigesoft.accounting.persistable.CogsMethod">null</entry>
 <entry key="org.beigesoft.accounting.persistable.AccSettings">null</entry>
-<entry key="org.beigesoft.model.IOwned">null</entry>
+<entry key="org.beigesoft.webstore.persistable.TradingSettings">null</entry>
 </properties>

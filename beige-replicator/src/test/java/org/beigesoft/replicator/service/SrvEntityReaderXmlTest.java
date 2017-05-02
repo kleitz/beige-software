@@ -105,7 +105,7 @@ public class SrvEntityReaderXmlTest {
   public void testRead1() throws Exception {
     System.out.println(this.utilXml.unescapeXml(this.strXmlDepartment));
     StringReader reader = new StringReader(this.strXmlDepartment);
-    Map<String, String> attributesMap = this.srvEntityReaderXml.readAttributes(reader, null);
+    Map<String, String> attributesMap = this.srvEntityReaderXml.readAttributes(null, reader);
     assertEquals("org.beigesoft.test.persistable.Department", attributesMap.get("class")); 
     assertEquals("1", attributesMap.get("itsId")); 
     assertEquals("ICT", attributesMap.get("itsName")); 
@@ -114,7 +114,7 @@ public class SrvEntityReaderXmlTest {
   @Test
   public void testRead2() throws Exception {
     StringReader reader = new StringReader(this.strXmlDepartment);
-    Department department = (Department) this.srvEntityReaderXml.read(reader, null);
+    Department department = (Department) this.srvEntityReaderXml.read(null, reader);
     assertEquals(new Long(1L), department.getItsId()); 
     assertEquals("ICT", department.getItsName()); 
   }
@@ -123,7 +123,7 @@ public class SrvEntityReaderXmlTest {
   public void testRead3() throws Exception {
     System.out.println(this.utilXml.unescapeXml(this.strXmlPersHead));
     StringReader reader = new StringReader(this.strXmlPersHead);
-    PersistableHead persHead = (PersistableHead) this.srvEntityReaderXml.read(reader, null);
+    PersistableHead persHead = (PersistableHead) this.srvEntityReaderXml.read(null, reader);
     assertEquals(new Date(1475156484845L), persHead.getItsDate()); 
     assertNull(persHead.getItsInteger()); 
     assertEquals(EStatus.STATUS_A, persHead.getItsStatus()); 
@@ -158,8 +158,8 @@ public class SrvEntityReaderXmlTest {
     try {
       writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
       writer.write("<data sourceId=\"127\">\n");
-      this.srvEntityWriterXml.write(departmentOr, writer, null);
-      this.srvEntityWriterXml.write(persHeadOrigin, writer, null);
+      this.srvEntityWriterXml.write(null, departmentOr, writer);
+      this.srvEntityWriterXml.write(null, persHeadOrigin, writer);
       writer.write("</data>\n");
     } finally {
       if (writer != null) {
@@ -173,12 +173,12 @@ public class SrvEntityReaderXmlTest {
     Department department = null;
     try {
       this.utilXml.readUntilStart(reader, "data");
-      Map<String, String> attributesMap = this.srvEntityReaderXml.readAttributes(reader, null);
+      Map<String, String> attributesMap = this.srvEntityReaderXml.readAttributes(null, reader);
       assertEquals("127", attributesMap.get("sourceId")); 
       this.utilXml.readUntilStart(reader, "entity");
-      department = (Department) this.srvEntityReaderXml.read(reader, null);
+      department = (Department) this.srvEntityReaderXml.read(null, reader);
       this.utilXml.readUntilStart(reader, "entity");
-      persHead = (PersistableHead) this.srvEntityReaderXml.read(reader, null);
+      persHead = (PersistableHead) this.srvEntityReaderXml.read(null, reader);
     } finally {
       if (reader != null) {
         reader.close();

@@ -36,14 +36,14 @@ public class SrvEntitySyncPersistableBase<RS> implements ISrvEntitySync {
    * Synchronize entity (that just read) with entity in database.
    * It fill {itsId, idBirth and idDatabaseBirth}.
    * </p>
-   * @param pEntity object
    * @param pAddParam additional params
+   * @param pEntity object
    * @return isNew if entity exist in database (need update)
    * @throws Exception - an exception
    **/
   @Override
-  public final boolean sync(final Object pEntity,
-    final Map<String, Object> pAddParam) throws Exception {
+  public final boolean sync(final Map<String, Object> pAddParam,
+    final Object pEntity) throws Exception {
     APersistableBase entityPb = (APersistableBase) pEntity;
     int currDbId = getSrvOrm().getIdDatabase();
     if (currDbId == entityPb.getIdDatabaseBirth()) {
@@ -56,7 +56,7 @@ public class SrvEntitySyncPersistableBase<RS> implements ISrvEntitySync {
     String whereStr = " where " + tblNm + ".IDBIRTH=" + entityPb.getItsId()
       + " and " + tblNm + ".IDDATABASEBIRTH=" + entityPb.getIdDatabaseBirth();
     APersistableBase entityPbDb = getSrvOrm()
-      .retrieveEntityWithConditions(entityPb.getClass(), whereStr);
+      .retrieveEntityWithConditions(pAddParam, entityPb.getClass(), whereStr);
     entityPb.setIdBirth(entityPb.getItsId());
     entityPb.setItsId(null);
     boolean isNew = true;

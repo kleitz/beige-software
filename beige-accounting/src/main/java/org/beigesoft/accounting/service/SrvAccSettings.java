@@ -23,9 +23,10 @@ import org.beigesoft.orm.service.ISrvOrm;
 /**
  * <p>Business service for accounting settings.</p>
  *
+ * @param <RS> platform dependent record set type
  * @author Yury Demidenko
  */
-public class SrvAccSettings
+public class SrvAccSettings<RS>
   implements ISrvAccSettings {
 
   /**
@@ -42,7 +43,7 @@ public class SrvAccSettings
   /**
    * <p>ORM service.</p>
    **/
-  private ISrvOrm<?> srvOrm;
+  private ISrvOrm<RS> srvOrm;
 
   /**
    * <p>minimum constructor.</p>
@@ -54,19 +55,21 @@ public class SrvAccSettings
    * <p>Useful constructor.</p>
    * @param pSrvOrm ORM service
    **/
-  public SrvAccSettings(final ISrvOrm<?> pSrvOrm) {
+  public SrvAccSettings(final ISrvOrm<RS> pSrvOrm) {
     this.srvOrm = pSrvOrm;
   }
 
   /**
    * <p>Retrieve/get Accounting settings.</p>
+   * @param pAddParam additional param
    * @return Accounting settings
    * @throws Exception - an exception
    **/
   @Override
-  public final synchronized AccSettings lazyGetAccSettings() throws Exception {
+  public final synchronized AccSettings lazyGetAccSettings(
+    final Map<String, Object> pAddParam) throws Exception {
     if (this.accSettings == null) {
-      retrieveAccSettings();
+      retrieveAccSettings(pAddParam);
     }
     return this.accSettings;
   }
@@ -74,52 +77,24 @@ public class SrvAccSettings
   /**
    * <p>Clear Accounting settings to retrieve from
    * database new version.</p>
+   * @param pAddParam additional param
    **/
   @Override
-  public final synchronized void clearAccSettings() {
+  public final synchronized void clearAccSettings(
+    final Map<String, Object> pAddParam) {
     this.accSettings = null;
   }
 
   /**
-   * <p>Create entity.</p>
-   * @param pAddParam additional param
-   * @return entity instance
-   * @throws Exception - an exception
-   **/
-  @Override
-  public final AccSettings createEntity(
-    final Map<String, Object> pAddParam) throws Exception {
-    AccSettings lAccSettings = new AccSettings();
-    lAccSettings.setIsNew(true);
-    return lAccSettings;
-  }
-
-  /**
-   * <p>Retrieve copy of entity from DB by given ID.</p>
-   * @param pAddParam additional param
-   * @param pId ID
-   * @return entity or null
-   * @throws Exception - an exception
-   **/
-  @Override
-  public final AccSettings retrieveCopyEntity(
-    final Map<String, Object> pAddParam,
-      final Object pId) throws Exception {
-    throw new ExceptionWithCode(ExceptionWithCode.FORBIDDEN,
-      "Attempt to copy accounting settings by " + pAddParam.get("user"));
-  }
-
-  /**
-   * <p>Save entity into DB.</p>
+   * <p>Save acc-settings into DB.</p>
    * @param pAddParam additional param
    * @param pEntity entity
-   * @param isEntityDetached ignored
    * @throws Exception - an exception
    **/
   @Override
-  public final synchronized void saveEntity(final Map<String, Object> pAddParam,
-    final AccSettings pEntity,
-      final boolean isEntityDetached) throws Exception {
+  public final synchronized void saveAccSettings(
+    final Map<String, Object> pAddParam,
+      final AccSettings pEntity) throws Exception {
     if (pEntity.getIsNew()) {
       throw new ExceptionWithCode(ExceptionWithCode.FORBIDDEN,
         "Attempt to insert accounting settings by " + pAddParam.get("user"));
@@ -142,171 +117,40 @@ public class SrvAccSettings
         throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
           "precision_must_be_from_0_to_4");
       }
-      getSrvOrm().updateEntity(pEntity);
-      retrieveAccSettings();
+      getSrvOrm().updateEntity(pAddParam, pEntity);
+      retrieveAccSettings(pAddParam);
     }
-  }
-
-
-  /**
-   * <p>Refresh entity from DB by given entity with ID.</p>
-   * @param pEntity entity
-   * @return entity or null
-   * @throws Exception - an exception
-   **/
-  @Override
-  public final synchronized AccSettings retrieveEntity(
-    final Map<String, Object> pAddParam,
-      final AccSettings pEntity) throws Exception {
-    return lazyGetAccSettings();
-  }
-
-  /**
-   * <p>Retrieve entity from DB by given ID.</p>
-   * @param pAddParam additional param
-   * @param pId ID
-   * @return entity or null
-   * @throws Exception - an exception
-   **/
-  @Override
-  public final synchronized AccSettings retrieveEntityById(
-    final Map<String, Object> pAddParam,
-      final Object pId) throws Exception {
-    return lazyGetAccSettings();
-  }
-
-  /**
-   * <p>Delete entity from DB.</p>
-   * @param pAddParam additional param
-   * @param pEntity entity
-   * @throws Exception - an exception
-   **/
-  @Override
-  public final void deleteEntity(final Map<String, Object> pAddParam,
-    final AccSettings pEntity) throws Exception {
-    throw new ExceptionWithCode(ExceptionWithCode.FORBIDDEN,
-      "Attempt to delete line by " + pAddParam.get("user"));
-  }
-
-  /**
-   * <p>Delete entity from DB by given ID.</p>
-   * @param pAddParam additional param
-   * @param pId ID
-   * @throws Exception - an exception
-   **/
-  @Override
-  public final void deleteEntity(final Map<String, Object> pAddParam,
-    final Object pId) throws Exception {
-    throw new ExceptionWithCode(ExceptionWithCode.FORBIDDEN,
-      "Attempt to delete line by " + pAddParam.get("user"));
-  }
-
-  /**
-   * <p>Retrieve a list of all entities.</p>
-   * @param pAddParam additional param
-   * @return list of all business objects
-   * @throws Exception - an exception
-   */
-  @Override
-  public final List<AccSettings> retrieveList(
-    final Map<String, Object> pAddParam) throws Exception {
-    return getSrvOrm().retrieveList(this.entityClass);
-  }
-
-  /**
-   * <p>Retrieve a list of entities.</p>
-   * @param pAddParam additional param
-   * @param pQueryConditions Not NULL e.g. "where name='U1' ORDER BY id"
-   * or "where ITSDATE>21313211 order by ITSID"
-   * @return list of business objects
-   * @throws Exception - an exception
-   */
-  @Override
-  public final List<AccSettings> retrieveListWithConditions(
-    final Map<String, Object> pAddParam,
-      final String pQueryConditions) throws Exception {
-    return getSrvOrm()
-      .retrieveListWithConditions(this.entityClass, pQueryConditions);
-  }
-
-  /**
-   * <p>Retrieve a page of entities.</p>
-   * @param pAddParam additional param
-   * @param pFirst number of the first record
-   * @param pPageSize page size (max records)
-   * @return list of business objects
-   * @throws Exception - an exception
-   */
-  @Override
-  public final List<AccSettings> retrievePage(
-    final Map<String, Object> pAddParam,
-      final Integer pFirst, final Integer pPageSize) throws Exception {
-    return getSrvOrm().retrievePage(this.entityClass, pFirst, pPageSize);
-  }
-
-  /**
-   * <p>Retrieve a page of entities.</p>
-   * @param pAddParam additional param
-   * @param pQueryConditions Not NULL e.g. "where name='U1' ORDER BY id"
-   * @param pFirst number of the first record
-   * @param pPageSize page size (max records)
-   * @return list of business objects
-   * @throws Exception - an exception
-   */
-  @Override
-  public final List<AccSettings> retrievePageWithConditions(
-    final Map<String, Object> pAddParam,
-      final String pQueryConditions,
-        final Integer pFirst, final Integer pPageSize) throws Exception {
-    return getSrvOrm().retrievePageWithConditions(this.entityClass,
-      pQueryConditions, pFirst, pPageSize);
-  }
-  /**
-   * <p>There is only accounting settings.</p>
-   * @param pAddParam additional param
-   * @return Integer row count
-   * @throws Exception - an exception
-   */
-  @Override
-  public final Integer evalRowCount(
-    final Map<String, Object> pAddParam) throws Exception {
-    return 1;
-  }
-  /**
-   * <p>There is only accounting settings.</p>
-   * @param pAddParam additional param
-   * @param pWhere not null e.g. "ITSID > 33"
-   * @return Integer row count
-   * @throws Exception - an exception
-   */
-  @Override
-  public final Integer evalRowCountWhere(final Map<String, Object> pAddParam,
-    final String pWhere) throws Exception {
-    return 1;
   }
 
   //Utils:
   /**
    * <p>Retrieve Accounting settings from database.</p>
+   * @param pAddParam additional param
    * @throws Exception - an exception
    **/
-  public final synchronized void retrieveAccSettings() throws Exception {
-    this.accSettings = getSrvOrm().retrieveEntityById(this.entityClass, 1L);
+  public final synchronized void retrieveAccSettings(
+    final Map<String, Object> pAddParam) throws Exception {
+    this.accSettings = new AccSettings();
+    this.accSettings.setItsId(1L);
+    this.accSettings = getSrvOrm().retrieveEntity(pAddParam, this.accSettings);
     if (this.accSettings == null) {
       throw new ExceptionWithCode(ExceptionWithCode.CONFIGURATION_MISTAKE,
         "There is no accounting settings!!!");
     }
+    DrawMaterialSourcesLine dmsl = new DrawMaterialSourcesLine();
+    dmsl.setItsOwner(this.accSettings);
     List<DrawMaterialSourcesLine> drawMaterialSources = getSrvOrm()
-      .retrieveEntityOwnedlist(DrawMaterialSourcesLine.class,
-        AccSettings.class, 1L);
+      .retrieveListForField(pAddParam, dmsl, "itsOwner");
     this.accSettings.setDrawMaterialSources(drawMaterialSources);
+    CogsItemSourcesLine cisl = new CogsItemSourcesLine();
+    cisl.setItsOwner(this.accSettings);
     List<CogsItemSourcesLine> cogsItemSources = getSrvOrm()
-      .retrieveEntityOwnedlist(CogsItemSourcesLine.class,
-        AccSettings.class, 1L);
+      .retrieveListForField(pAddParam, cisl, "itsOwner");
     this.accSettings.setCogsItemSources(cogsItemSources);
+    AccEntriesSourcesLine aesl = new AccEntriesSourcesLine();
+    aesl.setItsOwner(this.accSettings);
     List<AccEntriesSourcesLine> accEntriesSources = getSrvOrm()
-      .retrieveEntityOwnedlist(AccEntriesSourcesLine.class,
-        AccSettings.class, 1L);
+      .retrieveListForField(pAddParam, aesl, "itsOwner");
     this.accSettings.setAccEntriesSources(accEntriesSources);
   }
 
@@ -321,9 +165,9 @@ public class SrvAccSettings
 
   /**
    * <p>Geter for srvOrm.</p>
-   * @return ISrvOrm<?>
+   * @return ISrvOrm<RS>
    **/
-  public final ISrvOrm<?> getSrvOrm() {
+  public final ISrvOrm<RS> getSrvOrm() {
     return this.srvOrm;
   }
 
@@ -331,7 +175,7 @@ public class SrvAccSettings
    * <p>Setter for srvOrm.</p>
    * @param pSrvOrm reference
    **/
-  public final void setSrvOrm(final ISrvOrm<?> pSrvOrm) {
+  public final void setSrvOrm(final ISrvOrm<RS> pSrvOrm) {
     this.srvOrm = pSrvOrm;
   }
 }

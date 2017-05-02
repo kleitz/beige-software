@@ -7,8 +7,8 @@
       ${srvI18n.getMsg('TrialBalance')}
       <button onclick="closeDlgCareful('frmReportEdit')" class="btn-close">x</button>
     </div>
-    <form id="frmReportEditFrm" action="balance/" method="GET">
-      <input type="hidden" name="nameRenderer" value="balance">
+    <form id="frmReportEditFrm" action="balance/" method="GET" target="_blank">
+      <input type="hidden" name="nmRnd" value="balance">
       <table class="tbl-fieldset">
         <tr>
           <td>
@@ -17,12 +17,11 @@
         </tr>
         <tr>
           <td>
-            <input type="datetime-local" required name="date2" value="${utlJsp.dateTimeToIso8601(now)}" onchange="inputHasBeenChanged(this);"/> 
+            <input type="datetime-local" required name="date2" value="${srvDate.toIso8601DateTimeNoTz(now, null)}" onchange="inputHasBeenChanged(this);"/> 
           </td>
         </tr>
       </table>
       <div class="form-actions">
-        <input style="display: none" id="frmReportEditFrmFakeSubmit" type="submit"/>
         <button type="button" onclick="submitFormForNewWindow('frmReportEditFrm', false);">${srvI18n.getMsg("Report")}</button>
         <a href="#" onclick="closeDlgCareful('frmReportEdit');">${srvI18n.getMsg("Close")}</a>
       </div>

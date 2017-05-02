@@ -15,5 +15,6 @@
 <entry key="java.util.Date">toStrDateTime</entry>
 <entry key="org.beigesoft.model.IHasName">toStrHasName</entry>
 <entry key="org.beigesoft.accounting.persistable.IDoc">toStrDocument</entry>
+<entry key="org.beigesoft.accounting.persistable.base.ADocWithTaxesPayments">toStrDocumentWithPayments</entry>
 <entry key="org.beigesoft.accounting.persistable.PurchaseInvoiceLine">toStrPurchaseInvoiceLine</entry>
 </properties>

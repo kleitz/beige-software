@@ -27,7 +27,7 @@ public abstract class APersistableBase extends AEditable
   /**
    * <p>Database column name for ID.</p>
    **/
-  public static final String ID_NAME = "id";
+  public static final String ID_NAME = "itsId";
 
   /**
    * <p>Database column name for ID of database of birth.</p>

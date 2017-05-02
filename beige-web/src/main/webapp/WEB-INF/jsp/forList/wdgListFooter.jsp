@@ -6,13 +6,13 @@
       <span class="page-inactive">...</span>
     </c:if>
     <c:if test="${!(page.value eq '...') && page.isCurrent}">
-      <a href="#" class="page-current" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=${nameRendererList}&nameEntity=${param.nameEntity}&page=${page.value}${flyParams}');">${page.value}</a>
+      <a href="#" class="page-current" onclick="getHtmlByAjax('GET', 'service/?nmRnd=${nmRndList}&nmsAct=list&nmHnd=${param.nmHnd}&nmEnt=${classEntity.simpleName}&page=${page.value}${flyParams}');">${page.value}</a>
     </c:if>
     <c:if test="${!(page.value eq '...') && !page.isCurrent}">
-      <a href="#" class="page" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=${nameRendererList}&nameEntity=${param.nameEntity}&page=${page.value}${flyParams}');">${page.value}</a>
+      <a href="#" class="page" onclick="getHtmlByAjax('GET', 'service/?nmRnd=${nmRndList}&nmsAct=list&nmHnd=${param.nmHnd}&nmEnt=${classEntity.simpleName}&page=${page.value}${flyParams}');">${page.value}</a>
     </c:if>
   </c:forEach>
-  <button id="listMainNew" onclick="getHtmlByAjax('GET', 'entity/?nameRenderer=editEntityJson&nameAction=createTransactional&nameEntity=${param.nameEntity}&page=${param.page}${flyParams}');" class="btn btn-sm">
+  <button id="listMainNew" onclick="getHtmlByAjax('GET', 'service/?nmRnd=editEntityJson&nmsAct=entityCreate&nmHnd=${param.nmHnd}&nmEnt=${classEntity.simpleName}&page=${param.page}${flyParams}');" class="btn btn-sm">
     ${srvI18n.getMsg("New")}
   </button>
 </div>

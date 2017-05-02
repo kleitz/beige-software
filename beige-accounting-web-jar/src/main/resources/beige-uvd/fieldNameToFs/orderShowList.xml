@@ -9,6 +9,23 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 <comment>Correspondence of field name to to order show in list(minus-1 no show, 1, 4... - order).</comment>
+<entry key="regPhone">-1</entry>
+<entry key="regCity">-1</entry>
+<entry key="regState">-1</entry>
+<entry key="regCountry">-1</entry>
+<entry key="regZip">-1</entry>
+<entry key="regAddress1">-1</entry>
+<entry key="regAddress2">-1</entry>
+<entry key="regEmail">-1</entry>
+<entry key="taxIdentificationNumber">-1</entry>
+<entry key="roundingMode">-1</entry>
+<entry key="isExtractSalesTaxFromSales">-1</entry>
+<entry key="isExtractSalesTaxFromPurchase">-1</entry>
+<entry key="cogsMethod">-1</entry>
+<entry key="balanceStorePeriod">-1</entry>
+<entry key="wageTaxesMethod">-1</entry>
+<entry key="registeredPassword">-1</entry>
+<entry key="userPassword">-1</entry>
 <entry key="sourceDatabaseBirth">-1</entry>
 <entry key="isSubaccFromMethod">-1</entry>
 <entry key="sourceIdName">-1</entry>

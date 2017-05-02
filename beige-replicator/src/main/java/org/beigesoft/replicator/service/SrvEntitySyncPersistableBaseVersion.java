@@ -34,14 +34,14 @@ public class SrvEntitySyncPersistableBaseVersion<RS> implements ISrvEntitySync {
    * <p>
    * Synchronize  APersistableBaseVersion (itsVersion changed time).
    * </p>
-   * @param pEntity object
    * @param pAddParam additional params
+   * @param pEntity object
    * @return isNew if entity exist in database (need update)
    * @throws Exception - an exception
    **/
   @Override
-  public final boolean sync(final Object pEntity,
-    final Map<String, Object> pAddParam) throws Exception {
+  public final boolean sync(final Map<String, Object> pAddParam,
+    final Object pEntity) throws Exception {
     APersistableBaseVersion entityPb = (APersistableBaseVersion) pEntity;
     int currDbId = getSrvOrm().getIdDatabase();
     if (currDbId == entityPb.getIdDatabaseBirth()) {
@@ -54,7 +54,7 @@ public class SrvEntitySyncPersistableBaseVersion<RS> implements ISrvEntitySync {
     String whereStr = " where " + tblNm + ".IDBIRTH=" + entityPb.getItsId()
       + " and " + tblNm + ".IDDATABASEBIRTH=" + entityPb.getIdDatabaseBirth();
     APersistableBaseVersion entityPbDb = getSrvOrm()
-      .retrieveEntityWithConditions(entityPb.getClass(), whereStr);
+      .retrieveEntityWithConditions(pAddParam, entityPb.getClass(), whereStr);
     entityPb.setIdBirth(entityPb.getItsId());
     entityPb.setItsId(null);
     boolean isNew = true;

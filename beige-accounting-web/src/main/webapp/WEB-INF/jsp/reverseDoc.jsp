@@ -5,23 +5,26 @@
 <dialog id="${namePlaceForm}EditDlg" class="dlg">
   <div class="form-std">
     <div class="dialog-title">
-      ${srvI18n.getMsg(actTitle)} ${srvI18n.getMsg(param.nameEntity)}
+      ${srvI18n.getMsg(actTitle)} ${srvI18n.getMsg(entity.getClass().simpleName)}
       <button onclick="closeDlgCareful('${namePlaceForm}Edit')" class="btn-close">x</button>
     </div>
-    <form id="${namePlaceForm}EditFrm" action="entity/" method="POST">
-      <input type="hidden" name="nameAction" value="save">
-      <input type="hidden" name="nameEntity" value="${param.nameEntity}">
+    <form id="${namePlaceForm}EditFrm" action="service/" method="POST" enctype="multipart/form-data">
+      <input type="hidden" name="nmsAct" value="entitySave,list">
+      <input type="hidden" name="nmHnd" value="${param.nmHnd}">
+      <input type="hidden" name="nmEnt" value="${entity.getClass().simpleName}">
+      <input type="hidden" name="nmRndList" value="${param.nmRndList}">
+      <input type="hidden" name="msgSuccess" value="reverse_ok">
       <input type="hidden" name="page" value="${param.page}">
-      <input type="hidden" name="mobile" value="${param.mobile}">
-      <c:set var="flyParams" value=""/>
+      <c:if test="${not empty param.mobile}">
+        <input type="hidden" name="mobile" value="${param.mobile}">
+      </c:if>
       <c:forEach items="${param}" var="par">
         <c:if test="${par.key.startsWith('fltordM')}">
           <input type="hidden" name="${par.key}" value="${par.value}">
-          <c:set var="flyParams" value="${flyParams}&${par.key}=${par.value}"/>
         </c:if>
       </c:forEach>
       <table class="tbl-fieldset">
-      <c:forEach var="entry" items="${mngUvds.makeFldPropLst(entity.getClass().canonicalName, 'orderShowForm')}">
+      <c:forEach var="entry" items="${mngUvds.makeFldPropLst(entity.getClass(), 'orderShowForm')}">
         <c:if test="${not empty entry.value.get(wdgName)}">
           <c:set var="fieldName" value="${entry.key}" scope="request"/>
           <c:set var="fieldSettings" value="${entry.value}" scope="request"/>
@@ -29,7 +32,7 @@
         </c:if>
       </c:forEach>
       </table>
-      <jsp:include page="forForm/${mngUvds.classesSettings.get(entity.getClass().canonicalName).get('wdgFormActions')}reverse.jsp"/>
+      <jsp:include page="forForm/${mngUvds.classesSettings.get(entity.getClass()).get('wdgFormActions')}reverse.jsp"/>
     </form>
   </div>
 </dialog>

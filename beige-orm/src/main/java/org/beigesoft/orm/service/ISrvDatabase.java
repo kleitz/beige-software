@@ -217,18 +217,6 @@ public interface ISrvDatabase<RS> {
 
   //some useful utilities that must be:
   /**
-   * <p>Get recordset retriever.</p>
-   * @return recordset retriever
-   **/
-  ISrvRecordRetriever<RS> getSrvRecordRetriever();
-
-  /**
-   * <p>Set recordset retriever.</p>
-   * @param pSrvRecordRetriever recordset retriever
-   **/
-  void setSrvRecordRetriever(ISrvRecordRetriever<RS> pSrvRecordRetriever);
-
-  /**
    * <p>Evaluate single Integer result.</p>
    * @param pQuery Query
    * @param pColumnName Column Name

@@ -10,9 +10,13 @@
 <properties>
 <comment>Correspondence of Java types to services pick property. ORDER is essential, the LAST value will be used.</comment>
 <entry key="org.beigesoft.model.IHasName">pickHasName</entry>
+<entry key="org.beigesoft.persistable.UserTomcat">pickUserTomcat</entry>
+<entry key="org.beigesoft.persistable.UserRoleTomcat">pickUserRoleTomcat</entry>
 <entry key="org.beigesoft.accounting.persistable.SubaccountLine">pickSubacc</entry>
 <entry key="org.beigesoft.accounting.persistable.Tax">pickTax</entry>
 <entry key="org.beigesoft.accounting.persistable.InvItem">pickInvItem</entry>
 <entry key="org.beigesoft.accounting.persistable.IDoc">pickDocument</entry>
+<entry key="org.beigesoft.accounting.persistable.base.ADocWithTaxesPayments">pickDocumentWithPayments</entry>
 <entry key="org.beigesoft.accounting.persistable.PurchaseInvoiceLine">pickPurchaseInvoiceLine</entry>
+<entry key="org.beigesoft.webstore.persistable.ChooseableSpecifics">pickChooseableSpec</entry>
 </properties>

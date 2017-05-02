@@ -30,62 +30,6 @@ import org.beigesoft.web.service.MngDatabaseSqlite;
 public class FactoryAppBeansSqlite extends AFactoryAppBeansJdbc {
 
   /**
-   * <p>Service that  release AppFactory beans.</p>
-   */
-  private PrepareDbAfterGetCopy prepareDbAfterGetCopy;
-
-  /**
-   * <p>Data Source.</p>
-   */
-  private HikariDataSource dataSource;
-
-  /**
-   * <p>Database manager for SQLite.</p>
-   */
-  private MngDatabaseSqlite mngDatabaseSqlite;
-
-  /**
-   * <p>Release beans (memory). This is "memory friendly" factory</p>
-   * @throws Exception - an exception
-   */
-  public final synchronized void releaseBeans() throws Exception {
-    if (getFactoryOverBeans() != null) {
-      try {
-        getFactoryOverBeans().releaseBeans();
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    }
-    if (this.dataSource != null) {
-      try {
-        this.dataSource.close();
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-      this.dataSource = null;
-    }
-    this.prepareDbAfterGetCopy = null;
-    this.mngDatabaseSqlite = null;
-    setLogger(null);
-    setSrvDatabase(null);
-    setSrvRecordRetriever(null);
-    setUtlReflection(null);
-    setUtlProperties(null);
-    setUtlJsp(null);
-    setSrvI18n(null);
-    setMngUvdSettings(null);
-    setSrvWebEntity(null);
-    setSrvPage(null);
-    setMngSoftware(null);
-    setSrvOrm(null);
-    setSrvWebMvc(null);
-    setHlpInsertUpdate(null);
-    setUtilXml(null);
-    getEntitiesMap().clear();
-    getBeansMap().clear();
-  }
-
-  /**
    * <p>Get other RDBMS specific bean in lazy mode
    * (if bean is null then initialize it).</p>
    * @param pBeanName - bean name
@@ -95,7 +39,7 @@ public class FactoryAppBeansSqlite extends AFactoryAppBeansJdbc {
   @Override
   public final synchronized Object lazyGetOtherRdbmsBean(
     final String pBeanName) throws Exception {
-    if ("IMngDatabase".equals(pBeanName)) {
+    if (getMngDatabaseName().equals(pBeanName)) {
       return lazyGetMngDatabaseSqlite();
     }
     return null;
@@ -116,14 +60,18 @@ public class FactoryAppBeansSqlite extends AFactoryAppBeansJdbc {
    */
   @Override
   public final synchronized DataSource lazyGetDataSource() throws Exception {
-    if (this.dataSource == null) {
-      this.dataSource = new HikariDataSource();
-      this.dataSource.setJdbcUrl(getDatabaseName());
-      this.dataSource.setDriverClassName("org.sqlite.JDBC");
-      lazyGetLogger().info(FactoryAppBeansSqlite.class,
-        "HikariDataSource has been created.");
+    String beanName = getDataSourceName();
+    HikariDataSource dataSource =
+      (HikariDataSource) getBeansMap().get(beanName);
+    if (dataSource == null) {
+      dataSource = new HikariDataSource();
+      dataSource.setJdbcUrl(getDatabaseName());
+      dataSource.setDriverClassName("org.sqlite.JDBC");
+      getBeansMap().put(beanName, dataSource);
+      lazyGetLogger().info(FactoryAppBeansSqlite.class, beanName
+        + " has been created.");
     }
-    return this.dataSource;
+    return dataSource;
   }
 
   /**
@@ -133,13 +81,25 @@ public class FactoryAppBeansSqlite extends AFactoryAppBeansJdbc {
    */
   public final synchronized MngDatabaseSqlite
     lazyGetMngDatabaseSqlite() throws Exception {
-    if (this.mngDatabaseSqlite == null) {
-      this.mngDatabaseSqlite = new MngDatabaseSqlite();
-      this.mngDatabaseSqlite.setFactoryAppBeansSqlite(this);
-      lazyGetLogger().info(FactoryAppBeansSqlite.class,
-        "MngDatabaseSqlite has been created.");
+    String beanName = getMngDatabaseName();
+    MngDatabaseSqlite mngDatabaseSqlite =
+      (MngDatabaseSqlite) getBeansMap().get(beanName);
+    if (mngDatabaseSqlite == null) {
+      mngDatabaseSqlite = new MngDatabaseSqlite();
+      mngDatabaseSqlite.setFactoryAppBeansSqlite(this);
+      getBeansMap().put(beanName, mngDatabaseSqlite);
+      lazyGetLogger().info(FactoryAppBeansSqlite.class, beanName
+        + " has been created.");
     }
-    return this.mngDatabaseSqlite;
+    return mngDatabaseSqlite;
+  }
+
+  /**
+   * <p>Getter of Manager Database service name.</p>
+   * @return service name
+   **/
+  public final String getMngDatabaseName() {
+    return "IMngDatabase";
   }
 
   /**
@@ -151,30 +111,17 @@ public class FactoryAppBeansSqlite extends AFactoryAppBeansJdbc {
   @Override
   public final synchronized PrepareDbAfterGetCopy
     lazyGetPrepareDbAfterFullImport() throws Exception {
-    if (this.prepareDbAfterGetCopy == null) {
-      this.prepareDbAfterGetCopy = new PrepareDbAfterGetCopy();
-      this.prepareDbAfterGetCopy.setLogger(lazyGetLogger());
-      this.prepareDbAfterGetCopy.setFactoryAppBeans(this);
-      lazyGetLogger().info(FactoryAppBeansSqlite.class,
-        "PrepareDbAfterGetCopy has been created.");
+    String beanName = getPrepareDbAfterFullImportName();
+    PrepareDbAfterGetCopy prepareDbAfterGetCopy =
+      (PrepareDbAfterGetCopy) getBeansMap().get(beanName);
+    if (prepareDbAfterGetCopy == null) {
+      prepareDbAfterGetCopy = new PrepareDbAfterGetCopy();
+      prepareDbAfterGetCopy.setLogger(lazyGetLogger());
+      prepareDbAfterGetCopy.setFactoryAppBeans(this);
+      getBeansMap().put(beanName, prepareDbAfterGetCopy);
+      lazyGetLogger().info(FactoryAppBeansSqlite.class, beanName
+        + " has been created.");
     }
-    return this.prepareDbAfterGetCopy;
-  }
-
-  /**
-   * <p>Getter for dataSource.</p>
-   * @return HikariDataSource
-   **/
-  public final synchronized HikariDataSource getDataSource() {
-    return this.dataSource;
-  }
-
-  /**
-   * <p>Setter for dataSource.</p>
-   * @param pDataSource reference
-   **/
-  public final synchronized void setDataSource(
-    final HikariDataSource pDataSource) {
-    this.dataSource = pDataSource;
+    return prepareDbAfterGetCopy;
   }
 }

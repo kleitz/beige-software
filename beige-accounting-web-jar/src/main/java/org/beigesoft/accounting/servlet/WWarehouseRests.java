@@ -26,7 +26,7 @@ import org.beigesoft.accounting.model.WarehouseRestLine;
 import org.beigesoft.accounting.service.ISrvWarehouseRests;
 import org.beigesoft.orm.service.ISrvDatabase;
 import org.beigesoft.factory.IFactoryAppBeans;
-import org.beigesoft.accounting.service.SrvAccSettings;
+import org.beigesoft.accounting.service.ISrvAccSettings;
 import org.beigesoft.exception.ExceptionWithCode;
 
 /**
@@ -68,7 +68,7 @@ public class WWarehouseRests extends HttpServlet {
     pResp.setCharacterEncoding("UTF-8");
     try {
       ISrvWarehouseRests srvWarehouseRests = (ISrvWarehouseRests)
-        this.factoryAppBeans.lazyGet("srvWarehouseRests");
+        this.factoryAppBeans.lazyGet("ISrvWarehouseRests");
       ISrvDatabase srvDatabase = (ISrvDatabase) this.factoryAppBeans
         .lazyGet("ISrvDatabase");
       String userName = null;
@@ -93,16 +93,17 @@ public class WWarehouseRests extends HttpServlet {
       } finally {
         srvDatabase.releaseResources();
       }
-      String nameRenderer = pReq.getParameter("nameRenderer");
-      String path = dirJsp + nameRenderer + ".jsp";
+      String nmRnd = pReq.getParameter("nmRnd");
+      String path = dirJsp + nmRnd + ".jsp";
       RequestDispatcher rd = getServletContext().getRequestDispatcher(path);
       ISrvI18n srvI18n = (ISrvI18n) this.factoryAppBeans
         .lazyGet("ISrvI18n");
       pReq.setAttribute("srvI18n", srvI18n);
       pReq.setAttribute("warehouseRestsLines", warehouseRestsLines);
-      SrvAccSettings srvAccSettings = (SrvAccSettings) this.factoryAppBeans
-        .lazyGet("srvAccSettings");
-      pReq.setAttribute("accSettings", srvAccSettings.lazyGetAccSettings());
+      ISrvAccSettings srvAccSettings = (ISrvAccSettings) this.factoryAppBeans
+        .lazyGet("ISrvAccSettings");
+      pReq.setAttribute("accSettings",
+        srvAccSettings.lazyGetAccSettings(addParams));
       rd.include(pReq, pResp);
     } catch (Exception e) {
       e.printStackTrace();

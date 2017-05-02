@@ -13,30 +13,24 @@ function getHtmlByAjax(method,url) {
   xmlhttp.onreadystatechange = function(){
     takeRequest(xmlhttp);
   };
-  xmlhttp.open(method, url, true);
+  xmlhttp.open(method, encodeURI(url), true);
   xmlhttp.send();
 };
 
-function postFormByAjax(url, params) {
+function sendFormByAjax(pFrm, pAddParams) {
   var xmlhttp = new XMLHttpRequest();
-  xmlhttp.onreadystatechange = function(){
-    takeRequest(xmlhttp);
-  };
-  xmlhttp.open("POST", url, true);
-  xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-  xmlhttp.send(params);
-};
-
-function sendFormAjax(frm, params) {
-  var xmlhttp = new XMLHttpRequest();
-  xmlhttp.onreadystatechange = function(){
-    takeRequest(xmlhttp);
-  };
-  xmlhttp.open(frm.method, frm.action, true);
-  if (frm.method == 'post') {
-    xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+  var frmData = new FormData(pFrm);
+  if (pAddParams != null) {
+    pAddParams.split("&").forEach(function(paramValue) {
+      var arrParamValue = paramValue.split("=");
+      frmData.append(arrParamValue[0], arrParamValue[1]);
+    });
   }
-  xmlhttp.send(params);
+  xmlhttp.open(pFrm.method, pFrm.action, true);
+  xmlhttp.onload = function(evnt) {
+    takeRequest(xmlhttp);
+  };
+  xmlhttp.send(frmData);
 };
 
 function takeRequest(xmlhttp) {
@@ -46,7 +40,7 @@ function takeRequest(xmlhttp) {
     }
     var complRes = JSON.parse(xmlhttp.responseText);
     var arr=complRes.multiTargetResponse;
-    for (var i = 0; i < arr.length; i++){
+    for (var i = 0; i < arr.length; i++) {
       var target = document.getElementById(arr[i].nameTarget);
       if (target == null) {
         target = document.createElement('div');

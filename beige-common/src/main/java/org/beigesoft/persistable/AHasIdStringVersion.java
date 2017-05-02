@@ -10,7 +10,7 @@ package org.beigesoft.persistable;
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-import org.beigesoft.model.IHasVersion;
+import org.beigesoft.model.IHasIdStringVersion;
 
 /**
  * <p>Base abstraction persistable model with ID String type.</p>
@@ -18,7 +18,7 @@ import org.beigesoft.model.IHasVersion;
  * @author Yury Demidenko
  */
 public abstract class AHasIdStringVersion extends AHasIdString
-    implements IHasVersion {
+    implements IHasIdStringVersion {
 
 
   /**

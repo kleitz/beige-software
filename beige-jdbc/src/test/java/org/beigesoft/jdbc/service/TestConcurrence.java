@@ -108,13 +108,15 @@ public class TestConcurrence {
       public void run() {
         try {
           GoodVersionTime cake = new GoodVersionTime();
+          Map<String, Object> addParam = new HashMap<String, Object>();
           cake.setItsName("cake");
           cake.setIdDatabaseBirth(999);
           assertNull(cake.getItsVersion());
           TestConcurrence.this.srvDatabase.setIsAutocommit(false);
           TestConcurrence.this.srvDatabase.setTransactionIsolation(SrvDatabase.TRANSACTION_READ_UNCOMMITTED);
           TestConcurrence.this.srvDatabase.beginTransaction();
-          TestConcurrence.this.srvOrm.insertEntity(cake);
+          TestConcurrence.this.srvOrm.insertEntity(addParam, cake);
+          cake = TestConcurrence.this.srvOrm.retrieveEntity(addParam, cake);
           TestConcurrence.this.srvDatabase.commitTransaction();
           TestConcurrence.this.cakeId = cake.getItsId();
           logger.info(this.getClass(), "Th1: cake inserted");
@@ -135,7 +137,7 @@ public class TestConcurrence {
           boolean isCakeChangedByTh2 = false;
           try {
             TestConcurrence.this.srvDatabase.beginTransaction();
-            TestConcurrence.this.srvOrm.updateEntity(cake);
+            TestConcurrence.this.srvOrm.updateEntity(addParam, cake);
             TestConcurrence.this.srvDatabase.commitTransaction();
           } catch (ExceptionWithCode ex) {
             if (ex.getCode() == SrvDatabase.DIRTY_READ) {
@@ -182,13 +184,14 @@ public class TestConcurrence {
       public void run() {
         try {
           GoodVersionTime sugar = new GoodVersionTime();
+          Map<String, Object> addParam = new HashMap<String, Object>();
           sugar.setItsName("sugar");
           sugar.setIdDatabaseBirth(999);
           TestConcurrence.this.srvDatabase.setIsAutocommit(false);
           TestConcurrence.this.srvDatabase.setTransactionIsolation(SrvDatabase.TRANSACTION_READ_UNCOMMITTED);
           //insert sugar:
           TestConcurrence.this.srvDatabase.beginTransaction();
-          TestConcurrence.this.srvOrm.insertEntity(sugar);
+          TestConcurrence.this.srvOrm.insertEntity(addParam, sugar);
           TestConcurrence.this.srvDatabase.commitTransaction();
           logger.info(this.getClass(), "Th2: sugar inserted");
           TestConcurrence.this.sugarId = sugar.getItsId();
@@ -207,9 +210,12 @@ public class TestConcurrence {
           }
           //change cake:
           TestConcurrence.this.srvDatabase.beginTransaction();
-          GoodVersionTime cake = TestConcurrence.this.srvOrm.retrieveEntityById(GoodVersionTime.class, cakeId);
+          GoodVersionTime cake = new GoodVersionTime();
+          cake.setItsId(cakeId);
+          cake = TestConcurrence.this.srvOrm.retrieveEntity(addParam, cake);
           Long oldVersion = cake.getItsVersion();
-          TestConcurrence.this.srvOrm.updateEntity(cake);
+          TestConcurrence.this.srvOrm.updateEntity(addParam, cake);
+          //cake = TestConcurrence.this.srvOrm.retrieveEntity(addParam, cake); // refresh
           TestConcurrence.this.srvDatabase.commitTransaction();
           assertNotSame(oldVersion, cake.getItsVersion());
           logger.info(this.getClass(), "Th2: cake updated");
@@ -251,6 +257,7 @@ public class TestConcurrence {
         try {
           boolean lIsThread1End = false;
           int attempt = 0;
+          Map<String, Object> addParam = new HashMap<String, Object>();
           while (!lIsThread1End && attempt < 20) {
             attempt++;
             logger.info(this.getClass(), "Th3: waiting for Th1");
@@ -274,11 +281,15 @@ public class TestConcurrence {
           }
           TestConcurrence.this.srvDatabase.setIsAutocommit(true);
           if (cakeId != null) {
-            TestConcurrence.this.srvOrm.deleteEntity(GoodVersionTime.class, cakeId);
+            GoodVersionTime cake = new GoodVersionTime();
+            cake.setItsId(cakeId);
+            TestConcurrence.this.srvOrm.deleteEntity(addParam, cake);
             logger.info(this.getClass(), "Th3: cake deleted");
           }
           if (sugarId != null) {
-            TestConcurrence.this.srvOrm.deleteEntity(GoodVersionTime.class, sugarId);
+            GoodVersionTime sugar = new GoodVersionTime();
+            sugar.setItsId(sugarId);
+            TestConcurrence.this.srvOrm.deleteEntity(addParam, sugar);
             logger.info(this.getClass(), "Th3: sugar deleted");
           }
           synchronized (TestConcurrence.this.isThread3End) {

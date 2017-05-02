@@ -40,7 +40,7 @@ public class HlpInsertUpdate {
     boolean isFirstField = true;
     for (Map.Entry<String, Integer> entry
       : pColumnsVals.getIntegersMap().entrySet()) {
-      if (!(entry.getKey().equals(pColumnsVals.getIdName())
+      if (!(isArrContains(entry.getKey(), pColumnsVals.getIdColumnsNames())
         && entry.getValue() == null)) {
         if (isFirstField) {
           isFirstField = false;
@@ -54,7 +54,7 @@ public class HlpInsertUpdate {
     }
     for (Map.Entry<String, Long> entry
       : pColumnsVals.getLongsMap().entrySet()) {
-      if (!(entry.getKey().equals(pColumnsVals.getIdName())
+      if (!(isArrContains(entry.getKey(), pColumnsVals.getIdColumnsNames())
         && entry.getValue() == null)
           && !(ISrvOrm.VERSIONOLD_NAME.equals(entry.getKey()))) {
         if (isFirstField) {
@@ -69,7 +69,7 @@ public class HlpInsertUpdate {
     }
     for (Map.Entry<String, String> entry
       : pColumnsVals.getStringsMap().entrySet()) {
-      if (!(entry.getKey().equals(pColumnsVals.getIdName())
+      if (!(isArrContains(entry.getKey(), pColumnsVals.getIdColumnsNames())
         && entry.getValue() == null)) {
         if (isFirstField) {
           isFirstField = false;
@@ -124,7 +124,7 @@ public class HlpInsertUpdate {
       + pTable + " set \n");
     boolean isFirstField = true;
     for (String key : pColumnsVals.getIntegersMap().keySet()) {
-      if (!key.equals(pColumnsVals.getIdName())) {
+      if (!isArrContains(key, pColumnsVals.getIdColumnsNames())) {
         if (isFirstField) {
           isFirstField = false;
         } else {
@@ -134,7 +134,7 @@ public class HlpInsertUpdate {
       }
     }
     for (String key : pColumnsVals.getLongsMap().keySet()) {
-      if (!key.equals(pColumnsVals.getIdName())
+      if (!isArrContains(key, pColumnsVals.getIdColumnsNames())
         && !ISrvOrm.VERSIONOLD_NAME.equals(key)) {
         if (isFirstField) {
           isFirstField = false;
@@ -161,7 +161,7 @@ public class HlpInsertUpdate {
       result.append(key.toUpperCase() + "=" + pColumnsVals.evalSqlValue(key));
     }
     for (String key : pColumnsVals.getStringsMap().keySet()) {
-      if (!key.equals(pColumnsVals.getIdName())) {
+      if (!isArrContains(key, pColumnsVals.getIdColumnsNames())) {
         if (isFirstField) {
           isFirstField = false;
         } else {
@@ -175,5 +175,22 @@ public class HlpInsertUpdate {
     }
     result.append(";\n");
     return result.toString();
+  }
+
+  /**
+   * <p>Check if value is in array.</p>
+   * @param <T> type value
+   * @param pVal value
+   * @param pArr array
+   * @return if contains
+   **/
+  protected final <T> boolean isArrContains(final T pVal,
+    final T[] pArr) {
+    for (T val : pArr) {
+      if (val.equals(pVal)) {
+        return true;
+      }
+    }
+    return false;
   }
 }

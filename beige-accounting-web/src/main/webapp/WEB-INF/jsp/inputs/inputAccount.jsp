@@ -10,8 +10,8 @@
   <td>
     <div class="input-line">
       <input class="picked-appearence" id="${entity.getClass().simpleName}${fieldName}AppearanceVisible" disabled="disabled" type="text" value="${entity[fieldName].itsName}" onchange="inputHasBeenChanged(this); clearSubacc('${entity.getClass().simpleName}', '${fieldName}', '${subaccName}');">
-      <input id="${entity.getClass().simpleName}${fieldName}Id" type="hidden" name="${entity.getClass().simpleName}.${fieldName}.itsId" value="${entity[fieldName].itsId}">
-      <button type="button" class="btn" onclick="openEntityPicker('${srvOrm.tablesMap[entity.getClass().simpleName].fieldsMap[fieldName].foreignEntity}','${entity.getClass().simpleName}', '${fieldName}', '&fltordPisUsedVal=true&fltordPforcedFor=isUsed&mobile=${param.mobile}');">...</button>
+      <input id="${entity.getClass().simpleName}${fieldName}Id" type="hidden" name="${entity.getClass().simpleName}.${fieldName}" value="${entity[fieldName].itsId}">
+      <button type="button" class="btn" onclick="openEntityPicker('${srvOrm.tablesMap[entity.getClass().simpleName].fieldsMap[fieldName].foreignEntity}','${entity.getClass().simpleName}', '${fieldName}', '&nmHnd=${param.nmHnd}&fltordPisUsedVal=true&fltordPforcedFor=isUsed&mobile=${param.mobile}');">...</button>
       <button type="button" class="btn" onclick="clearSelectedEntity('${entity.getClass().simpleName}${fieldName}');">X</button>
     </div>
   </td>
@@ -28,7 +28,7 @@
       <input id="${entity.getClass().simpleName}${subaccName}Appearance" type="hidden" name="${entity.getClass().simpleName}.${subaccName}" value="${entity[subaccName]}">
       <input id="${entity.getClass().simpleName}${subaccIdName}" type="hidden" name="${entity.getClass().simpleName}.${subaccIdName}" value="${entity[subaccIdName]}">
       <input id="${entity.getClass().simpleName}${subaccTypeName}" type="hidden" name="${entity.getClass().simpleName}.${subaccTypeName}" value="${entity[subaccTypeName]}">
-      <button id="${entity.getClass().simpleName}${subaccName}Choose" type="button" ${disabled} class="btn" onclick="openPickerSubacc('${entity.getClass().simpleName}', '${fieldName}', '${subaccName}', '${param.mobile}');">...</button>
+      <button id="${entity.getClass().simpleName}${subaccName}Choose" type="button" ${disabled} class="btn" onclick="openPickerSubacc('${entity.getClass().simpleName}', '${fieldName}', '${subaccName}', '&nmHnd=${param.nmHnd}&mobile=${param.mobile}');">...</button>
       <button id="${entity.getClass().simpleName}${subaccName}Clear" type="button" ${disabled} class="btn" onclick="clearSubacc('${entity.getClass().simpleName}', '${fieldName}', '${subaccName}');">X</button>
     </div>
   </td>

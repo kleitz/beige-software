@@ -9,8 +9,10 @@
  */
 
 /**
- * <p>Contains abstractions of generic delegates that
- * make something for a client.</p>
+ * <p>Contains of delegates that make something.
+ * This is pure OOP approach to inject additional logic.
+ * This is alternative to inject logic with abstract methods.
+ * This is "part-assemble" pattern compliance approach.</p>
  * @author Yury Demidenko
  */
 package org.beigesoft.delegate;

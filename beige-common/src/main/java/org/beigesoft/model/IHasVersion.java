@@ -11,7 +11,7 @@ package org.beigesoft.model;
  */
 
 /**
- * <p>Abstraction an model that has Version to check dirty.
+ * <p>Abstraction an persistable model that has Version to check dirty.
  * </p>
  *
  * @author Yury Demidenko

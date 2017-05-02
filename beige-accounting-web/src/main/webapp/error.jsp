@@ -2,10 +2,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:choose>
   <c:when test="${error_code == 1151}">
-    <c:if test="${param.nameEntity eq 'PurchaseInvoiceLine' or param.nameEntity eq 'SalesInvoiceLine'}">
+    <c:if test="${param.nmEnt eq 'PurchaseInvoiceLine' or param.nmEnt eq 'SalesInvoiceLine'}">
       ${pageContext.servletContext.getAttribute("srvI18n").getMsg('dirty_read_or_buzy')}
     </c:if>
-    <c:if test="${!(param.nameEntity eq 'PurchaseInvoiceLine' or param.nameEntity eq 'SalesInvoiceLine')}">
+    <c:if test="${!(param.nmEnt eq 'PurchaseInvoiceLine' or param.nmEnt eq 'SalesInvoiceLine')}">
       ${pageContext.servletContext.getAttribute("srvI18n").getMsg('dirty_read')}
     </c:if>
   </c:when>

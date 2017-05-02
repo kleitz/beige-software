@@ -40,7 +40,8 @@
           dnf install libreoffice
           rpm -ivh http://download1.rpmfusion.org/free/fedora/rpmfusion-free-release-stable.noarch.rpm
           dnf install vlc //best multimedia player (can take photo/video from webcam)
-          dnf install goldendict (use external program: cvlc) //dictionary
+          dnf install mpv
+          dnf install goldendict (use external program: mpv) //dictionary
           dnf install gimp //same as photoshop 
           dnf install inkscape //graphics vector editor
           dnf install geany //fast and useful editor with IDE features
@@ -218,7 +219,8 @@ xss-lock xsecurelock auth_pam_x11 saver_blank
             &lt;/action&gt;
           &lt;/keybind&gt;        
         </pre>
-        You will find your screenshots in home directory.
+        You will find your screenshots in home directory.<br></br>
+        * command <b>openbox --reconfigure</b> apply it without reboot.
       </p>
 
       <h4>Add/edit menu:</h4>
@@ -298,6 +300,29 @@ Section "InputClass"
 EndSection
           ...
         </pre>
+        To avoid problem "wrong palm tapping when typing on keyboard" edit ~/.config/openbox/lxde-rc.xml - add:
+        <pre>
+...
+  &lt;!-- Enable tapping --&gt;
+  &lt;keybind key="C-F8"&gt;
+    &lt;action name="Execute"&gt;
+      &lt;command&gt;xinput set-prop 11 273 1&lt;/command&gt;
+    &lt;/action&gt;
+  &lt;/keybind&gt;
+  &lt;!-- Disable tapping --&gt;
+  &lt;keybind key="C-F9"&gt;
+    &lt;action name="Execute"&gt;
+      &lt;command&gt;xinput set-prop 11 273 0&lt;/command&gt;
+    &lt;/action&gt;
+  &lt;/keybind&gt;
+...
+        </pre>
+      </p>
+      
+      <h4>Fedora update key problem.</h4>
+      <p>If during update Fedora blame something like "[key-name] is no key"
+      then find out that key in <a href="https://rpmfusion.org/keys">https://rpmfusion.org/keys</a>
+      and install it with command <b>rpm --install [key-file-name from https://rpmfusion.org/keys]</b>.
       </p>
     </section>
 

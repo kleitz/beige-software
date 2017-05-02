@@ -7,8 +7,8 @@
       ${srvI18n.getMsg('Ledger')}
       <button onclick="closeDlgCareful('frmReportEdit')" class="btn-close">x</button>
     </div>
-    <form id="frmReportEditFrm" action="ledger/" method="GET">
-      <input type="hidden" name="nameRenderer" value="ledger">
+    <form id="frmReportEditFrm" action="ledger/" method="GET" target="_blank">
+      <input type="hidden" name="nmRnd" value="ledger">
       <table class="tbl-fieldset">
         <tr>
           <td>
@@ -17,7 +17,7 @@
         </tr>
         <tr>
           <td>
-            <input type="datetime-local" required name="date1" value="${utlJsp.dateTimeToIso8601(now)}" onchange="inputHasBeenChanged(this);"/> 
+            <input type="datetime-local" required name="date1" value="${srvDate.toIso8601DateTimeNoTz(now, null)}" onchange="inputHasBeenChanged(this);"/> 
           </td>
         </tr>
         <tr>
@@ -27,7 +27,7 @@
         </tr>
         <tr>
           <td>
-            <input type="datetime-local" required name="date2" value="${utlJsp.dateTimeToIso8601(now)}" onchange="inputHasBeenChanged(this);"/> 
+            <input type="datetime-local" required name="date2" value="${srvDate.toIso8601DateTimeNoTz(now, null)}" onchange="inputHasBeenChanged(this);"/> 
           </td>
         </tr>
         <tr>
@@ -40,7 +40,7 @@
             <div class="input-line">
               <input class="picked-appearence" id="ledgeraccAppearanceVisible" disabled="disabled" type="text" onchange="inputHasBeenChanged(this); clearSubacc('ledger', 'acc', 'subacc');">
               <input id="ledgeraccId" required type="hidden" name="accId">
-              <button type="button" class="btn" onclick="openEntityPicker('Account', 'ledger', 'acc', '&fltordPisUsedVal=true&fltordPforcedFor=isUsed&mobile=${param.mobile}');">...</button>
+              <button type="button" class="btn" onclick="openEntityPicker('Account', 'ledger', 'acc', '&nmHnd=handlerEntityRequest&fltordPisUsedVal=true&fltordPforcedFor=isUsed&mobile=${param.mobile}');">...</button>
               <button type="button" class="btn" onclick="clearSelectedEntity('ledgeracc');">X</button>
             </div>
           </td>
@@ -57,14 +57,13 @@
               <input id="ledgersubaccAppearance" type="hidden" name="subaccName">
               <input id="ledgersubaccType" type="hidden" name="subaccType">
               <input id="ledgersubaccId" type="hidden" name="subaccId">
-              <button id="ledgersubaccChoose" type="button" class="btn" onclick="openPickerSubacc('ledger', 'acc', 'subacc', '${param.mobile}');">...</button>
+              <button id="ledgersubaccChoose" type="button" class="btn" onclick="openPickerSubacc('ledger', 'acc', 'subacc', '&nmHnd=handlerEntityRequest${param.mobile}');">...</button>
               <button id="ledgersubaccClear" type="button" class="btn" onclick="clearSubacc('ledger', 'acc', 'subacc');">X</button>
             </div>
           </td>
         </tr>
       </table>
       <div class="form-actions">
-        <input style="display: none" id="frmReportEditFrmFakeSubmit" type="submit"/>
         <button type="button" onclick="submitFormForNewWindow('frmReportEditFrm', false);">${srvI18n.getMsg("Report")}</button>
         <a href="#" onclick="closeDlgCareful('frmReportEdit');">${srvI18n.getMsg("Close")}</a>
       </div>

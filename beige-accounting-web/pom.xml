@@ -61,6 +61,9 @@
             <directory>../beige-accounting/src/main/resources</directory>
           </resource>
           <resource>
+            <directory>../beige-webstore/src/main/resources</directory>
+          </resource>
+          <resource>
             <directory>../beige-accounting-web-jar/src/main/resources</directory>
           </resource>
         </resources>
@@ -98,6 +101,9 @@
             <directory>../beige-accounting/src/main/resources</directory>
           </resource>
           <resource>
+            <directory>../beige-webstore/src/main/resources</directory>
+          </resource>
+          <resource>
             <directory>../beige-accounting-web-jar/src/main/resources</directory>
           </resource>
         </resources>
@@ -132,6 +138,9 @@
           </resource>
           <resource>
             <directory>../beige-accounting/src/main/resources</directory>
+          </resource>
+          <resource>
+            <directory>../beige-webstore/src/main/resources</directory>
           </resource>
           <resource>
             <directory>../beige-accounting-web-jar/src/main/resources</directory>

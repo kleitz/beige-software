@@ -7,8 +7,12 @@
 </tr>
 <tr>
   <td>
+    <c:set var="dtVal" value=""/>
+    <c:if test="${entity[fieldName] != null}">
+      <c:set var="dtVal" value="${srvDate.toIso8601DateNoTz(entity[fieldName], null)}"/>
+    </c:if>
     <div class="input-line">
-      <input type="date" disabled value="${utlJsp.dateToIso8601(entity[fieldName])}"/> 
+      <input type="date" disabled value="${dtVal}"/> 
     </div>
   </td>
 </tr>

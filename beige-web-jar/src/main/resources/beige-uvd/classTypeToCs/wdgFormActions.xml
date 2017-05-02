@@ -8,6 +8,9 @@
  -->
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
-<comment>Correspondence of Java types to widget list footer. ORDER is essential, the LAST value will be used.</comment>
+<comment>Correspondence of Java types to widget form actions. ORDER is essential, the LAST value will be used.</comment>
 <entry key="java.lang.Object">wdgFormActions</entry>
+<entry key="org.beigesoft.persistable.EmailMsg">wdgEmailMsgActions</entry>
+<entry key="org.beigesoft.persistable.UserRoleTomcat">wdgFormActionsCloseForm</entry>
+<entry key="org.beigesoft.persistable.UserRoleJetty">wdgFormActionsCloseForm</entry>
 </properties>

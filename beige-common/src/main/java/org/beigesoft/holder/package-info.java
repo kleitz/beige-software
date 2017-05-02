@@ -10,8 +10,9 @@
 
 /**
  * <pre>
- * Represent filter abstraction of holders of something.
+ * Represent abstraction of holders of something.
  * For example IAttributes is used to adapt HttpServletRequest.
+ * Also contains of Reflection API Fields/Getters/Setters holders.
  * </pre>
  *
  * @author Yury Demidenko

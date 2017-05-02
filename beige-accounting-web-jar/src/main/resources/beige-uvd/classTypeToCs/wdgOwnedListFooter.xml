@@ -10,6 +10,7 @@
 <properties>
 <comment>Correspondence of Java types to widget owned list. ORDER is essential, the LAST value will be used.</comment>
 <entry key="java.lang.Object">wdgOwnedListFooter</entry>
+<entry key="org.beigesoft.persistable.Eattachment">wdgOwnedFileListFooter</entry>
 <entry key="org.beigesoft.accounting.persistable.AccEntriesSourcesLine">null</entry>
 <entry key="org.beigesoft.accounting.persistable.base.ADrawItemSourcesLine">null</entry>
 <entry key="org.beigesoft.accounting.persistable.EmployeeYearWage">null</entry>

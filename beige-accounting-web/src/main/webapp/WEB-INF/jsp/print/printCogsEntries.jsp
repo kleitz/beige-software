@@ -2,8 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:if test="${not empty cogsEntries}">
   <c:set var="entitySimpleName" value="CogsEntry" scope="request"/>
-  <c:set var="entityCanonicalName" value="org.beigesoft.accounting.persistable.CogsEntry" scope="request"/>
-  <c:set var="fieldsForList" value="${mngUvds.makeFldPropLst(entityCanonicalName, 'orderPrintfullList')}" scope="request"/>
+  <c:set var="fieldsForList" value="${mngUvds.makeFldPropLst(classCogsEntry, 'orderPrintfullList')}" scope="request"/>
   <div class="title-list"> ${srvI18n.getMsg('cogsEntries')}: </div>
   <table>
     <tr>

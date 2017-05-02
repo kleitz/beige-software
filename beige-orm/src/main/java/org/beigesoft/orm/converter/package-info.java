@@ -9,7 +9,7 @@
  */
 
 /**
- * <p>Contains entity converters.</p>
+ * <p>Contains of ORM converters.</p>
  * @author Yury Demidenko
  */
 package org.beigesoft.orm.converter;

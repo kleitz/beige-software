@@ -21,6 +21,10 @@ psql beigeaccounting < outfile.bak
 
 Mysql:
 tar -cf beigeaccounting.tar /var/lib/mysql/beigeaccounting
+show create table TRADINGSETTINGS;
+
+SQlite:
+select sql from sqlite_master where type='table' and name='TRADINGSETTINGS';
 
 $ANT_HOME/bin/ant -Dtomcat.home=$TOMCATA_HOME -Dwebapp.path=target/beige-accounting-web/
 
@@ -43,6 +47,7 @@ grep --include=pom.xml -rw '.' -e "a-javabeans"
 grep --include=*.xml -rnw '.' -e "TO-DO"
 find . -type f -name "*.java" -exec sed -i "s/org\.beigesoft\.xml\.service\.IUtilXml/org\.beigesoft\.service\.IUtilXml/g" {} +
 find . -type f -not -name "*.jar" -exec sed -i "s/java\.beans/beans/g" {} +
+find . -type f -name "*.jsp" -exec sed -i "s/nameRenderer/nmRnd/g" {} +
 find . -type f -name "*.java" -exec sed -i "s/java\.beans/beans/g" {} +
 find . -type f -name "*.java" -exec sed -i "s/ctxt\.getClassLoader()/ctxt\.getClass()\.getClassLoader()/g" {} +
 find . -type f -name "pom.xml" -exec sed -i "s/1\.0\.9-SNAPSHOT/1\.1\.0-SNAPSHOT/g" {} +
@@ -102,22 +107,29 @@ android-sdk-linux/tools$ adb shell
 generic_x86:/ $ su
 
 JDB:
-stop at org.beigesoft.orm.test.TestSimple:80
-eval srvOrm.retrieveEntityWithConditions(org.beigesoft.persistable.RoleJetty.class, "where ITSNAME='user'")
+mvn -Dmaven.surefire.debug test
+stop at org.beigesoft.orm.test.TestSimple:362
+stop at org.beigesoft.orm.service.ASrvOrm:838
+stop at org.beigesoft.orm.factory.FctBcCnvEntityToColumnsValues:98
+stop at org.beigesoft.orm.converter.CnvBnRsToEntity:88
+stop at org.beigesoft.jdbc.service.TestH2:157
+dump tableSql
 stop at org.beigesoft.android.sqlite.service.SrvDatabase:247
 jdb -attach localhost:1044 -sourcepath ~/git/beige-software/beige-orm/src/main/java:~/git/beige-software/beige-android/src/main/java
-jdb -attach 5005 -sourcepath ~/git/beige-software/beige-orm/src/main/java:~/git/beige-software/beige-orm/src/test/java
+jdb -attach localhost:5005 -sourcepath ~/git/beige-software/beige-common/src/main/java:~/git/beige-software/beige-orm/src/main/java:~/git/beige-software/beige-orm/src/test/java:~/git/beige-software/beige-jdbc/src/main/java:~/git/beige-software/beige-jdbc/src/test/java
 jdb -attach 5005 -sourcepath ~/git/beige-software/beige-settings/src/main/java
 org.beigesoft.settings.MngSettings:371 326
 stop at org.beigesoft.orm.service.TestH2:48
 stop at org.beigesoft.orm.service.ASrvOrm:804
 jdb -attach 8000 -sourcepath ~/git/beige-software/beige-web/src/main/java:~/git/beige-software/beige-orm/src/main/java:~/git/beige-software/beige-jdbc/src/main/java
-stop at org.beigesoft.web.service.SrvEntity:134
-jdb -attach localhost:8000 -sourcepath ~/git/beige-software/beige-accounting/src/main/java:~/git/beige-software/beige-web-jar/src/main/java
+stop at org.beigesoft.web.servlet.WUploadSingle:126
+dump pReq.getParametersMap()
+jdb -attach  -sourcepath ~/git/beige-software/beige-accounting/src/main/java:~/git/beige-software/beige-web-jar/src/main/java
 stop at org.beigesoft.accounting.service.ASrvDrawItemEntry:242
 stop at org.beigesoft.accounting.service.SrvBalanceStd:234
 eval datePeriodStartFor.getTime() > lazyGetBalanceAtAllDirtyCheck().getCurrentBalanceDate().getTime() || lazyGetBalanceAtAllDirtyCheck().getLeastAccountingEntryDate().getTime() < lazyGetBalanceAtAllDirtyCheck().getCurrentBalanceDate().getTime()
-stop at org.beigesoft.web.service.SrvWebEntity:692
+stop at org.beigesoft.orm.service.SrvCmdlEntity:309
+dump entity.itsId
 help
 cont
 next
@@ -377,3 +389,4 @@ git add README.md
 git commit -m "first commit"
 git remote add origin https://github.com/demidenko05/a-tomcat-all.git
 git push -u origin master
+

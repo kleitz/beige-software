@@ -10,6 +10,7 @@ package org.beigesoft.accounting.servlet;
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
+import java.util.Hashtable;
 import java.util.List;
 import java.util.ArrayList;
 import java.io.IOException;
@@ -21,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.RequestDispatcher;
 
 import org.beigesoft.service.ISrvI18n;
-import org.beigesoft.accounting.service.SrvAccSettings;
+import org.beigesoft.accounting.service.ISrvAccSettings;
 import org.beigesoft.accounting.persistable.Account;
 import org.beigesoft.accounting.persistable.SubaccountLine;
 import org.beigesoft.accounting.model.AccountInChart;
@@ -77,12 +78,13 @@ public class WChartOfAccounts<RS> extends HttpServlet {
         .lazyGet("ISrvOrm");
       List<Account> accounts = null;
       List<AccountInChart> accountsInChart = new ArrayList<AccountInChart>();
+      Hashtable<String, Object> addParam = new Hashtable<String, Object>();
       try {
         srvDatabase.setIsAutocommit(false);
         srvDatabase.
           setTransactionIsolation(ISrvDatabase.TRANSACTION_READ_UNCOMMITTED);
         srvDatabase.beginTransaction();
-        accounts = srvOrm.retrieveListWithConditions(Account.class,
+        accounts = srvOrm.retrieveListWithConditions(addParam, Account.class,
           "where ISUSED=1 order by ITSNUMBER");
         for (Account acc : accounts) {
           AccountInChart accInChart = new AccountInChart();
@@ -95,9 +97,10 @@ public class WChartOfAccounts<RS> extends HttpServlet {
           if (acc.getSubaccType() == null) {
             accountsInChart.add(accInChart);
           } else {
-            @SuppressWarnings("unchecked")
+            SubaccountLine sal = new SubaccountLine();
+            sal.setItsOwner(acc);
             List<SubaccountLine> subaccounts = srvOrm
-              .retrieveEntityOwnedlist(SubaccountLine.class, acc);
+              .retrieveListForField(addParam, sal, "itsOwner");
             if (subaccounts.size() > 0) {
               for (SubaccountLine subacc : subaccounts) {
                 if (accInChart != null) {
@@ -122,14 +125,15 @@ public class WChartOfAccounts<RS> extends HttpServlet {
       } finally {
         srvDatabase.releaseResources();
       }
-      String nameRenderer = pReq.getParameter("nameRenderer");
-      String path = dirJsp + nameRenderer + ".jsp";
+      String nmRnd = pReq.getParameter("nmRnd");
+      String path = dirJsp + nmRnd + ".jsp";
       RequestDispatcher rd = getServletContext().getRequestDispatcher(path);
       ISrvI18n srvI18n = (ISrvI18n) this.factoryAppBeans
         .lazyGet("ISrvI18n");
-      SrvAccSettings srvAccSettings = (SrvAccSettings) this.factoryAppBeans
-        .lazyGet("srvAccSettings");
-      pReq.setAttribute("accSettings", srvAccSettings.lazyGetAccSettings());
+      ISrvAccSettings srvAccSettings = (ISrvAccSettings) this.factoryAppBeans
+        .lazyGet("ISrvAccSettings");
+      pReq.setAttribute("accSettings", srvAccSettings
+        .lazyGetAccSettings(addParam));
       pReq.setAttribute("srvI18n", srvI18n);
       pReq.setAttribute("accounts", accountsInChart);
       rd.include(pReq, pResp);

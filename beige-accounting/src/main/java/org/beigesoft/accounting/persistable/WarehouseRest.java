@@ -30,9 +30,9 @@ public class WarehouseRest extends AEditable
   implements IHasId<WarehouseRestId> {
 
   /**
-   * <p>Complex ID.</p>
+   * <p>Complex ID. Must be initialized cause reflection use.</p>
    **/
-  private WarehouseRestId itsId;
+  private WarehouseRestId itsId = new WarehouseRestId();
 
   /**
    * <p>Warehouse Place part of complex ID.</p>
@@ -76,19 +76,30 @@ public class WarehouseRest extends AEditable
     setInvItem(pInvItem);
   }
 
-  //Customized getters and setters:
+  /**
+   * <p>Geter for itsId.</p>
+   * @return WarehouseRestId
+   **/
+  @Override
+  public final WarehouseRestId getItsId() {
+    return this.itsId;
+  }
+
   /**
    * <p>Setter for itsId.</p>
    * @param pItsId reference
    **/
+  @Override
   public final void setItsId(final WarehouseRestId pItsId) {
     this.itsId = pItsId;
     if (this.itsId != null) {
       this.invItem = this.itsId.getInvItem();
       this.warehouseSite = this.itsId.getWarehouseSite();
+      this.unitOfMeasure = this.itsId.getUnitOfMeasure();
     } else {
       this.invItem = null;
       this.warehouseSite = null;
+      this.unitOfMeasure = null;
     }
   }
 
@@ -101,7 +112,7 @@ public class WarehouseRest extends AEditable
     if (this.itsId == null) {
       this.itsId = new WarehouseRestId();
     }
-    this.itsId.setWarehouseSite(pWarehouseSite);
+    this.itsId.setWarehouseSite(this.warehouseSite);
   }
 
   /**
@@ -113,7 +124,7 @@ public class WarehouseRest extends AEditable
     if (this.itsId == null) {
       this.itsId = new WarehouseRestId();
     }
-    this.itsId.setUnitOfMeasure(pUnitOfMeasure);
+    this.itsId.setUnitOfMeasure(this.unitOfMeasure);
   }
 
   /**
@@ -125,18 +136,10 @@ public class WarehouseRest extends AEditable
     if (this.itsId == null) {
       this.itsId = new WarehouseRestId();
     }
-    this.itsId.setInvItem(pInvItem);
+    this.itsId.setInvItem(this.invItem);
   }
 
   //Simple getters and setters:
-  /**
-   * <p>Geter for itsId.</p>
-   * @return WarehouseRestId
-   **/
-  public final WarehouseRestId getItsId() {
-    return this.itsId;
-  }
-
   /**
    * <p>Geter for unitOfMeasure.</p>
    * @return UnitOfMeasure

@@ -14,4 +14,7 @@
 <entry key="idDatabaseBirth">inputHidden</entry>
 <entry key="idBirth">inputHidden</entry>
 <entry key="isNew">inputHidden</entry>
+<entry key="registeredPassword">null</entry>
+<entry key="userPassword">null</entry>
+<entry key="itsPassword">null</entry>
 </properties>

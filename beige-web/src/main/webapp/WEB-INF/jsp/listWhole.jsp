@@ -3,6 +3,6 @@
 <div id="${namePlace}list">
   <jsp:include page="list.jsp"/>
 </div>
-<c:if test="${not empty mngUvds.classesSettings.get(classEntity.canonicalName).get('wdgFilterOrder')}">
-  <jsp:include page="filterOrder/${mngUvds.classesSettings.get(classEntity.canonicalName).get('wdgFilterOrder')}.jsp"/>
+<c:if test="${not empty mngUvds.classesSettings.get(classEntity).get('wdgFilterOrder')}">
+  <jsp:include page="filterOrder/${mngUvds.classesSettings.get(classEntity).get('wdgFilterOrder')}.jsp"/>
 </c:if>

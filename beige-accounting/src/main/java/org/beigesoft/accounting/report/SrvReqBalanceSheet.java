@@ -10,13 +10,15 @@ package org.beigesoft.accounting.report;
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
+import java.util.HashMap;
 import java.util.Date;
 
+import org.beigesoft.model.IRequestData;
+import org.beigesoft.handler.IHandlerRequest;
+import org.beigesoft.service.ISrvDate;
+import org.beigesoft.orm.service.ISrvDatabase;
 import org.beigesoft.accounting.service.ISrvAccSettings;
 import org.beigesoft.accounting.model.BalanceSheet;
-import org.beigesoft.model.IRequestData;
-import org.beigesoft.service.ISrvHandleRequest;
-import org.beigesoft.orm.service.ISrvDatabase;
 
 /**
  * <p>Transactional business service that handle request
@@ -25,12 +27,17 @@ import org.beigesoft.orm.service.ISrvDatabase;
  * @param <RS> platform dependent RDBMS recordset
  * @author Yury Demidenko
  */
-public class SrvReqBalanceSheet<RS> implements ISrvHandleRequest {
+public class SrvReqBalanceSheet<RS> implements IHandlerRequest {
 
   /**
    * <p>Balance Sheet service.</p>
    */
   private ISrvBalanceSheet srvBalanceSheet;
+
+  /**
+   * <p>Date service.</p>
+   */
+  private ISrvDate srvDate;
 
   /**
    * <p>Database service.</p>
@@ -48,20 +55,21 @@ public class SrvReqBalanceSheet<RS> implements ISrvHandleRequest {
    * @throws Exception - an exception
    */
   @Override
-  public final void handleRequest(
+  public final void handle(
     final IRequestData pRequestData) throws Exception {
     try {
       this.srvDatabase.setIsAutocommit(false);
       this.srvDatabase.
         setTransactionIsolation(ISrvDatabase.TRANSACTION_READ_UNCOMMITTED);
       this.srvDatabase.beginTransaction();
-      Date date2 = new Date(Long.parseLong(pRequestData
-        .getParameter("date2")));
+      Date date2 = srvDate
+        .fromIso8601DateTimeNoTz(pRequestData.getParameter("date2"), null);
+      HashMap<String, Object> addParam = new HashMap<String, Object>();
       BalanceSheet balanceSheet = getSrvBalanceSheet()
-        .retrieveBalance(null, date2);
+        .retrieveBalance(addParam, date2);
       pRequestData.setAttribute("balanceSheet", balanceSheet);
       pRequestData.setAttribute("accSettings", srvAccSettings
-        .lazyGetAccSettings());
+        .lazyGetAccSettings(addParam));
       this.srvDatabase.commitTransaction();
     } catch (Exception ex) {
       this.srvDatabase.rollBackTransaction();
@@ -87,6 +95,22 @@ public class SrvReqBalanceSheet<RS> implements ISrvHandleRequest {
   public final void setSrvBalanceSheet(
     final ISrvBalanceSheet pSrvBalanceSheet) {
     this.srvBalanceSheet = pSrvBalanceSheet;
+  }
+
+  /**
+   * <p>Getter for srvDate.</p>
+   * @return ISrvDate
+   **/
+  public final ISrvDate getSrvDate() {
+    return this.srvDate;
+  }
+
+  /**
+   * <p>Setter for srvDate.</p>
+   * @param pSrvDate reference
+   **/
+  public final void setSrvDate(final ISrvDate pSrvDate) {
+    this.srvDate = pSrvDate;
   }
 
   /**

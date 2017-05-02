@@ -19,7 +19,6 @@ import static org.junit.Assert.assertEquals;
 import org.beigesoft.android.log.Logger;
 import org.beigesoft.android.sqlite.service.SrvDatabase;
 import org.beigesoft.android.sqlite.service.CursorFactory;
-import org.beigesoft.android.sqlite.service.SrvRecordRetriever;
 
 import org.beigesoft.settings.MngSettings;
 import org.beigesoft.orm.service.SrvOrmAndroid;
@@ -27,6 +26,14 @@ import org.beigesoft.orm.test.TestSimple;
 import org.beigesoft.persistable.RoleJetty;
 import org.beigesoft.orm.service.SrvSqlEscape;
 import org.beigesoft.test.persistable.Department;
+import org.beigesoft.holder.HolderRapiGetters;
+import org.beigesoft.holder.HolderRapiFields;
+import org.beigesoft.service.IUtlReflection;
+import org.beigesoft.service.UtlReflection;
+import org.beigesoft.orm.factory.FctBnCnvIbnToColumnValues;
+import org.beigesoft.orm.factory.FctBcCnvEntityToColumnsValues;
+import org.beigesoft.orm.holder.HldCnvToColumnsValuesNames;
+import org.beigesoft.orm.service.HlpInsertUpdate;
 
 /**
  * <p>Tests of database service for Android.
@@ -52,6 +59,11 @@ public class DatabaseTests extends android.test.AndroidTestCase {
   private SrvOrmAndroid<Cursor> srvOrm;
 
   /**
+   * <p>Reflection service.</p>
+   **/
+  private IUtlReflection utlReflection = new UtlReflection();
+
+  /**
    * <p>Perform simple (non-concurrence) tests.</p>
    * @throws Exception an exception
    **/
@@ -67,12 +79,11 @@ public class DatabaseTests extends android.test.AndroidTestCase {
       srvDatabase.setSqliteDatabase(db);
       srvDatabase.setLogger(log);
       srvOrm = new SrvOrmAndroid<Cursor>();
-      srvOrm.setSrvSqlEscape(new SrvSqlEscape());
-      srvOrm.setIsNeedsToSqlEscape(false);
-      SrvRecordRetriever srvRecordRetriever = new SrvRecordRetriever();
-      srvDatabase.setSrvRecordRetriever(srvRecordRetriever);
-      srvOrm.setSrvRecordRetriever(srvRecordRetriever);
       srvOrm.setSrvDatabase(srvDatabase);
+      srvOrm.setNewDatabaseId(999);
+      srvOrm.setHlpInsertUpdate(new HlpInsertUpdate());
+      srvOrm.setLogger(log);
+      srvOrm.setUtlReflection(getUtlReflection());
       MngSettings mngSettings = new MngSettings();
       mngSettings.setLogger(log);
       srvOrm.setLogger(log);
@@ -80,9 +91,30 @@ public class DatabaseTests extends android.test.AndroidTestCase {
       log.debug(DatabaseTests.class, 
         "loading configuration: beige-orm, persistence-sqlite.xml");
       srvOrm.loadConfiguration("beige-orm", "persistence-sqlite.xml");
+      FctBnCnvIbnToColumnValues facConvFields = new FctBnCnvIbnToColumnValues();
+      facConvFields.setUtlReflection(getUtlReflection());
+      facConvFields.setTablesMap(srvOrm.getTablesMap());
+      HolderRapiGetters hrg = new HolderRapiGetters();
+      hrg.setUtlReflection(getUtlReflection());
+      facConvFields.setGettersRapiHolder(hrg);
+      HolderRapiFields hrf = new HolderRapiFields();
+      hrf.setUtlReflection(getUtlReflection());
+      facConvFields.setFieldsRapiHolder(hrf);
+      facConvFields.setSrvSqlEscape(new SrvSqlEscape());
+      facConvFields.setIsNeedsToSqlEscape(false);
+      FctBcCnvEntityToColumnsValues fcetcv = new FctBcCnvEntityToColumnsValues();
+      HldCnvToColumnsValuesNames hldConvFld = new HldCnvToColumnsValuesNames();
+      hldConvFld.setFieldsRapiHolder(hrf);
+      fcetcv.setLogger(log);
+      fcetcv.setTablesMap(srvOrm.getTablesMap());
+      fcetcv.setFieldsConvertersNamesHolder(hldConvFld);
+      fcetcv.setGettersRapiHolder(hrg);
+      fcetcv.setFieldsRapiHolder(hrf);
+      fcetcv.setFieldsConvertersFatory(facConvFields);
+      srvOrm.setFactoryCnvEntityToColumnsValues(fcetcv);
       assertEquals("integer not null primary key autoincrement",
         srvOrm.getMngSettings().getFieldsSettings()
-                  .get(RoleJetty.class.getCanonicalName()).get("itsId")
+                  .get(RoleJetty.class).get("itsId")
                     .get("definition"));
       TestSimple<Cursor> testSimple = new TestSimple<Cursor>();
       testSimple.setSrvDatabase(srvDatabase);
@@ -92,22 +124,26 @@ public class DatabaseTests extends android.test.AndroidTestCase {
       srvDatabase.setIsAutocommit(true);
       String dep3insert = "insert into DEPARTMENT  (ITSID, ITSNAME, IDDATABASEBIRTH ) values (3, 'dp3', 999);";
       String dep4insert = "insert into DEPARTMENT  (ITSID, ITSNAME, IDDATABASEBIRTH ) values (4, 'dp4', 999);";
-      Department dp3 = srvOrm.retrieveEntityById(Department.class, "3");
+      Department dp3k = new Department();
+      dp3k.setItsId(3L);
+      Department dp3 = srvOrm.retrieveEntity(null, dp3k);
       if (dp3 == null) {
         srvDatabase.executeQuery(dep3insert);
-        dp3 = srvOrm.retrieveEntityById(Department.class, "3");
+        dp3 = srvOrm.retrieveEntity(null, dp3k);
         assertNotNull(dp3);
-        srvOrm.deleteEntity(dp3);
-        dp3 = srvOrm.retrieveEntityById(Department.class, "3");
+        srvOrm.deleteEntity(null, dp3);
+        dp3 = srvOrm.retrieveEntity(null, dp3k);
         assertNull(dp3);
       }
-      Department dp4 = srvOrm.retrieveEntityById(Department.class, "4");
+      Department dp4k = new Department();
+      dp4k.setItsId(4L);
+      Department dp4 = srvOrm.retrieveEntity(null, dp4k);
       if (dp4 == null) {
         srvDatabase.executeQuery(dep4insert);
-        dp4 = srvOrm.retrieveEntityById(Department.class, "4");
+        dp4 = srvOrm.retrieveEntity(null, dp4k);
         assertNotNull(dp4);
-        srvOrm.deleteEntity(dp4);
-        dp4 = srvOrm.retrieveEntityById(Department.class, "4");
+        srvOrm.deleteEntity(null, dp4);
+        dp4 = srvOrm.retrieveEntity(null, dp4k);
         assertNull(dp4);
       }
       boolean isFallGroupInsert = false;
@@ -117,8 +153,8 @@ public class DatabaseTests extends android.test.AndroidTestCase {
         isFallGroupInsert = true;
       }
       assertTrue(!isFallGroupInsert);
-      srvOrm.deleteEntity(Department.class, "3");
-      srvOrm.deleteEntity(Department.class, "4");
+      srvOrm.deleteEntity(null, dp3k);
+      srvOrm.deleteEntity(null, dp4k);
     } catch (Exception ex) {
       ex.printStackTrace();
     }
@@ -155,5 +191,20 @@ public class DatabaseTests extends android.test.AndroidTestCase {
    **/
   public final void setSrvOrm(final SrvOrmAndroid<Cursor> pSrvOrm) {
     this.srvOrm = pSrvOrm;
+  }
+  /**
+   * <p>Getter for utlReflection.</p>
+   * @return IUtlReflection
+   **/
+  public final IUtlReflection getUtlReflection() {
+    return this.utlReflection;
+  }
+
+  /**
+   * <p>Setter for utlReflection.</p>
+   * @param pUtlReflection reference
+   **/
+  public final void setUtlReflection(final IUtlReflection pUtlReflection) {
+    this.utlReflection = pUtlReflection;
   }
 }

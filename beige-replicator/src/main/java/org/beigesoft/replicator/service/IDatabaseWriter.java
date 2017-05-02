@@ -28,12 +28,12 @@ public interface IDatabaseWriter {
    * by given writer.
    * </p>
    * @param <T> Entity Class
+   * @param pAddParam additional params (e.g. where clause)
    * @param pEntityClass Entity Class
    * @param pWriter writer
-   * @param pAddParam additional params (e.g. where clause)
    * @return entities count
    * @throws Exception - an exception
    **/
-  <T> int retrieveAndWriteEntities(Class<T> pEntityClass, Writer pWriter,
-    Map<String, Object> pAddParam) throws Exception;
+  <T> int retrieveAndWriteEntities(Map<String, Object> pAddParam,
+    Class<T> pEntityClass, Writer pWriter) throws Exception;
 }

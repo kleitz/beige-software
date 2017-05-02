@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Beigesoft ™
+  Licensed under the Apache License, Version 2.0
+ 
+  You may obtain a copy of the License at
+ 
+  http://www.apache.org/licenses/LICENSE-2.0
+ -->
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Correspondence of Java types to widget base names. ORDER is essential, the LAST value will be used.</comment>
+<entry key="java.lang.Object">orderStd</entry>
+<entry key="org.beigesoft.model.IHasId">null</entry>
+<entry key="org.beigesoft.accounting.persistable.InvItem">orderStd</entry>
+<entry key="org.beigesoft.webstore.persistable.CatalogGs">orderStd</entry>
+<entry key="org.beigesoft.webstore.persistable.SpecificsOfItem">orderStd</entry>
+<entry key="org.beigesoft.webstore.persistable.ChooseableSpecificsType">orderStd</entry>
+<entry key="org.beigesoft.webstore.persistable.PriceCategory">orderStd</entry>
+<entry key="org.beigesoft.webstore.persistable.AdviseCategoryOfGs">orderStd</entry>
+<entry key="java.lang.Float">null</entry>
+<entry key="java.lang.Integer">null</entry>
+<entry key="java.lang.Double">null</entry>
+<entry key="java.lang.Boolean">null</entry>
+</properties>

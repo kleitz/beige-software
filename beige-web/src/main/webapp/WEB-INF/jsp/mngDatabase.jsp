@@ -29,7 +29,7 @@
               ${database}.sqlite
             </td>
             <td style="padding: 5px;">
-              <a class="btn" href="?nameRenderer=mngDatabase&nameAction=change&nameDatabase=${database}" onclick="confirmHref(this, 'Change?'); return false;">${srvI18n.getMsg("change_db_curr")}</a>
+              <a class="btn" href="?nmRnd=mngDatabase&nameAction=change&nameDatabase=${database}" onclick="confirmHref(this, 'Change?'); return false;">${srvI18n.getMsg("change_db_curr")}</a>
             </td>
           </tr>
       </c:forEach>
@@ -43,7 +43,7 @@
     </div>
     <form method="post">
       <input type="hidden" name="nameAction" value="create">
-      <input type="hidden" name="nameRenderer" value="mngDatabase">
+      <input type="hidden" name="nmRnd" value="mngDatabase">
       <table class="tbl-fieldset">
         <tr>
           <td>

@@ -118,7 +118,7 @@ public final class inputEnum_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${entity.getClass().simpleName}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
       out.write('.');
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${fieldName}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
-      out.write("\" onchange=\"inputHasBeenChanged(this);\">\n        <option value=\"null\" ");
+      out.write("\" onchange=\"inputHasBeenChanged(this);\">\n        <option value=\"\" ");
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${selectedDisabled}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
       out.write(">-</option>\n        ");
       if (_jspx_meth_c_005fforEach_005f0(_jspx_page_context))
@@ -301,7 +301,7 @@ public final class inputEnum_jsp extends org.apache.jasper.runtime.HttpJspBase
     // /WEB-INF/jsp/mobile/inputs/inputEnum.jsp(19,8) name = var type = java.lang.String reqTime = false required = false fragment = false deferredValue = false expectedTypeName = null deferredMethod = false methodSignature = null
     _jspx_th_c_005fforEach_005f0.setVar("enm");
     // /WEB-INF/jsp/mobile/inputs/inputEnum.jsp(19,8) name = items type = javax.el.ValueExpression reqTime = true required = false fragment = false deferredValue = true expectedTypeName = java.lang.Object deferredMethod = false methodSignature = null
-    _jspx_th_c_005fforEach_005f0.setItems(new org.apache.jasper.el.JspValueExpression("/WEB-INF/jsp/mobile/inputs/inputEnum.jsp(19,8) '${mngUvds.fieldsSettings[entity.getClass().canonicalName].get(fieldName).get('enumValues').split(',')}'",_jsp_getExpressionFactory().createValueExpression(_jspx_page_context.getELContext(),"${mngUvds.fieldsSettings[entity.getClass().canonicalName].get(fieldName).get('enumValues').split(',')}",java.lang.Object.class)).getValue(_jspx_page_context.getELContext()));
+    _jspx_th_c_005fforEach_005f0.setItems(new org.apache.jasper.el.JspValueExpression("/WEB-INF/jsp/mobile/inputs/inputEnum.jsp(19,8) '${mngUvds.fieldsSettings[entity.getClass()].get(fieldName).get('enumValues').split(',')}'",_jsp_getExpressionFactory().createValueExpression(_jspx_page_context.getELContext(),"${mngUvds.fieldsSettings[entity.getClass()].get(fieldName).get('enumValues').split(',')}",java.lang.Object.class)).getValue(_jspx_page_context.getELContext()));
     int[] _jspx_push_body_count_c_005fforEach_005f0 = new int[] { 0 };
     try {
       int _jspx_eval_c_005fforEach_005f0 = _jspx_th_c_005fforEach_005f0.doStartTag();

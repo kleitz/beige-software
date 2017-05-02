@@ -185,7 +185,7 @@ public class PurchaseReturnLine extends APersistableBaseVersion
    **/
   @Override
   public final Integer getOwnerType() {
-    return new PurchaseReturn().constTypeCode();
+    return this.getItsOwner().constTypeCode();
   }
 
   /**

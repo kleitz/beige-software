@@ -10,31 +10,32 @@ package org.beigesoft.orm.service;
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-import java.util.Date;
 import java.util.Map;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ArrayList;
-import java.math.BigDecimal;
 import java.io.File;
 import java.io.InputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Type;
 import java.net.URL;
 
-import org.beigesoft.settings.MngSettings;
-import org.beigesoft.service.UtlReflection;
+import org.beigesoft.factory.IFactoryAppBeansByClass;
+import org.beigesoft.factory.IFactorySimple;
+import org.beigesoft.converter.IConverter;
+import org.beigesoft.service.IUtlReflection;
+import org.beigesoft.service.IFillerObjectsFrom;
+import org.beigesoft.service.IFillerObjectFields;
+import org.beigesoft.log.ILogger;
 import org.beigesoft.exception.ExceptionWithCode;
+import org.beigesoft.persistable.DatabaseInfo;
+import org.beigesoft.settings.IMngSettings;
 import org.beigesoft.orm.model.IRecordSet;
 import org.beigesoft.orm.model.ColumnsValues;
 import org.beigesoft.orm.model.PropertiesBase;
+import org.beigesoft.orm.model.ETypeField;
 import org.beigesoft.orm.model.TableSql;
 import org.beigesoft.orm.model.FieldSql;
-import org.beigesoft.persistable.DatabaseInfo;
-import org.beigesoft.persistable.APersistableBase;
-import org.beigesoft.log.ILogger;
 
 /**
  * <p>Base ORM service without INSERT implementation.
@@ -50,12 +51,6 @@ import org.beigesoft.log.ILogger;
 public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
 
   /**
-   * <p>If need to SQL escape for value string.
-   * Android do it itself.</p>
-   **/
-  private boolean isNeedsToSqlEscape = true;
-
-  /**
    * <p>Logger.</p>
    **/
   private ILogger logger;
@@ -63,7 +58,7 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
   /**
    * <p>Settings service.</p>
    **/
-  private MngSettings mngSettings;
+  private IMngSettings mngSettings;
 
   /**
    * <p>Properties base.</p>
@@ -78,14 +73,9 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
     new LinkedHashMap<String, TableSql>();
 
   /**
-   * <p>Record retriever.</p>
-   **/
-  private ISrvRecordRetriever<RS> srvRecordRetriever;
-
-  /**
    * <p>Reflection service.</p>
    **/
-  private final UtlReflection utlReflection = new UtlReflection();
+  private IUtlReflection utlReflection;
 
   /**
    * <p>Database service.</p>
@@ -93,15 +83,32 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
   private ISrvDatabase<RS> srvDatabase;
 
   /**
-   * <p>SQL Escape service.</p>
-   **/
-  private ISrvSqlEscape srvSqlEscape;
-
-  /**
    * <p>Helper to create Insert Update statement
    * by Android way.</p>
    **/
   private HlpInsertUpdate hlpInsertUpdate;
+
+  /**
+   * <p>Factory of converters entity to ColumnsValues.</p>
+   **/
+  private IFactoryAppBeansByClass<IConverter<?, ColumnsValues>>
+    factoryCnvEntityToColumnsValues;
+
+  /**
+   * <p>Entitie's factories factory.</p>
+   **/
+  private IFactoryAppBeansByClass<IFactorySimple<?>> entitiesFactoriesFatory;
+
+  /**
+   * <p>Filler entities from IRecordSet<RS>.</p>
+   **/
+  private IFillerObjectsFrom<IRecordSet<RS>> fillerEntitiesFromRs;
+
+  /**
+   * <p>Factory of fillers object fields.</p>
+   **/
+  private IFactoryAppBeansByClass<IFillerObjectFields<?>>
+    fctFillersObjectFields;
 
   /**
    * <p>ID for New Database.</p>
@@ -131,201 +138,97 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
   }
 
   /**
-   * <p>Create entity.</p>
+   * <p>Refresh entity from DB.</p>
    * @param <T> entity type
-   * @param pEntityClass entity class
-   * @return entity instance
-   * @throws Exception - an exception
-   **/
-  @Override
-  public final <T> T createEntity(
-    final Class<T> pEntityClass) throws Exception {
-    Constructor<T> constructor = pEntityClass.getDeclaredConstructor();
-    T entity = constructor.newInstance();
-    if (APersistableBase.class.isAssignableFrom(pEntityClass)) {
-      initPersistableBase(entity);
-    }
-    return entity;
-  }
-
-    /**
-   * <p>Create entity with its owner e.g. invoice line
-   * for invoice.</p>
-   * @param <T> entity type
-   * @param pEntityClass entity class
-   * @param pEntityOwnerClass entity owner class
-   * @param idEntityOwner entity owner ID
-   * @return entity instance
-   * @throws Exception - an exception
-   **/
-  @Override
-  public final <T> T createEntityWithOwner(final Class<T> pEntityClass,
-    final Class<?> pEntityOwnerClass,
-      final Object idEntityOwner) throws Exception {
-    Constructor<T> constructor = pEntityClass.getDeclaredConstructor();
-    T entity = constructor.newInstance();
-    if (APersistableBase.class.isAssignableFrom(pEntityClass)) {
-      initPersistableBase(entity); // always for current DB!!!
-    }
-    Constructor<?> constrEntityOwner = pEntityOwnerClass
-      .getDeclaredConstructor();
-    Object entityOwner = constrEntityOwner.newInstance();
-    TableSql tableSqlEntityOwner = getTablesMap()
-      .get(pEntityOwnerClass.getSimpleName());
-    Field fieldIdEntityOwner = getUtlReflection().retrieveField(
-      pEntityOwnerClass, tableSqlEntityOwner.getIdName());
-    fieldIdEntityOwner.setAccessible(true);
-    if (fieldIdEntityOwner.getType() == Integer.class) {
-      Integer value = Integer.valueOf(idEntityOwner.toString());
-      fieldIdEntityOwner.set(entityOwner, value);
-    } else if (fieldIdEntityOwner.getType() == Long.class) {
-      Long value = Long.valueOf(idEntityOwner.toString());
-      fieldIdEntityOwner.set(entityOwner, value);
-    } else if (fieldIdEntityOwner.getType() == String.class) {
-      fieldIdEntityOwner.set(entityOwner, idEntityOwner.toString());
-    } else {
-      String msg =
-        "There is no rule to fill column id value from field "
-          + fieldIdEntityOwner.getName() + " of "
-            + fieldIdEntityOwner.getType() + " in " + entityOwner;
-      throw new ExceptionWithCode(ExceptionWithCode.NOT_YET_IMPLEMENTED, msg);
-    }
-    String ownerFieldName = evalOwnerFieldName(pEntityClass, pEntityOwnerClass);
-    Field fieldEntityOwner = getUtlReflection().retrieveField(pEntityClass,
-      ownerFieldName);
-    fieldEntityOwner.setAccessible(true);
-    fieldEntityOwner.set(entity, entityOwner);
-    if (APersistableBase.class.isAssignableFrom(pEntityClass)) {
-      if (getSrvDatabase() != null //for test purpose, otherwise it must be set
-        && !((APersistableBase) entity).getIdDatabaseBirth()
-        .equals(getIdDatabase())) {
-        throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
-          "can_not_change_foreign_src");
-      }
-      initPersistableBase(entity); // always for current DB!!!
-    }
-    return entity;
-  }
-
-  /**
-   * <p>Retrieve copy of entity from DB by given ID.</p>
-   * @param <T> entity type
-   * @param pEntityClass entity class
-   * @param pId ID
-   * @return entity or null
-   * @throws Exception - an exception
-   **/
-  @Override
-  public final <T> T retrieveCopyEntity(
-    final Class<T> pEntityClass, final Object pId) throws Exception {
-    T entity = retrieveEntityById(pEntityClass, pId);
-    TableSql tableSql = getTablesMap().get(pEntityClass.getSimpleName());
-    Field fieldId = getUtlReflection().retrieveField(pEntityClass,
-      tableSql.getIdName());
-    fieldId.setAccessible(true);
-    fieldId.set(entity, null);
-    if (APersistableBase.class.isAssignableFrom(pEntityClass)) {
-      initPersistableBase(entity);
-    }
-    return entity;
-  }
-
-  /**
-   * <p>Refresh entity from DB by given entity with ID.</p>
-   * @param <T> entity type
+   * @param pAddParam additional param, e.g. already retrieved TableSql
    * @param pEntity entity
    * @return entity or null
    * @throws Exception - an exception
    **/
   @Override
-  public final <T> T retrieveEntity(final T pEntity) throws Exception {
+  public final <T> T retrieveEntity(final Map<String, Object> pAddParam,
+    final T pEntity) throws Exception {
+    String query = evalSqlSelect(pAddParam, pEntity.getClass());
+    pAddParam.put("isOnlyId", Boolean.TRUE);
+    ColumnsValues columnsValues = evalColumnsValues(pAddParam, pEntity);
+    pAddParam.remove("isOnlyId");
+    String whereStr = evalWhereId(pEntity, columnsValues);
     @SuppressWarnings("unchecked")
     Class<T> entityClass = (Class<T>) pEntity.getClass();
-    TableSql tableSql = getTablesMap().get(entityClass.getSimpleName());
-    Field fieldId = getUtlReflection().retrieveField(entityClass,
-      tableSql.getIdName());
-    fieldId.setAccessible(true);
-    Object id = fieldId.get(pEntity);
-    return retrieveEntityById(entityClass, id);
+    return retrieveEntity(pAddParam, entityClass,
+      query + " where " + whereStr);
   }
 
   /**
-   * <p>Retrieve entity from DB by given ID.</p>
+   * <p>Refresh entity from DB by its ID.</p>
    * @param <T> entity type
+   * @param pAddParam additional param
    * @param pEntityClass entity class
-   * @param pId ID
+   * @param pItsId entity ID
    * @return entity or null
    * @throws Exception - an exception
    **/
   @Override
-  public final <T> T retrieveEntityById(
-    final Class<T> pEntityClass, final Object pId) throws Exception {
-    String query = evalSqlSelect(pEntityClass, pId);
-    return retrieveEntity(pEntityClass, query);
-  }
-
-  /**
-   * <p>Retrieve entity from DB.</p>
-   * @param <T> entity type
-   * @param pEntityClass entity class
-   * @param pQuery SELECT statement
-   * @return entity or null
-   * @throws Exception - an exception
-   **/
-  @Override
-  public final <T> T retrieveEntity(
-    final Class<T> pEntityClass, final String pQuery) throws Exception {
-    T entity = null;
-    IRecordSet<RS> recordSet = null;
-    try {
-      recordSet = getSrvDatabase().retrieveRecords(pQuery);
-      if (recordSet.moveToFirst()) {
-        entity = retrieveEntity(pEntityClass, recordSet);
-      }
-    } finally {
-      if (recordSet != null) {
-        recordSet.close();
-      }
-    }
-    return entity;
+  public final <T> T retrieveEntityById(final Map<String, Object> pAddParam,
+    final Class<T> pEntityClass, final Object pItsId) throws Exception {
+    String query = evalSqlSelect(pAddParam, pEntityClass);
+    @SuppressWarnings("unchecked")
+    IFactorySimple<T> facEn = (IFactorySimple<T>) this.entitiesFactoriesFatory
+      .lazyGet(pAddParam, pEntityClass);
+    T entity = facEn.create(pAddParam);
+    @SuppressWarnings("unchecked")
+    IFillerObjectFields<T> filler = (IFillerObjectFields<T>)
+      this.fctFillersObjectFields.lazyGet(pAddParam, pEntityClass);
+    String idFldName = this.tablesMap
+      .get(pEntityClass.getSimpleName()).getIdFieldName();
+    filler.fill(pAddParam, entity, pItsId, idFldName);
+    pAddParam.put("isOnlyId", Boolean.TRUE);
+    ColumnsValues columnsValues = evalColumnsValues(pAddParam, entity);
+    pAddParam.remove("isOnlyId");
+    String whereId = evalWhereId(entity, columnsValues);
+    return retrieveEntity(pAddParam, pEntityClass,
+      query + " where " + whereId + ";\n");
   }
 
   /**
    * <p>Retrieve entity from DB by given query conditions.
-   * The first record in recordset will be used.</p>
+   * The first record in record-set will be returned.</p>
    * @param <T> entity type
+   * @param pAddParam additional param, e.g. already retrieved TableSql
    * @param pEntityClass entity class
-   * @param pQueryConditions e.g. "WHERE name='U1' ORDER BY id"
+   * @param pQueryConditions Not NULL e.g. "where name='U1' ORDER BY id"
+   * or "" that means without filter/order
    * @return entity or null
    * @throws Exception - an exception
    **/
   @Override
   public final <T> T retrieveEntityWithConditions(
-    final Class<T> pEntityClass,
-      final String pQueryConditions) throws Exception {
-    String query = evalSqlSelect(pEntityClass);
+    final Map<String, Object> pAddParam,
+      final Class<T> pEntityClass,
+        final String pQueryConditions) throws Exception {
     if (pQueryConditions == null) {
       throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
         "param_null_not_accepted");
     }
-    return retrieveEntity(pEntityClass, query + " " + pQueryConditions
-      + ";\n");
+    String query = evalSqlSelect(pAddParam, pEntityClass);
+    return retrieveEntity(pAddParam, pEntityClass,
+      query + " " + pQueryConditions + ";\n");
   }
 
   /**
    * <p>Update entity in DB.</p>
    * @param <T> entity type
+   * @param pAddParam additional param
    * @param pEntity entity
    * @throws Exception - an exception
    **/
   @Override
   public final <T> void updateEntity(
-    final T pEntity) throws Exception {
-    ColumnsValues columnsValues = evalColumnsValuesAndFillNewVersion(pEntity);
+    final Map<String, Object> pAddParam,
+      final T pEntity) throws Exception {
+    ColumnsValues columnsValues = evalColumnsValues(pAddParam, pEntity);
     String whereStr = evalWhereForUpdate(pEntity, columnsValues);
-    columnsValues.getLongsMap().remove(ISrvOrm.VERSIONOLD_NAME);
-    TableSql tableSql = this.tablesMap.get(pEntity.getClass().getSimpleName());
-    columnsValues.getLongsMap().remove(tableSql.getIdName());
+    prepareColumnValuesForUpdate(columnsValues, pEntity);
     int result = getSrvDatabase().executeUpdate(pEntity.getClass()
       .getSimpleName().toUpperCase(), columnsValues, whereStr);
     if (result != 1) {
@@ -343,48 +246,15 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
   }
 
   /**
-   * <p>Update entity with condition, e.g. for complex ID.</p>
-   * @param <T> entity type
-   * @param pEntity entity
-   * @param pWhere Where e.g. "WAREHOUSESITE=1 and PRODUCT=1"
-   * @throws Exception - an exception
-   **/
-  @Override
-  public final <T> void updateEntityWhere(
-    final T pEntity, final String pWhere) throws Exception {
-    if (pWhere == null) {
-      throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
-        "param_null_not_accepted");
-    }
-    ColumnsValues columnsValues = evalColumnsValuesAndFillNewVersion(pEntity);
-    columnsValues.getLongsMap().remove(ISrvOrm.VERSIONOLD_NAME);
-    TableSql tableSql = this.tablesMap.get(pEntity.getClass().getSimpleName());
-    columnsValues.getLongsMap().remove(tableSql.getIdName());
-    int result = getSrvDatabase().executeUpdate(pEntity.getClass()
-      .getSimpleName().toUpperCase(), columnsValues, pWhere);
-    if (result != 1) {
-      if (result == 0 && columnsValues.ifContains(ISrvOrm.VERSION_NAME)) {
-        throw new ExceptionWithCode(ISrvDatabase.DIRTY_READ, "dirty_read");
-      } else {
-        String query = hlpInsertUpdate.evalSqlUpdate(pEntity.getClass()
-          .getSimpleName().toUpperCase(), columnsValues,
-            pWhere);
-        throw new ExceptionWithCode(ISrvDatabase.ERROR_INSERT_UPDATE,
-          "It should be 1 row updated but it was "
-            + result + ", query:\n" + query);
-      }
-    }
-  }
-
-  /**
    * <p>Delete entity with condition, e.g. complex ID.</p>
    * @param <T> entity type
+   * @param pAddParam additional param
    * @param pEntityClass entity class
    * @param pWhere Not Null e.g. "WAREHOUSESITE=1 and PRODUCT=1"
    * @throws Exception - an exception
    **/
   @Override
-  public final <T> void deleteEntityWhere(
+  public final <T> void deleteEntityWhere(final Map<String, Object> pAddParam,
     final Class<T> pEntityClass, final String pWhere) throws Exception {
     if (pWhere == null) {
       throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
@@ -395,76 +265,45 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
   }
 
   /**
-   * <p>Delete entity with NON-COMPLEX ID from DB.</p>
+   * <p>Delete entity from DB.</p>
    * @param <T> entity type
+   * @param pAddParam additional param
    * @param <K> ID type
    * @param pEntity entity
    * @throws Exception - an exception
    **/
   @Override
   public final <T> void deleteEntity(
-    final T pEntity) throws Exception {
-    TableSql tableSql = this.getTablesMap().get(pEntity.getClass()
-      .getSimpleName());
-    Field fieldId = this.utlReflection.retrieveField(pEntity.getClass(),
-      tableSql.getIdName());
-    fieldId.setAccessible(true);
-    Object id = fieldId.get(pEntity);
-    deleteEntity(pEntity.getClass(), id);
-  }
-
-  /**
-   * <p>Delete entity from DB by given NON-COMPLEX ID.</p>
-   * @param <T> entity type
-   * @param pEntityClass entity class
-   * @param pId ID
-   * @throws Exception - an exception
-   **/
-  @Override
-  public final <T> void deleteEntity(
-    final Class<T> pEntityClass, final Object pId) throws Exception {
-    TableSql tableSql = this.getTablesMap().get(pEntityClass.getSimpleName());
-    String idStr;
-    if (pId instanceof String) {
-      idStr = "'" + pId.toString() + "'";
-    } else {
-      idStr = pId.toString();
-    }
-    getSrvDatabase().executeDelete(pEntityClass.getSimpleName().toUpperCase(),
-      tableSql.getIdName() + "=" + idStr);
+    final Map<String, Object> pAddParam,
+      final T pEntity) throws Exception {
+    pAddParam.put("isOnlyId", Boolean.TRUE);
+    ColumnsValues columnsValues = evalColumnsValues(pAddParam, pEntity);
+    pAddParam.remove("isOnlyId");
+    String whereId = evalWhereId(pEntity, columnsValues);
+    getSrvDatabase().executeDelete(pEntity.getClass()
+      .getSimpleName().toUpperCase(), whereId);
   }
 
   /**
    * <p>Retrieve a list of all entities.</p>
    * @param <T> - type of business object,
+   * @param pAddParam additional param, e.g. already retrieved TableSql
    * @param pEntityClass entity class
    * @return list of all business objects or empty list, not null
    * @throws Exception - an exception
    */
   @Override
   public final <T> List<T> retrieveList(
-    final Class<T> pEntityClass) throws Exception {
-    List<T> result = new ArrayList<T>();
-    IRecordSet<RS> recordSet = null;
-    try {
-      String query = evalSqlSelect(pEntityClass) + ";\n";
-      recordSet = getSrvDatabase().retrieveRecords(query);
-      if (recordSet.moveToFirst()) {
-        do {
-          result.add(retrieveEntity(pEntityClass, recordSet));
-        } while (recordSet.moveToNext());
-      }
-    } finally {
-      if (recordSet != null) {
-        recordSet.close();
-      }
-    }
-    return result;
+    final Map<String, Object> pAddParam,
+      final Class<T> pEntityClass) throws Exception {
+    String query = evalSqlSelect(pAddParam, pEntityClass) + ";\n";
+    return retrieveListByQuery(pAddParam, pEntityClass, query);
   }
 
   /**
    * <p>Retrieve a list of entities.</p>
    * @param <T> - type of business object,
+   * @param pAddParam additional param, e.g. already retrieved TableSql
    * @param pEntityClass entity class
    * @param pQueryConditions Not NULL e.g. "where name='U1' ORDER BY id"
    * @return list of business objects or empty list, not null
@@ -472,21 +311,66 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
    */
   @Override
   public final <T> List<T> retrieveListWithConditions(
-    final Class<T> pEntityClass,
-      final String pQueryConditions) throws Exception {
+    final Map<String, Object> pAddParam,
+      final Class<T> pEntityClass,
+        final String pQueryConditions) throws Exception {
     if (pQueryConditions == null) {
+      throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
+        "param_null_not_accepted");
+    }
+    String query = evalSqlSelect(pAddParam, pEntityClass) + " "
+        + pQueryConditions + ";\n";
+    return retrieveListByQuery(pAddParam, pEntityClass, query);
+  }
+
+
+  /**
+   * <p>Entity's lists with filter "field" (e.g. invoice lines for invoice).</p>
+   * @param <T> - type of entity
+   * @param pAddParam additional param, e.g. already retrieved TableSql
+   * @param pEntity - Entity e.g. an invoice line with filled invoice
+   * @param pFieldFor - Field For name e.g. "invoice"
+   * @return list of business objects or empty list, not null
+   * @throws Exception - an exception
+   */
+  @Override
+  public final <T> List<T> retrieveListForField(
+    final Map<String, Object> pAddParam,
+      final T pEntity, final String pFieldFor) throws Exception {
+    String whereStr = evalWhereForField(pAddParam, pEntity, pFieldFor);
+    String query = evalSqlSelect(pAddParam, pEntity.getClass())
+      + whereStr + ";";
+    @SuppressWarnings("unchecked")
+    Class<T> entityClass = (Class<T>) pEntity.getClass();
+    return retrieveListByQuery(pAddParam, entityClass, query);
+  }
+
+  /**
+   * <p>Retrieve a list of entities by complex query that may contain
+   * additional joins and filters, see Beige-Webstore for example.</p>
+   * @param <T> - type of business object
+   * @param pAddParam additional param, e.g. list of needed fields
+   * @param pEntityClass entity class
+   * @param pQuery Not NULL complex query
+   * @return list of business objects or empty list, not null
+   * @throws Exception - an exception
+   */
+  @Override
+  public final <T> List<T> retrieveListByQuery(
+    final Map<String, Object> pAddParam,
+      final Class<T> pEntityClass,
+        final String pQuery) throws Exception {
+    if (pQuery == null) {
       throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
         "param_null_not_accepted");
     }
     List<T> result = new ArrayList<T>();
     IRecordSet<RS> recordSet = null;
     try {
-      String query = evalSqlSelect(pEntityClass) + " "
-          + pQueryConditions + ";\n";
-      recordSet = getSrvDatabase().retrieveRecords(query);
+      recordSet = getSrvDatabase().retrieveRecords(pQuery);
       if (recordSet.moveToFirst()) {
         do {
-          result.add(retrieveEntity(pEntityClass, recordSet));
+          result.add(retrieveEntity(pAddParam, pEntityClass, recordSet));
         } while (recordSet.moveToNext());
       }
     } finally {
@@ -500,62 +384,77 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
   /**
    * <p>Retrieve a page of entities.</p>
    * @param <T> - type of business object,
+   * @param pAddParam additional param, e.g. already retrieved TableSql
    * @param pEntityClass entity class
-   * @param pFirst number of the first record
+   * @param pFirst number of the first record (from 0)
    * @param pPageSize page size (max records)
    * @return list of business objects or empty list, not null
    * @throws Exception - an exception
    */
   @Override
   public final <T> List<T> retrievePage(
-    final Class<T> pEntityClass,
+    final Map<String, Object> pAddParam,
+      final Class<T> pEntityClass,
         final Integer pFirst, final Integer pPageSize) throws Exception {
-    List<T> result = new ArrayList<T>();
-    IRecordSet<RS> recordSet = null;
-    try {
-      String query = evalSqlSelect(pEntityClass)
-          + " limit " + pPageSize + " offset " + pFirst + ";\n";
-      recordSet = getSrvDatabase().retrieveRecords(query);
-      if (recordSet.moveToFirst()) {
-        do {
-          result.add(retrieveEntity(pEntityClass, recordSet));
-        } while (recordSet.moveToNext());
-      }
-    } finally {
-      if (recordSet != null) {
-        recordSet.close();
-      }
-    }
-    return result;
+    String query = evalSqlSelect(pAddParam, pEntityClass);
+    return retrievePageByQuery(pAddParam, pEntityClass, query,
+      pFirst, pPageSize);
   }
 
   /**
    * <p>Retrieve a page of entities.</p>
    * @param <T> - type of business object,
+   * @param pAddParam additional param, e.g. already retrieved TableSql
    * @param pEntityClass entity class
    * @param pQueryConditions not null e.g. "WHERE name='U1' ORDER BY id"
-   * @param pFirst number of the first record
+   * @param pFirst number of the first record (from 0)
    * @param pPageSize page size (max records)
    * @return list of business objects or empty list, not null
    * @throws Exception - an exception
    */
   @Override
   public final <T> List<T> retrievePageWithConditions(
-    final Class<T> pEntityClass, final String pQueryConditions,
+    final Map<String, Object> pAddParam,
+      final Class<T> pEntityClass, final String pQueryConditions,
         final Integer pFirst, final Integer pPageSize) throws Exception {
-    if (pQueryConditions == null) {
+    String query = evalSqlSelect(pAddParam, pEntityClass) + " "
+      + pQueryConditions;
+    return retrievePageByQuery(pAddParam, pEntityClass, query,
+      pFirst, pPageSize);
+  }
+
+  /**
+   * <p>Retrieve a page of entities by given complex query.
+   * For example it used to retrieve page ItemInList to sell in Beige-Webstore
+   * by complex query what may consist of joints to filtered goods/services,
+   * it also may has not all fields e.g. omit unused auctioning fields for
+   * performance advantage.</p>
+   * @param <T> - type of business object,
+   * @param pAddParam additional param, e.g. set of needed fields names.
+   * @param pEntityClass entity class
+   * @param pQuery not null complex query without page conditions
+   * @param pFirst number of the first record (from 0)
+   * @param pPageSize page size (max records)
+   * @return list of business objects or empty list, not null
+   * @throws Exception - an exception
+   */
+  @Override
+  public final <T> List<T> retrievePageByQuery(
+    final Map<String, Object> pAddParam, final Class<T> pEntityClass,
+      final String pQuery, final Integer pFirst,
+        final Integer pPageSize) throws Exception {
+    if (pQuery == null) {
       throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
         "param_null_not_accepted");
     }
     List<T> result = new ArrayList<T>();
     IRecordSet<RS> recordSet = null;
     try {
-      String query = evalSqlSelect(pEntityClass) + " " + pQueryConditions
-          + " limit " + pPageSize + " offset " + pFirst + ";\n";
-      recordSet = getSrvDatabase().retrieveRecords(query);
+      recordSet = getSrvDatabase().retrieveRecords(pQuery + " limit "
+        + pPageSize + " offset " + pFirst + ";\n");
       if (recordSet.moveToFirst()) {
         do {
-          result.add(retrieveEntity(pEntityClass, recordSet));
+          result.add(retrieveEntity(pAddParam, pEntityClass, recordSet));
         } while (recordSet.moveToNext());
       }
     } finally {
@@ -569,21 +468,24 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
   /**
    * <p>Calculate total rows for pagination.</p>
    * @param <T> - type of business object,
+   * @param pAddParam additional param
    * @param pEntityClass entity class
    * @return Integer row count
    * @throws Exception - an exception
    */
   @Override
   public final <T> Integer evalRowCount(
-    final Class<T> pEntityClass) throws Exception {
+    final Map<String, Object> pAddParam,
+      final Class<T> pEntityClass) throws Exception {
     String query = "select count(*) as TOTALROWS from " + pEntityClass
       .getSimpleName().toUpperCase() + ";";
-    return getSrvDatabase().evalIntegerResult(query, "TOTALROWS");
+    return evalRowCountByQuery(pAddParam, pEntityClass, query);
   }
 
   /**
    * <p>Calculate total rows for pagination.</p>
    * @param <T> - type of business object,
+   * @param pAddParam additional param
    * @param pEntityClass entity class
    * @param pWhere not null e.g. "ITSID > 33"
    * @return Integer row count
@@ -591,99 +493,126 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
    */
   @Override
   public final <T> Integer evalRowCountWhere(
-    final Class<T> pEntityClass, final String pWhere) throws Exception {
+    final Map<String, Object> pAddParam,
+      final Class<T> pEntityClass, final String pWhere) throws Exception {
     if (pWhere == null) {
       throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
         "param_null_not_accepted");
     }
     String query = "select count(*) as TOTALROWS from " + pEntityClass
       .getSimpleName().toUpperCase() + " where " + pWhere + ";";
-    return getSrvDatabase().evalIntegerResult(query, "TOTALROWS");
+    return evalRowCountByQuery(pAddParam, pEntityClass, query);
   }
 
   /**
-   * <p>Retrieve entity's owned lists (e.g. invoice lines for invoice).</p>
-   * @param <T> - type of entity owned
-   * @param pEntityClass owned e.g. org.model.InvoiceLine.class
-   * @param pEntityOwner - Entity Owner e.g. an invoice
-   * @return list of business objects or empty list, not null
+   * <p>Calculate total rows for pagination by custom query.</p>
+   * @param <T> - type of business object,
+   * @param pAddParam additional param
+   * @param pEntityClass entity class
+   * @param pQuery not null custom query with named TOTALROWS
+   * @return Integer row count
    * @throws Exception - an exception
    */
   @Override
-  public final <T> List<T> retrieveEntityOwnedlist(
-    final Class<T> pEntityClass,
-      final Object pEntityOwner) throws Exception {
-    List<T> result = new ArrayList<T>();
-    TableSql tableSqlOwner = getTablesMap().get(pEntityOwner.getClass()
-      .getSimpleName());
-    Field fieldIdOwner = getUtlReflection().retrieveField(pEntityOwner
-      .getClass(), tableSqlOwner.getIdName());
-    fieldIdOwner.setAccessible(true);
-    Object idOwner = fieldIdOwner.get(pEntityOwner);
-    String idOwnerStr;
-    if (idOwner instanceof String) {
-      idOwnerStr = "'" + idOwner + "'";
-    } else {
-      idOwnerStr = idOwner.toString();
+  public final <T> Integer evalRowCountByQuery(
+    final Map<String, Object> pAddParam, final Class<T> pEntityClass,
+      final String pQuery) throws Exception {
+    if (pQuery == null) {
+      throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
+        "param_null_not_accepted");
     }
-    String ownerFieldName = evalOwnerFieldName(pEntityClass,
-      pEntityOwner.getClass());
-    IRecordSet<RS> recordSet = null;
-    try {
-      String query = evalSqlSelect(pEntityClass) + " where "
-        + pEntityClass.getSimpleName().toUpperCase() + "."
-        + ownerFieldName.toUpperCase() + " = " + idOwnerStr + ";\n";
-      recordSet = getSrvDatabase().retrieveRecords(query);
-      if (recordSet.moveToFirst()) {
-        do {
-          result.add(retrieveEntity(pEntityClass, recordSet));
-        } while (recordSet.moveToNext());
-      }
-    } finally {
-      if (recordSet != null) {
-        recordSet.close();
-      }
-    }
-    return result;
+    return getSrvDatabase().evalIntegerResult(pQuery, "TOTALROWS");
   }
 
   /**
-   * <p>Retrieve entity's owned lists (e.g. invoice lines for invoice).</p>
-   * @param <T> - type of entity owned
-   * @param pEntityClass owned e.g. org.model.InvoiceLine.class
-   * @param pOwnerClass owner e.g. org.model.Invoice.class
-   * @param pEntityOwnerId - Entity Owner ID e.g. an invoice ID
-   * @return list of business objects or empty list, not null
+   * <p>Evaluate common(without WHERE) SQL SELECT
+   * statement for entity type. It's used externally
+   * to make more complex query with additional joints and filters.</p>
+   * @param pAddParam additional param, e.g. set of needed fields names,
+   * deep of foreign classes, etc.
+   * @param <T> entity type
+   * @param pEntityClass entity class
+   * @return String SQL DML query
    * @throws Exception - an exception
-   */
+   **/
   @Override
-  public final <T> List<T> retrieveEntityOwnedlist(final Class<T> pEntityClass,
-    final Class<?> pOwnerClass, final Object pEntityOwnerId) throws Exception {
-    List<T> result = new ArrayList<T>();
-    String ownerFieldName = evalOwnerFieldName(pEntityClass, pOwnerClass);
-    IRecordSet<RS> recordSet = null;
-    try {
-      String ownerIdStr;
-      if (pEntityOwnerId instanceof String) {
-        ownerIdStr = "'" + pEntityOwnerId + "'";
-      } else {
-        ownerIdStr = pEntityOwnerId.toString();
-      }
-      String query = evalSqlSelect(pEntityClass) + " where "
-        + pEntityClass.getSimpleName().toUpperCase() + "."
-        + ownerFieldName.toUpperCase() + "=" + ownerIdStr + ";\n";
-      recordSet = getSrvDatabase().retrieveRecords(query);
-      if (recordSet.moveToFirst()) {
-        do {
-          result.add(retrieveEntity(pEntityClass, recordSet));
-        } while (recordSet.moveToNext());
-      }
-    } finally {
-      if (recordSet != null) {
-        recordSet.close();
+  public final <T> String evalSqlSelect(final Map<String, Object> pAddParam,
+    final Class<T> pEntityClass) throws Exception {
+    String tableName = pEntityClass.getSimpleName().toUpperCase();
+    StringBuffer result =
+      new StringBuffer("select ");
+    StringBuffer joints =
+      new StringBuffer();
+    boolean isFirstField = true;
+    TableSql tableSql = getTablesMap().get(pEntityClass.getSimpleName());
+    if (tableSql == null) {
+      throw new ExceptionWithCode(ExceptionWithCode.CONFIGURATION_MISTAKE,
+        "where_is_no_table_def_for::" + pEntityClass.getSimpleName());
+    }
+    for (Map.Entry<String, FieldSql> entry
+      : tableSql.getFieldsMap().entrySet()) {
+      if (!entry.getValue().getTypeField()
+        .equals(ETypeField.DERIVED_FROM_COMPOSITE)) {
+        if (entry.getValue().getForeignEntity() == null) {
+          if (isFirstField) {
+            isFirstField = false;
+          } else {
+            result.append(", ");
+          }
+          String columnName = entry.getKey().toUpperCase();
+          result.append(tableName + "."
+            + entry.getKey().toUpperCase() + " as " + columnName);
+        } else {
+          TableSql foreignTableSql = getTablesMap()
+            .get(entry.getValue().getForeignEntity());
+          String tableForeign = entry.getValue().getForeignEntity()
+            .toUpperCase();
+          String tbFrAlias;
+          if (foreignTableSql.getIdColumnsNames().length > 1) {
+            StringBuffer sb = new StringBuffer();
+            for (String idClNm : foreignTableSql.getIdColumnsNames()) {
+              sb.append(idClNm);
+            }
+            tbFrAlias = sb.toString().toUpperCase();
+          } else {
+            tbFrAlias = entry.getKey().toUpperCase();
+          }
+          joints.append(" left join " + tableForeign + " as "
+            + tbFrAlias + " on ");
+          for (int i = 0; i < foreignTableSql.getIdColumnsNames().length; i++) {
+            if (i > 0) {
+              joints.append(" and ");
+            }
+            String fieldFrNm;
+            if (foreignTableSql.getIdColumnsNames().length > 1) {
+              //composite name as foreign:
+              fieldFrNm = foreignTableSql.getIdColumnsNames()[i].toUpperCase();
+            } else {
+              fieldFrNm = entry.getKey().toUpperCase();
+            }
+            joints.append(tableName + "." + fieldFrNm + "=" + tbFrAlias
+              + "." + foreignTableSql.getIdColumnsNames()[i].toUpperCase());
+          }
+          for (Map.Entry<String, FieldSql> entryFor
+            : foreignTableSql.getFieldsMap().entrySet()) {
+            if (!entry.getValue().getTypeField()
+                .equals(ETypeField.DERIVED_FROM_COMPOSITE)) {
+              if (isFirstField) {
+                isFirstField = false;
+              } else {
+                result.append(", ");
+              }
+              String columnForName = tbFrAlias
+                + entryFor.getKey().toUpperCase();
+              result.append(tbFrAlias + "."
+                + entryFor.getKey().toUpperCase() + " as " + columnForName);
+            }
+          }
+        }
       }
     }
-    return result;
+    result.append(" from " + tableName + joints);
+    return result.toString();
   }
 
   //to srv-database delegators:
@@ -755,61 +684,137 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
     }
     for (Class<?> clazz : this.mngSettings.getClasses()) {
       TableSql tableSql = this.tablesMap.get(clazz.getSimpleName());
-      if (!tableSql.getIsFullDefinedInXml()) {
-        //make foreign keys alghorithm:
-        Field[] fields = getUtlReflection().retrieveFields(clazz);
-        for (Field field : fields) {
-          FieldSql fieldSql = tableSql.getFieldsMap().get(field.getName());
-          if (fieldSql != null) { //if persistable
-            TableSql tableSqlForeign = this.tablesMap.get(field.getType()
-              .getSimpleName());
-            if (tableSqlForeign != null) {
-              //if it's foreign entity according entities list ORDER
-              //make sure ORDER of entities!!!
-              fieldSql.setForeignEntity(field.getType().getSimpleName());
-              String definition = tableSqlForeign.getIdDefinitionForeign();
-              if (definition == null) {
-                throw new ExceptionWithCode(ExceptionWithCode
-                  .CONFIGURATION_MISTAKE, "There is no " + TableSql
-                    .KEY_ID_DEFINITION_FOREIGN + " for " + clazz + " / "
-                      + field.getName());
-              }
-              String isNullableStr = this.mngSettings.getFieldsSettings()
-                .get(clazz.getCanonicalName()).get(field.getName())
-                  .get("isNullable");
-              if (!Boolean.valueOf(isNullableStr)
-                && !definition.contains("not null")) {
-                definition += " not null";
-              }
-              fieldSql.setForeignEntity(field.getType().getSimpleName());
-              fieldSql.setDefinition(definition);
-              //tableSql:
-              String constraint = tableSql.getConstraint();
-              String constraintFk = "constraint fk"
-                + clazz.getSimpleName()
-                + field.getType().getSimpleName() + field.getName()
-                + " foreign key (" + field.getName().toUpperCase()
-                + ") references " + field.getType().getSimpleName()
-                  .toUpperCase()
-                + " (" + tableSqlForeign.getIdName().toUpperCase() + ")";
-              if (constraint != null) {
-                constraint += ",\n" + constraintFk;
-              } else {
-                constraint = constraintFk;
-              }
-              tableSql.setConstraint(constraint);
+      StringBuffer sbIdNamesUc = new StringBuffer("");
+      for (int i = 0; i < tableSql.getIdColumnsNames().length; i++) {
+        if (i > 0) {
+          sbIdNamesUc.append(",");
+        }
+        sbIdNamesUc.append(tableSql.getIdColumnsNames()[i].toUpperCase());
+      }
+      Field[] fields = getUtlReflection().retrieveFields(clazz);
+      for (Field field : fields) {
+        FieldSql fieldSql = tableSql.getFieldsMap().get(field.getName());
+        if (fieldSql != null) { //if persistable or composite (foreign CID)
+          TableSql tableSqlForeign = this.tablesMap.get(field.getType()
+            .getSimpleName());
+          if (tableSqlForeign != null) {
+            //if it's foreign entity according entities list ORDER
+            //make sure ORDER of entities!!!
+            fieldSql.setForeignEntity(field.getType().getSimpleName());
+            String isNullableStr = this.mngSettings.getFieldsSettings()
+              .get(clazz).get(field.getName())
+                .get("isNullable");
+            if (fieldSql.getDefinition() != null // FK composite ID
+              && !Boolean.valueOf(isNullableStr)
+                && !fieldSql.getDefinition().contains("not null")) {
+              fieldSql.setDefinition(fieldSql.getDefinition() + " not null");
             }
+            //FK:
+            StringBuffer sbForeignIdNamesUc = new StringBuffer("");
+            for (int i = 0; i < tableSqlForeign.getIdColumnsNames()
+              .length; i++) {
+              if (i > 0) {
+                sbForeignIdNamesUc.append(",");
+              }
+              sbForeignIdNamesUc.append(tableSqlForeign
+                .getIdColumnsNames()[i].toUpperCase());
+            }
+            String fkNames;
+            if (tableSqlForeign.getIdColumnsNames().length > 1) {
+              // composite FK:
+              fkNames = sbForeignIdNamesUc.toString();
+              // check if it is also primary key:
+              boolean isAlsoPk = true;
+              if (tableSql.getIdColumnsNames().length
+                == tableSqlForeign.getIdColumnsNames().length) {
+                for (int i = 0; i < tableSql.getIdColumnsNames()
+                  .length; i++) {
+                  if (!tableSqlForeign.getIdColumnsNames()[0]
+                    .equals(tableSql.getIdColumnsNames()[0])) {
+                    isAlsoPk = false;
+                    break;
+                  }
+                }
+              }
+              if (isAlsoPk) {
+                fieldSql.setTypeField(ETypeField.COMPOSITE_FK_PK);
+              } else {
+                fieldSql.setTypeField(ETypeField.COMPOSITE_FK);
+              }
+              for (String cIdNm : tableSqlForeign.getIdColumnsNames()) {
+                FieldSql fldCid = new FieldSql();
+                fldCid.setTypeField(ETypeField.DERIVED_FROM_COMPOSITE);
+                if (!Boolean.valueOf(isNullableStr)
+                    && !tableSqlForeign.getFieldsMap()
+                      .get(cIdNm).getDefinition().contains("not null")) {
+                  fldCid.setDefinition(tableSqlForeign.getFieldsMap()
+                    .get(cIdNm).getDefinition() + " not null");
+                } else if (Boolean.valueOf(isNullableStr)
+                    && fldCid.getDefinition().contains("not null")) {
+                  fldCid.setDefinition(tableSqlForeign.getFieldsMap()
+                    .get(cIdNm).getDefinition().replace(" not null", ""));
+                } else {
+                  fldCid.setDefinition(tableSqlForeign.getFieldsMap()
+                    .get(cIdNm).getDefinition());
+                }
+                fldCid.setForeignEntity(tableSqlForeign.getFieldsMap()
+                  .get(cIdNm).getForeignEntity());
+                tableSql.getFieldsMap().put(cIdNm, fldCid);
+              }
+            } else {
+              fkNames = field.getName().toUpperCase();
+            }
+            String constraintFk = "constraint fk"
+              + clazz.getSimpleName()
+              + field.getType().getSimpleName() + field.getName()
+              + " foreign key (" + fkNames
+              + ") references " + field.getType().getSimpleName()
+                .toUpperCase()
+              + " (" + sbForeignIdNamesUc + ")";
+            String constraint = tableSql.getConstraint();
+            if (constraint != null) {
+              constraint += ",\n" + constraintFk;
+            } else {
+              constraint = constraintFk;
+            }
+            tableSql.setConstraint(constraint);
+          }
+          //if field is PK, make sure NOT NULL:
+          if (sbIdNamesUc.toString().contains(field.getName().toUpperCase())
+              && !fieldSql.getDefinition().contains("not null")) {
+            fieldSql.setDefinition(fieldSql.getDefinition()
+              + " not null");
           }
         }
-        String constraintAdd = this.mngSettings.getClassesSettings()
-          .get(clazz.getCanonicalName()).get("constraintAdd");
-        if (constraintAdd != null) {
-          if (tableSql.getConstraint() == null) {
-            tableSql.setConstraint(constraintAdd);
-          } else {
-            tableSql.setConstraint(tableSql.getConstraint()
-              + ",\n" + constraintAdd);
-          }
+      }
+      for (String colIdNm : tableSql.getIdColumnsNames()) {
+        if (tableSql.getFieldsMap().get(colIdNm) == null) {
+        throw new ExceptionWithCode(ExceptionWithCode.CONFIGURATION_MISTAKE,
+          "Where is no column ID class/name: " + clazz.getSimpleName()
+            + "/" + colIdNm);
+        }
+      }
+      //PK if complex (composite or foreign entity):
+      if (tableSql.getIdColumnsNames().length > 1 || tableSql.getFieldsMap()
+        .get(tableSql.getIdColumnsNames()[0]).getForeignEntity() != null) {
+        String constraintPk = "constraint pk"
+          + clazz.getSimpleName() + tableSql.getIdColumnsNames()[0]
+            + " primary key (" + sbIdNamesUc + ")";
+        if (tableSql.getConstraint() == null) {
+          tableSql.setConstraint(constraintPk);
+        } else {
+          tableSql.setConstraint(constraintPk
+            + ",\n" + tableSql.getConstraint());
+        }
+      }
+      String constraintAdd = this.mngSettings.getClassesSettings()
+        .get(clazz).get("constraintAdd");
+      if (constraintAdd != null) {
+        if (tableSql.getConstraint() == null) {
+          tableSql.setConstraint(constraintAdd);
+        } else {
+          tableSql.setConstraint(tableSql.getConstraint()
+            + ",\n" + constraintAdd);
         }
       }
     }
@@ -823,49 +828,40 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
    **/
   public final void makeTableSqlFromXml(final TableSql pTableSql,
     final Class<?> pClazz) throws Exception {
+    if (this.mngSettings.getFieldsSettings().get(pClazz) == null) {
+      throw new ExceptionWithCode(ExceptionWithCode.CONFIGURATION_MISTAKE,
+        "There is no fields settings for class " + pClazz);
+    }
     pTableSql.setVersionAlgorithm(Integer.parseInt(this.mngSettings
-      .getClassesSettings().get(pClazz.getCanonicalName())
-        .get(TableSql.KEY_VERSION_ALGORITHM)));
-    pTableSql.setConstraint(this.mngSettings.getClassesSettings().get(pClazz
-      .getCanonicalName()).get(TableSql.KEY_CONSTRAINT));
-    pTableSql.setIdName(this.mngSettings.getClassesSettings().get(pClazz
-      .getCanonicalName()).get(TableSql.KEY_ID_NAME));
-    pTableSql.setIdDefinitionForeign(this.mngSettings.getClassesSettings()
-      .get(pClazz.getCanonicalName()).get(TableSql.KEY_ID_DEFINITION_FOREIGN));
-    pTableSql.setIsFullDefinedInXml("true".equals(this.mngSettings
-      .getClassesSettings().get(pClazz.getCanonicalName())
-        .get(TableSql.KEY_IF_FULL_DEFINE_IN_XML)));
+      .getClassesSettings().get(pClazz)
+        .get("versionAlgorithm")));
+    pTableSql.setIdColumnsNames(this.mngSettings.getClassesSettings()
+      .get(pClazz).get("idColumnsNames").split(","));
+    pTableSql.setIdFieldName(this.mngSettings.getClassesSettings().get(pClazz)
+      .get("idFieldName"));
+    if (pTableSql.getIdFieldName() == null) {
+      throw new ExceptionWithCode(ExceptionWithCode.CONFIGURATION_MISTAKE,
+        "Where is no field ID name for class: " + pClazz.getSimpleName());
+    }
+    pTableSql.setOwnerFieldName(this.mngSettings.getClassesSettings()
+      .get(pClazz).get("ownerFieldName"));
     Field[] fields = getUtlReflection().retrieveFields(pClazz);
     for (Field field : fields) {
-      if (this.mngSettings.getFieldsSettings().get(pClazz
-        .getCanonicalName()) == null) {
-        throw new ExceptionWithCode(ExceptionWithCode.CONFIGURATION_MISTAKE,
-          "There is no fields settings for class " + pClazz);
-      }
-      boolean isExcludedFromClass = false;
-      String strExluded = this.mngSettings.getClassesSettings().get(pClazz
-          .getCanonicalName()).get(MngSettings.KEY_EXCLUDED_FIELDS);
-      if (strExluded != null && strExluded.contains(field.getName())) {
-        isExcludedFromClass = true;
-      }
-      if (!isExcludedFromClass && this.mngSettings.getFieldsSettings()
-        .get(pClazz.getCanonicalName()).get(field.getName()) != null) {
+      if (this.mngSettings.getFieldsSettings()
+        .get(pClazz).get(field.getName()) != null) {
         FieldSql fieldSql = new FieldSql();
-        String definition = this.mngSettings.getFieldsSettings().get(pClazz
-          .getCanonicalName()).get(field.getName())
-            .get(FieldSql.KEY_DEFINITION);
+        String definition = this.mngSettings.getFieldsSettings().get(pClazz)
+          .get(field.getName())
+            .get("definition");
         if (definition != null) {
-          String isNullableStr = this.mngSettings.getFieldsSettings().get(pClazz
-            .getCanonicalName()).get(field.getName()).get("isNullable");
+          String isNullableStr = this.mngSettings.getFieldsSettings()
+            .get(pClazz).get(field.getName()).get("isNullable");
           if (!Boolean.valueOf(isNullableStr)
             && !definition.contains("not null")) {
             definition += " not null";
           }
         }
         fieldSql.setDefinition(definition);
-        fieldSql.setForeignEntity(this.mngSettings.getFieldsSettings()
-          .get(pClazz.getCanonicalName()).get(field.getName())
-            .get(FieldSql.KEY_FOREIGN_ENTITY));
         pTableSql.getFieldsMap().put(field.getName(), fieldSql);
       }
     }
@@ -874,164 +870,47 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
   /**
    * <p>Retrieve entity from DB.</p>
    * @param <T> entity type
+   * @param pAddParam additional param, e.g. already retrieved TableSql
    * @param pEntityClass entity class
-   * @param recordSet record set
-   * @return entity
+   * @param pQuery SELECT statement
+   * @return entity or null
    * @throws Exception - an exception
    **/
-  public final <T> T retrieveEntity(
-    final Class<T> pEntityClass,
-      final IRecordSet<RS> recordSet) throws Exception {
+  public final <T> T retrieveEntity(final Map<String, Object> pAddParam,
+    final Class<T> pEntityClass, final String pQuery) throws Exception {
     T entity = null;
-    TableSql tableSql = getTablesMap().get(
-      pEntityClass.getSimpleName());
-    Constructor<T> constructor = pEntityClass.getDeclaredConstructor();
-    entity = constructor.newInstance();
-    for (Map.Entry<String, FieldSql> entry
-      : tableSql.getFieldsMap().entrySet()) {
-      String columnAlias = pEntityClass.getSimpleName().toUpperCase()
-        + entry.getKey().toUpperCase();
-      Field field = getUtlReflection().retrieveField(pEntityClass,
-        entry.getKey());
-      if (entry.getValue().getForeignEntity() != null) {
-        TableSql tableSqlFrn = getTablesMap().
-          get(entry.getValue().getForeignEntity());
-        Constructor<?> constructorFrn = field.getType()
-          .getDeclaredConstructor();
-        Object entityFrn = constructorFrn.newInstance();
-        for (String fldNameFrn
-          : tableSqlFrn.getFieldsMap().keySet()) {
-          String columnAliasFrn = entry.getKey()
-            .toUpperCase() + fldNameFrn.toUpperCase();
-          Field fieldFrn = getUtlReflection().retrieveField(field.getType(),
-            fldNameFrn);
-          TableSql tableSqlFrnFrn = getTablesMap().
-            get(fieldFrn.getType().getSimpleName());
-          if (tableSqlFrnFrn != null) {
-            Constructor<?> constructorFrnFrn = fieldFrn.getType()
-              .getDeclaredConstructor();
-            Object entityFrnFrn = constructorFrnFrn.newInstance();
-            Field fieldFrnFrn = getUtlReflection()
-              .retrieveField(fieldFrn.getType(), tableSqlFrnFrn.getIdName());
-            if (!fillSimpleField(fieldFrnFrn, entityFrnFrn, columnAliasFrn,
-              recordSet)) {
-              String msg = "3nd level. There is no rule to fill ID "
-                + fieldFrnFrn.getName()
-                  + " of " + fieldFrnFrn.getType() + " in "
-                    + fieldFrn.getType();
-              throw new ExceptionWithCode(ExceptionWithCode.NOT_YET_IMPLEMENTED,
-                msg);
-            }
-            Object idFrnVal = fieldFrnFrn.get(entityFrnFrn);
-            if (idFrnVal != null) {
-              fieldFrn.setAccessible(true);
-              fieldFrn.set(entityFrn, entityFrnFrn);
-            }
-          } else if (!fillSimpleField(fieldFrn, entityFrn, columnAliasFrn,
-            recordSet)) {
-            String msg = "2nd level. There is no rule to fill field "
-              + fieldFrn.getName()
-              + " of " + fieldFrn.getType() + " in " + field.getType();
-            throw new ExceptionWithCode(ExceptionWithCode.NOT_YET_IMPLEMENTED,
-              msg);
-          }
-        }
-        Field fieldIdFrn = getUtlReflection()
-          .retrieveField(entityFrn.getClass(), tableSqlFrn.getIdName());
-        fieldIdFrn.setAccessible(true);
-        Object idFrnVal = fieldIdFrn.get(entityFrn);
-        if (idFrnVal != null) {
-          field.setAccessible(true);
-          field.set(entity, entityFrn);
-        }
-      } else if (!fillSimpleField(field, entity, columnAlias, recordSet)) {
-        String msg = "There is no rule to fill field "
-          + field.getName()
-          + " of " + field.getType() + " in " + pEntityClass;
-        throw new ExceptionWithCode(ExceptionWithCode.NOT_YET_IMPLEMENTED, msg);
+    IRecordSet<RS> recordSet = null;
+    try {
+      recordSet = getSrvDatabase().retrieveRecords(pQuery);
+      if (recordSet.moveToFirst()) {
+        entity = retrieveEntity(pAddParam, pEntityClass, recordSet);
+      }
+    } finally {
+      if (recordSet != null) {
+        recordSet.close();
       }
     }
     return entity;
   }
 
   /**
-   * <p>Fill entity field with reflection if it is simple type.</p>
-   * @param pField field
-   * @param pEntity entity
-   * @param pColumnAlias column alias
+   * <p>Retrieve entity from DB.</p>
+   * @param <T> entity type
+   * @param pAddParam additional params, e.g. already retrieved TableSql.
+   * @param pEntityClass entity class
    * @param pRecordSet record set
-   * @return boolean if field filled
-   * @throws Exception an exception
+   * @return entity
+   * @throws Exception - an exception
    **/
-  public final boolean fillSimpleField(final Field pField, final Object pEntity,
-    final String pColumnAlias,
+  public final <T> T retrieveEntity(final Map<String, Object> pAddParam,
+    final Class<T> pEntityClass,
       final IRecordSet<RS> pRecordSet) throws Exception {
-    pField.setAccessible(true);
-    if (tryToFillIdable(pField, pEntity, pColumnAlias,
-      pRecordSet, pField.getType())) {
-      return true;
-    }
-    if (pField.getType() == Double.class) {
-      pField.set(pEntity, getSrvRecordRetriever()
-        .getDouble(pRecordSet.getRecordSet(), pColumnAlias));
-    } else if (pField.getType() == Float.class) {
-      pField.set(pEntity, getSrvRecordRetriever()
-        .getFloat(pRecordSet.getRecordSet(), pColumnAlias));
-    } else if (pField.getType() == BigDecimal.class) {
-      pField.set(pEntity, getSrvRecordRetriever()
-        .getBigDecimal(pRecordSet.getRecordSet(), pColumnAlias));
-    } else if (pField.getType() == Date.class) {
-      pField.set(pEntity, getSrvRecordRetriever()
-        .getDate(pRecordSet.getRecordSet(), pColumnAlias));
-    } else if (Enum.class.isAssignableFrom(pField.getType())) {
-      Integer intVal = getSrvRecordRetriever()
-        .getInteger(pRecordSet.getRecordSet(), pColumnAlias);
-      Enum val = null;
-      if (intVal != null) {
-        val = (Enum) pField.getType().getEnumConstants()[intVal];
-      }
-      pField.set(pEntity, val);
-    } else if (pField.getType() == Boolean.class) {
-      pField.set(pEntity, getSrvRecordRetriever()
-        .getBoolean(pRecordSet.getRecordSet(), pColumnAlias));
-    } else {
-      return false;
-    }
-    return true;
-  }
-
-  /**
-   * <p>Fill entity field with reflection if it is simple,
-   * ID allawed type.</p>
-   * @param pField field
-   * @param pEntity entity
-   * @param pColumnAlias column alias
-   * @param pRecordSet record set
-   * @param pFieldType Field Type
-   * @return boolean if field filled
-   * @throws Exception an exception
-   **/
-  public final boolean tryToFillIdable(final Field pField, final Object pEntity,
-    final String pColumnAlias,
-      final IRecordSet<RS> pRecordSet,
-        final Type pFieldType) throws Exception {
-    if (Integer.class == pFieldType) {
-      pField.set(pEntity, getSrvRecordRetriever()
-      .getInteger(pRecordSet.getRecordSet(), pColumnAlias));
-      return true;
-    } else if (Long.class == pFieldType) {
-      pField.set(pEntity, getSrvRecordRetriever()
-      .getLong(pRecordSet.getRecordSet(), pColumnAlias));
-      return true;
-    } else if (String.class == pFieldType) {
-      String strVal = getSrvRecordRetriever()
-      .getString(pRecordSet.getRecordSet(), pColumnAlias);
-      getLogger().debug(ASrvOrm.class,
-        "SrvOrm: fill field/value: " + pColumnAlias + "/" + strVal);
-      pField.set(pEntity, strVal);
-      return true;
-    }
-    return false;
+    @SuppressWarnings("unchecked")
+    IFactorySimple<T> facEn = (IFactorySimple<T>) this.entitiesFactoriesFatory
+      .lazyGet(pAddParam, pEntityClass);
+    T entity = facEn.create(pAddParam);
+    this.fillerEntitiesFromRs.fill(pAddParam, entity, pRecordSet);
+    return entity;
   }
 
   /**
@@ -1040,249 +919,66 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
    * old version stored in column "itsVersionOld".
    * Used in INSERT/UPDATE statement.</p>
    * @param <T> entity type
-   * @param pEntity entity
+   * @param pAddParam additional params, expected "isOnlyId"-true for
+   * converting only ID field.
+    * @param pEntity entity
    * @return ColumnsValues type-safe map fieldName-fieldValue
    * @throws Exception an exception
    **/
   public final <T> ColumnsValues
-    evalColumnsValuesAndFillNewVersion(
+    evalColumnsValues(final Map<String, Object> pAddParam,
       final T pEntity) throws Exception {
-    ColumnsValues columnsValues = new ColumnsValues();
-    TableSql tableSql = getTablesMap().get(
-      pEntity.getClass().getSimpleName());
-    columnsValues.setIdName(tableSql.getIdName());
-    for (String fieldName : tableSql.getFieldsMap().keySet()) {
-      try {
-        Field field = getUtlReflection().retrieveField(pEntity.getClass(),
-          fieldName);
-        field.setAccessible(true);
-        TableSql tableSqlForeign = this.tablesMap.get(field.getType()
-          .getSimpleName());
-        if (tableSqlForeign != null) {
-          Object foreignEntity = field.get(pEntity);
-          Field fieldId = getUtlReflection().retrieveField(field.getType(),
-            tableSqlForeign.getIdName());
-          getLogger().debug(ASrvOrm.class, "ORM: try to fill column FID "
-            + fieldName + " with " + foreignEntity + " in "
-              + pEntity.getClass().getSimpleName() + " type PID: "
-                + fieldId.getType());
-          if (foreignEntity == null) {
-            Type fieldType = fieldId.getType();
-            if (fieldType == Integer.class) {
-              Integer value = null;
-              columnsValues.put(fieldName, value);
-            } else if (fieldType == Long.class) {
-              Long value = null;
-              columnsValues.put(fieldName, value);
-            } else if (fieldType == String.class) {
-              String value = null;
-              columnsValues.put(fieldName, value);
-            } else {
-              String msg =
-                "There is no rule to fill column foreign id value from field "
-                  + fieldName + " of " + field.getType() + " in " + pEntity;
-              throw new ExceptionWithCode(ExceptionWithCode.NOT_YET_IMPLEMENTED,
-                msg);
-            }
-          } else {
-            fieldId.setAccessible(true);
-            if (!tryToFillColumnIdable(columnsValues, fieldName, fieldId,
-              foreignEntity, fieldId.getType())) {
-              String msg =
-                "There is no rule to fill column foreign id value from field "
-                  + fieldName + " of " + field.getType() + " in " + pEntity;
-              throw new ExceptionWithCode(ExceptionWithCode.NOT_YET_IMPLEMENTED,
-                msg);
-            }
-          }
-        } else if (!fillSimpleColumnAndFillNewVersion(
-          columnsValues, field, pEntity)) {
-          String msg = "There is no rule to fill column value from field "
-            + fieldName
-            + " of " + field.getType() + " in " + pEntity;
-          throw new ExceptionWithCode(ExceptionWithCode.NOT_YET_IMPLEMENTED,
-            msg);
-        }
-      } catch (ExceptionWithCode e) {
-        throw e;
-      } catch (Exception e) {
-        String msg = "Can't fill field SQL from "
-          + fieldName + " in " + pEntity;
-        Exception exc = new Exception(msg);
-        exc.setStackTrace(e.getStackTrace());
-        throw exc;
-      }
+    TableSql tableSql = getTablesMap().get(pEntity.getClass().getSimpleName());
+    if (tableSql.getFieldsMap().containsKey(ISrvOrm.VERSION_NAME)) {
+      pAddParam.put("versionAlgorithm", tableSql.getVersionAlgorithm());
     }
-    return columnsValues;
+    @SuppressWarnings("unchecked")
+    IConverter<T, ColumnsValues> convToColVal = (IConverter<T, ColumnsValues>)
+      this.factoryCnvEntityToColumnsValues
+        .lazyGet(pAddParam, pEntity.getClass());
+    return convToColVal.convert(pAddParam, pEntity);
   }
 
   /**
-   * <p>Fill Android compatible values map of given entity and field.
-   * For "itsVersion" evaluate new one and set it in the entity,
-   * old version stored in column "itsVersionOld".
-   * Used in INSERT/UPDATE statement.</p>
+   * <p>Prepare ColumnsValues for update - remove PK field(s)
+   * and OLD_VERSION.</p>
    * @param <T> entity type
-   * @param pColumnsValues type-safe map fieldName-fieldValue
    * @param pEntity entity
-   * @param pField field reflection
-   * @return if filled
-   * @throws Exception an exception
+   * @param pColumnsValues ColumnsValues
+   * @throws Exception - an exception
    **/
-  public final <T> boolean fillSimpleColumnAndFillNewVersion(
+  public final <T> void prepareColumnValuesForUpdate(
     final ColumnsValues pColumnsValues,
-    final Field pField, final T pEntity) throws Exception {
-    if (ISrvOrm.VERSION_NAME.equals(pField.getName())) {
-      TableSql tableSql = getTablesMap().get(
-        pEntity.getClass().getSimpleName());
-      Long valueLngOld = (Long) pField.get(pEntity);
-      Long valueLngNew = null;
-      if (tableSql.getVersionAlgorithm() == 1) {
-        valueLngNew = new Date().getTime();
-      } else {
-        if (valueLngOld == null) {
-          valueLngNew = 1L;
-        } else {
-          valueLngNew = valueLngOld + 1;
-        }
-      }
-      pColumnsValues.put(pField.getName(), valueLngNew);
-      pColumnsValues.put(ISrvOrm.VERSIONOLD_NAME, valueLngOld);
-      pField.set(pEntity, valueLngNew);
-      return true;
+      final T pEntity) throws Exception {
+    //remove old version and ID columns:
+    pColumnsValues.getLongsMap().remove(ISrvOrm.VERSIONOLD_NAME);
+    TableSql tableSql = this.tablesMap.get(pEntity.getClass().getSimpleName());
+    for (String idFldNm : tableSql.getIdColumnsNames()) {
+      pColumnsValues.remove(idFldNm);
     }
-    if (tryToFillColumnIdable(pColumnsValues, pField.getName(), pField, pEntity,
-        pField.getType())) {
-      return true;
-    } else if (pField.getType() == Float.class) {
-      Float value = (Float) pField.get(pEntity);
-      pColumnsValues.put(pField.getName(), value);
-      return true;
-    } else if (pField.getType() == Double.class) {
-      Double value = (Double) pField.get(pEntity);
-      pColumnsValues.put(pField.getName(), value);
-      return true;
-    } else if (pField.getType() == BigDecimal.class) {
-      BigDecimal valueBigDecimal = (BigDecimal) pField.get(pEntity);
-      Double value;
-      if (valueBigDecimal == null) {
-        value = null;
-      } else {
-        value = valueBigDecimal.doubleValue();
-      }
-      pColumnsValues.put(pField.getName(), value);
-      return true;
-    } else if (pField.getType() == Date.class) {
-      Date valueDate = (Date) pField.get(pEntity);
-      Long value;
-      if (valueDate == null) {
-        value = null;
-      } else {
-        value = valueDate.getTime();
-      }
-      pColumnsValues.put(pField.getName(), value);
-      return true;
-    } else if (pField.getType() == Boolean.class) {
-      Boolean valueBool = (Boolean) pField.get(pEntity);
-      Integer value;
-      if (valueBool) {
-        value = 1;
-      } else {
-        value = 0;
-      }
-      pColumnsValues.put(pField.getName(), value);
-      return true;
-    } else if (Enum.class.isAssignableFrom(pField.getType())) {
-      Enum valEn = (Enum) pField.get(pEntity);
-      Integer value = null;
-      if (valEn != null) {
-        value = valEn.ordinal();
-      }
-      pColumnsValues.put(pField.getName(), value);
-      return true;
-    }
-    return false;
   }
 
   /**
-   * <p>Fill Android compatible values map of given entity and field
-   * of ID allowed type.</p>
+   * <p>Evaluate Where ID the entity.</p>
    * @param <T> entity type
-   * @param pColumnsValues type-safe map fieldName-fieldValue
-   * @param pColumnName Column Name
-   * @param pField field reflection
    * @param pEntity entity
-   * @param pFieldType field type
-   * @return if filled
+   * @param pColumnsValues columns values
+   * @return where conditions e.g. "itsId=1"
    * @throws Exception an exception
    **/
-  public final <T> boolean tryToFillColumnIdable(
-    final ColumnsValues pColumnsValues, final String pColumnName,
-      final Field pField, final T pEntity,
-        final Type pFieldType) throws Exception {
-    if (Integer.class == pFieldType) {
-      Integer valInt = (Integer) pField.get(pEntity);
-      pColumnsValues.put(pColumnName, valInt);
-      return true;
-    } else if (Long.class == pFieldType) {
-      Long valLn = (Long) pField.get(pEntity);
-      pColumnsValues.put(pColumnName, valLn);
-      return true;
-    } else if (String.class == pFieldType) {
-      String valStr = (String) pField.get(pEntity);
-      if (valStr != null && this.isNeedsToSqlEscape) {
-        valStr = srvSqlEscape.escape(valStr);
+  public final <T> String evalWhereId(
+    final T pEntity, final ColumnsValues pColumnsValues) throws Exception {
+    TableSql tableSql = this.tablesMap.get(pEntity.getClass().getSimpleName());
+    StringBuffer sbWhereId = new StringBuffer("");
+    for (int i = 0; i < tableSql.getIdColumnsNames().length; i++) {
+      if (i > 0) {
+        sbWhereId.append(" and ");
       }
-      pColumnsValues.put(pColumnName, valStr);
-      return true;
+      sbWhereId.append(pEntity.getClass().getSimpleName().toUpperCase()
+        + "." + tableSql.getIdColumnsNames()[i].toUpperCase() + "="
+          + pColumnsValues.evalSqlValue(tableSql.getIdColumnsNames()[i]));
     }
-    return false;
-  }
-
-  /**
-   * <p>Return owner field name in owned entity e.g. "itsInvoice"
-   * in invoiceLine.</p>
-   * @param pEntityOwnedClass Entity Owned Class
-   * @param pEntityOwnerClass Entity Owner Class
-   * @return owner field name
-   * @throws Exception an exception
-   **/
-  public final String evalOwnerFieldName(
-    final Class<?> pEntityOwnedClass,
-      final Class<?> pEntityOwnerClass) throws Exception {
-    TableSql tableSqlEod = getTablesMap().get(pEntityOwnedClass
-      .getSimpleName());
-    String ownerFieldName = null;
-    for (Map.Entry<String, FieldSql> entry : tableSqlEod.getFieldsMap()
-      .entrySet()) {
-      if (pEntityOwnerClass
-      .getSimpleName().equals(entry.getValue().getForeignEntity())) {
-        ownerFieldName = entry.getKey();
-      }
-    }
-    if (ownerFieldName == null) {
-      String msg = "Can't find owner field name for subentity/entity: "
-        + pEntityOwnedClass + "/" + pEntityOwnerClass;
-      throw new ExceptionWithCode(ExceptionWithCode.CONFIGURATION_MISTAKE, msg);
-    }
-    return ownerFieldName;
-  }
-
-  /**
-   * <p>Init database birth and ID birth of entity.</p>
-   * @param pEntity entity
-   * @throws Exception an exception
-   **/
-  public final void initPersistableBase(final Object pEntity) throws Exception {
-    Field fieldIdDbBirth = getUtlReflection().retrieveField(pEntity.getClass(),
-      APersistableBase.ID_DATABASE_BIRTH_NAME);
-    fieldIdDbBirth.setAccessible(true);
-    if (getSrvDatabase() != null) { //for test purpose, otherwise it must be set
-      fieldIdDbBirth.set(pEntity, getSrvDatabase().getIdDatabase());
-    }
-    Field fieldIdBirth = getUtlReflection().retrieveField(pEntity.getClass(),
-      APersistableBase.ID_BIRTH_NAME);
-    fieldIdBirth.setAccessible(true);
-    fieldIdBirth.set(pEntity, null);
+    return sbWhereId.toString();
   }
 
   /**
@@ -1295,15 +991,52 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
    **/
   public final <T> String evalWhereForUpdate(
     final T pEntity, final ColumnsValues pColumnsValues) throws Exception {
-    String whereVer = "";
     if (pColumnsValues.ifContains(ISrvOrm.VERSION_NAME)) {
-      whereVer = " and ITSVERSION="
-        + pColumnsValues.evalSqlValue(ISrvOrm.VERSIONOLD_NAME);
+      return evalWhereId(pEntity, pColumnsValues) + " and " + ISrvOrm
+        .VERSION_NAME.toUpperCase() + "=" + pColumnsValues
+          .evalSqlValue(ISrvOrm.VERSIONOLD_NAME);
+    } else {
+      return evalWhereId(pEntity, pColumnsValues);
     }
-    String idName = getTablesMap().get(pEntity.getClass()
-      .getSimpleName()).getIdName();
-    return idName.toUpperCase() + "="
-      + pColumnsValues.evalSqlValue(idName) + whereVer;
+  }
+
+
+  /**
+   * <p>Evaluate where for field (e.g. invoice lines for invoice).</p>
+   * @param <T> - type of entity
+   * @param pAddParam additional param
+   * @param pEntity - Entity e.g. an invoice line with filled invoice
+   * @param pFieldFor - Field For name e.g. "invoice"
+   * @return where clause e.g. " where invoice=1"
+   * @throws Exception - an exception
+   */
+  public final <T> String evalWhereForField(
+    final Map<String, Object> pAddParam,
+      final T pEntity, final String pFieldFor) throws Exception {
+    String[] fieldsNames = new String[] {pFieldFor};
+    pAddParam.put("fieldsNames", fieldsNames);
+    ColumnsValues columnsValues = evalColumnsValues(pAddParam, pEntity);
+    pAddParam.remove("fieldsNames");
+    TableSql tableSql = this.tablesMap.get(pEntity.getClass().getSimpleName());
+    FieldSql fldSql = tableSql.getFieldsMap().get(pFieldFor);
+    StringBuffer sbWhere = new StringBuffer(" where ");
+    String tableNm = pEntity.getClass().getSimpleName().toUpperCase();
+    if (fldSql.getTypeField().equals(ETypeField.COMPOSITE_FK_PK)
+      || fldSql.getTypeField().equals(ETypeField.COMPOSITE_FK)) {
+      TableSql tableSqlFr = this.tablesMap.get(fldSql.getForeignEntity());
+      for (int i = 0; i < tableSqlFr.getIdColumnsNames().length; i++) {
+        if (i > 0) {
+          sbWhere.append(" and ");
+        }
+        sbWhere.append(tableNm + "." + tableSqlFr.getIdColumnsNames()[i]
+          .toUpperCase() + "=" + columnsValues
+            .evalObjectValue(tableSqlFr.getIdColumnsNames()[i]));
+      }
+    } else {
+      sbWhere.append(tableNm + "." + pFieldFor.toUpperCase() + "="
+        + columnsValues.evalObjectValue(pFieldFor));
+    }
+    return sbWhere.toString();
   }
 
   /**
@@ -1325,10 +1058,12 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
    * If all tables was created then execute insert.sql if it exist.
    * Then if not all table was created and upgrade_[current_version+1].sql
    * exist then execute it.</p>
+   * @param pAddParam additional param
    * @return if all tables has neen created or some added
    * @throws Exception - an exception
    **/
-  public final boolean initializeDatabase() throws Exception {
+  public final boolean initializeDatabase(
+    final Map<String, Object> pAddParam) throws Exception {
     String queryExistanceTable = this.mngSettings.getAppSettings()
       .get("checkTableExist");
     boolean ifCreatedOrAdded = false;
@@ -1381,7 +1116,7 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
         databaseInfo.setDatabaseId(getNewDatabaseId());
         databaseInfo.setDescription(this.mngSettings
           .getAppSettings().get("title"));
-        insertEntity(databaseInfo);
+        insertEntity(pAddParam, databaseInfo);
         String insertSql = loadString(dirPath + "insert.sql");
         if (insertSql != null) {
           getLogger().info(ASrvOrm.class, dirPath
@@ -1401,7 +1136,7 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
         getLogger().info(ASrvOrm.class, "tables already created.");
       }
       if (!ifAllTablesCreated) {
-        tryUgradeDatabase(dirPath + useSubFolder + "/");
+        tryUgradeDatabaseAnyWay(dirPath + useSubFolder + "/");
       }
     } finally {
       srvDatabase.releaseResources(); //close connection
@@ -1410,7 +1145,7 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
   }
 
   /**
-   * <p>Trying to upgrade database .</p>
+   * <p>Trying to upgrade database in single transaction.</p>
    * @param pUpgradeDir e.g. bs/beige-orm/sqlite
    * @throws Exception - an exception
    **/
@@ -1446,6 +1181,39 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
   }
 
   /**
+   * <p>Trying to upgrade database with transaction per line,
+   * if exception - it doesn't stop.
+   * In case when old database has no BEGINNINGINVENTORY,
+   * then it create it last version,
+   * but alter table for new version will fail, so whole update will fine.</p>
+   * @param pUpgradeDir e.g. bs/beige-orm/sqlite
+   * @throws Exception - an exception
+   **/
+  public final void tryUgradeDatabaseAnyWay(
+    final String pUpgradeDir) throws Exception {
+    Integer nextVersion = srvDatabase.getVersionDatabase() + 1;
+    String upgradeSqlName = "upgrade_" + nextVersion + ".sql";
+    String upgradeSql = loadString(pUpgradeDir + upgradeSqlName);
+    while (upgradeSql != null) {
+      getLogger().info(ASrvOrm.class, pUpgradeDir
+        + upgradeSqlName + " found, try to execute.");
+      for (String upgradeSingle : upgradeSql.split("\n")) {
+        if (upgradeSingle.trim().length() > 1
+          && !upgradeSingle.startsWith("/")) {
+          try {
+            srvDatabase.executeQuery(upgradeSingle);
+          } catch (Exception ex) {
+            ex.printStackTrace();
+          }
+        }
+      }
+      nextVersion++;
+      upgradeSqlName = "upgrade_" + nextVersion + ".sql";
+      upgradeSql = loadString(pUpgradeDir + upgradeSqlName);
+    }
+  }
+
+  /**
    * <p>Evaluate SQL create table statement.</p>
    * @param pEntityName entity simple name
    * @return SQL create table
@@ -1455,113 +1223,25 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
     StringBuffer result =
       new StringBuffer("create table " + pEntityName.toUpperCase() + " (\n");
     boolean isFirstField = true;
-    for (String fieldName : tableSql.getFieldsMap().keySet()) {
-      if (isFirstField) {
-        isFirstField = false;
-      } else {
-        result.append(",\n");
+    for (Map.Entry<String, FieldSql> entry
+      : tableSql.getFieldsMap().entrySet()) {
+      if (!(entry.getValue().getTypeField().equals(ETypeField.COMPOSITE_FK)
+        || entry.getValue().getTypeField()
+          .equals(ETypeField.COMPOSITE_FK_PK))) {
+        if (isFirstField) {
+          isFirstField = false;
+        } else {
+          result.append(",\n");
+        }
+        result.append(entry.getKey().toUpperCase() + " "
+          + tableSql.getFieldsMap().get(entry.getKey()).getDefinition());
       }
-      result.append(fieldName.toUpperCase() + " "
-        + tableSql.getFieldsMap().get(fieldName).getDefinition());
     }
     if (tableSql.getConstraint() != null) {
       result.append(",\n" + tableSql.getConstraint());
     }
     result.append(");\n");
     return result.toString();
-  }
-
-  /**
-   * <p>Evaluate common(without WHERE) SQL SELECT
-   * statement for entity type.</p>
-   * @param <T> entity type
-   * @param pEntityClass entity class
-   * @return String SQL DML query
-   * @throws Exception - an exception
-   **/
-  public final <T> String evalSqlSelect(
-    final Class<T> pEntityClass) throws Exception {
-    String tableName = pEntityClass.getSimpleName().toUpperCase();
-    StringBuffer result =
-      new StringBuffer("select ");
-    StringBuffer joints =
-      new StringBuffer();
-    boolean isFirstField = true;
-    TableSql tableSql = getTablesMap().get(pEntityClass.getSimpleName());
-    if (tableSql == null) {
-      throw new ExceptionWithCode(ExceptionWithCode.CONFIGURATION_MISTAKE,
-        "where_is_no_table_def_for::" + pEntityClass.getSimpleName());
-    }
-    int idx = 0;
-    for (Map.Entry<String, FieldSql> entry
-      : tableSql.getFieldsMap().entrySet()) {
-      if (isFirstField) {
-        isFirstField = false;
-      } else {
-        result.append(", ");
-      }
-      if (idx++ == 2) {
-        result.append("\n");
-        idx = 0;
-      }
-      if (entry.getValue().getForeignEntity() == null) {
-          String columnName = tableName + entry.getKey().toUpperCase();
-          result.append(tableName + "."
-            + entry.getKey().toUpperCase() + " as " + columnName);
-      } else {
-        TableSql foreignTableSql = getTablesMap()
-          .get(entry.getValue().getForeignEntity());
-        String tableForeign = entry.getValue().getForeignEntity().toUpperCase();
-        String fieldFrAndTbFrAlias = entry.getKey().toUpperCase();
-        joints.append(" left join " + tableForeign + " as "
-          + fieldFrAndTbFrAlias + " on " + tableName + "."
-          + fieldFrAndTbFrAlias + "=" + fieldFrAndTbFrAlias
-          + "." + foreignTableSql.getIdName().toUpperCase());
-        boolean isForFirstField = true;
-        for (Map.Entry<String, FieldSql> entryFor
-          : foreignTableSql.getFieldsMap().entrySet()) {
-          if (isForFirstField) {
-            isForFirstField = false;
-          } else {
-            result.append(", ");
-          }
-          if (idx++ == 2) {
-            result.append("\n");
-            idx = 0;
-          }
-          String columnForName = fieldFrAndTbFrAlias
-            + entryFor.getKey().toUpperCase();
-          result.append(fieldFrAndTbFrAlias + "."
-            + entryFor.getKey().toUpperCase() + " as " + columnForName);
-        }
-      }
-    }
-    result.append("\nfrom " + tableName + joints);
-    return result.toString();
-  }
-
-  /**
-   * <p>Evaluate SQL SELECT statement for the entity with ID.</p>
-   * @param <T> entity type
-   * @param pEntityClass entity class
-   * @param pId ID
-   * @return String SQL DML query
-   * @throws Exception - an exception
-   **/
-  public final <T> String evalSqlSelect(
-    final Class<T> pEntityClass,
-      final Object pId) throws Exception {
-    TableSql tableSql = this.getTablesMap().get(pEntityClass.getSimpleName());
-    String idStr;
-    if (pId instanceof String) {
-      idStr = "'" + pId.toString() + "'";
-    } else {
-      idStr = pId.toString();
-    }
-    return evalSqlSelect(pEntityClass)
-      + " where " + pEntityClass.getSimpleName().toUpperCase()
-        + "." + tableSql.getIdName().toUpperCase() + "="
-          + idStr + ";\n";
   }
 
   /**
@@ -1592,27 +1272,19 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
 
   //Simple getters and setters:
   /**
-   * <p>Getter for isNeedsToSqlEscape.</p>
-   * @return boolean
-   **/
-  public final boolean getIsNeedsToSqlEscape() {
-    return this.isNeedsToSqlEscape;
-  }
-
-  /**
-   * <p>Setter for isNeedsToSqlEscape.</p>
-   * @param pIsNeedsToSqlEscape reference
-   **/
-  public final void setIsNeedsToSqlEscape(final boolean pIsNeedsToSqlEscape) {
-    this.isNeedsToSqlEscape = pIsNeedsToSqlEscape;
-  }
-
-  /**
    * <p>Geter for utlReflection.</p>
    * @return UtlReflection
    **/
-  public final UtlReflection getUtlReflection() {
+  public final IUtlReflection getUtlReflection() {
     return this.utlReflection;
+  }
+
+  /**
+   * <p>Setter for utlReflection.</p>
+   * @param pUtlReflection reference
+   **/
+  public final void setUtlReflection(final IUtlReflection pUtlReflection) {
+    this.utlReflection = pUtlReflection;
   }
 
   /**
@@ -1622,39 +1294,6 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
    **/
   public final LinkedHashMap<String, TableSql> getTablesMap() {
     return this.tablesMap;
-  }
-
-  /**
-   * <p>Get recordset retriever.</p>
-   * @return recordset retriever
-   **/
-  public final ISrvRecordRetriever<RS> getSrvRecordRetriever() {
-    return this.srvRecordRetriever;
-  }
-
-  /**
-   * <p>Set recordset retriever.</p>
-   * @param pSrvRecordRetriever recordset retriever
-   **/
-  public final void setSrvRecordRetriever(
-    final ISrvRecordRetriever<RS> pSrvRecordRetriever) {
-    this.srvRecordRetriever = pSrvRecordRetriever;
-  }
-
-  /**
-   * <p>Geter for srvSqlEscape.</p>
-   * @return ISrvSqlEscape
-   **/
-  public final ISrvSqlEscape getSrvSqlEscape() {
-    return this.srvSqlEscape;
-  }
-
-  /**
-   * <p>Setter for srvSqlEscape.</p>
-   * @param pSrvSqlEscape reference
-   **/
-  public final void setSrvSqlEscape(final ISrvSqlEscape pSrvSqlEscape) {
-    this.srvSqlEscape = pSrvSqlEscape;
   }
 
   /**
@@ -1675,9 +1314,9 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
 
   /**
    * <p>Geter for mngSettings.</p>
-   * @return MngSettings
+   * @return IMngSettings
    **/
-  public final MngSettings getMngSettings() {
+  public final IMngSettings getMngSettings() {
     return this.mngSettings;
   }
 
@@ -1685,7 +1324,7 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
    * <p>Setter for mngSettings.</p>
    * @param pMngSettings reference/value
    **/
-  public final void setMngSettings(final MngSettings pMngSettings) {
+  public final void setMngSettings(final IMngSettings pMngSettings) {
     this.mngSettings = pMngSettings;
   }
 
@@ -1704,6 +1343,79 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
   public final void setHlpInsertUpdate(final HlpInsertUpdate pHlpInsertUpdate) {
     this.hlpInsertUpdate = pHlpInsertUpdate;
   }
+
+  /**
+   * <p>Getter for factoryCnvEntityToColumnsValues.</p>
+   * @return IFactoryAppBeansByClass<IConverter<?, ColumnsValues>>
+   **/
+  public final IFactoryAppBeansByClass<IConverter<?, ColumnsValues>>
+    getFactoryCnvEntityToColumnsValues() {
+    return this.factoryCnvEntityToColumnsValues;
+  }
+
+  /**
+   * <p>Setter for factoryCnvEntityToColumnsValues.</p>
+   * @param pFactoryCnvEntityToColumnsValues reference
+   **/
+  public final void setFactoryCnvEntityToColumnsValues(
+    final IFactoryAppBeansByClass<IConverter<?, ColumnsValues>>
+      pFactoryCnvEntityToColumnsValues) {
+    this.factoryCnvEntityToColumnsValues = pFactoryCnvEntityToColumnsValues;
+  }
+
+  /**
+   * <p>Getter for entitiesFactoriesFatory.</p>
+   * @return IFactoryAppBeansByClass<IFactorySimple<?>>
+   **/
+  public final IFactoryAppBeansByClass<IFactorySimple<?>>
+    getEntitiesFactoriesFatory() {
+    return this.entitiesFactoriesFatory;
+  }
+
+  /**
+   * <p>Setter for entitiesFactoriesFatory.</p>
+   * @param pEntitiesFactoriesFatory reference
+   **/
+  public final void setEntitiesFactoriesFatory(
+    final IFactoryAppBeansByClass<IFactorySimple<?>> pEntitiesFactoriesFatory) {
+    this.entitiesFactoriesFatory = pEntitiesFactoriesFatory;
+  }
+
+  /**
+   * <p>Getter for fillerEntitiesFromRs.</p>
+   * @return IFillerObjectsFrom<IRecordSet<RS>>
+   **/
+  public final IFillerObjectsFrom<IRecordSet<RS>> getFillerEntitiesFromRs() {
+    return this.fillerEntitiesFromRs;
+  }
+
+  /**
+   * <p>Setter for fillerEntitiesFromRs.</p>
+   * @param pFillerEntitiesFromRs reference
+   **/
+  public final void setFillerEntitiesFromRs(
+    final IFillerObjectsFrom<IRecordSet<RS>> pFillerEntitiesFromRs) {
+    this.fillerEntitiesFromRs = pFillerEntitiesFromRs;
+  }
+  /**
+   * <p>Getter for fctFillersObjectFields.</p>
+   * @return IFactoryAppBeansByClass<IFillerObjectFields<?>>
+   **/
+  public final IFactoryAppBeansByClass<IFillerObjectFields<?>>
+    getFctFillersObjectFields() {
+    return this.fctFillersObjectFields;
+  }
+
+  /**
+   * <p>Setter for fctFillersObjectFields.</p>
+   * @param pFctFillersObjectFields reference
+   **/
+  public final void setFctFillersObjectFields(
+    final IFactoryAppBeansByClass<IFillerObjectFields<?>>
+      pFctFillersObjectFields) {
+    this.fctFillersObjectFields = pFctFillersObjectFields;
+  }
+
 
   /**
    * <p>Geter for logger.</p>

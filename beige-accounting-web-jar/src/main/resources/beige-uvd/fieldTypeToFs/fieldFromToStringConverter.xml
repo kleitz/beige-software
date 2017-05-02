@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Beigesoft ™
+  Licensed under the Apache License, Version 2.0
+ 
+  You may obtain a copy of the License at
+ 
+  http://www.apache.org/licenses/LICENSE-2.0
+ -->
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Correspondence of Java types to field from/to string converter name. ORDER is essential, the LAST value will be used.</comment>
+<entry key="java.lang.Object">CnvTfsObject</entry><!--part name for composite ID converter-->
+<entry key="java.lang.Enum">CnvTfsEnum</entry><!--part name for enum converter-->
+<entry key="org.beigesoft.persistable.AHasIdLong">CnvTfsHasIdLong</entry><!--part name for CnvTfsHasId converter-->
+<entry key="org.beigesoft.persistable.APersistableBase">CnvTfsHasIdLong</entry><!--part name for CnvTfsHasId converter-->
+<entry key="org.beigesoft.persistable.AHasIdString">CnvTfsHasIdString</entry><!--part name for CnvTfsHasId converter-->
+<entry key="org.beigesoft.persistable.UserTomcat">CnvTfsHasIdString</entry><!--part name for CnvTfsHasId converter-->
+<entry key="org.beigesoft.persistable.UserRoleTomcat">CnvTfsHasIdComposite</entry><!--part name for CnvTfsHasId converter-->
+<entry key="java.math.BigDecimal">CnvTfsBigDecimal</entry>
+<entry key="java.lang.Integer">CnvTfsInteger</entry>
+<entry key="java.lang.Double">CnvTfsDouble</entry>
+<entry key="java.lang.Float">CnvTfsFloat</entry>
+<entry key="java.lang.Long">CnvTfsLong</entry>
+<entry key="java.lang.String">CnvTfsString</entry>
+<entry key="java.lang.Boolean">CnvTfsBoolean</entry>
+<entry key="java.util.Date">CnvTfsDateTime</entry>
+</properties>

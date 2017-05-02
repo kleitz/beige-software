@@ -29,11 +29,14 @@ import static org.junit.Assert.assertEquals;
 
 import org.beigesoft.persistable.UserJetty;
 import org.beigesoft.persistable.RoleJetty;
+import org.beigesoft.persistable.IdUserRoleJetty;
 import org.beigesoft.persistable.UserRoleJetty;
 import org.beigesoft.persistable.UserTomcat;
 import org.beigesoft.persistable.UserRoleTomcat;
+import org.beigesoft.persistable.IdUserRoleTomcat;
 import org.beigesoft.test.persistable.Department;
 import org.beigesoft.test.persistable.GoodVersionTime;
+import org.beigesoft.test.persistable.GoodsRating;
 import org.beigesoft.test.persistable.PersistableHead;
 import org.beigesoft.test.persistable.PersistableLine;
 import org.beigesoft.orm.model.PropertiesBase;
@@ -65,127 +68,152 @@ public class TestSimple<RS> {
     try {
       getLogger().info(TestSimple.class, "Start test simple");
       srvDatabase.setIsAutocommit(true);
-      srvOrm.initializeDatabase();
-      UserJetty userJetty = srvOrm.retrieveEntityWithConditions(UserJetty.class, "where ITSNAME='admin'");
+      Map<String, Object> addParam = new HashMap<String, Object>();
+      srvOrm.initializeDatabase(addParam);
+      UserJetty userJetty = srvOrm.retrieveEntityWithConditions(addParam, UserJetty.class, "where ITSNAME='admin'");
       if (userJetty == null) {
         userJetty = new UserJetty();
         userJetty.setIdDatabaseBirth(srvDatabase.getIdDatabase());
         userJetty.setItsName("admin");
         userJetty.setItsPassword("admin");
-        srvOrm.insertEntity(userJetty);
+        srvOrm.insertEntity(addParam, userJetty);
         getLogger().info(TestSimple.class, "jetty user admin has inserted");
       }
       assertNotNull(userJetty.getItsId());
       getLogger().info(TestSimple.class, "jetty user admin ID=" + userJetty.getItsId());
-      RoleJetty roleJettyAdmin = srvOrm.retrieveEntityWithConditions(RoleJetty.class, "where ITSNAME='admin'");
+      RoleJetty roleJettyAdmin = srvOrm.retrieveEntityWithConditions(addParam, RoleJetty.class, "where ITSNAME='admin'");
       if (roleJettyAdmin == null) {
         roleJettyAdmin = new RoleJetty();
         roleJettyAdmin.setIdDatabaseBirth(srvDatabase.getIdDatabase());
         roleJettyAdmin.setItsName("admin");
-        srvOrm.insertEntity(roleJettyAdmin);
+        srvOrm.insertEntity(addParam, roleJettyAdmin);
         getLogger().info(TestSimple.class, "jetty role admin has inserted");
       }
       assertNotNull(roleJettyAdmin.getItsId());
       getLogger().info(TestSimple.class, "jetty role admin ID=" + roleJettyAdmin.getItsId());
-      RoleJetty roleJettyUser = srvOrm.retrieveEntityWithConditions(RoleJetty.class, "where ITSNAME='user'");
+      RoleJetty roleJettyUser = srvOrm.retrieveEntityWithConditions(addParam, RoleJetty.class, "where ITSNAME='user'");
       if (roleJettyUser == null) {
         roleJettyUser = new RoleJetty();
         roleJettyUser.setIdDatabaseBirth(srvDatabase.getIdDatabase());
         roleJettyUser.setItsName("user");
-        srvOrm.insertEntity(roleJettyUser);
+        srvOrm.insertEntity(addParam, roleJettyUser);
         getLogger().info(TestSimple.class, "jetty role user has inserted");
       }
       assertNotNull(roleJettyUser.getItsId());
       getLogger().info(TestSimple.class, "jetty role user ID=" + roleJettyUser.getItsId());
-      List<RoleJetty> lstroleJet = srvOrm.retrieveList(RoleJetty.class);
+      List<RoleJetty> lstroleJet = srvOrm.retrieveList(addParam, RoleJetty.class);
       assertEquals(2, lstroleJet.size());
       getLogger().info(TestSimple.class, "jetty roles list:");
       for (RoleJetty rj : lstroleJet) {
         getLogger().info(TestSimple.class, "rj id: " + rj.getItsId());
         getLogger().info(TestSimple.class, "rj name: " + rj.getItsName());
       }
-      roleJettyAdmin = srvOrm.retrieveEntityById(RoleJetty.class, roleJettyAdmin.getItsId());
+      roleJettyAdmin = srvOrm.retrieveEntity(addParam, roleJettyAdmin);
       assertEquals("admin", roleJettyAdmin.getItsName());
-      String whereUrj = "where ITSUSER=" + userJetty.getItsId() + " and ITSROLE=" + roleJettyAdmin.getItsId();
-      UserRoleJetty userRoleJetty = srvOrm.retrieveEntityWithConditions(UserRoleJetty.class,
-        whereUrj);
+      UserRoleJetty urj = new UserRoleJetty();
+      urj.setItsUser(userJetty);
+      urj.setItsRole(roleJettyAdmin);
+      UserRoleJetty userRoleJetty = srvOrm.retrieveEntity(addParam, urj);
       if (userRoleJetty == null) {
         userRoleJetty = new UserRoleJetty();
         userRoleJetty.setItsUser(userJetty);
         userRoleJetty.setItsRole(roleJettyAdmin);
-        srvOrm.insertEntity(userRoleJetty);
+        srvOrm.insertEntity(addParam, userRoleJetty);
         getLogger().info(TestSimple.class, "jetty user role admin-admin has inserted");
       }
-      userRoleJetty = srvOrm.retrieveEntityWithConditions(UserRoleJetty.class, whereUrj);
+      userRoleJetty = srvOrm.retrieveEntity(addParam, urj);
       assertEquals(roleJettyAdmin.getItsId(), userRoleJetty.getItsRole().getItsId());
       assertEquals(userJetty.getItsId(), userRoleJetty.getItsUser().getItsId());
-      UserTomcat userTomcat = srvOrm.retrieveEntityWithConditions(UserTomcat.class, "where ITSUSER='admin'");
+      UserRoleJetty userRoleJetty2 = srvOrm.retrieveEntityById(addParam, UserRoleJetty.class, urj.getItsId());
+      assertEquals(roleJettyAdmin.getItsId(), userRoleJetty2.getItsRole().getItsId());
+      assertEquals(userJetty.getItsId(), userRoleJetty2.getItsUser().getItsId());
+      UserTomcat userTomcat = new UserTomcat();
+      userTomcat.setItsId("admin");
+      userTomcat = srvOrm.retrieveEntity(addParam, userTomcat);
       if (userTomcat == null) {
         userTomcat = new UserTomcat();
         userTomcat.setItsUser("admin");
         userTomcat.setItsPassword("admin");
-        srvOrm.insertEntity(userTomcat);
+        srvOrm.insertEntity(addParam, userTomcat);
         getLogger().info(TestSimple.class, "tomcat user admin has inserted");
       }
       assertNotNull(userTomcat.getItsId());
       getLogger().info(TestSimple.class, "tomcat user admin ID=" + userTomcat.getItsUser());
-      UserRoleTomcat userRoleTomcat = srvOrm.retrieveEntityWithConditions(UserRoleTomcat.class,
-        "where ITSUSER.ITSUSER='" + userTomcat.getItsUser() + "' and ITSROLE='admin'");
+      UserRoleTomcat urt = new UserRoleTomcat();
+      urt.setItsUser(userTomcat);
+      urt.setItsRole("admin");
+      UserRoleTomcat userRoleTomcat = srvOrm.retrieveEntity(addParam, urt);
       if (userRoleTomcat == null) {
         userRoleTomcat = new UserRoleTomcat();
         userRoleTomcat.setItsUser(userTomcat);
         userRoleTomcat.setItsRole("admin");
-        srvOrm.insertEntity(userRoleTomcat);
+        srvOrm.insertEntity(addParam, userRoleTomcat);
         getLogger().info(TestSimple.class, "tomcat user role admin-admin has inserted");
       }
-      userRoleTomcat = srvOrm.retrieveEntityWithConditions(UserRoleTomcat.class,
-        "where ITSUSER.ITSUSER='" + userTomcat.getItsUser() + "' and ITSROLE='admin'");
+      userRoleTomcat = srvOrm.retrieveEntity(addParam, urt);
       assertEquals(userTomcat.getItsUser(), userRoleTomcat.getItsUser().getItsUser());
       assertEquals("admin", userRoleTomcat.getItsRole());
+      UserRoleTomcat userRoleTomcat2 = srvOrm.retrieveEntityById(addParam, UserRoleTomcat.class, urt.getItsId());
+      assertEquals(userTomcat.getItsUser(), userRoleTomcat2.getItsUser().getItsUser());
+      assertEquals("admin", userRoleTomcat2.getItsRole());
       
       srvDatabase.setIsAutocommit(false);
       srvDatabase.setTransactionIsolation(ISrvDatabase.TRANSACTION_READ_UNCOMMITTED);
       srvDatabase.beginTransaction();
-      Department department1 = srvOrm.retrieveEntityWithConditions(Department.class, "where ITSNAME='sellers'");
+      Department department1 = srvOrm.retrieveEntityWithConditions(addParam, Department.class, "where ITSNAME='sellers'");
       if (department1 == null) {
         department1 = new Department();
         department1.setItsName("sellers");
         department1.setIdDatabaseBirth(srvDatabase.getIdDatabase());
-        srvOrm.insertEntity(department1);
+        srvOrm.insertEntity(addParam, department1);
         getLogger().info(TestSimple.class, "department sellers inserted");
       }
-      Department department2 = srvOrm.retrieveEntityWithConditions(Department.class, "where ITSNAME='accountants'");
+      Department department2 = srvOrm.retrieveEntityWithConditions(addParam, Department.class, "where ITSNAME='accountants'");
       if (department2 == null) {
         department2 = new Department();
         department2.setItsName("accountants");
         department2.setIdDatabaseBirth(srvDatabase.getIdDatabase());
-        srvOrm.insertEntity(department2);
+        srvOrm.insertEntity(addParam, department2);
         getLogger().info(TestSimple.class, "department accountants inserted");
       }
-      department2 = srvOrm.retrieveEntityWithConditions(Department.class, "where ITSNAME='accountants'");
+      department2 = srvOrm.retrieveEntityWithConditions(addParam, Department.class, "where ITSNAME='accountants'");
       assertNotNull(department2);
-      List<Department> deptms = srvOrm.retrieveList(Department.class);
-      Integer rowCountDp = srvOrm.evalRowCountWhere(Department.class, "ITSNAME='sellers'");
+      List<Department> deptms = srvOrm.retrieveList(addParam, Department.class);
+      Integer rowCountDp = srvOrm.evalRowCountWhere(addParam, Department.class, "ITSNAME='sellers'");
       assertEquals(new Integer(1), rowCountDp);
-      GoodVersionTime itsProduct1 = srvOrm.retrieveEntityWithConditions(GoodVersionTime.class, "where ITSNAME='itsProduct1'");
+      GoodVersionTime itsProduct1 = srvOrm.retrieveEntityWithConditions(addParam, GoodVersionTime.class, "where ITSNAME='itsProduct1'");
       if (itsProduct1 == null) {
         itsProduct1 = new GoodVersionTime();
         itsProduct1.setItsName("itsProduct1");
         itsProduct1.setIdDatabaseBirth(srvDatabase.getIdDatabase());
         assertNull(itsProduct1.getItsVersion());
-        srvOrm.insertEntity(itsProduct1);
+        srvOrm.insertEntity(addParam, itsProduct1);
         getLogger().info(TestSimple.class, "itsProduct1 inserted");
       }
-      GoodVersionTime itsProduct2 = srvOrm.retrieveEntityWithConditions(GoodVersionTime.class, "where ITSNAME='itsProduct2'");
+      GoodsRating gr = new GoodsRating();
+      gr.setAverageRating(7);
+      gr.setGoods(itsProduct1);
+      GoodsRating prod1Rat = srvOrm.retrieveEntity(addParam, gr);
+      if (prod1Rat == null) {
+        prod1Rat = new GoodsRating();
+        prod1Rat.setGoods(itsProduct1);
+        prod1Rat.setAverageRating(7);
+        srvOrm.insertEntity(addParam, prod1Rat);
+        getLogger().info(TestSimple.class, "prod1Rat inserted");
+      }
+      getLogger().info(TestSimple.class, "try to get GoogsRating by ID - " + itsProduct1 + " ID " + itsProduct1.getItsId());
+      prod1Rat = srvOrm.retrieveEntityById(addParam, GoodsRating.class, itsProduct1);
+      assertEquals(prod1Rat.getAverageRating(), gr.getAverageRating());
+      GoodVersionTime itsProduct2 = srvOrm.retrieveEntityWithConditions(addParam, GoodVersionTime.class, "where ITSNAME='itsProduct2'");
       if (itsProduct2 == null) {
         itsProduct2 = new GoodVersionTime();
         itsProduct2.setItsName("itsProduct2");
         itsProduct2.setIdDatabaseBirth(srvDatabase.getIdDatabase());
         assertNull(itsProduct2.getItsVersion());
-        srvOrm.insertEntity(itsProduct2);
+        srvOrm.insertEntity(addParam, itsProduct2);
         getLogger().info(TestSimple.class, "itsProduct2 inserted");
       }
-      PersistableHead persistableHead1 = srvOrm.retrieveEntityWithConditions(PersistableHead.class, "where ITSDEPARTMENT=" + department1.getItsId());
+      PersistableHead persistableHead1 = srvOrm.retrieveEntityWithConditions(addParam, PersistableHead.class, "where ITSDEPARTMENT=" + department1.getItsId());
       SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
       Date itsDate = dateFormat.parse("01/01/2016");
       getLogger().info(TestSimple.class, "persHead date=" + itsDate);
@@ -207,14 +235,15 @@ public class TestSimple<RS> {
         persistableHead1.setItsInteger(itsInteger);
         persistableHead1.setItsLong(itsLong);
         assertNull(persistableHead1.getItsId());
-        srvOrm.insertEntity(persistableHead1);
+        srvOrm.insertEntity(addParam, persistableHead1);
         getLogger().info(TestSimple.class, "persistableHead1 has inserted");
-        persistableHead1 = srvOrm.retrieveEntityWithConditions(PersistableHead.class, "where ITSDEPARTMENT=" + department1.getItsId());
+        persistableHead1 = srvOrm.retrieveEntityWithConditions(addParam, PersistableHead.class, "where ITSDEPARTMENT=" + department1.getItsId());
       }
       assertNotNull(persistableHead1.getItsId());
       Long itsId = persistableHead1.getItsId();
-      persistableHead1 = null;
-      persistableHead1 = srvOrm.retrieveEntityById(PersistableHead.class, itsId);
+      persistableHead1 = new PersistableHead();
+      persistableHead1.setItsId(itsId);
+      persistableHead1 = srvOrm.retrieveEntity(addParam, persistableHead1);
       assertFalse(persistableHead1.getIsClosed());
       assertEquals(EStatus.STATUS_B, persistableHead1.getItsStatus());
       assertEquals(itsDouble, persistableHead1.getItsDouble());
@@ -239,16 +268,19 @@ public class TestSimple<RS> {
       persistableHead1.setItsFloat(itsFloat1);
       persistableHead1.setItsInteger(itsInteger1);
       persistableHead1.setItsLong(itsLong1);
-      srvOrm.updateEntity(persistableHead1);
-      persistableHead1 = null;
-      persistableHead1 = srvOrm.retrieveEntityById(PersistableHead.class, itsId);
+      srvOrm.updateEntity(addParam, persistableHead1);
+      persistableHead1 = new PersistableHead();
+      persistableHead1.setItsId(itsId);
+      persistableHead1 = srvOrm.retrieveEntity(addParam, persistableHead1);
       assertEquals(itsDouble1, persistableHead1.getItsDouble());
       assertEquals(itsFloat1, persistableHead1.getItsFloat());
       assertEquals(itsLong1, persistableHead1.getItsLong());
       assertEquals(itsInteger1, persistableHead1.getItsInteger());
       assertEquals(itsDate1, persistableHead1.getItsDate());
       assertEquals(itsTotal1, persistableHead1.getItsTotal());
-      persistableHead1.setPersistableLines(srvOrm.retrieveEntityOwnedlist(PersistableLine.class, persistableHead1));
+      PersistableLine persistableLine = new PersistableLine();
+      persistableLine.setPersistableHead(persistableHead1);
+      persistableHead1.setPersistableLines(srvOrm.retrieveListForField(addParam, persistableLine, "persistableHead"));
       BigDecimal itsPrice1 = new BigDecimal("2.33");
       BigDecimal itsQuantity1 = new BigDecimal("2");
       BigDecimal itsQuantity2 = new BigDecimal("4");
@@ -261,7 +293,7 @@ public class TestSimple<RS> {
         pl1.setItsPrice(itsPrice1);
         pl1.setItsQuantity(itsQuantity1);
         pl1.setItsTotal(itsPrice1.multiply(itsQuantity1));
-        srvOrm.insertEntity(pl1);
+        srvOrm.insertEntity(addParam, pl1);
         getLogger().info(TestSimple.class, "persLine1 has inserted");
         persistableHead1.getPersistableLines().add(pl1);
         PersistableLine pl2 = new PersistableLine();
@@ -271,7 +303,7 @@ public class TestSimple<RS> {
         pl2.setItsPrice(itsPrice2);
         pl2.setItsQuantity(itsQuantity2);
         pl2.setItsTotal(itsPrice2.multiply(itsQuantity2));
-        srvOrm.insertEntity(pl2);
+        srvOrm.insertEntity(addParam, pl2);
         persistableHead1.getPersistableLines().add(pl2);
         getLogger().info(TestSimple.class, "persLine2 has inserted");
       } else {
@@ -282,7 +314,7 @@ public class TestSimple<RS> {
         assertNull(
           persistableHead1.getPersistableLines().get(1).getPersistableHead().getItsDepartment().getItsName());
       }
-      Integer rowCountPl = srvOrm.evalRowCount(PersistableLine.class);
+      Integer rowCountPl = srvOrm.evalRowCount(addParam, PersistableLine.class);
       assertEquals(new Integer(2), rowCountPl);
       assertEquals(2,
         persistableHead1.getPersistableLines().size());
@@ -304,9 +336,9 @@ public class TestSimple<RS> {
       persistableHead1.setItsFloat(itsFloat);
       persistableHead1.setItsInteger(itsInteger);
       persistableHead1.setItsLong(itsLong);
-      srvOrm.updateEntity(persistableHead1);
+      srvOrm.updateEntity(addParam, persistableHead1);
       //new pershead:
-      PersistableHead persistableHead2 = srvOrm.retrieveEntityWithConditions(PersistableHead.class, "where ITSDEPARTMENT=" + department2.getItsId());
+      PersistableHead persistableHead2 = srvOrm.retrieveEntityWithConditions(addParam, PersistableHead.class, "where ITSDEPARTMENT=" + department2.getItsId());
       if (persistableHead2 == null) {
         persistableHead2 = new PersistableHead();
         persistableHead2.setIdDatabaseBirth(srvDatabase.getIdDatabase());
@@ -318,7 +350,7 @@ public class TestSimple<RS> {
         persistableHead2.setItsFloat(211.434f);
         persistableHead2.setItsInteger(2441);
         persistableHead2.setItsLong(2544l);
-        srvOrm.insertEntity(persistableHead2);
+        srvOrm.insertEntity(addParam, persistableHead2);
         getLogger().info(TestSimple.class, "persistableHead2 has inserted");
       }
       assertEquals(null, persistableHead2.getItsStatus());
@@ -332,8 +364,9 @@ public class TestSimple<RS> {
       assertNull(caces.getItsVersion());
       getLogger().info(TestSimple.class, "caces ID was " + caces.getItsId());
       getLogger().info(TestSimple.class, "caces version was " + caces.getItsVersion());
-      srvOrm.insertEntity(caces);
+      srvOrm.insertEntity(addParam, caces);
       getLogger().info(TestSimple.class, "caces inserted");
+      //caces = srvOrm.retrieveEntity(null, caces); //refresh
       Long cacesId = caces.getItsId();
       Long cacesVer = caces.getItsVersion();
       assertNotNull(cacesId);
@@ -345,17 +378,20 @@ public class TestSimple<RS> {
         Thread.sleep(10);
       } catch (Exception ex) {
       }
-      srvOrm.updateEntity(caces);
+      srvOrm.updateEntity(addParam, caces);
+      //caces = srvOrm.retrieveEntity(null, caces); //refresh
       Long cacesVerUp = caces.getItsVersion();
       getLogger().info(TestSimple.class, "caces version after update " + caces.getItsVersion());
       assertNotSame(cacesVer, cacesVerUp);
-      caces = null;
-      caces = srvOrm.retrieveEntityById(GoodVersionTime.class, cacesId);
+      caces = new GoodVersionTime();
+      caces.setItsId(cacesId);
+      caces = srvOrm.retrieveEntity(addParam, caces);
       assertEquals(cacesVerUp, caces.getItsVersion());
       srvDatabase.rollBackTransaction(goodVersionTimeSp);
       getLogger().info(TestSimple.class, "It has rollback of inserting caces");
-      caces = null;
-      caces = srvOrm.retrieveEntityById(GoodVersionTime.class, cacesId);
+      caces = new GoodVersionTime();
+      caces.setItsId(cacesId);
+      caces = srvOrm.retrieveEntity(addParam, caces);
       assertNull(caces);
       srvDatabase.commitTransaction();
       getLogger().info(TestSimple.class, "Transaction commit successfully, exit test simple");

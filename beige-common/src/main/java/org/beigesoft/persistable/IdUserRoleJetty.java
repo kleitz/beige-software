@@ -12,7 +12,7 @@ package org.beigesoft.persistable;
 
 /**
  * <pre>
- * Complex ID for UserRole for Jetty standard JDBC autentification.
+ * Composite ID for UserRole for Jetty standard JDBC autentification.
  * </pre>
  *
  * @author Yury Demidenko
@@ -20,14 +20,14 @@ package org.beigesoft.persistable;
 public class IdUserRoleJetty {
 
   /**
-   * <p>User ID.</p>
+   * <p>User.</p>
    **/
-  private Long idUser;
+  private UserJetty itsUser;
 
   /**
-   * <p>Role ID.</p>
+   * <p>User's role.</p>
    **/
-  private Long idRole;
+  private RoleJetty itsRole;
 
   /**
    * <p>Default constructor.</p>
@@ -36,45 +36,45 @@ public class IdUserRoleJetty {
   }
 
   /**
-   * <p>Usable constructor.</p>
-   * @param pIdUser user ID
-   * @param pIdRole role ID
+   * <p>Useful constructor.</p>
+   * @param pItsUser user ID
+   * @param pItsRole role ID
    **/
-  public IdUserRoleJetty(final Long pIdUser, final Long pIdRole) {
-    this.idUser = pIdUser;
-    this.idRole = pIdRole;
+  public IdUserRoleJetty(final UserJetty pItsUser, final RoleJetty pItsRole) {
+    this.itsUser = pItsUser;
+    this.itsRole = pItsRole;
   }
 
   //Simple getters and setters:
   /**
-   * <p>Geter for idUser;.</p>
-   * @return Long
+   * <p>Getter for itsUser.</p>
+   * @return UserJetty
    **/
-  public final Long getIdUser() {
-    return this.idUser;
+  public final UserJetty getItsUser() {
+    return this.itsUser;
   }
 
   /**
-   * <p>Setter for idUser.</p>
-   * @param pIdUser reference
+   * <p>Setter for itsUser.</p>
+   * @param pItsUser reference
    **/
-  public final void setIdUser(final Long pIdUser) {
-    this.idUser = pIdUser;
+  public final void setItsUser(final UserJetty pItsUser) {
+    this.itsUser = pItsUser;
   }
 
   /**
-   * <p>Geter for idRole.</p>
-   * @return Long
+   * <p>Getter for itsRole.</p>
+   * @return RoleJetty
    **/
-  public final Long getIdRole() {
-    return this.idRole;
+  public final RoleJetty getItsRole() {
+    return this.itsRole;
   }
 
   /**
-   * <p>Setter for idRole.</p>
-   * @param pIdRole role ID
+   * <p>Setter for itsRole.</p>
+   * @param pItsRole reference
    **/
-  public final void setIdRole(final Long pIdRole) {
-    this.idRole = pIdRole;
+  public final void setItsRole(final RoleJetty pItsRole) {
+    this.itsRole = pItsRole;
   }
 }

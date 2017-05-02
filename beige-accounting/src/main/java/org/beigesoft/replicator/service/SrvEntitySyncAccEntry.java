@@ -55,8 +55,8 @@ public class SrvEntitySyncAccEntry<RS> implements ISrvEntitySync {
    * @throws Exception - an exception
    **/
   @Override
-  public final boolean sync(final Object pEntity,
-    final Map<String, Object> pAddParam) throws Exception {
+  public final boolean sync(final Map<String, Object> pAddParam,
+    final Object pEntity) throws Exception {
     AccountingEntry entityPb = (AccountingEntry) pEntity;
     int currDbId = getSrvOrm().getIdDatabase();
     if (currDbId == entityPb.getIdDatabaseBirth()) {
@@ -69,13 +69,14 @@ public class SrvEntitySyncAccEntry<RS> implements ISrvEntitySync {
     String whereStr = " where " + tblNm + ".IDBIRTH=" + entityPb.getItsId()
       + " and " + tblNm + ".IDDATABASEBIRTH=" + entityPb.getIdDatabaseBirth();
     AccountingEntry entityPbDb = getSrvOrm()
-      .retrieveEntityWithConditions(entityPb.getClass(), whereStr);
+      .retrieveEntityWithConditions(pAddParam, entityPb.getClass(), whereStr);
     if (entityPb.getSourceType().equals(this.accountingEntriesCode)) {
       tblNm = AccountingEntries.class.getSimpleName().toUpperCase();
       whereStr = " where " + tblNm + ".IDBIRTH=" + entityPb.getSourceId()
       + " and " + tblNm + ".IDDATABASEBIRTH=" + entityPb.getIdDatabaseBirth();
       AccountingEntries accountingEntries = getSrvOrm()
-      .retrieveEntityWithConditions(AccountingEntries.class, whereStr);
+      .retrieveEntityWithConditions(pAddParam, AccountingEntries.class,
+        whereStr);
       if (accountingEntries == null) {
         throw new ExceptionWithCode(ExceptionWithCode.SOMETHING_WRONG,
           "Can't find foreign AccountingEntries {ID BIRTH, DB BIRTH}:"
@@ -91,7 +92,7 @@ public class SrvEntitySyncAccEntry<RS> implements ISrvEntitySync {
       entityPb.setItsId(entityPbDb.getItsId());
       isNew = false;
     }
-    getSrvBalance().handleNewAccountEntry(null, null,
+    getSrvBalance().handleNewAccountEntry(pAddParam, null, null,
       entityPb.getItsDate()); //This is for SrvBalanceStd only!!!
     return isNew;
   }

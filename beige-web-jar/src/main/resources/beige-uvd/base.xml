@@ -11,13 +11,19 @@
 <comment>Base Unified UI properties</comment>
 <entry key="classes">org.beigesoft.persistable.UserJetty,
   org.beigesoft.persistable.RoleJetty,
+  org.beigesoft.persistable.EmailConnect,
+  org.beigesoft.persistable.EmailStringProperty,
+  org.beigesoft.persistable.EmailIntegerProperty,
+  org.beigesoft.persistable.EmailMsg,
+  org.beigesoft.persistable.Eattachment,
+  org.beigesoft.persistable.Erecipient,
   org.beigesoft.persistable.UserTomcat</entry>
-<entry key="settingsKeysForClasses">wdgListActions, wdgOwnedList, wdgFilterOrder, wdgToString, wdgPick,
-  orderByDefault, orderByDescDefault, ownedLists, wdgOwnedListFooter, wdgListHeader, wdgListFooter, wdgFormActions, wdgPrint</entry>
+<entry key="settingsKeysForClasses">excludeFields, wdgListActions, wdgOwnedList, wdgFilterOrder, wdgToString, wdgPick,
+  orderByDefault, orderByDescDefault, ownedLists, wdgOwnedListFooter, wdgListHeader, wdgListFooter, wdgFormActions, wdgFormActionsDelete, wdgPrint</entry>
 <entry key="settingsKeysForFields">wdgNewForm, wdgEditForm, wdgDeleteForm,
   wdgToString, wdgFilter, wdgOrder, orderShowForm, orderPrintForm, orderPrintfullForm, orderPrintList, orderPrintfullList,
   orderShowList,<!-- (minus "-" no show, 1, 4... - order) -->
-  orderShowPicker, wdgInputWrapper, wdgToCellDetail, wdgToCellHeader
-  </entry>
-<entry key="excludeFields">itsLines</entry>
+  orderShowPicker, wdgInputWrapper, wdgToCellDetail, wdgToCellHeader, fieldFromToStringConverter
+</entry>
+<entry key="excludeFields"></entry>
 </properties>

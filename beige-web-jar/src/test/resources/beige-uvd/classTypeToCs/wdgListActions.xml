@@ -9,6 +9,11 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 <comment>Correspondence of Java types to services that explain about property. ORDER is essential, the LAST value will be used.</comment>
-<entry key="java.lang.Object">lstActTest</entry>
+<entry key="java.lang.Object">lstActStd</entry>
+<entry key="org.beigesoft.model.IOwned">lstOwned</entry>
+<entry key="org.beigesoft.persistable.EmailMsg">lstActEmailMsg</entry>
+<entry key="org.beigesoft.persistable.Eattachment">lstEntityFfolDelete</entry>
+<entry key="org.beigesoft.persistable.UserRoleTomcat">lstActStd</entry>
+<entry key="org.beigesoft.persistable.UserRoleJetty">lstActDel</entry>
 <entry key="org.beigesoft.test.persistable.PersistableHead">lstActDoc</entry>
 </properties>

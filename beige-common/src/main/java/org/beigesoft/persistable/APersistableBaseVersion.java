@@ -10,7 +10,7 @@ package org.beigesoft.persistable;
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
-import org.beigesoft.model.IHasVersion;
+import org.beigesoft.model.IHasIdLongVersion;
 
 /**
  * <pre>Base abstraction persistable model with Version.</pre>
@@ -18,7 +18,7 @@ import org.beigesoft.model.IHasVersion;
  * @author Yury Demidenko
  */
 public abstract class APersistableBaseVersion extends APersistableBase
-  implements IHasVersion {
+  implements IHasIdLongVersion {
 
   /**
    * <p>Version to check dirty or replication.</p>

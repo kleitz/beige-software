@@ -144,7 +144,7 @@ public final class wdgOwnedList_jsp extends org.apache.jasper.runtime.HttpJspBas
     // /WEB-INF/jsp/ownedList/wdgOwnedList.jsp(3,0) name = var type = java.lang.String reqTime = false required = false fragment = false deferredValue = false expectedTypeName = null deferredMethod = false methodSignature = null
     _jspx_th_c_005fset_005f0.setVar("nameEnts");
     // /WEB-INF/jsp/ownedList/wdgOwnedList.jsp(3,0) name = value type = javax.el.ValueExpression reqTime = true required = false fragment = false deferredValue = true expectedTypeName = java.lang.Object deferredMethod = false methodSignature = null
-    _jspx_th_c_005fset_005f0.setValue(new org.apache.jasper.el.JspValueExpression("/WEB-INF/jsp/ownedList/wdgOwnedList.jsp(3,0) '${entitySimpleName}s'",_jsp_getExpressionFactory().createValueExpression(_jspx_page_context.getELContext(),"${entitySimpleName}s",java.lang.Object.class)).getValue(_jspx_page_context.getELContext()));
+    _jspx_th_c_005fset_005f0.setValue(new org.apache.jasper.el.JspValueExpression("/WEB-INF/jsp/ownedList/wdgOwnedList.jsp(3,0) '${ownedListsMapEntry.key.simpleName}s'",_jsp_getExpressionFactory().createValueExpression(_jspx_page_context.getELContext(),"${ownedListsMapEntry.key.simpleName}s",java.lang.Object.class)).getValue(_jspx_page_context.getELContext()));
     int _jspx_eval_c_005fset_005f0 = _jspx_th_c_005fset_005f0.doStartTag();
     if (_jspx_th_c_005fset_005f0.doEndTag() == javax.servlet.jsp.tagext.Tag.SKIP_PAGE) {
       _005fjspx_005ftagPool_005fc_005fset_0026_005fvar_005fvalue_005fnobody.reuse(_jspx_th_c_005fset_005f0);
@@ -165,7 +165,7 @@ public final class wdgOwnedList_jsp extends org.apache.jasper.runtime.HttpJspBas
     // /WEB-INF/jsp/ownedList/wdgOwnedList.jsp(4,0) name = var type = java.lang.String reqTime = false required = false fragment = false deferredValue = false expectedTypeName = null deferredMethod = false methodSignature = null
     _jspx_th_c_005fset_005f1.setVar("wdgListActions");
     // /WEB-INF/jsp/ownedList/wdgOwnedList.jsp(4,0) name = value type = javax.el.ValueExpression reqTime = true required = false fragment = false deferredValue = true expectedTypeName = java.lang.Object deferredMethod = false methodSignature = null
-    _jspx_th_c_005fset_005f1.setValue(new org.apache.jasper.el.JspValueExpression("/WEB-INF/jsp/ownedList/wdgOwnedList.jsp(4,0) '${mngUvds.classesSettings.get(entityCanonicalName).get('wdgListActions')}'",_jsp_getExpressionFactory().createValueExpression(_jspx_page_context.getELContext(),"${mngUvds.classesSettings.get(entityCanonicalName).get('wdgListActions')}",java.lang.Object.class)).getValue(_jspx_page_context.getELContext()));
+    _jspx_th_c_005fset_005f1.setValue(new org.apache.jasper.el.JspValueExpression("/WEB-INF/jsp/ownedList/wdgOwnedList.jsp(4,0) '${mngUvds.classesSettings.get(ownedListsMapEntry.key).get('wdgListActions')}'",_jsp_getExpressionFactory().createValueExpression(_jspx_page_context.getELContext(),"${mngUvds.classesSettings.get(ownedListsMapEntry.key).get('wdgListActions')}",java.lang.Object.class)).getValue(_jspx_page_context.getELContext()));
     int _jspx_eval_c_005fset_005f1 = _jspx_th_c_005fset_005f1.doStartTag();
     if (_jspx_th_c_005fset_005f1.doEndTag() == javax.servlet.jsp.tagext.Tag.SKIP_PAGE) {
       _005fjspx_005ftagPool_005fc_005fset_0026_005fvar_005fvalue_005fnobody.reuse(_jspx_th_c_005fset_005f1);
@@ -287,7 +287,7 @@ public final class wdgOwnedList_jsp extends org.apache.jasper.runtime.HttpJspBas
     // /WEB-INF/jsp/ownedList/wdgOwnedList.jsp(23,0) name = var type = java.lang.String reqTime = false required = false fragment = false deferredValue = false expectedTypeName = null deferredMethod = false methodSignature = null
     _jspx_th_c_005fset_005f3.setVar("wdgOwnedListFooter");
     // /WEB-INF/jsp/ownedList/wdgOwnedList.jsp(23,0) name = value type = javax.el.ValueExpression reqTime = true required = false fragment = false deferredValue = true expectedTypeName = java.lang.Object deferredMethod = false methodSignature = null
-    _jspx_th_c_005fset_005f3.setValue(new org.apache.jasper.el.JspValueExpression("/WEB-INF/jsp/ownedList/wdgOwnedList.jsp(23,0) '${mngUvds.classesSettings.get(entityCanonicalName).get('wdgOwnedListFooter')}'",_jsp_getExpressionFactory().createValueExpression(_jspx_page_context.getELContext(),"${mngUvds.classesSettings.get(entityCanonicalName).get('wdgOwnedListFooter')}",java.lang.Object.class)).getValue(_jspx_page_context.getELContext()));
+    _jspx_th_c_005fset_005f3.setValue(new org.apache.jasper.el.JspValueExpression("/WEB-INF/jsp/ownedList/wdgOwnedList.jsp(23,0) '${mngUvds.classesSettings.get(ownedListsMapEntry.key).get('wdgOwnedListFooter')}'",_jsp_getExpressionFactory().createValueExpression(_jspx_page_context.getELContext(),"${mngUvds.classesSettings.get(ownedListsMapEntry.key).get('wdgOwnedListFooter')}",java.lang.Object.class)).getValue(_jspx_page_context.getELContext()));
     int _jspx_eval_c_005fset_005f3 = _jspx_th_c_005fset_005f3.doStartTag();
     if (_jspx_th_c_005fset_005f3.doEndTag() == javax.servlet.jsp.tagext.Tag.SKIP_PAGE) {
       _005fjspx_005ftagPool_005fc_005fset_0026_005fvar_005fvalue_005fnobody.reuse(_jspx_th_c_005fset_005f3);

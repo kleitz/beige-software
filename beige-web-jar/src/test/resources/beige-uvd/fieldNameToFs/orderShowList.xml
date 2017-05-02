@@ -9,12 +9,14 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 <comment>Correspondence of field name to field setting.</comment>
-<entry key="itsId">0</entry>
+<entry key="itsId">1</entry>
 <entry key="itsVersion">-1</entry>
-<entry key="persistableHead">-1</entry>
 <entry key="idDatabaseBirth">-1</entry>
-<entry key="isNew">-1</entry>
 <entry key="idBirth">-1</entry>
-<entry key="itsPrice">60</entry>
-<entry key="itsTotal">65</entry>
+<entry key="isNew">-1</entry>
+<entry key="itsOwner">-1</entry>
+<entry key="itsPassword">-1</entry>
+<entry key="userPassword">-1</entry>
+<entry key="persistableHead">-1</entry>
+<entry key="tmpDscription">1000</entry>
 </properties>

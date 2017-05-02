@@ -19,9 +19,19 @@
     <div class="dropdown">
       <a href="#" class="dropdown-btn">Entities</a>
       <div class="dropdown-content">
-         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=PersistableHead&page=1&mobile=mobile%2F');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("PersistableHeads")}</a>
-         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=Department&page=1&mobile=mobile%2F');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("Departments")}</a>
-         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=GoodVersionTime&page=1&mobile=mobile%2F');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("GoodVersionTimes")}</a>
+        <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=PersistableHead&page=1&mobile=mobile/');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("PersistableHeads")}</a>
+        <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=Department&page=1&mobile=mobile/');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("Departments")}</a>
+        <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=GoodVersionTime&page=1&mobile=mobile/');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("GoodVersionTimes")}</a>
+        <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=GoodsRating&page=1&mobile=mobile/');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("GoodsRatings")}</a>
+        <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=EmailConnect&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("EmailConnects")}</a>
+        <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=EmailMsg&page=1&mobile=mobile/');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("EmailMsgs")}</a>
+        <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=UserTomcat&page=1&mobile=mobile/');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("UserTomcats")}</a>
+        <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=UserRoleTomcat&page=1&mobile=mobile/');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("UserRoleTomcats")}</a>
+        <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=UserRoleTomcatPriority&page=1&mobile=mobile/');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("UserRoleTomcatPrioritys")}</a>
+        <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=UserJetty&page=1&mobile=mobile/');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("UserJettys")}</a>
+        <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=RoleJetty&page=1&mobile=mobile/');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("RoleJettys")}</a>
+        <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=UserRoleJetty&page=1&mobile=mobile/');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("UserRoleJettys")}</a>
+        <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmRnd=aboutJson&nmHnd=hndAbout');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("about")}</a>
       </div>
     </div>
     <div class="nav-right">
@@ -48,6 +58,9 @@
   </div>
 
   <div id="pickersPlaceDub">
+  </div>
+
+  <div id="targetInfo">
   </div>
 
   <dialog id="dlgError" class="dlg dlg-alert">

@@ -10,7 +10,7 @@
   <body>
 
     <!-- The body of the document contains a number of sections -->
-    <section name="Beigesoft-settings version #1">
+    <section name="Beigesoft-settings version #2">
     It helps to quickly make settings for class and its fields of with properties XML.
     Instead of create a lot of files to describe every class and its fields it use describing by type, by name.
     E.g. setting "java.lang.Integer"-"inputString" will be assigned fo every field of this type.
@@ -19,10 +19,10 @@
     It do with:
     <ul>
       <li>application settings - Map&lt;String, String&gt;, e.g. "title"-"Beige ERP"</li>
-      <li>classes settings Map&lt;String, Map&lt;String, String&gt;&gt;, 
-        e.g. "org.mode.Customer"-["defaultOrder"-"ITSNAME", "wdgFilterOrder"-"filterOrderStd"]</li>
-      <li>fields settings Map&lt;String, Map&lt;String, Map&lt;String, String&gt;&gt;&gt;,
-        e.g. "org.mode.Customer"-["itsId"["wdgNew"-"null", "wdgFilter"-"filterNumber"]]</li>
+      <li>classes settings Map&lt;Class, Map&lt;String, String&gt;&gt;, 
+        e.g. "org.mode.Customer.class"-["defaultOrder"-"ITSNAME", "wdgFilterOrder"-"filterOrderStd"]</li>
+      <li>fields settings Map&lt;Class, Map&lt;String, Map&lt;String, String&gt;&gt;&gt;,
+        e.g. "org.mode.Customer.class"-["itsId"["wdgNew"-"null", "wdgFilter"-"filterNumber"]]</li>
     </ul>
       <p>It's used standard Properties XML cause UTF-8 support. 
       Array values uses <b>comma delimeter</b> and it's allowed new lines, leading and trailing spaces.
@@ -141,6 +141,9 @@
       <h4>Fields of enumeration type</h4>
       <p>It's automatically added useful property "enumValues" that consist of enum values for every field of Enum type.</p>
 
+      <h4>Automatically excluded fields</h4>
+      <p>All fields of type <b>java.util.collection</b> are automatically excluded.</p>
+      
       <h5>Exceptions throw ExceptionWithCode:</h5>
       <ul>
         <li>1003 - Configuration mistake</li>

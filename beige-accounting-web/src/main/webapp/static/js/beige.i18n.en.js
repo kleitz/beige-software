@@ -23,3 +23,4 @@ MSGS["2_pickers_opened_already_for"]="2 pickers already opened for ";
 MSGS['choose_subacc_type']="Choose subaccount type first!";
 MSGS['account_successful']="Document has been accounted!";
 MSGS['choose_account_first']="Choose account first!";
+MSGS['enterEitherAlreadyOrLoadNew']="Enter either URL already uploaded file or choose new one to upload!";

@@ -19,7 +19,7 @@
   <td>
     <div class="input-line">
       <input id="${entity.getClass().simpleName}${fieldName}AppearanceVisible" disabled="disabled" type="text" value="${docAppr}">
-      <input id="${entity.getClass().simpleName}${fieldName}Id"type="hidden" name="${entity.getClass().simpleName}.${fieldName}.itsId" value="${entity[fieldName].itsId}">
+      <input id="${entity.getClass().simpleName}${fieldName}Id"type="hidden" name="${entity.getClass().simpleName}.${fieldName}" value="${entity[fieldName].itsId}">
     </div>
   </td>
 </tr>

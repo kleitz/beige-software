@@ -16,7 +16,7 @@
     <option value="eq" ${selectedEq1}>=</option>
   </select>
   <c:if test="${empty selectedEq1 && empty selectedGt1 && empty selectedLt1}"> <c:set var="disabled" value="disabled"/> </c:if>
-  <input id="${parVal1}" type="date" ${disabled} required name="${parVal1}" value="${utlJsp.fromMsToDateIso8601(filterMap[parVal1])}" onchange="inputHasBeenChanged(this);">
+  <input id="${parVal1}" type="date" ${disabled} required name="${parVal1}" value="${filterMap[parVal1]}" onchange="inputHasBeenChanged(this);">
 
   <c:set var="parVal2" value="${fltOrdPrefix}${fieldName}Val2"/>
   <c:set var="parOpr2" value="${fltOrdPrefix}${fieldName}Opr2"/>
@@ -33,5 +33,5 @@
     <option value="eq" ${selectedEq2}>=</option>
   </select>
   <c:if test="${empty selectedEq2 && empty selectedGt2 && empty selectedLt2}"> <c:set var="disabled" value="disabled"/> </c:if>
-  <input id="${parVal2}" type="date" ${disabled} required name="${parVal2}" value="${utlJsp.fromMsToDateIso8601(filterMap[parVal2])}" onchange="inputHasBeenChanged(this);">
+  <input id="${parVal2}" type="date" ${disabled} required name="${parVal2}" value="${filterMap[parVal2]}" onchange="inputHasBeenChanged(this);">
 </div>

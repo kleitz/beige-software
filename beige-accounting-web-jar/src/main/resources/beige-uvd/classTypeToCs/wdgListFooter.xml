@@ -14,4 +14,7 @@
 <entry key="org.beigesoft.accounting.persistable.AccSettings">null</entry>
 <entry key="org.beigesoft.accounting.persistable.CogsMethod">null</entry>
 <entry key="org.beigesoft.accounting.persistable.WageTaxesMethod">null</entry>
+<entry key="org.beigesoft.webstore.persistable.SettingsAdd">null</entry>
+<entry key="org.beigesoft.webstore.persistable.TradingSettings">null</entry>
+<entry key="org.beigesoft.webstore.persistable.GoodsRating">null</entry>
 </properties>

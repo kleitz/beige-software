@@ -24,12 +24,12 @@ public interface ISrvEntityFieldFiller {
    * Fill given field of given entity according value represented as
    * string.
    * </p>
+   * @param pAddParam additional params
    * @param pEntity Entity.
    * @param pFieldName Field Name
    * @param pFieldStrValue Field value
-   * @param pAddParam additional params
    * @throws Exception - an exception
    **/
-  void fill(Object pEntity, String pFieldName, String pFieldStrValue,
-    Map<String, Object> pAddParam) throws Exception;
+  void fill(Map<String, Object> pAddParam,
+    Object pEntity, String pFieldName, String pFieldStrValue) throws Exception;
 }

@@ -105,60 +105,64 @@ public class SrvBalanceStd<RS> implements ISrvBalance {
   /**
    * <p>Change period of stored balances EPeriod.DAILY/WEEKLY/MONTHLY
    * and switch on "current balances are dirty".</p>
+   * @param pAddParam additional param
    * @param pPeriod EPeriod e.g. MONTHLY
    * @throws Exception - an exception
    **/
   @Override
   public final synchronized void changeBalanceStorePeriod(
-    final EPeriod pPeriod) throws Exception {
+    final Map<String, Object> pAddParam,
+      final EPeriod pPeriod) throws Exception {
     if (pPeriod == null) {
       throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
         "null_not_accepted");
     }
-    if (!lazyGetBalanceAtAllDirtyCheck().getBalanceStorePeriod()
+    if (!lazyGetBalanceAtAllDirtyCheck(pAddParam).getBalanceStorePeriod()
       .equals(pPeriod)) {
       getLogger().info(SrvBalanceStd.class, SrvBalanceStd.class.getSimpleName()
-        + ": changing period from " + lazyGetBalanceAtAllDirtyCheck()
+        + ": changing period from " + lazyGetBalanceAtAllDirtyCheck(pAddParam)
           .getBalanceStorePeriod() + " to " + pPeriod);
-      lazyGetBalanceAtAllDirtyCheck().setBalanceStorePeriod(pPeriod);
-      if (!getSrvAccSettings().lazyGetAccSettings()
+      lazyGetBalanceAtAllDirtyCheck(pAddParam).setBalanceStorePeriod(pPeriod);
+      if (!getSrvAccSettings().lazyGetAccSettings(pAddParam)
         .getBalanceStorePeriod().equals(pPeriod)) {
-        getSrvAccSettings().lazyGetAccSettings()
+        getSrvAccSettings().lazyGetAccSettings(pAddParam)
           .setBalanceStorePeriod(pPeriod);
-        getSrvAccSettings().saveEntity(null, getSrvAccSettings()
-          .lazyGetAccSettings(), false);
+        getSrvAccSettings().saveAccSettings(pAddParam, getSrvAccSettings()
+          .lazyGetAccSettings(pAddParam));
       }
-      lazyGetBalanceAtAllDirtyCheck()
+      lazyGetBalanceAtAllDirtyCheck(pAddParam)
         .setCurrentBalanceDate(new Date(157766400000L));
-      lazyGetBalanceAtAllDirtyCheck().setIsPeriodChanged(true);
-      getSrvOrm().updateEntity(lazyGetBalanceAtAllDirtyCheck());
+      lazyGetBalanceAtAllDirtyCheck(pAddParam).setIsPeriodChanged(true);
+      getSrvOrm()
+        .updateEntity(pAddParam, lazyGetBalanceAtAllDirtyCheck(pAddParam));
     }
   }
 
   /**
    * <p>Evaluate period of stored balances according settings,
    * if it's changed then it switch on "current balances are dirty".</p>
+   * @param pAddParam additional param
    * @return pPeriod EPeriod e.g. MONTHLY
    * @throws Exception - an exception
    **/
   @Override
-  public final synchronized EPeriod
-    evalBalanceStorePeriod() throws Exception {
-    if (!lazyGetBalanceAtAllDirtyCheck().getBalanceStorePeriod()
-      .equals(getSrvAccSettings().lazyGetAccSettings()
+  public final synchronized EPeriod evalBalanceStorePeriod(
+    final Map<String, Object> pAddParam) throws Exception {
+    if (!lazyGetBalanceAtAllDirtyCheck(pAddParam).getBalanceStorePeriod()
+      .equals(getSrvAccSettings().lazyGetAccSettings(pAddParam)
         .getBalanceStorePeriod())) {
       getLogger().info(SrvBalanceStd.class, SrvBalanceStd.class.getSimpleName()
-        + ": changing period from " + lazyGetBalanceAtAllDirtyCheck()
+        + ": changing period from " + lazyGetBalanceAtAllDirtyCheck(pAddParam)
           .getBalanceStorePeriod() + " to " + getSrvAccSettings()
-            .lazyGetAccSettings().getBalanceStorePeriod());
-      lazyGetBalanceAtAllDirtyCheck()
-        .setBalanceStorePeriod(getSrvAccSettings().lazyGetAccSettings()
+            .lazyGetAccSettings(pAddParam).getBalanceStorePeriod());
+      lazyGetBalanceAtAllDirtyCheck(pAddParam)
+        .setBalanceStorePeriod(getSrvAccSettings().lazyGetAccSettings(pAddParam)
           .getBalanceStorePeriod());
-      lazyGetBalanceAtAllDirtyCheck().setIsPeriodChanged(true);
-      lazyGetBalanceAtAllDirtyCheck()
+      lazyGetBalanceAtAllDirtyCheck(pAddParam).setIsPeriodChanged(true);
+      lazyGetBalanceAtAllDirtyCheck(pAddParam)
         .setCurrentBalanceDate(new Date(157766400000L));
     }
-    return lazyGetBalanceAtAllDirtyCheck().getBalanceStorePeriod();
+    return lazyGetBalanceAtAllDirtyCheck(pAddParam).getBalanceStorePeriod();
   }
 
   /**
@@ -166,6 +170,7 @@ public class SrvBalanceStd<RS> implements ISrvBalance {
    * or equals pDateFor. If required BalanceAt (and all
    * BalanceAt from start of year) is null or dirty
    * it makes it (they).</p>
+   * @param pAddParam additional param
    * @param pAcc account
    * @param pSubaccId subaccount ID
    * @param pDateFor date for
@@ -173,9 +178,10 @@ public class SrvBalanceStd<RS> implements ISrvBalance {
    * @throws Exception - an exception
    **/
   @Override
-  public final synchronized BalanceAt evalBalanceAt(final Account pAcc,
-    final Long pSubaccId, final Date pDateFor) throws Exception {
-    recalculateAllIfNeed(pDateFor);
+  public final synchronized BalanceAt evalBalanceAt(
+    final Map<String, Object> pAddParam, final Account pAcc,
+      final Long pSubaccId, final Date pDateFor) throws Exception {
+    // recalculateAllIfNeed(pAddParam, pDateFor);
     //TODO
     return null;
   }
@@ -183,42 +189,48 @@ public class SrvBalanceStd<RS> implements ISrvBalance {
   /**
    * <p>Handle new accounting entry is created to check dirty.
    * This is implementation of dirty check for all accounts.</p>
+   * @param pAddParam additional param
    * @param pAcc account
    * @param pSubaccId subaccount ID
    * @param pDateAt date at
    * @throws Exception - an exception
    **/
   @Override
-  public final synchronized void handleNewAccountEntry(final Account pAcc,
-    final Long pSubaccId, final Date pDateAt) throws Exception {
-    if (lazyGetBalanceAtAllDirtyCheck().getLeastAccountingEntryDate()
+  public final synchronized void handleNewAccountEntry(
+    final Map<String, Object> pAddParam, final Account pAcc,
+      final Long pSubaccId, final Date pDateAt) throws Exception {
+    if (lazyGetBalanceAtAllDirtyCheck(pAddParam).getLeastAccountingEntryDate()
       .getTime() > pDateAt.getTime()) {
       getLogger().debug(SrvBalanceStd.class, SrvBalanceStd.class.getSimpleName()
         + ": changing least last entry date from "
-          + lazyGetBalanceAtAllDirtyCheck().getLeastAccountingEntryDate()
-           + " to " + pDateAt);
-      lazyGetBalanceAtAllDirtyCheck().setLeastAccountingEntryDate(pDateAt);
+          + lazyGetBalanceAtAllDirtyCheck(pAddParam)
+            .getLeastAccountingEntryDate() + " to " + pDateAt);
+      lazyGetBalanceAtAllDirtyCheck(pAddParam)
+        .setLeastAccountingEntryDate(pDateAt);
     }
   }
 
   /**
    * <p>Recalculate if need for all balances for all dates less
    * or equals pDateFor, this method is always invoked by report ledger.</p>
+   * @param pAddParam additional param
    * @param pDateFor date for
    * @throws Exception - an exception
    **/
   @Override
   public final synchronized void recalculateAllIfNeed(
-    final Date pDateFor) throws Exception {
-    evalBalanceStorePeriod(); //must be before evalDateBalanceStoreStart!!!
-    evalDateBalanceStoreStart();
-    Date datePeriodStartFor = evalDatePeriodStartFor(pDateFor);
-    if (datePeriodStartFor.getTime() > lazyGetBalanceAtAllDirtyCheck()
-      .getCurrentBalanceDate().getTime() || lazyGetBalanceAtAllDirtyCheck()
-        .getLeastAccountingEntryDate()
-          .getTime() < lazyGetBalanceAtAllDirtyCheck()
-            .getCurrentBalanceDate().getTime()) {
-      recalculateAll(pDateFor, false);
+    final Map<String, Object> pAddParam, final Date pDateFor) throws Exception {
+    //must be before evalDateBalanceStoreStart!!!
+    evalBalanceStorePeriod(pAddParam);
+    evalDateBalanceStoreStart(pAddParam);
+    Date datePeriodStartFor = evalDatePeriodStartFor(pAddParam, pDateFor);
+    if (datePeriodStartFor.getTime() > lazyGetBalanceAtAllDirtyCheck(pAddParam)
+      .getCurrentBalanceDate().getTime()
+        || lazyGetBalanceAtAllDirtyCheck(pAddParam)
+          .getLeastAccountingEntryDate()
+            .getTime() < lazyGetBalanceAtAllDirtyCheck(pAddParam)
+              .getCurrentBalanceDate().getTime()) {
+      recalculateAll(pAddParam, pDateFor, false);
     }
   }
 
@@ -226,13 +238,15 @@ public class SrvBalanceStd<RS> implements ISrvBalance {
    * <p>Forced recalculation all stored balances for this account
    * for all dates less or equals pDateFor. This method usually invoked
    * by account subaccount line service when subaccount is added.</p>
+   * @param pAddParam additional param
    * @param pAcc account
    * @param pSubaccId subaccount ID
    * @param pDateFor date for
    * @throws Exception - an exception
    **/
   @Override
-  public final synchronized void recalculateFor(final Account pAcc,
+  public final synchronized void recalculateFor(
+    final Map<String, Object> pAddParam, final Account pAcc,
     final Long pSubaccId, final Date pDateFor) throws Exception {
     //this implementation does nothing.
   }
@@ -241,48 +255,51 @@ public class SrvBalanceStd<RS> implements ISrvBalance {
    * <p>Forced recalculation all balances for all dates less
    * or equals pDateFor. If balance for account at given date is NULL then
    * it will be no recorded into BalanceAt, this is cheap approach.</p>
+   * @param pAddParam additional param
    * @param pDateFor date for
    * @param pIsPrepareNeed if need evaluation store period/start of store
    * @throws Exception - an exception
    **/
   @Override
   public final synchronized void recalculateAll(
-    final Date pDateFor, final boolean pIsPrepareNeed) throws Exception {
+    final Map<String, Object> pAddParam, final Date pDateFor,
+      final boolean pIsPrepareNeed) throws Exception {
     getLogger().info(SrvBalanceStd.class, SrvBalanceStd.class.getSimpleName()
       + ": recalculation start BalanceAtAllDirtyCheck was "
-        + lazyGetBalanceAtAllDirtyCheck());
+        + lazyGetBalanceAtAllDirtyCheck(pAddParam));
     if (pIsPrepareNeed) {
-      evalBalanceStorePeriod(); //must be before evalDateBalanceStoreStart!!!
-      evalDateBalanceStoreStart();
+      //must be before evalDateBalanceStoreStart!!!
+      evalBalanceStorePeriod(pAddParam);
+      evalDateBalanceStoreStart(pAddParam);
     }
-    if (lazyGetBalanceAtAllDirtyCheck().getIsPeriodChanged()) {
+    if (lazyGetBalanceAtAllDirtyCheck(pAddParam).getIsPeriodChanged()) {
       getLogger().info(SrvBalanceStd.class, SrvBalanceStd.class.getSimpleName()
         + ": deleting all stored balances cause period has changed");
       getSrvDatabase().executeDelete(BalanceAt.class.getSimpleName()
         .toUpperCase(), null);
-      lazyGetBalanceAtAllDirtyCheck().setIsPeriodChanged(false);
+      lazyGetBalanceAtAllDirtyCheck(pAddParam).setIsPeriodChanged(false);
     }
     Date date;
-    if (lazyGetBalanceAtAllDirtyCheck().getLeastAccountingEntryDate()
-          .getTime() < lazyGetBalanceAtAllDirtyCheck()
+    if (lazyGetBalanceAtAllDirtyCheck(pAddParam).getLeastAccountingEntryDate()
+          .getTime() < lazyGetBalanceAtAllDirtyCheck(pAddParam)
             .getCurrentBalanceDate().getTime()) {
       //recalculate from start;
-      date = evalDateNextPeriodStart(lazyGetBalanceAtAllDirtyCheck()
-        .getDateBalanceStoreStart());
+      date = evalDateNextPeriodStart(pAddParam,
+        lazyGetBalanceAtAllDirtyCheck(pAddParam).getDateBalanceStoreStart());
       getLogger().info(SrvBalanceStd.class, SrvBalanceStd.class.getSimpleName()
         + ": recalculating balances from start " + date + " <- "
-          + lazyGetBalanceAtAllDirtyCheck().getDateBalanceStoreStart());
+        + lazyGetBalanceAtAllDirtyCheck(pAddParam).getDateBalanceStoreStart());
     } else {
       //recalculate from current end;
-      date = evalDateNextPeriodStart(lazyGetBalanceAtAllDirtyCheck()
-        .getCurrentBalanceDate());
+      date = evalDateNextPeriodStart(pAddParam,
+        lazyGetBalanceAtAllDirtyCheck(pAddParam).getCurrentBalanceDate());
       getLogger().info(SrvBalanceStd.class, SrvBalanceStd.class.getSimpleName()
         + ": recalculating balances from current end " + date + " <- "
-          + lazyGetBalanceAtAllDirtyCheck().getCurrentBalanceDate());
+          + lazyGetBalanceAtAllDirtyCheck(pAddParam).getCurrentBalanceDate());
     }
     Date lastBalanceStoredDate = date;
     do {
-      String query = evalQueryBalance(new Date(date.getTime() - 1));
+      String query = evalQueryBalance(pAddParam, new Date(date.getTime() - 1));
       List<TrialBalanceLine> tbls = retrieveBalanceLinesForStore(query);
       for (TrialBalanceLine tbl : tbls) {
         lastBalanceStoredDate = date;
@@ -295,7 +312,7 @@ public class SrvBalanceStd<RS> implements ISrvBalance {
             + " and BALANCEAT.SUBACCTYPE=" + tbl.getSubaccType();
         }
         BalanceAt balanceAt = getSrvOrm().retrieveEntityWithConditions(
-          BalanceAt.class, "where ITSACCOUNT='" + tbl.getAccId()
+          pAddParam, BalanceAt.class, "where ITSACCOUNT='" + tbl.getAccId()
             + "' and ITSDATE=" + date.getTime() + subAccWhereStr);
         if (balanceAt == null) {
           balanceAt = new BalanceAt();
@@ -314,29 +331,30 @@ public class SrvBalanceStd<RS> implements ISrvBalance {
         balanceAt.setSubaccId(tbl.getSubaccId());
         balanceAt.setSubaccount(tbl.getSubaccName());
         if (balanceAt.getIsNew()) {
-          getSrvOrm().insertEntity(balanceAt);
+          getSrvOrm().insertEntity(pAddParam, balanceAt);
         } else {
-          getSrvOrm().updateEntity(balanceAt);
+          getSrvOrm().updateEntity(pAddParam, balanceAt);
         }
       }
-      date = evalDateNextPeriodStart(date);
+      date = evalDateNextPeriodStart(pAddParam, date);
     } while (date.getTime() <= pDateFor.getTime());
     getLogger().info(SrvBalanceStd.class, SrvBalanceStd.class.getSimpleName()
       + ": last stored balance date " + lastBalanceStoredDate + ", date for "
         + pDateFor);
     if (lastBalanceStoredDate.getTime() > pDateFor.getTime()) {
-      lazyGetBalanceAtAllDirtyCheck()
+      lazyGetBalanceAtAllDirtyCheck(pAddParam)
         .setCurrentBalanceDate(lastBalanceStoredDate);
     } else {
-      lazyGetBalanceAtAllDirtyCheck().setCurrentBalanceDate(pDateFor);
+      lazyGetBalanceAtAllDirtyCheck(pAddParam).setCurrentBalanceDate(pDateFor);
     }
-      lazyGetBalanceAtAllDirtyCheck()
-        .setLeastAccountingEntryDate(lazyGetBalanceAtAllDirtyCheck()
+      lazyGetBalanceAtAllDirtyCheck(pAddParam)
+        .setLeastAccountingEntryDate(lazyGetBalanceAtAllDirtyCheck(pAddParam)
           .getCurrentBalanceDate());
-    getSrvOrm().updateEntity(lazyGetBalanceAtAllDirtyCheck());
+    getSrvOrm()
+      .updateEntity(pAddParam, lazyGetBalanceAtAllDirtyCheck(pAddParam));
     getLogger().info(SrvBalanceStd.class, SrvBalanceStd.class.getSimpleName()
       + ": recalculation end BalanceAtAllDirtyCheck is "
-        + lazyGetBalanceAtAllDirtyCheck());
+        + lazyGetBalanceAtAllDirtyCheck(pAddParam));
   }
 
   /**
@@ -350,35 +368,37 @@ public class SrvBalanceStd<RS> implements ISrvBalance {
   public final synchronized List<TrialBalanceLine> retrieveTrialBalance(
     final Map<String, Object> pAddParam,
       final Date pDate) throws Exception {
-    recalculateAllIfNeed(pDate);
+    recalculateAllIfNeed(pAddParam, pDate);
     List<TrialBalanceLine> result = new ArrayList<TrialBalanceLine>();
-    String query = evalQueryBalance(pDate);
+    String query = evalQueryBalance(pAddParam, pDate);
     IRecordSet<RS> recordSet = null;
     try {
       recordSet = getSrvDatabase().retrieveRecords(query);
       if (recordSet.moveToFirst()) {
         do {
-          String accName = getSrvDatabase().getSrvRecordRetriever()
-            .getString(recordSet.getRecordSet(), "ITSNAME");
-          String accNumber = getSrvDatabase().getSrvRecordRetriever()
-            .getString(recordSet.getRecordSet(), "ITSNUMBER");
-          String subaccName = getSrvDatabase().getSrvRecordRetriever()
-            .getString(recordSet.getRecordSet(), "SUBACC");
-          Double debit = getSrvDatabase().getSrvRecordRetriever()
-            .getDouble(recordSet.getRecordSet(), "DEBIT");
-          Double credit = getSrvDatabase().getSrvRecordRetriever()
-            .getDouble(recordSet.getRecordSet(), "CREDIT");
+          String accName = recordSet
+            .getString("ITSNAME");
+          String accNumber = recordSet
+            .getString("ITSNUMBER");
+          String subaccName = recordSet
+            .getString("SUBACC");
+          Double debit = recordSet
+            .getDouble("DEBIT");
+          Double credit = recordSet
+            .getDouble("CREDIT");
           if (debit != 0 || credit != 0) {
             TrialBalanceLine tbl = new TrialBalanceLine();
             tbl.setAccName(accName);
             tbl.setAccNumber(accNumber);
             tbl.setSubaccName(subaccName);
             tbl.setDebit(BigDecimal.valueOf(debit).setScale(
-              getSrvAccSettings().lazyGetAccSettings().getBalancePrecision(),
-                getSrvAccSettings().lazyGetAccSettings().getRoundingMode()));
+              getSrvAccSettings().lazyGetAccSettings(pAddParam)
+                .getBalancePrecision(), getSrvAccSettings()
+                  .lazyGetAccSettings(pAddParam).getRoundingMode()));
             tbl.setCredit(BigDecimal.valueOf(credit).setScale(
-              getSrvAccSettings().lazyGetAccSettings().getBalancePrecision(),
-                getSrvAccSettings().lazyGetAccSettings().getRoundingMode()));
+              getSrvAccSettings().lazyGetAccSettings(pAddParam)
+                .getBalancePrecision(), getSrvAccSettings()
+                  .lazyGetAccSettings(pAddParam).getRoundingMode()));
             if (tbl.getDebit().doubleValue() != 0
               || tbl.getCredit().doubleValue() != 0) {
               result.add(tbl);
@@ -420,16 +440,18 @@ public class SrvBalanceStd<RS> implements ISrvBalance {
   /**
    * <p>Evaluate start of period nearest to pDateFor.
    * Tested in beige-common org.beigesoft.test.CalendarTest.</p>
+   * @param pAddParam additional param
    * @param pDateFor date for
    * @return Start of period nearest to pDateFor
    * @throws Exception - an exception
    **/
   @Override
   public final synchronized Date evalDatePeriodStartFor(
-    final Date pDateFor) throws Exception {
-    if (!(evalBalanceStorePeriod().equals(EPeriod.MONTHLY)
-      || evalBalanceStorePeriod().equals(EPeriod.WEEKLY)
-        || evalBalanceStorePeriod().equals(EPeriod.DAILY))) {
+    final Map<String, Object> pAddParam, final Date pDateFor) throws Exception {
+    EPeriod period = evalBalanceStorePeriod(pAddParam);
+    if (!(period.equals(EPeriod.MONTHLY)
+      || period.equals(EPeriod.WEEKLY)
+        || period.equals(EPeriod.DAILY))) {
       throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
         "stored_balance_period_must_be_dwm");
     }
@@ -439,9 +461,9 @@ public class SrvBalanceStd<RS> implements ISrvBalance {
     cal.set(Calendar.MINUTE, 0);
     cal.set(Calendar.SECOND, 0);
     cal.set(Calendar.MILLISECOND, 0); //Daily is ready
-    if (evalBalanceStorePeriod().equals(EPeriod.MONTHLY)) {
+    if (period.equals(EPeriod.MONTHLY)) {
       cal.set(Calendar.DAY_OF_MONTH, 1);
-    } else if (evalBalanceStorePeriod().equals(EPeriod.WEEKLY)) {
+    } else if (period.equals(EPeriod.WEEKLY)) {
       cal.set(Calendar.DAY_OF_WEEK, 1);
     }
     return cal.getTime();
@@ -451,13 +473,15 @@ public class SrvBalanceStd<RS> implements ISrvBalance {
    * <p>Evaluate date start of stored balances according settings,
    * this is the first month of the first accounting entry or start of current
    * year if there are no any acc-entry.</p>
+   * @param pAddParam additional param
    * @return Date
    * @throws Exception - an exception
    **/
-  public final synchronized Date evalDateBalanceStoreStart() throws Exception {
-    Date dateBalanceStoreStart = lazyGetBalanceAtAllDirtyCheck()
+  public final synchronized Date evalDateBalanceStoreStart(
+    final Map<String, Object> pAddParam) throws Exception {
+    Date dateBalanceStoreStart = lazyGetBalanceAtAllDirtyCheck(pAddParam)
       .getDateBalanceStoreStart();
-    Date leastAccountingEntryDate = lazyGetBalanceAtAllDirtyCheck()
+    Date leastAccountingEntryDate = lazyGetBalanceAtAllDirtyCheck(pAddParam)
       .getLeastAccountingEntryDate();
     if (dateBalanceStoreStart.getTime() == 157766400000L
       && leastAccountingEntryDate.getTime() == 157766400000L) {
@@ -470,65 +494,69 @@ public class SrvBalanceStd<RS> implements ISrvBalance {
       cal.set(Calendar.MINUTE, 0);
       cal.set(Calendar.SECOND, 0);
       cal.set(Calendar.MILLISECOND, 0);
-      lazyGetBalanceAtAllDirtyCheck().setDateBalanceStoreStart(cal.getTime());
+      lazyGetBalanceAtAllDirtyCheck(pAddParam)
+        .setDateBalanceStoreStart(cal.getTime());
     } else if (dateBalanceStoreStart.getTime() == 157766400000L
       && leastAccountingEntryDate.getTime() > 157766400000L) {
       //the first time with acc-entries, it's start nearest period to least:
-      lazyGetBalanceAtAllDirtyCheck().setDateBalanceStoreStart(
-        evalDatePeriodStartFor(leastAccountingEntryDate));
+      lazyGetBalanceAtAllDirtyCheck(pAddParam).setDateBalanceStoreStart(
+        evalDatePeriodStartFor(pAddParam, leastAccountingEntryDate));
     }
-    return lazyGetBalanceAtAllDirtyCheck().getDateBalanceStoreStart();
+    return lazyGetBalanceAtAllDirtyCheck(pAddParam).getDateBalanceStoreStart();
    }
 
   /**
    * <p>Evaluate Trial Balance query.</p>
+   * @param pAddParam additional param
    * @param pDate date of balance
    * @return query of balance
    * @throws Exception - an exception
    **/
   public final synchronized String evalQueryBalance(
-    final Date pDate) throws Exception {
+    final Map<String, Object> pAddParam, final Date pDate) throws Exception {
     if (this.queryBalance == null) {
       String flName = "/" + "accounting" + "/" + "balance"
         + "/" + "queryBalance.sql";
       this.queryBalance = loadString(flName);
     }
     String query = queryBalance.replace(":DATE1",
-      String.valueOf(evalDatePeriodStartFor(pDate).getTime()));
+      String.valueOf(evalDatePeriodStartFor(pAddParam, pDate).getTime()));
     query = query.replace(":DATE2", String.valueOf(pDate.getTime()));
     return query;
   }
 
   /**
    * <p>Retrieve Trial Balance lines with given query and precision cost.</p>
+   * @param pAddParam additional param
    * @param pQuery date
    * @return balance lines
    * @throws Exception - an exception
    **/
   public final synchronized List<TrialBalanceLine> retrieveBalanceLines(
-      final String pQuery) throws Exception {
+      final Map<String, Object> pAddParam,
+        final String pQuery) throws Exception {
     List<TrialBalanceLine> result = new ArrayList<TrialBalanceLine>();
     IRecordSet<RS> recordSet = null;
     try {
       recordSet = getSrvDatabase().retrieveRecords(pQuery);
       if (recordSet.moveToFirst()) {
         do {
-          String accName = getSrvDatabase().getSrvRecordRetriever()
-            .getString(recordSet.getRecordSet(), "ITSNAME");
-          String accId = getSrvDatabase().getSrvRecordRetriever()
-            .getString(recordSet.getRecordSet(), "ACCID");
-          Long subaccId = getSrvDatabase().getSrvRecordRetriever()
-            .getLong(recordSet.getRecordSet(), "SUBACCID");
-          Integer subaccType = getSrvDatabase().getSrvRecordRetriever()
-            .getInteger(recordSet.getRecordSet(), "SUBACCTYPE");
-          String accNumber = getSrvDatabase().getSrvRecordRetriever()
-            .getString(recordSet.getRecordSet(), "ITSNUMBER");
-          String subaccName = getSrvDatabase().getSrvRecordRetriever()
-            .getString(recordSet.getRecordSet(), "SUBACC");
-          Double debit = getSrvDatabase().getSrvRecordRetriever()
-            .getDouble(recordSet.getRecordSet(), "DEBIT");
-          Double credit = getSrvDatabase().getSrvRecordRetriever()
-            .getDouble(recordSet.getRecordSet(), "CREDIT");
+          String accName = recordSet
+            .getString("ITSNAME");
+          String accId = recordSet
+            .getString("ACCID");
+          Long subaccId = recordSet
+            .getLong("SUBACCID");
+          Integer subaccType = recordSet
+            .getInteger("SUBACCTYPE");
+          String accNumber = recordSet
+            .getString("ITSNUMBER");
+          String subaccName = recordSet
+            .getString("SUBACC");
+          Double debit = recordSet
+            .getDouble("DEBIT");
+          Double credit = recordSet
+            .getDouble("CREDIT");
           if (debit != 0 || credit != 0) {
             TrialBalanceLine tbl = new TrialBalanceLine();
             tbl.setAccId(accId);
@@ -538,11 +566,13 @@ public class SrvBalanceStd<RS> implements ISrvBalance {
             tbl.setAccNumber(accNumber);
             tbl.setSubaccName(subaccName);
             tbl.setDebit(BigDecimal.valueOf(debit).setScale(
-              getSrvAccSettings().lazyGetAccSettings().getCostPrecision(),
-                getSrvAccSettings().lazyGetAccSettings().getRoundingMode()));
+              getSrvAccSettings().lazyGetAccSettings(pAddParam)
+                .getCostPrecision(), getSrvAccSettings()
+                  .lazyGetAccSettings(pAddParam).getRoundingMode()));
             tbl.setCredit(BigDecimal.valueOf(credit).setScale(
-              getSrvAccSettings().lazyGetAccSettings().getCostPrecision(),
-                getSrvAccSettings().lazyGetAccSettings().getRoundingMode()));
+              getSrvAccSettings().lazyGetAccSettings(pAddParam)
+                .getCostPrecision(), getSrvAccSettings()
+                  .lazyGetAccSettings(pAddParam).getRoundingMode()));
             if (tbl.getDebit().doubleValue() != 0
               || tbl.getCredit().doubleValue() != 0) {
               result.add(tbl);
@@ -572,22 +602,14 @@ public class SrvBalanceStd<RS> implements ISrvBalance {
       recordSet = getSrvDatabase().retrieveRecords(pQuery);
       if (recordSet.moveToFirst()) {
         do {
-          String accName = getSrvDatabase().getSrvRecordRetriever()
-            .getString(recordSet.getRecordSet(), "ITSNAME");
-          String accId = getSrvDatabase().getSrvRecordRetriever()
-            .getString(recordSet.getRecordSet(), "ACCID");
-          Long subaccId = getSrvDatabase().getSrvRecordRetriever()
-            .getLong(recordSet.getRecordSet(), "SUBACCID");
-          Integer subaccType = getSrvDatabase().getSrvRecordRetriever()
-            .getInteger(recordSet.getRecordSet(), "SUBACCTYPE");
-          String accNumber = getSrvDatabase().getSrvRecordRetriever()
-            .getString(recordSet.getRecordSet(), "ITSNUMBER");
-          String subaccName = getSrvDatabase().getSrvRecordRetriever()
-            .getString(recordSet.getRecordSet(), "SUBACC");
-          Double debit = getSrvDatabase().getSrvRecordRetriever()
-            .getDouble(recordSet.getRecordSet(), "DEBIT");
-          Double credit = getSrvDatabase().getSrvRecordRetriever()
-            .getDouble(recordSet.getRecordSet(), "CREDIT");
+          String accName = recordSet.getString("ITSNAME");
+          String accId = recordSet.getString("ACCID");
+          Long subaccId = recordSet.getLong("SUBACCID");
+          Integer subaccType = recordSet.getInteger("SUBACCTYPE");
+          String accNumber = recordSet.getString("ITSNUMBER");
+          String subaccName = recordSet.getString("SUBACC");
+          Double debit = recordSet.getDouble("DEBIT");
+          Double credit = recordSet.getDouble("CREDIT");
           TrialBalanceLine tbl = new TrialBalanceLine();
           tbl.setAccId(accId);
           tbl.setSubaccId(subaccId);
@@ -636,18 +658,22 @@ public class SrvBalanceStd<RS> implements ISrvBalance {
 
   /**
    * <p>Lazy getter for balanceAtAllDirtyCheck.</p>
+   * @param pAddParam additional param
    * @return BalanceAtAllDirtyCheck
    * @throws Exception - an exception
    **/
   public final synchronized BalanceAtAllDirtyCheck
-    lazyGetBalanceAtAllDirtyCheck() throws Exception {
+    lazyGetBalanceAtAllDirtyCheck(
+      final Map<String, Object> pAddParam) throws Exception {
     if (this.balanceAtAllDirtyCheck == null) {
+      BalanceAtAllDirtyCheck balLoc = new BalanceAtAllDirtyCheck();
+      balLoc.setItsId(1L);
       this.balanceAtAllDirtyCheck = getSrvOrm()
-        .retrieveEntityById(BalanceAtAllDirtyCheck.class, 1L);
+        .retrieveEntity(pAddParam, balLoc);
       if (this.balanceAtAllDirtyCheck == null) {
-        this.balanceAtAllDirtyCheck = new BalanceAtAllDirtyCheck();
-        this.balanceAtAllDirtyCheck.setItsId(1L);
-        getSrvOrm().insertEntity(this.balanceAtAllDirtyCheck);
+        getSrvOrm().insertEntity(pAddParam, balLoc);
+        this.balanceAtAllDirtyCheck = getSrvOrm()
+          .retrieveEntity(pAddParam, balLoc);
       }
     }
     return this.balanceAtAllDirtyCheck;
@@ -656,15 +682,18 @@ public class SrvBalanceStd<RS> implements ISrvBalance {
   /**
    * <p>Evaluate date start of next balance store period.
    * Tested in beige-common org.beigesoft.test.CalendarTest.</p>
+   * @param pAddParam additional param
    * @param pDateFor date for
    * @return Start of next period nearest to pDateFor
    * @throws Exception - an exception
    **/
   public final synchronized Date evalDateNextPeriodStart(
-    final Date pDateFor) throws Exception {
-    if (!(evalBalanceStorePeriod().equals(EPeriod.MONTHLY)
-      || evalBalanceStorePeriod().equals(EPeriod.WEEKLY)
-        || evalBalanceStorePeriod().equals(EPeriod.DAILY))) {
+    final Map<String, Object> pAddParam,
+      final Date pDateFor) throws Exception {
+    EPeriod period = evalBalanceStorePeriod(pAddParam);
+    if (!(period.equals(EPeriod.MONTHLY)
+      || period.equals(EPeriod.WEEKLY)
+        || period.equals(EPeriod.DAILY))) {
       throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
         "stored_balance_period_must_be_dwm");
     }
@@ -674,12 +703,12 @@ public class SrvBalanceStd<RS> implements ISrvBalance {
     cal.set(Calendar.MINUTE, 0);
     cal.set(Calendar.SECOND, 0);
     cal.set(Calendar.MILLISECOND, 0);
-    if (evalBalanceStorePeriod().equals(EPeriod.DAILY)) {
+    if (period.equals(EPeriod.DAILY)) {
       cal.add(Calendar.DATE, 1);
-    } else if (evalBalanceStorePeriod().equals(EPeriod.MONTHLY)) {
+    } else if (period.equals(EPeriod.MONTHLY)) {
       cal.add(Calendar.MONTH, 1);
       cal.set(Calendar.DAY_OF_MONTH, 1);
-    } else if (evalBalanceStorePeriod().equals(EPeriod.WEEKLY)) {
+    } else if (period.equals(EPeriod.WEEKLY)) {
       cal.add(Calendar.DAY_OF_YEAR, 7);
       cal.set(Calendar.DAY_OF_WEEK, 1);
     }

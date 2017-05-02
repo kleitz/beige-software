@@ -36,6 +36,11 @@
   org.beigesoft.accounting.persistable.SalesReturnTaxLine</entry>
 <entry key="org.beigesoft.accounting.persistable.PurchaseReturn">org.beigesoft.accounting.persistable.PurchaseReturnLine,
   org.beigesoft.accounting.persistable.PurchaseReturnTaxLine</entry>
-<entry key="org.beigesoft.accounting.persistable.ReplicationAccMethod">org.beigesoft.accounting.persistable.ReplExcludeAccountsDebit,
-  org.beigesoft.accounting.persistable.ReplExcludeAccountsCredit</entry>
+<entry key="org.beigesoft.replicator.persistable.ReplicationAccMethod">org.beigesoft.replicator.persistable.ReplExcludeAccountsDebit,
+  org.beigesoft.accounting.replicator.ReplExcludeAccountsCredit</entry>
+<entry key="org.beigesoft.persistable.EmailConnect">org.beigesoft.persistable.EmailIntegerProperty,
+  org.beigesoft.persistable.EmailStringProperty</entry>
+<entry key="org.beigesoft.persistable.EmailMsg">org.beigesoft.persistable.Erecipient,
+  org.beigesoft.persistable.Eattachment</entry>
+<entry key="org.beigesoft.webstore.persistable.ShoppingCart">org.beigesoft.webstore.persistable.CartItem</entry>
 </properties>

@@ -7,7 +7,7 @@
   <td>
     <div class="input-line">
       <input id="${entity.getClass().simpleName}${fieldName}AppearanceVisible" disabled="disabled" type="text" value="${entity[fieldName].itsName}" onchange="inputHasBeenChanged(this);">
-      <input type="hidden" id="${entity.getClass().simpleName}${fieldName}Id" name="${entity.getClass().simpleName}.${fieldName}.itsId" value="${entity[fieldName].itsId}">
+      <input type="hidden" id="${entity.getClass().simpleName}${fieldName}Id" name="${entity.getClass().simpleName}.${fieldName}" value="${entity[fieldName].itsId}">
     </div>
   </td>
 </tr>

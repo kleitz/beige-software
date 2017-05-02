@@ -11,8 +11,6 @@ package org.beigesoft.web.service;
  */
 
 import java.io.Reader;
-import java.util.Date;
-import java.text.SimpleDateFormat;
 
 /**
  * <p>JSP utilities.
@@ -159,68 +157,6 @@ public class UtlJsp {
   }
 
   /**
-   * <p>Convert string of milliseconds into
-   * Date ISO8601 "yyyy-MM-dd'T'HH:mm".</p>
-   * @param src string
-   * @return String date
-   **/
-  public final String fromMsToDateTimeIso8601(final String src) {
-    if (src == null || src.length() == 0) {
-      return "";
-    } else {
-      Long dateLong = Long.valueOf(src);
-      Date date = new Date(dateLong);
-      return dateTimeToIso8601(date);
-    }
-  }
-
-  /**
-   * <p>Convert date into
-   * Date ISO8601 "yyyy-MM-dd'T'HH:mm".</p>
-   * @param src date
-   * @return String date
-   **/
-  public final String dateTimeToIso8601(final Date src) {
-    if (src == null) {
-      return "";
-    } else {
-      SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
-      return df.format(src);
-    }
-  }
-
-  /**
-   * <p>Convert string of milliseconds into
-   * Date ISO8601 "yyyy-MM-dd".</p>
-   * @param src string
-   * @return String date
-   **/
-  public final String fromMsToDateIso8601(final String src) {
-    if (src == null || src.length() == 0) {
-      return "";
-    } else {
-      Long dateLong = Long.valueOf(src);
-      Date date = new Date(dateLong);
-      return dateToIso8601(date);
-    }
-  }
-
-  /**
-   * <p>Convert date into
-   * Date ISO8601 "yyyy-MM-dd".</p>
-   * @param src date
-   * @return String date
-   **/
-  public final String dateToIso8601(final Date src) {
-    if (src == null) {
-      return "";
-    } else {
-      SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-      return df.format(src);
-    }
-  }
-
-  /**
    * <p>Escape HTML character to UTF-8 for given string.</p>
    * @param pSource string
    * @return String escaped
@@ -239,12 +175,52 @@ public class UtlJsp {
    * @return String escaped
    **/
   public final String htmlEscape(final char pChar) {
-    if (pChar == '\'') {
-      return "%27";
-    } else if (pChar == ' ') {
+    if (pChar == ' ') {
       return "%20";
+    } else if (pChar == '!') {
+      return "%21";
+    } else if (pChar == '"') {
+      return "%22";
+    } else if (pChar == '#') {
+      return "%23";
+    } else if (pChar == '$') {
+      return "%24";
+    } else if (pChar == '%') {
+      return "%25";
+    } else if (pChar == '&') {
+      return "%26";
+    } else if (pChar == '\'') {
+      return "%27";
+    } else if (pChar == '(') {
+      return "%28";
+    } else if (pChar == ')') {
+      return "%29";
+    } else if (pChar == '*') {
+      return "%2A";
+    } else if (pChar == '+') {
+      return "%2B";
     } else if (pChar == ',') {
       return "%2C";
+    } else if (pChar == '-') {
+      return "%2D";
+    } else if (pChar == '.') {
+      return "%2E";
+    } else if (pChar == '/') {
+      return "%2F";
+    } else if (pChar == ':') {
+      return "%3A";
+    } else if (pChar == ';') {
+      return "%3B";
+    } else if (pChar == '<') {
+      return "%3C";
+    } else if (pChar == '=') {
+      return "%3D";
+    } else if (pChar == '>') {
+      return "%3E";
+    } else if (pChar == '?') {
+      return "%3F";
+    } else if (pChar == '@') {
+      return "%40";
     } //TODO all chars
     return String.valueOf(pChar);
   }

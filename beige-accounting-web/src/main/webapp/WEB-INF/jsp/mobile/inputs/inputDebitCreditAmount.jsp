@@ -19,15 +19,16 @@
   <td>
     <label for="${entity.getClass().simpleName}debit">${srvI18n.getMsg("itsAmount")}</label>
   </td>
-</tr>
-<tr>
   <c:set var="itsAmount" value="${entity['debit']}"/>
   <c:if test="${entity['credit'] gt 0}">
     <c:set var="itsAmount" value="${entity['credit']}"/>
   </c:if>
+</tr>
+<tr>
   <td>
     <div class="input-line">
       <input type="number" step="${step}" required name="${entity.getClass().simpleName}.debit" value="${itsAmount}" onchange="inputHasBeenChanged(this);"/> 
     </div>
   </td>
 </tr>
+<input type="hidden" name="AccountingEntries.ownerVersion" value="${AccountingEntriesVersion}">

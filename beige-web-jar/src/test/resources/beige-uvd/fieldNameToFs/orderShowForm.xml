@@ -9,11 +9,6 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 <comment>Correspondence of field name to field setting.</comment>
-<entry key="itsId">0</entry>
-<entry key="persistableHead">4</entry>
-<entry key="itsVersion">1</entry>
-<entry key="idDatabaseBirth">2</entry>
-<entry key="idBirth">3</entry>
-<entry key="itsPrice">60</entry>
-<entry key="itsTotal">65</entry>
+<entry key="itsId">1</entry>
+<entry key="tmpDescription">1000</entry>
 </properties>

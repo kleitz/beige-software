@@ -10,13 +10,13 @@
       <c:if test="${srvOrm.tablesMap[entity.getClass().simpleName].fieldsMap[fieldName].definition.contains('not null')}">
         <c:set var="required" value="required"/>
       </c:if>
-      <select ${required} ${autofocus} name="${entity.getClass().simpleName}.${fieldName}" onchange="inputHasBeenChanged(this);">
-        <c:set var="selectedDisabled" value=""/>
-        <c:if test="${entity[fieldName]}"> <c:set var="selectedDisabled" value="selected"/> </c:if>
-        <option value="true" ${selectedDisabled}>${srvI18n.getMsg("Yes")}</option>
-        <c:set var="selectedDisabled" value=""/>
-        <c:if test="${!entity[fieldName]}"> <c:set var="selectedDisabled" value="selected"/> </c:if>
-        <option value="false" ${selectedDisabled}>${srvI18n.getMsg("No")}</option>
+      <select ${autofocus} name="${entity.getClass().simpleName}.${fieldName}" onchange="inputHasBeenChanged(this);">
+        <c:set var="selTrue" value=""/>
+        <c:if test="${entity[fieldName]}"> <c:set var="selTrue" value="selected"/> </c:if>
+        <option value="true" ${selTrue}>${srvI18n.getMsg("Yes")}</option>
+        <c:set var="selTrue" value=""/>
+        <c:if test="${!entity[fieldName]}"> <c:set var="selF" value="selected"/> </c:if>
+        <option value="false" ${selF}>${srvI18n.getMsg("No")}</option>
       </select>
       <c:set var="autofocus" value="" scope="request"/>
     </div>

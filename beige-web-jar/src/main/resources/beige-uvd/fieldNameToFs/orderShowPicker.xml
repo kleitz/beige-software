@@ -14,10 +14,8 @@
 <entry key="idDatabaseBirth">-1</entry>
 <entry key="idBirth">-1</entry>
 <entry key="isNew">-1</entry>
-<entry key="itsName">100</entry>
-<entry key="itsPrice">400</entry>
-<entry key="itsCost">401</entry>
-<entry key="itsQuantity">405</entry>
-<entry key="subtotal">410</entry>
-<entry key="itsTotal">450</entry>
+<entry key="itsOwner">-1</entry>
+<entry key="description">-1</entry>
+<entry key="itsPassword">-1</entry>
+<entry key="userPassword">-1</entry>
 </properties>

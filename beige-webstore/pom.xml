@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.beigesoft</groupId>
+    <artifactId>beige-software</artifactId>
+    <version>1.1.4-SNAPSHOT</version>
+  </parent>
+  <artifactId>beige-webstore</artifactId>
+
+  <name>Beige WEB-Store Java code</name>
+  <description>This is java code and XML-settings that implements models and services of universal WEB-Store.
+    It can be used as big-store that selling many goods, as well as small store that make appointments to a service-maker.
+  </description>
+  <url>http://www.beigesoft.org</url>
+
+  <developers>
+    <developer>
+      <id>demidenko05</id>
+      <name>Yury Demidenko</name>
+    </developer>
+  </developers>
+  
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.beigesoft</groupId>
+      <artifactId>beige-accounting</artifactId>
+      <version>${beige.version}</version>
+    </dependency>
+  </dependencies>
+
+</project>

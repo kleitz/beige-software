@@ -32,58 +32,6 @@ import org.beigesoft.replicator.service.PrepareDbAfterGetCopy;
 public class FactoryAppBeansMysql extends AFactoryAppBeansJdbc {
 
   /**
-   * <p>Service that reset auto-incremented ID sequences (APersistableBase)
-   * after identical copy of another database
-   * and release AppFactory beans.</p>
-   */
-  private PrepareDbAfterGetCopy prepareDbAfterGetCopyMysql;
-
-  /**
-   * <p>Data Source.</p>
-   */
-  private HikariDataSource dataSource;
-
-  /**
-   * <p>Release beans (memory). This is "memory friendly" factory</p>
-   * @throws Exception - an exception
-   */
-  public final synchronized void releaseBeans() throws Exception {
-    if (getFactoryOverBeans() != null) {
-      try {
-        getFactoryOverBeans().releaseBeans();
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    }
-    if (this.dataSource != null) {
-      try {
-        this.dataSource.close();
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-      this.dataSource = null;
-    }
-    this.prepareDbAfterGetCopyMysql = null;
-    setLogger(null);
-    setSrvDatabase(null);
-    setSrvRecordRetriever(null);
-    setUtlReflection(null);
-    setUtlProperties(null);
-    setUtlJsp(null);
-    setSrvI18n(null);
-    setMngUvdSettings(null);
-    setSrvWebEntity(null);
-    setSrvPage(null);
-    setMngSoftware(null);
-    setSrvOrm(null);
-    setSrvWebMvc(null);
-    setHlpInsertUpdate(null);
-    setUtilXml(null);
-    getEntitiesMap().clear();
-    getBeansMap().clear();
-  }
-
-  /**
    * <p>Get other RDBMS specific bean in lazy mode
    * (if bean is null then initialize it).</p>
    * @param pBeanName - bean name
@@ -112,7 +60,10 @@ public class FactoryAppBeansMysql extends AFactoryAppBeansJdbc {
    */
   @Override
   public final synchronized DataSource lazyGetDataSource() throws Exception {
-    if (this.dataSource == null) {
+    String beanName = getDataSourceName();
+    HikariDataSource dataSource =
+      (HikariDataSource) getBeansMap().get(beanName);
+    if (dataSource == null) {
       Properties props = new Properties();
       props.setProperty("dataSourceClassName",
         "com.mysql.jdbc.jdbc2.optional.MysqlDataSource");
@@ -120,11 +71,12 @@ public class FactoryAppBeansMysql extends AFactoryAppBeansJdbc {
       props.setProperty("dataSource.password", getDatabasePassword());
       props.setProperty("dataSource.url", getDatabaseName());
       HikariConfig config = new HikariConfig(props);
-      this.dataSource = new HikariDataSource(config);
-      lazyGetLogger().info(FactoryAppBeansMysql.class,
-        "DataSource has been created.");
+      dataSource = new HikariDataSource(config);
+      getBeansMap().put(beanName, dataSource);
+      lazyGetLogger().info(FactoryAppBeansMysql.class, beanName
+        + " has been created.");
     }
-    return this.dataSource;
+    return dataSource;
   }
 
 
@@ -137,14 +89,18 @@ public class FactoryAppBeansMysql extends AFactoryAppBeansJdbc {
   @Override
   public final synchronized PrepareDbAfterGetCopy
     lazyGetPrepareDbAfterFullImport() throws Exception {
-    if (this.prepareDbAfterGetCopyMysql == null) {
-      this.prepareDbAfterGetCopyMysql =
+    String beanName = getPrepareDbAfterFullImportName();
+    PrepareDbAfterGetCopy prepareDbAfterGetCopyMysql =
+      (PrepareDbAfterGetCopy) getBeansMap().get(beanName);
+    if (prepareDbAfterGetCopyMysql == null) {
+      prepareDbAfterGetCopyMysql =
         new PrepareDbAfterGetCopy();
-      this.prepareDbAfterGetCopyMysql.setLogger(lazyGetLogger());
-      this.prepareDbAfterGetCopyMysql.setFactoryAppBeans(this);
-      lazyGetLogger().info(FactoryAppBeansMysql.class,
-        "PrepareDbAfterGetCopy has been created.");
+      prepareDbAfterGetCopyMysql.setLogger(lazyGetLogger());
+      prepareDbAfterGetCopyMysql.setFactoryAppBeans(this);
+      getBeansMap().put(beanName, prepareDbAfterGetCopyMysql);
+      lazyGetLogger().info(FactoryAppBeansMysql.class, beanName
+        + " has been created.");
     }
-    return this.prepareDbAfterGetCopyMysql;
+    return prepareDbAfterGetCopyMysql;
   }
 }

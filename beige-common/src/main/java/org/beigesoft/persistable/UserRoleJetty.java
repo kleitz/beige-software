@@ -24,9 +24,9 @@ import org.beigesoft.model.IHasId;
     implements IHasId<IdUserRoleJetty> {
 
   /**
-   * <p>Complex ID.</p>
+   * <p>Complex ID. Must be initialized cause reflection use.</p>
    **/
-  private IdUserRoleJetty itsId;
+  private IdUserRoleJetty itsId = new IdUserRoleJetty();
 
   /**
    * <p>User.</p>
@@ -54,6 +54,13 @@ import org.beigesoft.model.IHasId;
   @Override
   public final void setItsId(final IdUserRoleJetty pId) {
     this.itsId = pId;
+    if (this.itsId == null) {
+      this.itsUser = null;
+      this.itsRole = null;
+    } else {
+      this.itsUser = this.itsId.getItsUser();
+      this.itsRole = this.itsId.getItsRole();
+    }
   }
 
   /**
@@ -65,7 +72,7 @@ import org.beigesoft.model.IHasId;
     if (this.itsId == null) {
       this.itsId = new IdUserRoleJetty();
     }
-    this.itsId.setIdRole(pRole.getItsId());
+    this.itsId.setItsRole(this.itsRole);
   }
 
   /**
@@ -77,7 +84,7 @@ import org.beigesoft.model.IHasId;
     if (this.itsId == null) {
       this.itsId = new IdUserRoleJetty();
     }
-    this.itsId.setIdUser(pUser.getItsId());
+    this.itsId.setItsUser(this.itsUser);
   }
 
   //Simple getters and setters:

@@ -10,6 +10,10 @@ package org.beigesoft.accounting.factory;
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
+import java.io.File;
+
+import android.database.Cursor;
+
 import org.beigesoft.exception.ExceptionWithCode;
 import org.beigesoft.delegate.IDelegateExc;
 import org.beigesoft.web.model.FactoryAndServlet;
@@ -33,6 +37,16 @@ public class InitAppFactoryAndroid implements IDelegateExc<FactoryAndServlet> {
     final FactoryAndServlet pFactoryAndServlet) throws Exception {
     FactoryAppBeansAndroid factoryAppBeans =
       (FactoryAppBeansAndroid) pFactoryAndServlet.getFactoryAppBeans();
+    FactoryBldAccServices<Cursor> factoryBldAccServices =
+      new FactoryBldAccServices<Cursor>();
+    factoryBldAccServices.setFactoryAppBeans(factoryAppBeans);
+    factoryAppBeans.setFactoryBldServices(factoryBldAccServices);
+    FactoryAccServices<Cursor> factoryAccServices =
+      new FactoryAccServices<Cursor>();
+    factoryAccServices.setFactoryAppBeans(factoryAppBeans);
+    factoryAccServices.setFactoryBldAccServices(factoryBldAccServices);
+    factoryBldAccServices.setFactoryAccServices(factoryAccServices);
+    factoryAppBeans.setFactoryOverBeans(factoryAccServices);
     String isShowDebugMessagesStr = pFactoryAndServlet.getHttpServlet()
       .getInitParameter("isShowDebugMessages");
     factoryAppBeans.setIsShowDebugMessages(Boolean
@@ -55,9 +69,6 @@ public class InitAppFactoryAndroid implements IDelegateExc<FactoryAndServlet> {
     String databaseName = pFactoryAndServlet.getHttpServlet()
       .getInitParameter("databaseName");
     factoryAppBeans.setDatabaseName(databaseName);
-    FactoryAccServices factoryAccServices = new FactoryAccServices();
-    factoryAccServices.setFactoryAppBeans(factoryAppBeans);
-    factoryAppBeans.setFactoryOverBeans(factoryAccServices);
     android.content.Context aContext = (android.content.Context)
       pFactoryAndServlet.getHttpServlet().getServletContext()
         .getAttribute("android.content.Context");
@@ -67,6 +78,13 @@ public class InitAppFactoryAndroid implements IDelegateExc<FactoryAndServlet> {
           "Servlet context attribute android.content.Context is null!!!");
     }
     factoryAppBeans.setContext(aContext);
+    File uploadDirectory = new File(aContext.getFilesDir().getAbsolutePath()
+     + "/uploads");
+    if (!uploadDirectory.exists() && !uploadDirectory.mkdirs()) {
+      throw new ExceptionWithCode(ExceptionWithCode.SOMETHING_WRONG,
+        "Can't create dir " + uploadDirectory);
+    }
+    factoryAppBeans.setUploadDirectory(uploadDirectory.getAbsolutePath());
     pFactoryAndServlet.getHttpServlet().getServletContext()
       .setAttribute("srvI18n", factoryAppBeans.lazyGet("ISrvI18n"));
     //to create/initialize database if need:

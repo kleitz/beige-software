@@ -76,22 +76,22 @@ public class DatabaseReaderSyncStdXml<RS> implements IDatabaseReader {
    * Read entities from stream (by given reader) and synchronize them
    * into DB.
    * </p>
-   * @param pReader Reader
    * @param pAddParam additional params
+   * @param pReader Reader
    * @throws Exception - an exception
    **/
   @Override
-  public final void readAndStoreEntities(final Reader pReader,
-    final Map<String, Object> pAddParam) throws Exception {
+  public final void readAndStoreEntities(final Map<String, Object> pAddParam,
+    final Reader pReader) throws Exception {
     try {
       this.srvDatabase.setIsAutocommit(false);
       this.srvDatabase.
         setTransactionIsolation(ISrvDatabase.TRANSACTION_READ_UNCOMMITTED);
       this.srvDatabase.beginTransaction();
       while (this.utilXml.readUntilStart(pReader, "entity")) {
-        Object entity = this.srvEntityReader.read(pReader, null);
+        Object entity = this.srvEntityReader.read(pAddParam, pReader);
         String nameEntitySync = this.mngSettings.getClassesSettings()
-          .get(entity.getClass().getCanonicalName()).get("ISrvEntitySync");
+          .get(entity.getClass()).get("ISrvEntitySync");
         ISrvEntitySync srvEntitySync = this.srvEntitySyncMap
           .get(nameEntitySync);
         if (srvEntitySync == null) {
@@ -99,11 +99,11 @@ public class DatabaseReaderSyncStdXml<RS> implements IDatabaseReader {
             .CONFIGURATION_MISTAKE, "There is no ISrvEntitySync "
               + nameEntitySync + " for " + entity.getClass());
         }
-        boolean isNew = srvEntitySync.sync(entity, null);
+        boolean isNew = srvEntitySync.sync(pAddParam, entity);
         if (isNew) {
-          this.srvOrm.insertEntity(entity);
+          this.srvOrm.insertEntity(pAddParam, entity);
         } else {
-          this.srvOrm.updateEntity(entity);
+          this.srvOrm.updateEntity(pAddParam, entity);
         }
       }
       this.srvDatabase.commitTransaction();

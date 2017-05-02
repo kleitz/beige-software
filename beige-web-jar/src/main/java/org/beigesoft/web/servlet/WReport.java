@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.RequestDispatcher;
 
 import org.beigesoft.service.ISrvI18n;
+import org.beigesoft.service.ISrvDate;
 import org.beigesoft.web.service.UtlJsp;
 import org.beigesoft.factory.IFactoryAppBeans;
 import org.beigesoft.exception.ExceptionWithCode;
@@ -62,11 +63,13 @@ public class WReport extends HttpServlet {
     pReq.setCharacterEncoding("UTF-8");
     pResp.setCharacterEncoding("UTF-8");
     try {
-      String nameRenderer = pReq.getParameter("nameRenderer");
-      String path = dirJsp + nameRenderer + ".jsp";
+      String nmRnd = pReq.getParameter("nmRnd");
+      String path = dirJsp + nmRnd + ".jsp";
       RequestDispatcher rd = getServletContext().getRequestDispatcher(path);
       ISrvI18n srvI18n = (ISrvI18n) this.factoryAppBeans.lazyGet("ISrvI18n");
       UtlJsp utlJsp = (UtlJsp) this.factoryAppBeans.lazyGet("UtlJsp");
+      ISrvDate srvDate = (ISrvDate) this.factoryAppBeans.lazyGet("ISrvDate");
+      pReq.setAttribute("srvDate", srvDate);
       pReq.setAttribute("srvI18n", srvI18n);
       pReq.setAttribute("utlJsp", utlJsp);
       rd.include(pReq, pResp);

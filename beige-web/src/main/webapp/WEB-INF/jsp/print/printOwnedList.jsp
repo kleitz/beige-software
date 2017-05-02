@@ -2,10 +2,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:forEach var="ownedListsMapEntry" items="${ownedListsMap}">
   <c:if test="${ownedListsMapEntry.value.size() gt 0}">
-    <c:set var="entitySimpleName" value="${ownedListsMapEntry.key.simpleName}" scope="request"/>
-    <c:set var="entityCanonicalName" value="${ownedListsMapEntry.key.canonicalName}" scope="request"/>
-    <c:set var="fieldsForList" value="${mngUvds.makeFldPropLst(entityCanonicalName, orderPrintList)}" scope="request"/>
-    <c:set var="nameEnts" value="${entitySimpleName}s"/>
+    <c:set var="fieldsForList" value="${mngUvds.makeFldPropLst(ownedListsMapEntry.key, orderPrintList)}" scope="request"/>
+    <c:set var="nameEnts" value="${ownedListsMapEntry.key.simpleName}s"/>
     <div class="title-list"> ${srvI18n.getMsg(nameEnts)}: </div>
     <table>
       <tr>

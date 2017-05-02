@@ -83,36 +83,33 @@ public class SrvBalanceSheet<RS> implements ISrvBalanceSheet {
   public final synchronized BalanceSheet retrieveBalance(
     final Map<String, Object> pAddParam,
       final Date pDate) throws Exception {
-    getSrvBalance().recalculateAllIfNeed(pDate);
+    getSrvBalance().recalculateAllIfNeed(pAddParam, pDate);
     BalanceSheet result = new BalanceSheet();
     result.setItsDate(pDate);
-    String query = evalQueryBalance(pDate);
+    String query = evalQueryBalance(pAddParam, pDate);
     IRecordSet<RS> recordSet = null;
     try {
       recordSet = getSrvDatabase().retrieveRecords(query);
       if (recordSet.moveToFirst()) {
         do {
-          String accName = getSrvDatabase().getSrvRecordRetriever()
-            .getString(recordSet.getRecordSet(), "ACCOUNTNAME");
-          Integer accType = getSrvDatabase().getSrvRecordRetriever()
-            .getInteger(recordSet.getRecordSet(), "ITSTYPE");
-          String accNumber = getSrvDatabase().getSrvRecordRetriever()
-            .getString(recordSet.getRecordSet(), "ITSNUMBER");
-          Double debit = getSrvDatabase().getSrvRecordRetriever()
-            .getDouble(recordSet.getRecordSet(), "DEBIT");
-          Double credit = getSrvDatabase().getSrvRecordRetriever()
-            .getDouble(recordSet.getRecordSet(), "CREDIT");
+          String accName = recordSet.getString("ACCOUNTNAME");
+          Integer accType = recordSet.getInteger("ITSTYPE");
+          String accNumber = recordSet.getString("ITSNUMBER");
+          Double debit = recordSet.getDouble("DEBIT");
+          Double credit = recordSet.getDouble("CREDIT");
           if (debit != 0 || credit != 0) {
             BalanceLine bl = new BalanceLine();
             bl.setAccName(accName);
             bl.setAccNumber(accNumber);
             bl.setAccType(accType);
             bl.setDebit(BigDecimal.valueOf(debit).setScale(
-              getSrvAccSettings().lazyGetAccSettings().getBalancePrecision(),
-                getSrvAccSettings().lazyGetAccSettings().getRoundingMode()));
+              getSrvAccSettings().lazyGetAccSettings(pAddParam)
+                .getBalancePrecision(), getSrvAccSettings()
+                  .lazyGetAccSettings(pAddParam).getRoundingMode()));
             bl.setCredit(BigDecimal.valueOf(credit).setScale(
-              getSrvAccSettings().lazyGetAccSettings().getBalancePrecision(),
-                getSrvAccSettings().lazyGetAccSettings().getRoundingMode()));
+              getSrvAccSettings().lazyGetAccSettings(pAddParam)
+                .getBalancePrecision(), getSrvAccSettings()
+                  .lazyGetAccSettings(pAddParam).getRoundingMode()));
             if (bl.getDebit().doubleValue() != 0
               || bl.getCredit().doubleValue() != 0) {
               result.getItsLines().add(bl);
@@ -148,19 +145,21 @@ public class SrvBalanceSheet<RS> implements ISrvBalanceSheet {
 
   /**
    * <p>Evaluate Balance query.</p>
+   * @param pAddParam additional param
    * @param pDate date of balance
    * @return query of balance
    * @throws Exception - an exception
    **/
   public final synchronized String evalQueryBalance(
-    final Date pDate) throws Exception {
+    final Map<String, Object> pAddParam, final Date pDate) throws Exception {
     if (this.queryBalance == null) {
       String flName = "/" + "accounting" + "/" + "balance"
         + "/" + "queryBalanceSheet.sql";
       this.queryBalance = loadString(flName);
     }
     String query = queryBalance.replace(":DATE1",
-      String.valueOf(getSrvBalance().evalDatePeriodStartFor(pDate).getTime()));
+      String.valueOf(getSrvBalance()
+        .evalDatePeriodStartFor(pAddParam, pDate).getTime()));
     query = query.replace(":DATE2", String.valueOf(pDate.getTime()));
     return query;
   }

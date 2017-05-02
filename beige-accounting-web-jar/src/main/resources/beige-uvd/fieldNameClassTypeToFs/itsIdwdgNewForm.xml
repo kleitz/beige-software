@@ -9,6 +9,14 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 <comment>Correspondence of class types to id new form. ORDER is essential, the LAST value will be used.</comment>
+<entry key="java.lang.Object">null</entry>
+<entry key="org.beigesoft.persistable.AHasIdString">inputString</entry>
 <entry key="org.beigesoft.persistable.AHasIdLong">inputNumber</entry>
-<entry key="org.beigesoft.accounting.persistable.SubaccountLine">inputHidden</entry>
+<entry key="org.beigesoft.persistable.EmailMsg">null</entry>
+<entry key="org.beigesoft.persistable.EmailIntegerProperty">null</entry>
+<entry key="org.beigesoft.persistable.EmailStringProperty">null</entry>
+<entry key="org.beigesoft.persistable.Erecipient">null</entry>
+<entry key="org.beigesoft.persistable.Eattachment">null</entry>
+<entry key="org.beigesoft.accounting.persistable.SubaccountLine">null</entry>
+<entry key="org.beigesoft.webstore.persistable.ChooseableSpecifics">null</entry>
 </properties>

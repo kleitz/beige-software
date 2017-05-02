@@ -9,6 +9,7 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 <comment>Correspondence of field name to to order show in list(minus-1 no show, 1, 4... - order).</comment>
+<entry key="userPassword">-1</entry>
 <entry key="sourceDatabaseBirth">-1</entry>
 <entry key="sourceIdName">-1</entry>
 <entry key="subaccExpenseType">-1</entry>
@@ -30,7 +31,9 @@
 <entry key="reversedId">-1</entry>
 <entry key="reversedIdDatabaseBirth">-1</entry>
 <entry key="theRest">-1</entry>
-<entry key="itsId">1</entry>
+<entry key="itsId">-1</entry>
+<entry key="description">-1</entry>
+<entry key="warehouseSiteFo">-1</entry>
 <entry key="itsName">100</entry>
 <entry key="manufacturingProcess">190</entry>
 <entry key="accDebit">304</entry>
@@ -45,6 +48,7 @@
 <entry key="itsQuantity">405</entry>
 <entry key="subtotal">410</entry>
 <entry key="totalTaxes">420</entry>
+<entry key="taxesDescription">430</entry>
 <entry key="itsTotal">450</entry>
 <entry key="prepaymentFrom">-1</entry>
 <entry key="prepaymentTo">-1</entry>

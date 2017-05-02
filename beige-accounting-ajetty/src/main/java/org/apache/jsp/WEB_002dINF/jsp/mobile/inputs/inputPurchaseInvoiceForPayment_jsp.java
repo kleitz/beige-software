@@ -110,7 +110,7 @@ public final class inputPurchaseInvoiceForPayment_jsp extends org.apache.jasper.
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${entity.getClass().simpleName}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
       out.write('.');
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${fieldName}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
-      out.write(".itsId\" value=\"");
+      out.write("\" value=\"");
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${entity[fieldName].itsId}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
       out.write("\">\n      <button type=\"button\" class=\"btn\" onclick=\"openEntityPicker('");
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${srvOrm.tablesMap[entity.getClass().simpleName].fieldsMap[fieldName].foreignEntity}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
@@ -120,7 +120,9 @@ public final class inputPurchaseInvoiceForPayment_jsp extends org.apache.jasper.
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${entity.getClass().simpleName}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
       out.write("', '");
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${fieldName}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
-      out.write("', '&fltordPhasMadeAccEntriesVal=true&fltordPpaymentTotalVal1=PURCHASEINVOICE.ITSTOTAL&fltordPpaymentTotalOpr1=lt&fltordPforcedFor=hasMadeAccEntries%2CpaymentTotal&mobile=");
+      out.write("', '&nmHnd=");
+      out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${param.nmHnd}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
+      out.write("&fltordPhasMadeAccEntriesVal=true&fltordPpaymentTotalVal=PAYMENTTOTAL lt PURCHASEINVOICE.ITSTOTAL&fltordPforcedFor=hasMadeAccEntries,paymentTotal&mobile=");
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${param.mobile}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
       out.write("');\">...</button>\n      <button type=\"button\" class=\"btn\" onclick=\"clearSelectedEntity('");
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${entity.getClass().simpleName}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
@@ -255,7 +257,7 @@ public final class inputPurchaseInvoiceForPayment_jsp extends org.apache.jasper.
     // /WEB-INF/jsp/mobile/inputs/inputPurchaseInvoiceForPayment.jsp(7,4) name = var type = java.lang.String reqTime = false required = false fragment = false deferredValue = false expectedTypeName = null deferredMethod = false methodSignature = null
     _jspx_th_c_005fset_005f0.setVar("docAppr");
     // /WEB-INF/jsp/mobile/inputs/inputPurchaseInvoiceForPayment.jsp(7,4) name = value type = javax.el.ValueExpression reqTime = true required = false fragment = false deferredValue = true expectedTypeName = java.lang.Object deferredMethod = false methodSignature = null
-    _jspx_th_c_005fset_005f0.setValue(new org.apache.jasper.el.JspValueExpression("/WEB-INF/jsp/mobile/inputs/inputPurchaseInvoiceForPayment.jsp(7,4) '# ${entity[fieldName].idDatabaseBirth}-${entity[fieldName].itsId}, ${dateAppr}, ${entity[fieldName].itsTotal}'",_jsp_getExpressionFactory().createValueExpression(_jspx_page_context.getELContext(),"# ${entity[fieldName].idDatabaseBirth}-${entity[fieldName].itsId}, ${dateAppr}, ${entity[fieldName].itsTotal}",java.lang.Object.class)).getValue(_jspx_page_context.getELContext()));
+    _jspx_th_c_005fset_005f0.setValue(new org.apache.jasper.el.JspValueExpression("/WEB-INF/jsp/mobile/inputs/inputPurchaseInvoiceForPayment.jsp(7,4) '# ${entity[fieldName].idDatabaseBirth}-${entity[fieldName].itsId}, ${dateAppr}, ${entity[fieldName].itsTotal} / ${entity[fieldName].paymentTotal}'",_jsp_getExpressionFactory().createValueExpression(_jspx_page_context.getELContext(),"# ${entity[fieldName].idDatabaseBirth}-${entity[fieldName].itsId}, ${dateAppr}, ${entity[fieldName].itsTotal} / ${entity[fieldName].paymentTotal}",java.lang.Object.class)).getValue(_jspx_page_context.getELContext()));
     int _jspx_eval_c_005fset_005f0 = _jspx_th_c_005fset_005f0.doStartTag();
     if (_jspx_th_c_005fset_005f0.doEndTag() == javax.servlet.jsp.tagext.Tag.SKIP_PAGE) {
       _005fjspx_005ftagPool_005fc_005fset_0026_005fvar_005fvalue_005fnobody.reuse(_jspx_th_c_005fset_005f0);
@@ -308,7 +310,7 @@ public final class inputPurchaseInvoiceForPayment_jsp extends org.apache.jasper.
     // /WEB-INF/jsp/mobile/inputs/inputPurchaseInvoiceForPayment.jsp(10,4) name = var type = java.lang.String reqTime = false required = false fragment = false deferredValue = false expectedTypeName = null deferredMethod = false methodSignature = null
     _jspx_th_c_005fset_005f1.setVar("docAppr");
     // /WEB-INF/jsp/mobile/inputs/inputPurchaseInvoiceForPayment.jsp(10,4) name = value type = javax.el.ValueExpression reqTime = true required = false fragment = false deferredValue = true expectedTypeName = java.lang.Object deferredMethod = false methodSignature = null
-    _jspx_th_c_005fset_005f1.setValue(new org.apache.jasper.el.JspValueExpression("/WEB-INF/jsp/mobile/inputs/inputPurchaseInvoiceForPayment.jsp(10,4) '# ${entity[fieldName].idDatabaseBirth}-${entity[fieldName].idBirth}, ${dateAppr}, ${entity[fieldName].itsTotal}'",_jsp_getExpressionFactory().createValueExpression(_jspx_page_context.getELContext(),"# ${entity[fieldName].idDatabaseBirth}-${entity[fieldName].idBirth}, ${dateAppr}, ${entity[fieldName].itsTotal}",java.lang.Object.class)).getValue(_jspx_page_context.getELContext()));
+    _jspx_th_c_005fset_005f1.setValue(new org.apache.jasper.el.JspValueExpression("/WEB-INF/jsp/mobile/inputs/inputPurchaseInvoiceForPayment.jsp(10,4) '# ${entity[fieldName].idDatabaseBirth}-${entity[fieldName].idBirth}, ${dateAppr}, ${entity[fieldName].itsTotal} / ${entity[fieldName].paymentTotal}'",_jsp_getExpressionFactory().createValueExpression(_jspx_page_context.getELContext(),"# ${entity[fieldName].idDatabaseBirth}-${entity[fieldName].idBirth}, ${dateAppr}, ${entity[fieldName].itsTotal} / ${entity[fieldName].paymentTotal}",java.lang.Object.class)).getValue(_jspx_page_context.getELContext()));
     int _jspx_eval_c_005fset_005f1 = _jspx_th_c_005fset_005f1.doStartTag();
     if (_jspx_th_c_005fset_005f1.doEndTag() == javax.servlet.jsp.tagext.Tag.SKIP_PAGE) {
       _005fjspx_005ftagPool_005fc_005fset_0026_005fvar_005fvalue_005fnobody.reuse(_jspx_th_c_005fset_005f1);

@@ -22,13 +22,14 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.RequestDispatcher;
 
 import org.beigesoft.service.ISrvI18n;
+import org.beigesoft.service.ISrvDate;
 import org.beigesoft.accounting.model.LedgerPrevious;
 import org.beigesoft.accounting.model.LedgerDetail;
 import org.beigesoft.accounting.persistable.Account;
 import org.beigesoft.accounting.service.ISrvLedger;
 import org.beigesoft.orm.service.ISrvDatabase;
 import org.beigesoft.factory.IFactoryAppBeans;
-import org.beigesoft.accounting.service.SrvAccSettings;
+import org.beigesoft.accounting.service.ISrvAccSettings;
 import org.beigesoft.exception.ExceptionWithCode;
 import org.beigesoft.orm.service.ISrvOrm;
 
@@ -72,7 +73,7 @@ public class WLedger<RS> extends HttpServlet {
     pResp.setCharacterEncoding("UTF-8");
     try {
       ISrvLedger srvLedger = (ISrvLedger) this.factoryAppBeans
-        .lazyGet("srvLedger");
+        .lazyGet("ISrvLedger");
       @SuppressWarnings("unchecked")
       ISrvDatabase<RS> srvDatabase = (ISrvDatabase<RS>) this.factoryAppBeans
         .lazyGet("ISrvDatabase");
@@ -83,11 +84,15 @@ public class WLedger<RS> extends HttpServlet {
       if (pReq.getUserPrincipal() != null) {
         userName = pReq.getUserPrincipal().getName();
       }
-      Map<String, Object> addParams = new HashMap<String, Object>();
-      addParams.put("user", userName);
-      addParams.put("parameterMap", pReq.getParameterMap());
-      Date date1 = new Date(Long.parseLong(pReq.getParameter("date1")));
-      Date date2 = new Date(Long.parseLong(pReq.getParameter("date2")));
+      Map<String, Object> addParam = new HashMap<String, Object>();
+      addParam.put("user", userName);
+      addParam.put("parameterMap", pReq.getParameterMap());
+      ISrvDate srvDate = (ISrvDate) this.factoryAppBeans
+        .lazyGet("ISrvDate");
+      Date date1 = srvDate
+        .fromIso8601DateTimeNoTz(pReq.getParameter("date1"), null);
+      Date date2 = srvDate
+        .fromIso8601DateTimeNoTz(pReq.getParameter("date2"), null);
       String accId = pReq.getParameter("accId");
       String subaccId = pReq.getParameter("subaccId");
       String subaccName = pReq.getParameter("subaccName");
@@ -105,10 +110,12 @@ public class WLedger<RS> extends HttpServlet {
         srvDatabase.
           setTransactionIsolation(ISrvDatabase.TRANSACTION_READ_UNCOMMITTED);
         srvDatabase.beginTransaction();
-        account = srvOrm.retrieveEntityById(Account.class, accId);
-        ledgerPrevious = srvLedger.retrievePrevious(addParams, account,
+        account = new Account();
+        account.setItsId(accId);
+        account = srvOrm.retrieveEntity(addParam, account);
+        ledgerPrevious = srvLedger.retrievePrevious(addParam, account,
           date1, subaccId);
-        ledgerDetail = srvLedger.retrieveDetail(addParams, account,
+        ledgerDetail = srvLedger.retrieveDetail(addParam, account,
           date1, date2, subaccId, ledgerPrevious);
         srvDatabase.commitTransaction();
       } catch (Exception ex) {
@@ -117,21 +124,23 @@ public class WLedger<RS> extends HttpServlet {
       } finally {
         srvDatabase.releaseResources();
       }
-      String nameRenderer = pReq.getParameter("nameRenderer");
-      String path = dirJsp + nameRenderer + ".jsp";
+      String nmRnd = pReq.getParameter("nmRnd");
+      String path = dirJsp + nmRnd + ".jsp";
       RequestDispatcher rd = getServletContext().getRequestDispatcher(path);
       ISrvI18n srvI18n = (ISrvI18n) this.factoryAppBeans
         .lazyGet("ISrvI18n");
       pReq.setAttribute("srvI18n", srvI18n);
+      pReq.setAttribute("srvDate", srvDate);
       pReq.setAttribute("account", account);
       pReq.setAttribute("subaccName", subaccName);
       pReq.setAttribute("ledgerPrevious", ledgerPrevious);
       pReq.setAttribute("ledgerDetail", ledgerDetail);
       pReq.setAttribute("date1", date1);
       pReq.setAttribute("date2", date2);
-      SrvAccSettings srvAccSettings = (SrvAccSettings) this.factoryAppBeans
-        .lazyGet("srvAccSettings");
-      pReq.setAttribute("accSettings", srvAccSettings.lazyGetAccSettings());
+      ISrvAccSettings srvAccSettings = (ISrvAccSettings) this.factoryAppBeans
+        .lazyGet("ISrvAccSettings");
+      pReq.setAttribute("accSettings",
+        srvAccSettings.lazyGetAccSettings(addParam));
       rd.include(pReq, pResp);
     } catch (Exception e) {
       e.printStackTrace();

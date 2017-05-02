@@ -27,7 +27,6 @@ import org.beigesoft.android.log.Logger;
 import org.beigesoft.replicator.service.PrepareDbAfterGetCopy;
 import org.beigesoft.android.sqlite.service.CursorFactory;
 import org.beigesoft.android.sqlite.service.SrvDatabase;
-import org.beigesoft.android.sqlite.service.SrvRecordRetriever;
 
 /**
  * <p>
@@ -39,94 +38,9 @@ import org.beigesoft.android.sqlite.service.SrvRecordRetriever;
 public class FactoryAppBeansAndroid extends AFactoryAppBeans<Cursor> {
 
   /**
-   * <p>Service that  release AppFactory beans.</p>
-   */
-  private PrepareDbAfterGetCopy prepareDbAfterGetCopy;
-
-  /**
    * <p>Android context.</p>
    **/
   private Context context;
-
-  /**
-   * <p>Logger.</p>
-   */
-  private ILogger logger;
-
-  /**
-   * <p>Record retriever service.</p>
-   **/
-  private SrvRecordRetriever srvRecordRetriever;
-
-  /**
-   * <p>Database service.</p>
-   **/
-  private SrvDatabase srvDatabase;
-
-  /**
-   * <p>Cursor factory.</p>
-   **/
-  private CursorFactory cursorFactory;
-
-  /**
-   * <p>Database manager for Android.</p>
-   **/
-  private MngDatabaseAndroid mngDatabaseAndroid;
-
-  /**
-   * <p>Release beans (memory). This is "memory friendly" factory</p>
-   * @throws Exception - an exception
-   */
-  public final synchronized void releaseBeans() throws Exception {
-    if (getFactoryOverBeans() != null) {
-      getFactoryOverBeans().releaseBeans();
-    }
-    this.logger = null;
-    this.srvRecordRetriever = null;
-    if (this.srvDatabase != null) {
-      try {
-        this.srvDatabase.releaseResources();
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-      this.srvDatabase = null;
-    }
-    this.prepareDbAfterGetCopy = null;
-    this.cursorFactory = null;
-    this.mngDatabaseAndroid = null;
-    setUtlReflection(null);
-    setUtlProperties(null);
-    setUtlJsp(null);
-    setSrvI18n(null);
-    setMngUvdSettings(null);
-    setSrvWebEntity(null);
-    setSrvPage(null);
-    setMngSoftware(null);
-    setSrvOrm(null);
-    setSrvWebMvc(null);
-    setHlpInsertUpdate(null);
-    getEntitiesMap().clear();
-    getBeansMap().clear();
-  }
-
-  /**
-   * <p>Get Service that prepare Database after full import
-   * in lazy mode.</p>
-   * @return IDelegator - preparator Database after full import.
-   * @throws Exception - an exception
-   */
-  @Override
-  public final synchronized PrepareDbAfterGetCopy
-    lazyGetPrepareDbAfterFullImport() throws Exception {
-    if (this.prepareDbAfterGetCopy == null) {
-      this.prepareDbAfterGetCopy = new PrepareDbAfterGetCopy();
-      this.prepareDbAfterGetCopy.setLogger(lazyGetLogger());
-      this.prepareDbAfterGetCopy.setFactoryAppBeans(this);
-      lazyGetLogger().info(FactoryAppBeansAndroid.class,
-        "PrepareDbAfterGetCopy has been created.");
-    }
-    return this.prepareDbAfterGetCopy;
-  }
 
   /**
    * <p>Get other bean in lazy mode (if bean is null then initialize it).</p>
@@ -135,7 +49,7 @@ public class FactoryAppBeansAndroid extends AFactoryAppBeans<Cursor> {
    * @throws Exception - an exception
    */
   @Override
-  public final synchronized Object lazyGetOtherBean(
+  public final Object lazyGetOtherBean(
     final String pBeanName) throws Exception {
     if ("CursorFactory".equals(pBeanName)) {
       return lazyGetCursorFactory();
@@ -147,28 +61,45 @@ public class FactoryAppBeansAndroid extends AFactoryAppBeans<Cursor> {
   }
 
   /**
+   * <p>Is need to SQL escape (character ').</p>
+   * @return for Android false, JDBC - true.
+   */
+  @Override
+  public final boolean getIsNeedsToSqlEscape() {
+    return false;
+  }
+
+  /**
    * <p>Instantiate ORM  service.</p>
    * @return SrvOrmAndroid - ORM  service
    */
   @Override
-  public final synchronized SrvOrmAndroid<Cursor> instantiateSrvOrm() {
+  public final SrvOrmAndroid<Cursor> instantiateSrvOrm() {
     SrvOrmAndroid<Cursor> srvOrmAndroid = new SrvOrmAndroid<Cursor>();
-    srvOrmAndroid.setIsNeedsToSqlEscape(false); //!!! this is important
     return srvOrmAndroid;
   }
 
   /**
-   * <p>Get SrvDatabase in lazy mode.</p>
-   * @return SrvDatabase - SrvDatabase
+   * <p>Get Service that prepare Database after full import
+   * in lazy mode.</p>
+   * @return IDelegator - preparator Database after full import.
    * @throws Exception - an exception
    */
   @Override
-  public final synchronized ILogger lazyGetLogger() throws Exception {
-    if (this.logger == null) {
-      this.logger = new Logger();
-      this.logger.setIsShowDebugMessages(getIsShowDebugMessages());
+  public final PrepareDbAfterGetCopy
+    lazyGetPrepareDbAfterFullImport() throws Exception {
+    String beanName = getPrepareDbAfterFullImportName();
+    PrepareDbAfterGetCopy prepareDbAfterGetCopy =
+      (PrepareDbAfterGetCopy) getBeansMap().get(beanName);
+    if (prepareDbAfterGetCopy == null) {
+      prepareDbAfterGetCopy = new PrepareDbAfterGetCopy();
+      prepareDbAfterGetCopy.setLogger(lazyGetLogger());
+      prepareDbAfterGetCopy.setFactoryAppBeans(this);
+      getBeansMap().put(beanName, prepareDbAfterGetCopy);
+      lazyGetLogger().info(FactoryAppBeansAndroid.class, beanName
+        + " has been created.");
     }
-    return this.logger;
+    return prepareDbAfterGetCopy;
   }
 
   /**
@@ -177,16 +108,39 @@ public class FactoryAppBeansAndroid extends AFactoryAppBeans<Cursor> {
    * @throws Exception - an exception
    */
   @Override
-  public final synchronized SrvDatabase lazyGetSrvDatabase() throws Exception {
-    if (this.srvDatabase == null) {
-      this.srvDatabase = new SrvDatabase();
-      SQLiteDatabase db = this.context.openOrCreateDatabase(getDatabaseName(),
-       Context.MODE_PRIVATE, lazyGetCursorFactory());
-      this.srvDatabase.setSrvRecordRetriever(lazyGetSrvRecordRetriever());
-      this.srvDatabase.setSqliteDatabase(db);
-      this.srvDatabase.setLogger(lazyGetLogger());
+  public final ILogger lazyGetLogger() throws Exception {
+    String beanName = getLoggerName();
+    Logger logger = (Logger) getBeansMap().get(beanName);
+    if (logger == null) {
+      logger = new Logger();
+      logger.setIsShowDebugMessages(getIsShowDebugMessages());
+      getBeansMap().put(beanName, logger);
+      lazyGetLogger().info(FactoryAppBeansAndroid.class, beanName
+        + " has been created.");
     }
-    return this.srvDatabase;
+    return logger;
+  }
+
+  /**
+   * <p>Get SrvDatabase in lazy mode.</p>
+   * @return SrvDatabase - SrvDatabase
+   * @throws Exception - an exception
+   */
+  @Override
+  public final SrvDatabase lazyGetSrvDatabase() throws Exception {
+    String beanName = getSrvDatabaseName();
+    SrvDatabase srvDatabase = (SrvDatabase) getBeansMap().get(beanName);
+    if (srvDatabase == null) {
+      srvDatabase = new SrvDatabase();
+      SQLiteDatabase db = context.openOrCreateDatabase(getDatabaseName(),
+       Context.MODE_PRIVATE, lazyGetCursorFactory());
+      srvDatabase.setSqliteDatabase(db);
+      srvDatabase.setLogger(lazyGetLogger());
+      getBeansMap().put(beanName, srvDatabase);
+      lazyGetLogger().info(FactoryAppBeansAndroid.class, beanName
+        + " has been created.");
+    }
+    return srvDatabase;
   }
 
   /**
@@ -194,13 +148,16 @@ public class FactoryAppBeansAndroid extends AFactoryAppBeans<Cursor> {
    * @return MngDatabaseAndroid - MngDatabaseAndroid
    * @throws Exception - an exception
    */
-  public final synchronized MngDatabaseAndroid
+  public final MngDatabaseAndroid
     lazyGetMngDatabaseAndroid() throws Exception {
-    if (this.mngDatabaseAndroid == null) {
-      this.mngDatabaseAndroid = new MngDatabaseAndroid();
-      this.mngDatabaseAndroid.setFactoryAppBeansAndroid(this);
-      ContextWrapper cw = new ContextWrapper(this.context);
-      this.mngDatabaseAndroid.setDatabaseDir(cw.getFilesDir()
+    String beanName = getMngDatabaseAndroidName();
+    MngDatabaseAndroid mngDatabaseAndroid =
+      (MngDatabaseAndroid) getBeansMap().get(beanName);
+    if (mngDatabaseAndroid == null) {
+      mngDatabaseAndroid = new MngDatabaseAndroid();
+      mngDatabaseAndroid.setFactoryAppBeansAndroid(this);
+      ContextWrapper cw = new ContextWrapper(context);
+      mngDatabaseAndroid.setDatabaseDir(cw.getFilesDir()
         .getAbsolutePath().replace("files", "databases"));
       File bkDir = new File(Environment.getExternalStorageDirectory()
         .getAbsolutePath() + "/" + "BeigeAccountingBackup");
@@ -208,39 +165,53 @@ public class FactoryAppBeansAndroid extends AFactoryAppBeans<Cursor> {
         throw new ExceptionWithCode(ExceptionWithCode.SOMETHING_WRONG,
           "Can't create dir: " + bkDir);
       }
-      this.mngDatabaseAndroid.setBackupDir(bkDir.getAbsolutePath());
+      mngDatabaseAndroid.setBackupDir(bkDir.getAbsolutePath());
+      getBeansMap().put(beanName, mngDatabaseAndroid);
+      lazyGetLogger().info(FactoryAppBeansAndroid.class, beanName
+        + " has been created.");
     }
-    return this.mngDatabaseAndroid;
+    return mngDatabaseAndroid;
   }
 
   /**
-   * <p>Get SrvRecordRetriever in lazy mode.</p>
-   * @return SrvRecordRetriever - SrvRecordRetriever
-   */
-  @Override
-  public final synchronized SrvRecordRetriever lazyGetSrvRecordRetriever() {
-    if (this.srvRecordRetriever == null) {
-      this.srvRecordRetriever = new SrvRecordRetriever();
-    }
-    return this.srvRecordRetriever;
+   * <p>Getter of MngDatabaseAndroid service name.</p>
+   * @return service name
+   **/
+  public final String getMngDatabaseAndroidName() {
+    return "mngDatabaseAndroid";
   }
 
   /**
    * <p>Get lazy for cursorFactory.</p>
    * @return CursorFactory
+   * @throws Exception - an exception
    **/
-  public final synchronized CursorFactory lazyGetCursorFactory() {
-    if (this.cursorFactory == null) {
-      this.cursorFactory = new CursorFactory();
+  public final CursorFactory
+    lazyGetCursorFactory() throws Exception {
+    String beanName = getCursorFactoryName();
+    CursorFactory cursorFactory = (CursorFactory) getBeansMap().get(beanName);
+    if (cursorFactory == null) {
+      cursorFactory = new CursorFactory();
+      getBeansMap().put(beanName, cursorFactory);
+      lazyGetLogger().info(FactoryAppBeansAndroid.class, beanName
+        + " has been created.");
     }
-    return this.cursorFactory;
+    return cursorFactory;
+  }
+
+  /**
+   * <p>Getter of Cursor Factory name.</p>
+   * @return service name
+   **/
+  public final String getCursorFactoryName() {
+    return "CursorFactory";
   }
 
   /**
    * <p>Geter for context.</p>
    * @return Context
    **/
-  public final synchronized Context getContext() {
+  public final Context getContext() {
     return this.context;
   }
 
@@ -248,25 +219,17 @@ public class FactoryAppBeansAndroid extends AFactoryAppBeans<Cursor> {
    * <p>Setter for context.</p>
    * @param pContext reference
    **/
-  public final synchronized void setContext(final Context pContext) {
+  public final void setContext(final Context pContext) {
     this.context = pContext;
   }
 
   /**
-   * <p>Setter for cursorFactory.</p>
-   * @param pCursorFactory reference
-   **/
-  public final synchronized void setCursorFactory(
-    final CursorFactory pCursorFactory) {
-    this.cursorFactory = pCursorFactory;
-  }
-
-  //To insure if it's null
-  /**
-   * <p>Getter for srvDatabase.</p>
-   * @return SrvDatabase
-   **/
-  public final synchronized SrvDatabase getSrvDatabase() {
-    return this.srvDatabase;
+   * <p>Get SrvDatabase if exist for database manager.</p>
+   * @return SrvDatabase - SrvDatabase
+   */
+  public final SrvDatabase getSrvDatabase() {
+    String beanName = getSrvDatabaseName();
+    SrvDatabase srvDatabase = (SrvDatabase) getBeansMap().get(beanName);
+    return srvDatabase;
   }
 }

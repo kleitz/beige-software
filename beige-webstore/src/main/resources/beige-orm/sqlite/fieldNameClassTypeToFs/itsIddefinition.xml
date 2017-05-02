@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Beigesoft ™
+  Licensed under the Apache License, Version 2.0
+ 
+  You may obtain a copy of the License at
+ 
+  http://www.apache.org/licenses/LICENSE-2.0
+ -->
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Correspondence of class types to id definition. ORDER is essential, the LAST value will be used.</comment>
+<entry key="org.beigesoft.persistable.AHasIdLong">integer not null primary key</entry>
+<entry key="org.beigesoft.accounting.persistable.SubaccountLine">integer not null primary key autoincrement</entry>
+<entry key="org.beigesoft.accounting.persistable.BalanceAt">integer not null primary key autoincrement</entry>
+<entry key="org.beigesoft.persistable.EmailMsg">integer not null primary key autoincrement</entry>
+<entry key="org.beigesoft.persistable.EmailIntegerProperty">integer not null primary key autoincrement</entry>
+<entry key="org.beigesoft.persistable.EmailStringProperty">integer not null primary key autoincrement</entry>
+<entry key="org.beigesoft.persistable.Eattachment">integer not null primary key autoincrement</entry>
+<entry key="org.beigesoft.persistable.Erecipient">integer not null primary key autoincrement</entry>
+<entry key="org.beigesoft.webstore.persistable.ChooseableSpecifics">integer not null primary key autoincrement</entry>
+</properties>

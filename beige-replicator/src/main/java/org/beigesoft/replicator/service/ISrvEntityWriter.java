@@ -24,11 +24,11 @@ public interface ISrvEntityWriter {
    * <p>
    * Write entity into a stream (writer - file or pass it through network).
    * </p>
+   * @param pAddParam additional params (e.g. exclude fields set)
    * @param pEntity object
    * @param pWriter writer
-   * @param pAddParam additional params (e.g. exclude fields set)
    * @throws Exception - an exception
    **/
-  void write(Object pEntity, Writer pWriter,
-    Map<String, Object> pAddParam) throws Exception;
+  void write(Map<String, Object> pAddParam,
+    Object pEntity, Writer pWriter) throws Exception;
 }

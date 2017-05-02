@@ -12,13 +12,16 @@ package org.beigesoft.web.model;
 
 import java.util.Map;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.beigesoft.model.IRequestData;
+import org.beigesoft.model.ICookie;
 
 /**
  * <p>Abstraction of request data (get/set param, attribute)
- * that usually wrap HttpServletRequest(parameters/attributes).
+ * that usually wrap HttpServletRequest/HttpServletResponse.
  * </p>
  *
  * @author Yury Demidenko
@@ -31,11 +34,19 @@ public class HttpRequestData implements IRequestData {
   private final HttpServletRequest httpReq;
 
   /**
+   * <p>Http Servlet Request to adapt.</p>
+   **/
+  private final HttpServletResponse httpResp;
+
+  /**
    * <p>Only constructor.</p>
    * @param pHttpReq reference
+   * @param pHttpResp reference
    **/
-  public HttpRequestData(final HttpServletRequest pHttpReq) {
+  public HttpRequestData(final HttpServletRequest pHttpReq,
+    final HttpServletResponse pHttpResp) {
     this.httpReq = pHttpReq;
+    this.httpResp = pHttpResp;
   }
 
   /**
@@ -59,6 +70,18 @@ public class HttpRequestData implements IRequestData {
   }
 
   /**
+   * <p>Getter of user name.</p>
+   * @return User name if he/she logged
+   **/
+  @Override
+  public final String getUserName() {
+    if (httpReq.getUserPrincipal() != null) {
+      return httpReq.getUserPrincipal().getName();
+    }
+    return null;
+  }
+
+  /**
    * <p>Getter for attribute.</p>
    * @param pAttrName Attribute name
    * @return Attribute
@@ -79,6 +102,35 @@ public class HttpRequestData implements IRequestData {
     httpReq.setAttribute(pAttrName, pAttribute);
   }
 
+  /**
+   * <p>Getter of cookies.</p>
+   * @return cookies or null
+   **/
+  @Override
+  public final HttpCookie[] getCookies() {
+    if (this.httpReq.getCookies() == null) {
+      return null;
+    }
+    HttpCookie[] httpCookies = new HttpCookie[this.httpReq.getCookies().length];
+    for (int i = 0; i < this.httpReq.getCookies().length; i++) {
+      Cookie cookie = this.httpReq.getCookies()[i];
+      httpCookies[i] = new HttpCookie(cookie);
+    }
+    return httpCookies;
+  }
+
+  /**
+   * <p>Add cookie.</p>
+   * @param pCookie Cookie
+   **/
+  @Override
+  public final void addCookie(final ICookie pCookie) {
+    Cookie cookie = new Cookie(pCookie.getName(),
+      pCookie.getValue());
+    cookie.setMaxAge(pCookie.getMaxAge());
+    this.httpResp.addCookie(cookie);
+  }
+
   //Simple getters and setters:
   /**
    * <p>Geter for httpReq.</p>
@@ -86,5 +138,13 @@ public class HttpRequestData implements IRequestData {
    **/
   public final HttpServletRequest getHttpReq() {
     return this.httpReq;
+  }
+
+  /**
+   * <p>Getter for httpResp.</p>
+   * @return HttpServletResponse
+   **/
+  public final HttpServletResponse getHttpResp() {
+    return this.httpResp;
   }
 }

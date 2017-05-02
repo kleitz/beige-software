@@ -46,15 +46,15 @@ public class SrvEntityReaderXml implements ISrvEntityReader {
    * Read entity(fill fields) from a stream (reader - file or through network).
    * It is invoked when it's start of &lt;entity
    * </p>
-   * @param pReader reader.
    * @param pAddParam additional params
+   * @param pReader reader.
    * @return entity filled/refreshed.
    * @throws Exception - an exception
    **/
   @Override
-  public final Object read(final Reader pReader,
-    final Map<String, Object> pAddParam) throws Exception {
-    Map<String, String> attributesMap = readAttributes(pReader, pAddParam);
+  public final Object read(final Map<String, Object> pAddParam,
+    final Reader pReader) throws Exception {
+    Map<String, String> attributesMap = readAttributes(pAddParam, pReader);
     if (attributesMap.get("class") == null) {
       throw new ExceptionWithCode(ExceptionWithCode
         .CONFIGURATION_MISTAKE, "There is no class attribute for entity!");
@@ -65,7 +65,7 @@ public class SrvEntityReaderXml implements ISrvEntityReader {
     Object entity = constructor.newInstance();
     Map<String, Map<String, String>> fieldsSettingsMap =
       getMngSettings().getFieldsSettings()
-        .get(entityClass.getCanonicalName());
+        .get(entityClass);
     for (Map.Entry<String, Map<String, String>> entry
       : fieldsSettingsMap.entrySet()) {
       if ("true".equals(entry.getValue().get("isEnabled"))
@@ -78,8 +78,8 @@ public class SrvEntityReaderXml implements ISrvEntityReader {
               + entry.getValue().get("ISrvEntityFieldFiller") + " for "
                 + entityClass + " / " + entry.getKey());
         }
-        srvEntityFieldFiller.fill(entity, entry.getKey(), attributesMap
-          .get(entry.getKey()), pAddParam);
+        srvEntityFieldFiller.fill(pAddParam, entity, entry.getKey(),
+          attributesMap.get(entry.getKey()));
       }
     }
     return entity;
@@ -89,14 +89,15 @@ public class SrvEntityReaderXml implements ISrvEntityReader {
    * <p>
    * Read entity attributes from stream.
    * </p>
-   * @param pReader reader.
    * @param pAddParam additional params
+   * @param pReader reader.
    * @return attributes map
    * @throws Exception - an exception
    **/
   @Override
-  public final Map<String, String> readAttributes(final Reader pReader,
-    final Map<String, Object> pAddParam) throws Exception {
+  public final Map<String, String> readAttributes(
+    final Map<String, Object> pAddParam,
+      final Reader pReader) throws Exception {
     return this.utilXml.readAttributes(pReader, pAddParam);
   }
 

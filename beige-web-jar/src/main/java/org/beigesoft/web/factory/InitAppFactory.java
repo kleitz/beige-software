@@ -15,15 +15,17 @@ import java.io.File;
 import org.beigesoft.delegate.IDelegateExc;
 import org.beigesoft.orm.service.ISrvOrm;
 import org.beigesoft.web.model.FactoryAndServlet;
+import org.beigesoft.log.ILogger;
 
 /**
  * <p>
  * Initialize app-factory with servlet parameters.
  * </p>
  *
+ * @param <RS> platform dependent RDBMS recordset
  * @author Yury Demidenko
  */
-public class InitAppFactory implements IDelegateExc<FactoryAndServlet> {
+public class InitAppFactory<RS> implements IDelegateExc<FactoryAndServlet> {
 
   /**
    * <p>Make something with a model.</p>
@@ -34,12 +36,16 @@ public class InitAppFactory implements IDelegateExc<FactoryAndServlet> {
   public final synchronized void makeWith(
     final FactoryAndServlet pFactoryAndServlet) throws Exception {
     @SuppressWarnings("unchecked")
-    AFactoryAppBeans<?> factoryAppBeans =
-      (AFactoryAppBeans<?>) pFactoryAndServlet.getFactoryAppBeans();
+    AFactoryAppBeans<RS> factoryAppBeans =
+      (AFactoryAppBeans<RS>) pFactoryAndServlet.getFactoryAppBeans();
+    FactoryBldServices<RS> factoryBldServices = new FactoryBldServices<RS>();
+    factoryBldServices.setFactoryAppBeans(factoryAppBeans);
+    factoryAppBeans.setFactoryBldServices(factoryBldServices);
     String isShowDebugMessagesStr = pFactoryAndServlet.getHttpServlet()
       .getInitParameter("isShowDebugMessages");
     factoryAppBeans.setIsShowDebugMessages(Boolean
       .valueOf(isShowDebugMessagesStr));
+    ILogger logger = (ILogger) factoryAppBeans.lazyGet("ILogger");
     String newDatabaseIdStr = pFactoryAndServlet.getHttpServlet()
       .getInitParameter("newDatabaseId");
     factoryAppBeans.setNewDatabaseId(Integer.parseInt(newDatabaseIdStr));
@@ -55,6 +61,19 @@ public class InitAppFactory implements IDelegateExc<FactoryAndServlet> {
     String uvdSettingsBaseFile = pFactoryAndServlet.getHttpServlet()
       .getInitParameter("uvdSettingsBaseFile");
     factoryAppBeans.setUvdSettingsBaseFile(uvdSettingsBaseFile);
+    String uploadDirectory = pFactoryAndServlet.getHttpServlet()
+      .getInitParameter("uploadDirectory");
+    if (uploadDirectory != null) {
+      factoryAppBeans.setUploadDirectory(uploadDirectory);
+    }
+    factoryAppBeans.setWebAppPath(pFactoryAndServlet.getHttpServlet()
+      .getServletContext().getRealPath(""));
+    File uploadDir = new File(factoryAppBeans.getWebAppPath() + File.separator
+      + factoryAppBeans.getUploadDirectory());
+    if (!uploadDir.exists()
+      && !uploadDir.mkdirs()) { // e.g. run on maven-tomcat
+      logger.error(InitAppFactory.class, "Can't create UD " + uploadDirectory);
+    }
     String jdbcUrl = pFactoryAndServlet.getHttpServlet()
       .getInitParameter("databaseName");
     if (jdbcUrl != null && jdbcUrl.contains(ISrvOrm.WORD_CURRENT_DIR)) {

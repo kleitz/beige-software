@@ -30,7 +30,7 @@
   <dependencies>
     <dependency>
       <groupId>org.beigesoft</groupId>
-      <artifactId>beige-accounting</artifactId>
+      <artifactId>beige-webstore</artifactId>
       <version>${beige.version}</version>
     </dependency>
     <dependency>
@@ -40,8 +40,8 @@
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <version>${servlet.version}</version>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>3.0.1</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>

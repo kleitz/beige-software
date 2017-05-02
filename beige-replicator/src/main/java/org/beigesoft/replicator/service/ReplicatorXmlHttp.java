@@ -212,7 +212,7 @@ public class ReplicatorXmlHttp<RS>
           writer = new OutputStreamWriter(urlConnection
             .getOutputStream(), Charset.forName("UTF-8").newEncoder());
           String nameFilterEntities = this.mngSettings.getClassesSettings()
-            .get(entityClass.getCanonicalName()).get("filter");
+            .get(entityClass).get("filter");
           String conditions = "";
           if (nameFilterEntities != null) {
             IFilterEntities filterEntities = this.filtersEntities
@@ -247,7 +247,7 @@ public class ReplicatorXmlHttp<RS>
                 "Wrong XML response without message tag!!!");
             }
             Map<String, String> msgAttrsMap = this.srvEntityReaderXml.
-              readAttributes(reader, null);
+              readAttributes(pAddParams, reader);
             String error = msgAttrsMap.get("error");
             if (error != null) {
               throw new ExceptionWithCode(ExceptionWithCode.SOMETHING_WRONG,
@@ -270,7 +270,7 @@ public class ReplicatorXmlHttp<RS>
                 }
                 isDbPreparedBefore = true;
               }
-              this.databaseReader.readAndStoreEntities(reader, pAddParams);
+              this.databaseReader.readAndStoreEntities(pAddParams, reader);
               if (entitiesReceived == maxRecords) {
                 firstRecord += maxRecords;
               } else {

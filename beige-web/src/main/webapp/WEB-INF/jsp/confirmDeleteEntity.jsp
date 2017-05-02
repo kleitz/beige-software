@@ -3,21 +3,28 @@
 <dialog id="${namePlaceForm}DeleteDlg" class="dlg">
   <div class="form-std">
     <div class="dialog-title">
-      ${srvI18n.getMsg("Delete")} ${srvI18n.getMsg(param.nameEntity)}
+      ${srvI18n.getMsg("Delete")} ${srvI18n.getMsg(param.nmEnt)}
       <button onclick="closeDlgCareful('${namePlaceForm}Delete')" class="btn-close">x</button>
     </div>
-    <form id="${namePlaceForm}DeleteFrm" action="entity/" method="POST">
-      <input type="hidden" name="nameAction" value="delete">
-      <input type="hidden" name="nameEntity" value="${param.nameEntity}">
+    <form id="${namePlaceForm}DeleteFrm" action="service/" method="POST" enctype="multipart/form-data">
+      <input type="hidden" name="nmsAct" value="entityDelete,list">
+      <input type="hidden" name="nmHnd" value="${param.nmHnd}">
+      <input type="hidden" name="nmEnt" value="${param.nmEnt}">
+      <input type="hidden" name="msgSuccess" value="deleted_ok">
+      <input type="hidden" name="nmRndList" value="${param.nmRndList}">
+      <input type="hidden" name="nmRnd" value="listAfterFormActionJson">
       <input type="hidden" name="page" value="${param.page}">
-      <input type="hidden" name="nameRenderer" value="listAfterDeleteJson">
+      <c:if test="${not empty param.mobile}">
+        <input type="hidden" name="mobile" value="${param.mobile}">
+      </c:if>
       <c:forEach items="${param}" var="par">
-        <c:if test="${par.key.startsWith('fltordM')}">
+        <c:if test="${par.key.startsWith('fltordM') || par.key.startsWith('fly')}">
           <input type="hidden" name="${par.key}" value="${par.value}">
+          <c:set var="flyParams" value="${flyParams}&${par.key}=${par.value}"/>
         </c:if>
       </c:forEach>
       <table class="tbl-fieldset">
-      <c:forEach var="entry" items="${mngUvds.makeFldPropLst(entity.getClass().canonicalName, 'orderShowForm')}">
+      <c:forEach var="entry" items="${mngUvds.makeFldPropLst(entity.getClass(), 'orderShowForm')}">
         <c:if test="${not empty entry.value.get('wdgDeleteForm')}">
           <c:set var="fieldName" value="${entry.key}" scope="request"/>
           <jsp:include page="inputs/${entry.value.get('wdgDeleteForm')}.jsp"/>
@@ -25,10 +32,8 @@
       </c:forEach>
       </table>
       <c:forEach var="ownedListsMapEntry" items="${ownedListsMap}">
-        <c:set var="entitySimpleName" value="${ownedListsMapEntry.key.simpleName}" scope="request"/>
-        <c:set var="entityCanonicalName" value="${ownedListsMapEntry.key.canonicalName}" scope="request"/>
-        <c:set var="fieldsForList" value="${mngUvds.makeFldPropLst(entityCanonicalName, 'orderShowList')}" scope="request"/>
-        <c:set var="nameEnts" value="${entitySimpleName}s"/>
+        <c:set var="fieldsForList" value="${mngUvds.makeFldPropLst(ownedListsMapEntry.key, 'orderShowList')}" scope="request"/>
+        <c:set var="nameEnts" value="${ownedListsMapEntry.key.simpleName}s"/>
         <div class="title-list"> ${srvI18n.getMsg(nameEnts)} </div>
         <table>
           <tr>
@@ -47,11 +52,7 @@
           </c:forEach>
         </table>
       </c:forEach>
-      <div class="form-actions">
-        <input style="display: none" id="${namePlaceForm}DeleteFrmFakeSubmit" type="submit"/>
-        <button type="button" onclick="submitFormByAjax('${namePlaceForm}DeleteFrm', false);">${srvI18n.getMsg("Delete")}</button>
-        <a href="#" onclick="closeDlgCareful('${namePlaceForm}Delete');">${srvI18n.getMsg("Close")}</a>
-      </div>
+      <jsp:include page="forForm/${mngUvds.classesSettings.get(entity.getClass()).get('wdgFormActionsDelete')}.jsp"/>
     </form>
   </div>
 </dialog>

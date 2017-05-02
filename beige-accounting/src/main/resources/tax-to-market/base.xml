@@ -48,7 +48,5 @@
   org.beigesoft.accounting.persistable.AccountingEntry</entry>
 <entry key="settingsKeysForClasses">filter,ISrvEntitySync</entry>
 <entry key="settingsKeysForFields">isEnabled, ISrvFieldWriter, ISrvEntityFieldFiller</entry>
-<entry key="excludeFields">isNew, itsLines, taxes, usedInvItems, usedInvItemTypes, usedInvItemCategories, taxesLines,
-  accEntriesSources, cogsItemSources, drawMaterialSources, usedMaterials, additionCosts, employees, wageTypes,
-  yearWageLines, subaccounts</entry>
+<entry key="excludeFields">isNews</entry>
 </properties>

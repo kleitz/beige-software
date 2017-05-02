@@ -6,22 +6,27 @@
  
   http://www.apache.org/licenses/LICENSE-2.0
  -->
-<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
-  http://java.sun.com/xml/ns/j2ee/web-app_2_5.xsd"
-  version="2.5">
-  <display-name>Beige ERP</display-name>
+  xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+                      http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+  version="3.0"
+  metadata-complete="true">
+  <display-name>Beige Accounting</display-name>
   <jsp-property-group>
     <trim-directive-whitespaces>true</trim-directive-whitespaces>
   </jsp-property-group>
+  <context-param>
+    <param-name>webAppFor</param-name>
+    <param-value>Standard</param-value>
+  </context-param>
   <listener>
     <listener-class>org.beigesoft.web.listener.WebContextCleaner</listener-class>
   </listener>
   <servlet>
-    <servlet-name>entityList</servlet-name>
+    <servlet-name>service</servlet-name>
     <servlet-class>
-      org.beigesoft.web.servlet.WEntityList
+      org.beigesoft.web.servlet.WService
     </servlet-class>
     <load-on-startup>1</load-on-startup>
     <init-param>
@@ -72,10 +77,34 @@
       <param-name>dirJsp</param-name>
       <param-value>/WEB-INF/jsp/</param-value>
     </init-param>
+    <multipart-config>
+      <max-file-size>10000</max-file-size>
+      <max-request-size>10000</max-request-size>
+      <file-size-threshold>10000</file-size-threshold>
+    </multipart-config>
   </servlet>
   <servlet-mapping>
-    <servlet-name>entityList</servlet-name>
-    <url-pattern>/secure/entityList/*</url-pattern>
+    <servlet-name>service</servlet-name>
+    <url-pattern>/secure/service/*</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>uploadSingle</servlet-name>
+    <servlet-class>
+      org.beigesoft.web.servlet.WUploadSingle
+    </servlet-class>
+    <init-param>
+      <param-name>dirJsp</param-name>
+      <param-value>/WEB-INF/jsp/</param-value>
+    </init-param>
+    <multipart-config>
+      <max-file-size>10485760</max-file-size>
+      <max-request-size>20971520</max-request-size>
+      <file-size-threshold>5242880</file-size-threshold>
+    </multipart-config>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>uploadSingle</servlet-name>
+    <url-pattern>/secure/uploadSingle/*</url-pattern>
   </servlet-mapping>
   <servlet>
     <servlet-name>sendEntities</servlet-name>
@@ -100,34 +129,6 @@
   <servlet-mapping>
     <servlet-name>replicator</servlet-name>
     <url-pattern>/secure/replicator/*</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <servlet-name>entity</servlet-name>
-    <servlet-class>
-      org.beigesoft.web.servlet.WEntity
-    </servlet-class>
-    <init-param>
-      <param-name>dirJsp</param-name>
-      <param-value>/WEB-INF/jsp/</param-value>
-    </init-param>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>entity</servlet-name>
-    <url-pattern>/secure/entity/*</url-pattern>
-  </servlet-mapping>
-  <servlet>
-    <servlet-name>service</servlet-name>
-    <servlet-class>
-      org.beigesoft.web.servlet.WService
-    </servlet-class>
-    <init-param>
-      <param-name>dirJsp</param-name>
-      <param-value>/WEB-INF/jsp/</param-value>
-    </init-param>
-  </servlet>
-  <servlet-mapping>
-    <servlet-name>service</servlet-name>
-    <url-pattern>/secure/service/*</url-pattern>
   </servlet-mapping>
   <servlet>
     <servlet-name>report</servlet-name>

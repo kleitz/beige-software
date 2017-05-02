@@ -26,10 +26,10 @@ public interface IDatabaseReader {
    * Read entities from stream (by given reader) and insert/update them
    * into DB.
    * </p>
-   * @param pReader Reader
    * @param pAddParam additional params
+   * @param pReader Reader
    * @throws Exception - an exception
    **/
-  void readAndStoreEntities(Reader pReader,
-    Map<String, Object> pAddParam) throws Exception;
+  void readAndStoreEntities(Map<String, Object> pAddParam,
+    Reader pReader) throws Exception;
 }

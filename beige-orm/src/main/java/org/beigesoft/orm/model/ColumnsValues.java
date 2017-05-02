@@ -16,7 +16,8 @@ import java.util.HashMap;
 import org.beigesoft.exception.ExceptionWithCode;
 
 /**
- * <p>Complex model that contains of type-safe maps Key-Value.
+ * <p>Complex non-POJO model that contains of type-safe maps Key-Value
+ * and encapsulate many methods.
  * It is to adapt Android ContentValues.</p>
  *
  * @author Yury Demidenko
@@ -24,9 +25,9 @@ import org.beigesoft.exception.ExceptionWithCode;
 public class ColumnsValues {
 
   /**
-   * <p>ID name (primary key).</p>
+   * <p>ID names copy from TableSql.</p>
    **/
-  private String idName;
+  private String[] idColumnsNames;
 
   /**
    * <p>Map of Integers values.</p>
@@ -327,23 +328,34 @@ public class ColumnsValues {
     }
   }
 
+  //Hiding source getters and setters:
+  /**
+   * <p>Getter for idColumnsNames.</p>
+   * @return String[]
+   **/
+  public final String[] getIdColumnsNames() {
+    if (this.idColumnsNames == null) {
+      return null;
+    } else {
+      return java.util.Arrays.copyOf(this.idColumnsNames,
+        this.idColumnsNames.length);
+    }
+  }
+
+  /**
+   * <p>Setter for idColumnsNames.</p>
+   * @param pIdColumnsNames reference
+   **/
+  public final void setIdColumnsNames(final String[] pIdColumnsNames) {
+    if (pIdColumnsNames == null) {
+      this.idColumnsNames = null;
+    } else {
+      this.idColumnsNames = java.util.Arrays.copyOf(pIdColumnsNames,
+        pIdColumnsNames.length);
+    }
+  }
+
   //Simple getters and setters:
-  /**
-   * <p>Geter for idName.</p>
-   * @return String
-   **/
-  public final String getIdName() {
-    return this.idName;
-  }
-
-  /**
-   * <p>Setter for idName.</p>
-   * @param pIdName reference
-   **/
-  public final void setIdName(final String pIdName) {
-    this.idName = pIdName;
-  }
-
   /**
    * <p>Geter for integersMap.</p>
    * @return Map<String, Integer>

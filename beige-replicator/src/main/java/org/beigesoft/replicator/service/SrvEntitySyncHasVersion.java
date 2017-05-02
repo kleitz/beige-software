@@ -33,16 +33,16 @@ public class SrvEntitySyncHasVersion<RS> implements ISrvEntitySync {
    * <p>
    * Synchronize IHasVersion.
    * </p>
-   * @param pEntity object
    * @param pAddParam additional params
+   * @param pEntity object
    * @return isNew if entity exist in database (need update)
    * @throws Exception - an exception
    **/
   @Override
-  public final boolean sync(final Object pEntity,
-    final Map<String, Object> pAddParam) throws Exception {
+  public final boolean sync(final Map<String, Object> pAddParam,
+    final Object pEntity) throws Exception {
     IHasVersion entityPb = (IHasVersion) pEntity;
-    IHasVersion entityPbDb = getSrvOrm().retrieveEntity(entityPb);
+    IHasVersion entityPbDb = getSrvOrm().retrieveEntity(pAddParam, entityPb);
     boolean isNew = true;
     if (entityPbDb != null) {
       entityPb.setItsVersion(entityPbDb.getItsVersion());

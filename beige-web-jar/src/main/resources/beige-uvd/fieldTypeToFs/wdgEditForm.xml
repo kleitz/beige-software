@@ -19,4 +19,5 @@
 <entry key="java.math.BigDecimal">inputCurrency</entry>
 <entry key="java.lang.Enum">inputEnum</entry>
 <entry key="org.beigesoft.model.IHasName">inputEntityHasName</entry>
+<entry key="org.beigesoft.persistable.UserTomcat">inputUserTomcat</entry>
 </properties>

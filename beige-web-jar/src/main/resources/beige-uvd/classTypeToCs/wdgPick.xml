@@ -10,4 +10,6 @@
 <properties>
 <comment>Correspondence of Java types to services pick property. ORDER is essential, the LAST value will be used.</comment>
 <entry key="org.beigesoft.model.IHasName">pickHasName</entry>
+<entry key="org.beigesoft.persistable.UserTomcat">pickUserTomcat</entry>
+<entry key="org.beigesoft.persistable.UserRoleTomcat">pickUserRoleTomcat</entry>
 </properties>

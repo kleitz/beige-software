@@ -12,7 +12,7 @@ package org.beigesoft.persistable;
 
 /**
  * <pre>
- * Complex ID for UserRole for Tomcat standard JDBC autentification.
+ * Composite ID for UserRole for Tomcat standard JDBC autentification.
  * </pre>
  *
  * @author Yury Demidenko
@@ -20,14 +20,14 @@ package org.beigesoft.persistable;
 public class IdUserRoleTomcat {
 
   /**
-   * <p>User ID.</p>
+   * <p>User.</p>
    **/
-  private String idUser;
+  private UserTomcat itsUser;
 
   /**
-   * <p>Role ID.</p>
+   * <p>User's role.</p>
    **/
-  private String idRole;
+  private String itsRole;
 
   /**
    * <p>Default constructor.</p>
@@ -36,45 +36,45 @@ public class IdUserRoleTomcat {
   }
 
   /**
-   * <p>Usable constructor.</p>
-   * @param pIdUser user ID
-   * @param pIdRole role ID
+   * <p>Useful constructor.</p>
+   * @param pItsUser user
+   * @param pItsRole role
    **/
-  public IdUserRoleTomcat(final String pIdUser, final String pIdRole) {
-    this.idUser = pIdUser;
-    this.idRole = pIdRole;
+  public IdUserRoleTomcat(final UserTomcat pItsUser, final String pItsRole) {
+    this.itsUser = pItsUser;
+    this.itsRole = pItsRole;
   }
 
   //Simple getters and setters:
   /**
-   * <p>Geter for idUser;.</p>
+   * <p>Getter for itsUser.</p>
+   * @return UserTomcat
+   **/
+  public final UserTomcat getItsUser() {
+    return this.itsUser;
+  }
+
+  /**
+   * <p>Setter for itsUser.</p>
+   * @param pItsUser reference
+   **/
+  public final void setItsUser(final UserTomcat pItsUser) {
+    this.itsUser = pItsUser;
+  }
+
+  /**
+   * <p>Getter for itsRole.</p>
    * @return String
    **/
-  public final String getIdUser() {
-    return this.idUser;
+  public final String getItsRole() {
+    return this.itsRole;
   }
 
   /**
-   * <p>Setter for idUser.</p>
-   * @param pIdUser reference
+   * <p>Setter for itsRole.</p>
+   * @param pItsRole reference
    **/
-  public final void setIdUser(final String pIdUser) {
-    this.idUser = pIdUser;
-  }
-
-  /**
-   * <p>Geter for idRole.</p>
-   * @return String
-   **/
-  public final String getIdRole() {
-    return this.idRole;
-  }
-
-  /**
-   * <p>Setter for idRole.</p>
-   * @param pIdRole role ID
-   **/
-  public final void setIdRole(final String pIdRole) {
-    this.idRole = pIdRole;
+  public final void setItsRole(final String pItsRole) {
+    this.itsRole = pItsRole;
   }
 }

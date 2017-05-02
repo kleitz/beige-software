@@ -17,7 +17,7 @@
   org.beigesoft.persistable.UserRoleJetty,
   org.beigesoft.persistable.UserTomcat,
   org.beigesoft.persistable.UserRoleTomcat</entry>
-<entry key="settingsKeysForClasses">idName, idDefinitionForeign, constraintAdd, constraint, isFullDefinedInXml, excludeFields, versionAlgorithm</entry>
-<entry key="settingsKeysForFields">definition, isNullable, foreignEntity</entry>
-<entry key="excludeFields">isNew, tmpDescription, persistableLines</entry>
+<entry key="settingsKeysForClasses">idColumnsNames, idFieldName, ownerFieldName, constraintAdd, excludeFields, versionAlgorithm</entry>
+<entry key="settingsKeysForFields">definition, isNullable</entry>
+<entry key="excludeFields">isNew</entry>
 </properties>

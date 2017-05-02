@@ -30,10 +30,10 @@
             ${balanceSheet.itsLines.get(currIdx - 1).accName}
           </td>
           <td align="right">
-            <c:if test="${balanceSheet.itsLines.get(currIdx - 1).debit.doubleValue() gt 0}">
+            <c:if test="${balanceSheet.itsLines.get(currIdx - 1).debit.doubleValue() != 0}">
               ${balanceSheet.itsLines.get(currIdx - 1).debit}
             </c:if>
-            <c:if test="${balanceSheet.itsLines.get(currIdx - 1).credit.doubleValue() gt 0}">
+            <c:if test="${balanceSheet.itsLines.get(currIdx - 1).credit.doubleValue() != 0}">
               (${balanceSheet.itsLines.get(currIdx - 1).credit})
             </c:if>
           </td>
@@ -48,10 +48,10 @@
             ${balanceSheet.itsLines.get(balanceSheet.totalLinesAssets + currIdx - 1).accName}
           </td>
           <td align="right">
-            <c:if test="${balanceSheet.itsLines.get(balanceSheet.totalLinesAssets + currIdx - 1).credit.doubleValue() gt 0}">
+            <c:if test="${balanceSheet.itsLines.get(balanceSheet.totalLinesAssets + currIdx - 1).credit.doubleValue() != 0}">
               ${balanceSheet.itsLines.get(balanceSheet.totalLinesAssets + currIdx - 1).credit}
             </c:if>
-            <c:if test="${balanceSheet.itsLines.get(balanceSheet.totalLinesAssets + currIdx - 1).debit.doubleValue() gt 0}">
+            <c:if test="${balanceSheet.itsLines.get(balanceSheet.totalLinesAssets + currIdx - 1).debit.doubleValue() != 0}">
               (${balanceSheet.itsLines.get(balanceSheet.totalLinesAssets + currIdx - 1).debit})
             </c:if>
           </td>
@@ -68,10 +68,10 @@
             ${balanceSheet.itsLines.get(balanceSheet.totalLinesAssets + currIdx - 3).accName}
           </td>
           <td align="right">
-            <c:if test="${balanceSheet.itsLines.get(balanceSheet.totalLinesAssets + currIdx - 3).credit.doubleValue() gt 0}">
+            <c:if test="${balanceSheet.itsLines.get(balanceSheet.totalLinesAssets + currIdx - 3).credit.doubleValue() != 0}">
               ${balanceSheet.itsLines.get(balanceSheet.totalLinesAssets + currIdx - 3).credit}
             </c:if>
-            <c:if test="${balanceSheet.itsLines.get(balanceSheet.totalLinesAssets + currIdx - 3).debit.doubleValue() gt 0}">
+            <c:if test="${balanceSheet.itsLines.get(balanceSheet.totalLinesAssets + currIdx - 3).debit.doubleValue() != 0}">
               (${balanceSheet.itsLines.get(balanceSheet.totalLinesAssets + currIdx - 3).debit})
             </c:if>
           </td>

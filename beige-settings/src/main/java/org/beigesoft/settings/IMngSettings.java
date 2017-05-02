@@ -17,7 +17,9 @@ import java.util.List;
 
 /**
  * <p>Make settings for application, classes and its fields
- * according properties XML.</p>
+ * according properties XML.
+ * According Beige-Settings specification #2.
+ * </p>
  *
  * @author Yury Demidenko
  */
@@ -111,14 +113,14 @@ public interface IMngSettings {
   /**
    * <p>Make for given class sorted entries of fields settings
    * and also removed those with negative value of sodted property.</p>
-   * @param pEntityName entity canonical name
+   * @param pClass entity Class
    * @param pOrderKey key of order property
    * @return List<Map.Entry<String, Map<String, String>>> list ordered according
    * entry.getValue().get(pOrderKey) that is Integer.toString()
    * @throws Exception - an exception
    */
   List<Map.Entry<String, Map<String, String>>> makeFldPropLst(
-    String pEntityName, String pOrderKey) throws Exception;
+    Class<?> pClass, String pOrderKey) throws Exception;
 
   //GS:
   /**
@@ -147,35 +149,35 @@ public interface IMngSettings {
 
   /**
    * <p>Get class settings.
-   * This is Map "classCanonicalName" -
+   * This is Map "Class" -
    * "Map<String, String>>"</p>
-   * @return Map<String, Map<String, String>> class settings
+   * @return Map<Class, Map<String, String>> class settings
    */
-  Map<String, Map<String, String>> getClassesSettings();
+  Map<Class<?>, Map<String, String>> getClassesSettings();
 
   /**
    * <p>Set class settings.
-   * This is Map "classCanonicalName" -
+   * This is Map "Class<?>" -
    * "Map<String, String>>"</p>
-   * @param pClassSettings Map<String, Map<String, String>> class settings
+   * @param pClassSettings Map<Class<?>, Map<String, String>> class settings
    */
-  void setClassesSettings(Map<String, Map<String, String>> pClassSettings);
+  void setClassesSettings(Map<Class<?>, Map<String, String>> pClassSettings);
 
   /**
    * <p>Get fields settings.
-   * This is Map "classCanonicalName" -
+   * This is Map "Class<?>" -
    * "Map "fieldName" - "Map "settingName"-"settingValue"""</p>
-   * @return Map<String, Map<String, Map<String, String>>> fields settings
+   * @return Map<Class<?>, Map<String, Map<String, String>>> fields settings
    */
-  Map<String, Map<String, Map<String, String>>> getFieldsSettings();
+  Map<Class<?>, Map<String, Map<String, String>>> getFieldsSettings();
 
   /**
    * <p>Set fields settings.
-   * This is Map "classCanonicalName" -
+   * This is Map "Class<?>" -
    * "Map "fieldName" - "Map "settingName"-"settingValue"""</p>
-   * @param pFieldsSettings Map<String, Map<String, Map<String, String>>>
+   * @param pFieldsSettings Map<Class<?>, Map<String, Map<String, String>>>
    * fields settings
    */
   void setFieldsSettings(
-    Map<String, Map<String, Map<String, String>>> pFieldsSettings);
+    Map<Class<?>, Map<String, Map<String, String>>> pFieldsSettings);
 }

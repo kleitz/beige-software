@@ -19,79 +19,79 @@
     <div class="dropdown">
       <a href="#" class="dropdown-btn">${pageContext.servletContext.getAttribute("srvI18n").getMsg("Trade")}</a>
       <div class="dropdown-content">
-         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=DebtorCreditorCategory&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("DebtorCreditorCategorys")}</a>
-         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=DebtorCreditor&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("DebtorCreditors")}</a>
-         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=ServicePurchasedCategory&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("ServicePurchasedCategorys")}</a>
-         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=ServicePurchased&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("ServicePurchaseds")}</a>
-         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=PrepaymentTo&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("PrepaymentTos")}</a>
-         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=PurchaseInvoice&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("PurchaseInvoices")}</a>
-         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=PaymentTo&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("PaymentTos")}</a>
-         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=PurchaseReturn&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("PurchaseReturns")}</a>
-         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=PrepaymentFrom&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("PrepaymentFroms")}</a>
-         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=ServiceToSaleCategory&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("ServiceToSaleCategorys")}</a>
-         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=ServiceToSale&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("ServiceToSales")}</a>
-         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=SalesInvoice&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("SalesInvoices")}</a>
-         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=PaymentFrom&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("PaymentFroms")}</a>
-         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=SalesReturn&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("SalesReturns")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=DebtorCreditorCategory&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("DebtorCreditorCategorys")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=DebtorCreditor&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("DebtorCreditors")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=ServicePurchasedCategory&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("ServicePurchasedCategorys")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=ServicePurchased&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("ServicePurchaseds")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=PrepaymentTo&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("PrepaymentTos")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=PurchaseInvoice&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("PurchaseInvoices")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=PaymentTo&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("PaymentTos")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=PurchaseReturn&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("PurchaseReturns")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=PrepaymentFrom&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("PrepaymentFroms")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=ServiceToSaleCategory&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("ServiceToSaleCategorys")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=ServiceToSale&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("ServiceToSales")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=SalesInvoice&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("SalesInvoices")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=PaymentFrom&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("PaymentFroms")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=SalesReturn&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("SalesReturns")}</a>
       </div>
     </div>
     <div class="dropdown">
       <a href="#" class="dropdown-btn">${pageContext.servletContext.getAttribute("srvI18n").getMsg("Manufacture")}</a>
       <div class="dropdown-content">
-         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=ManufacturingProcess&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("ManufacturingProcesss")}</a>
-         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=Manufacture&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("Manufactures")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=ManufacturingProcess&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("ManufacturingProcesss")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=Manufacture&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("Manufactures")}</a>
       </div>
     </div>
     <div class="dropdown">
       <a href="#" class="dropdown-btn">${pageContext.servletContext.getAttribute("srvI18n").getMsg("Employment")}</a>
       <div class="dropdown-content">
-         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=EmployeeCategory&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("EmployeeCategorys")}</a>
-         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=Employee&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("Employees")}</a>
-         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=WageType&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("WageTypes")}</a>
-         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=WageTaxTable&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("WageTaxTables")}</a>
-         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=Wage&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("Wages")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=EmployeeCategory&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("EmployeeCategorys")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=Employee&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("Employees")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=WageType&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("WageTypes")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=WageTaxTable&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("WageTaxTables")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=Wage&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("Wages")}</a>
       </div>
     </div>
     <div class="dropdown">
       <a href="#" class="dropdown-btn">${pageContext.servletContext.getAttribute("srvI18n").getMsg("Warehouse")}</a>
       <div class="dropdown-content">
-         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=UnitOfMeasure&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("UnitOfMeasures")}</a>
-         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=Warehouse&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("Warehouses")}</a>
-         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=WarehouseSite&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("WarehouseSites")}</a>
-         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=InvItemType&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("InvItemTypes")}</a>
-         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=InvItemCategory&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("InvItemCategorys")}</a>
-         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=InvItemTaxCategory&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("InvItemTaxCategorys")}</a>
-         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=InvItem&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("InvItems")}</a>
-         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=BeginningInventory&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("BeginningInventorys")}</a>
-         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=GoodsLoss&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("GoodsLosss")}</a>
-         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=MoveItems&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("MoveItemss")}</a>
-         <a href="warehouseRests/?nameRenderer=warehouseRests" target="_blank">${pageContext.servletContext.getAttribute("srvI18n").getMsg("warehouse_rests")}</a>
-         <a href="warehouseSiteRests/?nameRenderer=warehouseSiteRests" target="_blank">${pageContext.servletContext.getAttribute("srvI18n").getMsg("warehouse_site_rests")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=UnitOfMeasure&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("UnitOfMeasures")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=Warehouse&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("Warehouses")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=WarehouseSite&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("WarehouseSites")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=InvItemType&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("InvItemTypes")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=InvItemCategory&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("InvItemCategorys")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=InvItemTaxCategory&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("InvItemTaxCategorys")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=InvItem&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("InvItems")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=BeginningInventory&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("BeginningInventorys")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=GoodsLoss&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("GoodsLosss")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=MoveItems&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("MoveItemss")}</a>
+         <a href="warehouseRests/?nmRnd=warehouseRests" target="_blank">${pageContext.servletContext.getAttribute("srvI18n").getMsg("warehouse_rests")}</a>
+         <a href="warehouseSiteRests/?nmRnd=warehouseSiteRests" target="_blank">${pageContext.servletContext.getAttribute("srvI18n").getMsg("warehouse_site_rests")}</a>
       </div>
     </div>
     <div class="dropdown">
       <a href="#" class="dropdown-btn">${pageContext.servletContext.getAttribute("srvI18n").getMsg("Accounting")}</a>
       <div class="dropdown-content">
-         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=AccSettings&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("AccSettings")}</a>
-         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=Expense&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("Expenses")}</a>
-         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=BankAccount&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("BankAccounts")}</a>
-         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=Property&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("Propertys")}</a>
-         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=Tax&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("Taxs")}</a>
-         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=Currency&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("Currencys")}</a>
-         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=Account&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("Accounts")}</a>
-         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=AccountingEntries&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("AccountingEntriess")}</a>
-         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listWholeJson&nameEntity=ReplicationAccMethod&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("ReplicationAccMethods")}</a>
-         <a href="#" onclick="getHtmlByAjax('GET', 'entityList/?nameRenderer=listAccEntriesWholeJson&nameEntity=AccountingEntry&nameSrvEntity=srvAccEntryEditDescr&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("AccountingEntrys")}</a>
-         <a href="#" onclick="getHtmlByAjax('GET', 'report/?nameRenderer=replicateAccFormJson');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("Import_acc_entries")}</a>
-         <a href="#" onclick="getHtmlByAjax('GET', 'report/?nameRenderer=ledgerFormJson');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("Ledger")}</a>
-         <a href="#" onclick="getHtmlByAjax('GET', 'report/?nameRenderer=balanceFormJson');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("TrialBalance")}</a>
-         <a href="#" onclick="getHtmlByAjax('GET', 'report/?nameRenderer=balanceSheetFormJson');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("balance_sheet")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=AccSettings&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("AccSettings")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=Expense&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("Expenses")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=BankAccount&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("BankAccounts")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=Property&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("Propertys")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=Tax&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("Taxs")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=Currency&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("Currencys")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=Account&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("Accounts")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=AccountingEntries&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("AccountingEntriess")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listWholeJson&nmEnt=ReplicationAccMethod&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("ReplicationAccMethods")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmHnd=handlerEntityRequest&nmsAct=list&nmRnd=listAccEntriesWholeJson&nmEnt=AccountingEntry&page=1');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("AccountingEntrys")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'report/?nmRnd=replicateAccFormJson');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("Import_acc_entries")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'report/?nmRnd=ledgerFormJson');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("Ledger")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'report/?nmRnd=balanceFormJson');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("TrialBalance")}</a>
+         <a href="#" onclick="getHtmlByAjax('GET', 'report/?nmRnd=balanceSheetFormJson');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("balance_sheet")}</a>
       </div>
     </div>
     <div class="dropdown">
       <a href="#" class="dropdown-btn">...</a>
       <div class="dropdown-content">
-        <a href="#" onclick="getHtmlByAjax('GET', 'service/?nameRenderer=aboutJson&nameService=srvAbout');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("about")}</a>
+        <a href="#" onclick="getHtmlByAjax('GET', 'service/?nmRnd=aboutJson&nmHnd=hndAbout');">${pageContext.servletContext.getAttribute("srvI18n").getMsg("about")}</a>
         <c:if test="${not empty pageContext['request'].userPrincipal}">
           <a href="../index.jsp?logoff=true">${pageContext['request'].userPrincipal.name} ${pageContext.servletContext.getAttribute("srvI18n").getMsg("logout")}</a>
         </c:if>

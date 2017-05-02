@@ -61,21 +61,21 @@ public class DatabaseReaderIdenticalXml<RS> implements IDatabaseReader {
    * Read entities from stream (by given reader) and insert them
    * into DB with no changes. DB must be emptied before coping.
    * </p>
-   * @param pReader Reader
    * @param pAddParam additional params
+   * @param pReader Reader
    * @throws Exception - an exception
    **/
   @Override
-  public final void readAndStoreEntities(final Reader pReader,
-    final Map<String, Object> pAddParam) throws Exception {
+  public final void readAndStoreEntities(final Map<String, Object> pAddParam,
+    final Reader pReader) throws Exception {
     try {
       this.srvDatabase.setIsAutocommit(false);
       this.srvDatabase.
         setTransactionIsolation(ISrvDatabase.TRANSACTION_READ_UNCOMMITTED);
       this.srvDatabase.beginTransaction();
       while (this.utilXml.readUntilStart(pReader, "entity")) {
-        Object entity = this.srvEntityReader.read(pReader, null);
-        this.srvOrm.insertEntity(entity);
+        Object entity = this.srvEntityReader.read(pAddParam, pReader);
+        this.srvOrm.insertEntity(pAddParam, entity);
       }
       this.srvDatabase.commitTransaction();
     } catch (Exception ex) {

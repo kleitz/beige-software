@@ -153,7 +153,7 @@ public class BeigeAccounting extends Activity implements OnClickListener {
       if (!jettyBase.exists()) {
         if (!jettyBase.mkdirs()) {
           throw new ExceptionWithCode(ExceptionWithCode.SOMETHING_WRONG,
-            "Cant't create dir " + jettyBase);
+            "Can't create dir " + jettyBase);
         }
         copyAssets(APP_BASE);
         Toast.makeText(getApplicationContext(),

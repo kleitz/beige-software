@@ -9,6 +9,7 @@
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
 <comment>Correspondence of field name to to order show in list(minus-1 no show, 1, 4... - order).</comment>
+<entry key="userPassword">-1</entry>
 <entry key="sourceDatabaseBirth">-1</entry>
 <entry key="subaccExpenseType">-1</entry>
 <entry key="subaccExpenseId">-1</entry>

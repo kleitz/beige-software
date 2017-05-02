@@ -36,16 +36,16 @@ public class SrvFieldWriterXmlStd implements ISrvFieldWriter {
    * Write standard field of entity into a stream
    * (writer - file or pass it through network).
    * </p>
+   * @param pAddParam additional params (e.g. exclude fields set)
    * @param pField value
    * @param pFieldName Field Name
    * @param pWriter writer
-   * @param pAddParam additional params (e.g. exclude fields set)
    * @throws Exception - an exception
    **/
   @Override
-  public final void write(final Object pField, final String pFieldName,
-    final Writer pWriter,
-      final Map<String, Object> pAddParam) throws Exception {
+  public final void write(final Map<String, Object> pAddParam,
+    final Object pField, final String pFieldName,
+      final Writer pWriter) throws Exception {
     String fieldValue;
     if (pField == null) {
       fieldValue = "NULL";

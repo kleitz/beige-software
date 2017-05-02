@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Beigesoft ™
+  Licensed under the Apache License, Version 2.0
+ 
+  You may obtain a copy of the License at
+ 
+  http://www.apache.org/licenses/LICENSE-2.0
+ -->
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Explicit final definition.</comment>
+<entry key="itsIdorderShowForm">-1</entry>
+<entry key="itsIdorderShowList">-1</entry>
+<entry key="itsIdorderShowPicker">-1</entry>
+<entry key="itsIdorderPrintForm">-1</entry>
+<entry key="itsIdorderPrintfullForm">-1</entry>
+<entry key="itsCatalogorderShowForm">1000</entry>
+<entry key="itsCatalogorderShowList">1000</entry>
+<entry key="itsCatalogwdgNewForm">inputCatalogGs</entry>
+<entry key="itsCatalogwdgEditForm">inputEntityHasNameReadOnly</entry>
+<entry key="itsCatalogwdgDeleteForm">inputEntityHasNameReadOnly</entry>
+<entry key="goodswdgNewForm">inputGoods</entry>
+<entry key="goodswdgEditForm">inputEntityHasNameReadOnly</entry>
+<entry key="goodswdgDeleteForm">inputEntityHasNameReadOnly</entry>
+</properties>

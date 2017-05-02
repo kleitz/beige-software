@@ -32,11 +32,11 @@
   
   <profiles>
     <profile>
-      <id>webtest</id>
+      <id>sqlite</id>
       <dependencies>
         <dependency>
           <groupId>org.beigesoft</groupId>
-          <artifactId>beige-settings</artifactId>
+          <artifactId>beige-common</artifactId>
           <version>${beige.version}</version>
           <type>test-jar</type>
         </dependency>

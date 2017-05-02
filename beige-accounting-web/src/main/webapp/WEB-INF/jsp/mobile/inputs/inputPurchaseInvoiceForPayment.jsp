@@ -4,10 +4,10 @@
 <c:if test="${not empty entity[fieldName]}">
   <fmt:formatDate value="${entity[fieldName].itsDate}" type="both" timeStyle="medium" var="dateAppr"/>
   <c:if test="${empty entity[fieldName].idBirth}">
-    <c:set var="docAppr" value="# ${entity[fieldName].idDatabaseBirth}-${entity[fieldName].itsId}, ${dateAppr}, ${entity[fieldName].itsTotal}"/>
+    <c:set var="docAppr" value="# ${entity[fieldName].idDatabaseBirth}-${entity[fieldName].itsId}, ${dateAppr}, ${entity[fieldName].itsTotal} / ${entity[fieldName].paymentTotal}"/>
   </c:if>
   <c:if test="${not empty entity[fieldName].idBirth}">
-    <c:set var="docAppr" value="# ${entity[fieldName].idDatabaseBirth}-${entity[fieldName].idBirth}, ${dateAppr}, ${entity[fieldName].itsTotal}"/>
+    <c:set var="docAppr" value="# ${entity[fieldName].idDatabaseBirth}-${entity[fieldName].idBirth}, ${dateAppr}, ${entity[fieldName].itsTotal} / ${entity[fieldName].paymentTotal}"/>
   </c:if>
 </c:if>
 <tr>
@@ -19,8 +19,8 @@
   <td>
     <div class="input-line">
       <input class="picked-appearence" id="${entity.getClass().simpleName}${fieldName}AppearanceVisible" disabled="disabled" type="text" value="${docAppr}" onchange="inputHasBeenChanged(this);">
-      <input id="${entity.getClass().simpleName}${fieldName}Id" type="hidden" name="${entity.getClass().simpleName}.${fieldName}.itsId" value="${entity[fieldName].itsId}">
-      <button type="button" class="btn" onclick="openEntityPicker('${srvOrm.tablesMap[entity.getClass().simpleName].fieldsMap[fieldName].foreignEntity}','${entity.getClass().simpleName}', '${fieldName}', '&fltordPhasMadeAccEntriesVal=true&fltordPpaymentTotalVal1=PURCHASEINVOICE.ITSTOTAL&fltordPpaymentTotalOpr1=lt&fltordPforcedFor=hasMadeAccEntries%2CpaymentTotal&mobile=${param.mobile}');">...</button>
+      <input id="${entity.getClass().simpleName}${fieldName}Id" type="hidden" name="${entity.getClass().simpleName}.${fieldName}" value="${entity[fieldName].itsId}">
+      <button type="button" class="btn" onclick="openEntityPicker('${srvOrm.tablesMap[entity.getClass().simpleName].fieldsMap[fieldName].foreignEntity}','${entity.getClass().simpleName}', '${fieldName}', '&nmHnd=${param.nmHnd}&fltordPhasMadeAccEntriesVal=true&fltordPpaymentTotalVal=PAYMENTTOTAL lt PURCHASEINVOICE.ITSTOTAL&fltordPforcedFor=hasMadeAccEntries,paymentTotal&mobile=${param.mobile}');">...</button>
       <button type="button" class="btn" onclick="clearSelectedEntity('${entity.getClass().simpleName}${fieldName}');">X</button>
     </div>
   </td>

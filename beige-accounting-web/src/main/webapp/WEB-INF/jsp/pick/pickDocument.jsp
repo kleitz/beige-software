@@ -8,4 +8,4 @@
 <c:if test="${not empty entity.idBirth}">
   <c:set var="docAppr" value="# ${entity.idDatabaseBirth}-${entity.idBirth}, ${dateAppr}, ${entity.itsTotal}"/>
 </c:if>
-<button class="btn btn-sm" onClick="selectEntity('${entity.itsId}', '${docAppr}', '${namePlace}${param.nameEntity}')">${srvI18n.getMsg("Pick")}</button>
+<button class="btn btn-sm" onClick="selectEntity('${entity.itsId}', '${docAppr}', '${namePlace}${param.nmEnt}')">${srvI18n.getMsg("Pick")}</button>

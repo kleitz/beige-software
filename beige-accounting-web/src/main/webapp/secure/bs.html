@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="../static/img/favicon.png">
+
+    <title>Beige-WEB-Store</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap theme -->
+    <link href="../static/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link href="../static/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="../static/css/theme.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="../static/js/ie-emulation-modes-warning.js"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a href="#" class="navbar-brand navbar-brand-img"><img src="../static/img/logo-web-store.png"></a>
+          <a class="navbar-brand" href="#">Boob's store</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Electronics <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="#" data-toggle="modal" data-target="#subcatalogsMdl">Computers and notebooks</a></li>
+                <li><a href="#">Smartphones</a></li>
+              </ul>
+            </li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Cars <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="#">Japan</a></li>
+                <li><a href="#">US</a></li>
+              </ul>
+            </li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Cars <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="#">Japan</a></li>
+                <li><a href="#">US</a></li>
+              </ul>
+            </li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Cars <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="#">Japan</a></li>
+                <li><a href="#">US</a></li>
+              </ul>
+            </li>
+            <li><a href="#" data-toggle="modal" data-target="#filterMdl"><span class="glyphicon glyphicon-filter"></span><span class="glyphicon glyphicon-sort"></span></a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="#" class="glyphicon glyphicon-log-in"></a></li>
+            <li><a href="#" class="glyphicon glyphicon-shopping-cart" data-toggle="tooltip" title="Cart" onclick="$('#cartMdl').modal('toggle');"><span class="badge">2</span></a></li>
+            <li><a href="#about" class="glyphicon glyphicon-info-sign"></a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+    
+
+    <div class="container" role="main">
+
+<div class="well well-sm">On start catalog</div>
+
+<div class="row">
+  <div class="col-md-2 col-xs-4">
+    <a href="#"><img alt="m2" class="img-responsive" src="../static/img/merchandise2.png"></a>
+  </div>
+  <div class="col-md-4 col-xs-8">
+    <h4><b>2000 USD</b> Merchandise name long 
+      <a href="#" class="glyphicon glyphicon-shopping-cart" data-toggle="modal" data-target="#cartAddMdl" onclick="setCartItem(2, 1, 'Long name', 1.99, 1)"></a>
+    </h4>
+    <p>Merchandise spec</p>
+  </div>
+  <div class="col-md-2 col-xs-4">
+    <img class="img-responsive" src="../static/img/merchandise.png">
+  </div>
+  <div class="col-md-4 col-xs-8">
+    <h4><b>2000 USD</b> Merchandise name long
+      <a href="#" class="glyphicon glyphicon-shopping-cart" data-toggle="modal" data-target="#cartAddMdl" onclick="setCartItem(2, 1, 'Long name', 1.99, 1)"></a>
+    </h4>
+    <p>Merchandise spec</p>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-2 col-xs-4">
+    <img class="img-responsive" src="../static/img/merchandise.png">
+  </div>
+  <div class="col-md-4 col-xs-8">
+    <h4><b>2000 USD</b> Merchandise name long
+      <a href="#" class="glyphicon glyphicon-shopping-cart" data-toggle="modal" data-target="#cartAddMdl" onclick="setCartItem(2, 1, 'Long name', 1.99, 1)"></a>
+    </h4>
+    <p>Merchandise spec</p>
+    <p>Merchandise spec</p>
+    <p>Merchandise spec</p>
+    <p>Merchandise spec</p>
+  </div>
+  <div class="col-md-2 col-xs-4">
+    <img class="img-responsive" src="../static/img/merchandise.png">
+  </div>
+  <div class="col-md-4 col-xs-8">
+    <h4><b>2000 USD</b> Merchandise name long
+      <a href="#" class="glyphicon glyphicon-shopping-cart" data-toggle="modal" data-target="#cartAddMdl" onclick="setCartItem(2, 1, 'Long name', 1.99, 1)"></a>
+    </h4>
+    <p>Merchandise spec</p>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-6 col-xs-12">
+    <h4><b>2000 USD</b> Merchandise name long
+      <a href="#" class="glyphicon glyphicon-shopping-cart" data-toggle="modal" data-target="#cartAddMdl" onclick="setCartItem(2, 1, 'Long name', 1.99, 1)"></a>
+    </h4>
+  </div>
+  <div class="col-md-6 col-xs-12">
+    <h4><b>2000 USD</b> Merchandise name long
+      <a href="#" class="glyphicon glyphicon-shopping-cart" data-toggle="modal" data-target="#cartAddMdl" onclick="setCartItem(2, 1, 'Long name', 1.99, 1)"></a>
+    </h4>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-4 col-xs-4">
+    <img class="img-responsive" src="../static/img/merchandise.png">
+  </div>
+  <div class="col-md-8 col-xs-8">
+    <h4><b>2000 USD</b> Notebook ASF hja347798jj
+      <a href="#" class="glyphicon glyphicon-shopping-cart" data-toggle="modal" data-target="#cartAddMdl" onclick="setCartItem(2, 1, 'Long name', 1.99, 1)"></a>
+    </h4>
+    <p>
+      <span iid="1" idx="1">OS - MS Windows 10;</span>
+      <span iid="14" idx="2">CPU name - I5,</span>
+      <span iid="14" idx="2">speed (Mz) - 2100;</span>
+      <span iid="14" idx="2">RAM speed (Mz) - DDR 1600,</span>
+      <span iid="12" idx="3">capacity (GB) - 4.</span>
+    </p>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12 col-xs-12">
+    <h4><b>2000 USD</b> Notebook ASF hja347798jj
+      <a href="#" class="glyphicon glyphicon-shopping-cart" data-toggle="modal" data-target="#cartAddMdl" onclick="setCartItem(2, 1, 'Long name', 1.99, 1)"></a>
+    </h4>
+    <p>
+    </p>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-12 col-xs-12">
+    <h4><b>2000 USD</b> Merchandise name long
+      <a href="#" class="glyphicon glyphicon-shopping-cart" data-toggle="modal" data-target="#cartAddMdl" onclick="setCartItem(2, 1, 'Long name', 1.99, 1)"></a>
+    </h4>
+  </div>
+</div>
+
+<div class="pages">
+  <nav aria-label="...">
+    <ul class="pagination">
+       <li class="active"><a href="#">1 <span class="sr-only">(current)</span></a></li>
+       <li><a href="#">2</a></li>
+    </ul>
+  </nav>
+</div>
+
+<!-- Modal cart item adder -->
+<div class="modal fade" id="cartAddMdl" tabindex="-1" role="dialog" aria-labelledby="cartAddMdlLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="cartAddMdlLabel"><span class="glyphicon glyphicon-shopping-cart"></span><span class="glyphicon glyphicon-cart"></span>Add item to cart</h4>
+      </div>
+      <div class="modal-body">
+        <form action="service" method="POST">
+          <input type="hidden" name="nmRnd" value="webstore">
+          <input type="hidden" name="nmHnd" value="hndTrdTrnsReq">
+          <input type="hidden" name="nmPrc" value="PrcItemInCart">
+          <div class="form-group">
+            <label>Item:</label>
+            <textarea id="cartItemName" readonly class="form-control">
+            </textarea>
+            <label>Price:</label>
+            <input id="cartItemPrice" readonly class="form-control">
+            <label>Quantity:</label>
+            <input type="number" step="1" min="1" id="cartItemQuantity" name="cartItemQuantity" class="form-control" onchange="refreshCartItemTotal('');">
+            <label>Total:</label>
+            <input id="cartItemTotal" readonly class="form-control">
+            <input type="hidden" id="cartItemType" name="cartItemType">
+            <input type="hidden" id="cartItemId" name="cartItemId">
+            <input type="hidden" id="cartItemItsId" name="cartItemItsId">
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal cart item edit -->
+<div class="modal fade" id="cartEditMdl" tabindex="-1" role="dialog" aria-labelledby="cartEditMdlLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" onclick="$('#cartMdl').modal('show');" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="cartEditMdlLabel"><span class="glyphicon glyphicon-shopping-cart"></span><span class="glyphicon glyphicon-cart"></span>Item change quantity</h4>
+      </div>
+      <div class="modal-body">
+        <form action="service" method="POST">
+          <input type="hidden" name="nmRnd" value="webstore">
+          <input type="hidden" name="nmHnd" value="hndTrdTrnsReq">
+          <input type="hidden" name="nmPrc" value="PrcItemInCart">
+          <div class="form-group">
+            <label>Item:</label>
+            <textarea id="cartItemNameEdit" readonly class="form-control">
+            </textarea>
+            <label>Price:</label>
+            <input id="cartItemPriceEdit" readonly class="form-control">
+            <label>Quantity:</label>
+            <input type="number" step="1" min="1" id="cartItemQuantityEdit" name="cartItemQuantity" class="form-control" onchange="refreshCartItemTotal('Edit');">
+            <label>Total:</label>
+            <input id="cartItemTotalEdit" readonly class="form-control">
+            <input type="hidden" id="cartItemTypeEdit" name="cartItemType">
+            <input type="hidden" id="cartItemIdEdit" name="cartItemId">
+            <input type="hidden" id="cartItemItsIdEdit" name="cartItemItsId">
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" onclick="$('#cartMdl').modal('show');">Close</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal cart item remove -->
+<div class="modal fade" id="cartDelMdl" tabindex="-1" role="dialog" aria-labelledby="cartDelMdlLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" onclick="$('#cartMdl').modal('show');" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="cartDelMdlLabel"><span class="glyphicon glyphicon-shopping-cart"></span><span class="glyphicon glyphicon-cart"></span> Item remove</h4>
+      </div>
+      <div class="modal-body">
+        <form action="service" method="POST">
+          <input type="hidden" name="nmRnd" value="webstore">
+          <input type="hidden" name="nmHnd" value="hndTrdTrnsReq">
+          <input type="hidden" name="nmPrc" value="PrcDelItemFromCart">
+          <div class="form-group">
+            <label>Item:</label>
+            <textarea id="cartItemNameDel" readonly class="form-control">
+            </textarea>
+            <label>Price:</label>
+            <input id="cartItemPriceDel" readonly class="form-control">
+            <label>Quantity:</label>
+            <input readonly id="cartItemQuantityDel" class="form-control">
+            <label>Total:</label>
+            <input id="cartItemTotalDel" readonly class="form-control">
+            <input type="hidden" id="cartItemItsIdDel" name="cartItemItsId">
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Delete</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal" onclick="$('#cartMdl').modal('show');">Close</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal cart -->
+<div class="modal fade" id="cartMdl" tabindex="-1" role="dialog" aria-labelledby="cartMdlLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="cartMdlLabel"><span class="glyphicon glyphicon-shopping-cart"></span></span> Shopping cart</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-4 col-xs-4">
+            <b>Item:</b>
+          </div>
+          <div class="col-md-8 col-xs-8">
+            <b>goods 1</b>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 col-xs-4">
+            Price:
+          </div>
+          <div class="col-md-8 col-xs-8">
+            5.77
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 col-xs-4">
+            Quantity:
+          </div>
+          <div class="col-md-4 col-xs-4">
+            1
+          </div>
+          <div class="col-md-2 col-xs-2">
+            <a href="#" class="glyphicon glyphicon glyphicon-pencil" data-dismiss="modal" onclick="$('#cartEditMdl').modal({keyboard: false, backdrop: false}); setCartItem(0, 1, 'goods 1', 5.77, 1, 1)"></a>
+          </div>
+          <div class="col-md-2 col-xs-2">
+            <a href="#" class="glyphicon glyphicon glyphicon-remove" data-dismiss="modal" onclick="$('#cartDelMdl').modal({keyboard: false, backdrop: false}); delCartItem(0, 1, 'goods 1', 5.77, 1, 1)"></a>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 col-xs-4">
+            Total:
+          </div>
+          <div class="col-md-8 col-xs-8">
+            5.77
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 col-xs-4">
+            <b>Item:</b>
+          </div>
+          <div class="col-md-8 col-xs-8">
+            <b>goods 2</b>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 col-xs-4">
+            Price:
+          </div>
+          <div class="col-md-8 col-xs-8">
+            6.00
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 col-xs-4">
+            Quantity:
+          </div>
+          <div class="col-md-4 col-xs-4">
+            1
+          </div>
+          <div class="col-md-2 col-xs-2">
+            <a href="#" class="glyphicon glyphicon glyphicon-pencil" data-dismiss="modal" onclick="$('#cartEditMdl').modal({keyboard: false, backdrop: false}); setCartItem(0, 2, 'goods 2', 6.00, 1, 2)"></a>
+          </div>
+          <div class="col-md-2 col-xs-2">
+            <a href="#" class="glyphicon glyphicon glyphicon-remove" data-dismiss="modal" onclick="$('#cartDelMdl').modal({keyboard: false, backdrop: false}); delCartItem(0, 2, 'goods 2', 6.00, 1, 2)"></a>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4 col-xs-4">
+            Total:
+          </div>
+          <div class="col-md-8 col-xs-8">
+            6.00
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 col-xs-6">
+            <b>Total items:</b>
+          </div>
+          <div class="col-md-6 col-xs-6">
+            <b>2</b>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-6 col-xs-6">
+            <b>Total:</b>
+          </div>
+          <div class="col-md-6 col-xs-6">
+            <b>11.77</b>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <a href="service?nmRnd=webstore&nmHnd=hndTrdTrnsReq&nmPrc=PrcCartCheckOut" type="button" class="btn btn-primary">Check out</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal filter -->
+<div class="modal fade" id="filterMdl" tabindex="-1" role="dialog" aria-labelledby="filterMdlLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="filterMdlLabel"><span class="glyphicon glyphicon-filter"></span><span class="glyphicon glyphicon-sort"></span> Computers and notebooks</h4>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Apply</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal subcatalogs -->
+<div class="modal fade" id="subcatalogsMdl" tabindex="-1" role="dialog" aria-labelledby="subcatalogsMdlLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="subcatalogsMdlLabel">Computers and notebooks</h4>
+      </div>
+      <div class="modal-body">
+        <a href="#" class="subcatalog">Computers</a>
+        <ul>
+          <li>
+            <a href="#">Mini</a>
+            <ul>
+              <li><a href="#">USB stick</a></li>
+              <li><a href="#">Under 2lb</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="#">All in one</a>
+            <ul>
+              <li><a href="#">Regular</a>
+                <ul>
+                  <li><a href="#">19 inch</a></li>
+                  <li><a href="#">20 inch</a></li>
+                </ul>
+              </li>
+              <li><a href="#">Mini</a></li>
+            </ul>
+          </li>
+        </ul>
+        <a href="#" class="subcatalog">Notebooks</a>
+        <ul>
+          <li>
+            <a href="#">Standard</a>
+            <ul>
+              <li><a href="#">Notebooks 11inch</a></li>
+              <li><a href="#">Notebooks 15inch</a></li>
+            </ul>
+          </li>
+          <li>
+            <a href="#">Ultrabooks</a>
+            <ul>
+              <li><a href="#">Ultrabooks 13inch</a></li>
+              <li><a href="#">Ultrabooks 15inch</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+    </div> <!-- /container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="../static/js/jquery.min.js"></script>
+    <script src="../static/js/bootstrap.min.js"></script>
+    <script src="../static/js/beige.webstore.js"></script>
+     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="../static/js/ie10-viewport-bug-workaround.js"></script>
+  </body>
+</html>

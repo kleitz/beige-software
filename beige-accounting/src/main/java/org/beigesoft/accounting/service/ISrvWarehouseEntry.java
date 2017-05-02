@@ -89,4 +89,17 @@ public interface ISrvWarehouseEntry {
    **/
   List<WarehouseEntry> retrieveEntriesFor(Map<String, Object> pAddParam,
     IDocWarehouse pEntity) throws Exception;
+
+
+  /**
+   * <p>Retrieve entries for lines owner id/type.</p>
+   * @param pAddParam additional param
+   * @param pOwnerTypeCode Owner Type code
+   * @param pOwnerId Owner ID
+   * @return warehouse entries made by this document
+   * @throws Exception - an exception
+   **/
+  List<WarehouseEntry> retrieveEntriesForOwner(
+    Map<String, Object> pAddParam,
+      Integer pOwnerTypeCode, Long pOwnerId) throws Exception;
 }

@@ -83,4 +83,80 @@ public class RecordSetAndroid implements IRecordSet<Cursor> {
   public final void close() throws Exception {
     this.resultSet.close();
   }
+
+  /**
+   * <p>Retrieve String column value.</p>
+   * @param pColumnName column name
+   * @return String result
+   * @throws Exception - an exception
+   **/
+  @Override
+  public final String getString(final String pColumnName) throws Exception {
+    int columnIndex = this.resultSet.getColumnIndex(pColumnName);
+    return this.resultSet.getString(columnIndex);
+  }
+
+  /**
+   * <p>Retrieve Double column value.</p>
+   * @param pColumnName column name
+   * @return Double result
+   * @throws Exception - an exception
+   **/
+  @Override
+  public final Double getDouble(final String pColumnName) throws Exception {
+    int columnIndex = this.resultSet.getColumnIndex(pColumnName);
+    Double result = null;
+    if (!this.resultSet.isNull(columnIndex)) {
+      result = this.resultSet.getDouble(columnIndex);
+    }
+    return result;
+  }
+
+  /**
+   * <p>Retrieve Float column value.</p>
+   * @param pColumnName column name
+   * @return Float result
+   * @throws Exception - an exception
+   **/
+  @Override
+  public final Float getFloat(final String pColumnName) throws Exception {
+    int columnIndex = this.resultSet.getColumnIndex(pColumnName);
+    Float result = null;
+    if (!this.resultSet.isNull(columnIndex)) {
+      result = this.resultSet.getFloat(columnIndex);
+    }
+    return result;
+  }
+
+  /**
+   * <p>Retrieve Integer column value.</p>
+   * @param pColumnName column name
+   * @return Integer result
+   * @throws Exception - an exception
+   **/
+  @Override
+  public final Integer getInteger(final String pColumnName) throws Exception {
+    int columnIndex = this.resultSet.getColumnIndex(pColumnName);
+    Integer result = null;
+    if (!this.resultSet.isNull(columnIndex)) {
+      result = this.resultSet.getInt(columnIndex);
+    }
+    return result;
+  }
+
+  /**
+   * <p>Retrieve Long column value.</p>
+   * @param pColumnName column name
+   * @return Long result
+   * @throws Exception - an exception
+   **/
+  @Override
+  public final Long getLong(final String pColumnName) throws Exception {
+    int columnIndex = this.resultSet.getColumnIndex(pColumnName);
+    Long result = null;
+    if (!this.resultSet.isNull(columnIndex)) {
+      result = this.resultSet.getLong(columnIndex);
+    }
+    return result;
+  }
 }

@@ -25,12 +25,12 @@ public interface ISrvFieldWriter {
    * Write field of entity into a stream
    * (writer - file or pass it through network).
    * </p>
+   * @param pAddParam additional params (e.g. exclude fields set)
    * @param pField value
    * @param pFieldName Field Name
    * @param pWriter writer
-   * @param pAddParam additional params (e.g. exclude fields set)
    * @throws Exception - an exception
    **/
-  void write(Object pField, String pFieldName, Writer pWriter,
-    Map<String, Object> pAddParam) throws Exception;
+  void write(Map<String, Object> pAddParam,
+    Object pField, String pFieldName, Writer pWriter) throws Exception;
 }

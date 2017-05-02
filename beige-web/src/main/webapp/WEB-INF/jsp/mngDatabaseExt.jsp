@@ -29,11 +29,11 @@
             ${database}.sqlite
           </td>
           <td style="padding: 15px;">
-            <a class="btn" href="?nameRenderer=mngDatabaseExt&nameAction=change&nameDatabase=${database}" onclick="confirmHref(this, 'Change?'); return false;">${srvI18n.getMsg("change_db_curr")}</a>
+            <a class="btn" href="?nmRnd=mngDatabaseExt&nameAction=change&nameDatabase=${database}" onclick="confirmHref(this, 'Change?'); return false;">${srvI18n.getMsg("change_db_curr")}</a>
             <br><br>
-            <a class="btn" href="?nameRenderer=mngDatabaseExt&nameAction=backup&nameDatabase=${database}" onclick="confirmHref(this, 'Backup?'); return false;">${srvI18n.getMsg("backup")}</a>
+            <a class="btn" href="?nmRnd=mngDatabaseExt&nameAction=backup&nameDatabase=${database}" onclick="confirmHref(this, 'Backup?'); return false;">${srvI18n.getMsg("backup")}</a>
             <br><br>
-            <a class="btn" href="?nameRenderer=mngDatabaseExt&nameAction=delete&nameDatabase=${database}" onclick="confirmHref(this, 'Delete?'); return false;">${srvI18n.getMsg("Delete")}</a>
+            <a class="btn" href="?nmRnd=mngDatabaseExt&nameAction=delete&nameDatabase=${database}" onclick="confirmHref(this, 'Delete?'); return false;">${srvI18n.getMsg("Delete")}</a>
           </td>
         </tr>
       </c:forEach>
@@ -53,7 +53,7 @@
             ${database}.sqlite
           </td>
           <td style="padding: 15px;">
-            <a class="btn" href="?nameRenderer=mngDatabaseExt&nameAction=restore&nameDatabase=${database}" onclick="confirmHref(this, 'Restore?'); return false;">${srvI18n.getMsg("restore")}</a>
+            <a class="btn" href="?nmRnd=mngDatabaseExt&nameAction=restore&nameDatabase=${database}" onclick="confirmHref(this, 'Restore?'); return false;">${srvI18n.getMsg("restore")}</a>
           </td>
         </tr>
       </c:forEach>
@@ -66,7 +66,7 @@
     </div>
     <form method="post">
       <input type="hidden" name="nameAction" value="create">
-      <input type="hidden" name="nameRenderer" value="mngDatabaseExt">
+      <input type="hidden" name="nmRnd" value="mngDatabaseExt">
       <table class="tbl-fieldset">
         <tr>
           <td>

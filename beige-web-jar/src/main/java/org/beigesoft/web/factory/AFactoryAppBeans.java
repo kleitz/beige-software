@@ -12,30 +12,45 @@ package org.beigesoft.web.factory;
 
 import java.util.Date;
 import java.util.Map;
-import java.util.LinkedHashSet;
-import java.util.HashMap;
+import java.util.Hashtable;
+import java.lang.reflect.Field;
+import java.io.File;
 
+import org.beigesoft.exception.ExceptionWithCode;
 import org.beigesoft.delegate.IDelegator;
+import org.beigesoft.converter.CnvTfsObject;
+import org.beigesoft.converter.CnvTfsEnum;
+import org.beigesoft.converter.CnvTfsHasId;
+import org.beigesoft.factory.FctConvertersToFromString;
+import org.beigesoft.factory.FctFillersObjectFields;
 import org.beigesoft.factory.IFactoryAppBeans;
+import org.beigesoft.handler.HandlerAbout;
+import org.beigesoft.holder.HolderRapiSetters;
+import org.beigesoft.holder.HolderRapiGetters;
+import org.beigesoft.holder.HolderRapiFields;
 import org.beigesoft.service.UtlReflection;
-import org.beigesoft.properties.UtlProperties;
-import org.beigesoft.service.SrvAbout;
-import org.beigesoft.orm.service.ASrvOrm;
-import org.beigesoft.orm.service.ISrvDatabase;
-import org.beigesoft.orm.service.ISrvRecordRetriever;
-import org.beigesoft.orm.service.SrvEntitySimple;
-import org.beigesoft.orm.service.SrvEntityOwnedSimple;
-import org.beigesoft.orm.service.SrvSqlEscape;
 import org.beigesoft.service.SrvI18n;
-import org.beigesoft.orm.service.HlpInsertUpdate;
-import org.beigesoft.web.service.SrvWebEntity;
-import org.beigesoft.web.service.SrvWebMvc;
-import org.beigesoft.web.service.SrvPage;
-import org.beigesoft.web.service.MngSoftware;
-import org.beigesoft.settings.MngSettings;
-import org.beigesoft.log.ILogger;
-import org.beigesoft.web.service.UtlJsp;
+import org.beigesoft.service.SrvPage;
+import org.beigesoft.service.SrvDate;
 import org.beigesoft.service.UtilXml;
+import org.beigesoft.service.MailSenderStd;
+import org.beigesoft.properties.UtlProperties;
+import org.beigesoft.log.ILogger;
+import org.beigesoft.settings.MngSettings;
+import org.beigesoft.settings.holder.HldFieldsSettings;
+import org.beigesoft.orm.model.TableSql;
+import org.beigesoft.orm.holder.HldCnvFromRsNames;
+import org.beigesoft.orm.holder.HldCnvToColumnsValuesNames;
+import org.beigesoft.orm.factory.FctBcCnvEntityToColumnsValues;
+import org.beigesoft.orm.factory.FctBnCnvIbnToColumnValues;
+import org.beigesoft.orm.factory.FctBnCnvBnFromRs;
+import org.beigesoft.orm.service.FillEntityFromReq;
+import org.beigesoft.orm.service.FillerEntitiesFromRs;
+import org.beigesoft.orm.service.ASrvOrm;
+import org.beigesoft.orm.service.SrvEntitiesPage;
+import org.beigesoft.orm.service.ISrvDatabase;
+import org.beigesoft.orm.service.HlpInsertUpdate;
+import org.beigesoft.orm.service.SrvSqlEscape;
 import org.beigesoft.replicator.service.SrvClearDatabase;
 import org.beigesoft.replicator.service.ReplicatorXmlHttp;
 import org.beigesoft.replicator.service.DatabaseWriterXml;
@@ -51,10 +66,22 @@ import org.beigesoft.replicator.service.SrvEntityFieldFillerStd;
 import org.beigesoft.replicator.service.SrvEntityWriterXml;
 import org.beigesoft.replicator.service.SrvFieldWriterXmlStd;
 import org.beigesoft.replicator.service.SrvFieldHasIdWriterXml;
+import org.beigesoft.web.service.MngSoftware;
+import org.beigesoft.web.service.UtlJsp;
 
 /**
  * <p>Application beans factory for any RDBMS.
- * This is simple, cheap but powerful alternative to CDI.
+ * This is simple, pure OOP, cheap but powerful alternative to CDI.
+ * This factory designed for high load job. All initialized beans from this
+ * factory and sub-factories are in the beansMap. Client must invoke
+ * only lazyGet([beanName]) method. Factory is locked only during requested
+ * bean initialization (when it not exist in the beansMap).
+ * All others lazyGet[beanName]() methods from this factory and sub-factories
+ * are invoked internally by these factories only during bean initialization.
+ * So there is no way to make inconsistent locking by concurrent clients.
+ * To hot-change configuration e.g. load fixed class and put it into factory,
+ * set isReconfiguring to true, clear beans, load class and instantiate
+ * new bean by using inner lazeGet[depended bean name], then unlock factory.
  * </p>
  *
  * @param <RS> platform dependent RDBMS recordset
@@ -63,29 +90,21 @@ import org.beigesoft.replicator.service.SrvFieldHasIdWriterXml;
 public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
 
   /**
-   * <p>Reflection service.</p>
+   * <p>Upload directory relative to WEB-APP path
+   * without start and end separator, e.g. "static/uploads".</p>
    **/
-  private UtlReflection utlReflection;
+  private String uploadDirectory = "static" + File.separator + "uploads";
 
   /**
-   * <p>Properties service.</p>
+   * <p>Full WEB-APP path without end separator,
+   * revealed from servlet context and used for upload files.</p>
    **/
-  private UtlProperties utlProperties;
-
-  /**
-   * <p>Utils JSP.</p>
-   */
-  private UtlJsp utlJsp;
-
-  /**
-   * <p>SrvI18n.</p>
-   */
-  private SrvI18n srvI18n;
+  private String webAppPath;
 
     /**
    * <p>Is show debug messages.</p>
    **/
-  private boolean isShowDebugMessage = true;
+  private boolean isShowDebugMessages = true;
 
   /**
    * <p>ORM Settings Directory. Must be settled!</p>
@@ -108,47 +127,6 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
   private String uvdSettingsBaseFile = "base.xml";
 
   /**
-   * <p>Manager UVD settings.</p>
-   **/
-  private MngSettings mngUvdSettings;
-
-  /**
-   * <p>Entity service.</p>
-   **/
-  private SrvWebEntity srvWebEntity;
-
-  /**
-   * <p>Page service.</p>
-   */
-  private SrvPage srvPage;
-
-  /**
-   * <p>Software manager.</p>
-   */
-  private MngSoftware mngSoftware;
-
-  /**
-   * <p>ORM service.</p>
-   **/
-  private ASrvOrm<RS> srvOrm;
-
-  /**
-   * <p>Service that fill entity from request.</p>
-   **/
-  private SrvWebMvc<RS> srvWebMvc;
-
-  /**
-   * <p>Helper to create Insert Update statement
-   * by Android way.</p>
-   **/
-  private HlpInsertUpdate hlpInsertUpdate;
-
-  /**
-   * <p>Service escape XML.</p>
-   **/
-  private UtilXml utilXml;
-
-  /**
    * <p>Entities map "EntitySimpleName"-"Class".</p>
    **/
   private Map<String, Class<?>> entitiesMap;
@@ -169,14 +147,22 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
   private String databasePassword;
 
   /**
-   * <p>Beans map.</p>
+   * <p>Beans map "beans name"-"beans",
+   * e.g. "ISrvOrm"-"[srvOrmSqlite]".
+   * All beans (include made by sub-factories) are here.</p>
    **/
-  private Map<String, Object> beansMap = new HashMap<String, Object>();
+  private final Map<String, Object> beansMap = new Hashtable<String, Object>();
 
   /**
    * <p>Factory Over Beans.</p>
    **/
   private IFactoryAppBeans factoryOverBeans;
+
+  /**
+   * <p>Factory of entity request handler with business
+   * logic dependent processors.</p>
+   **/
+  private IFactoryBldServices<RS> factoryBldServices;
 
   /**
    * <p>Last request bean time. It's used to release memory (beans)
@@ -196,72 +182,131 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
   private int newDatabaseId = 1;
 
   /**
+   * <p>Flag for custom locking during reconfiguring
+   * (i.e. manually setting new fixed bean).</p>
+   **/
+  private boolean isReconfiguring = false;
+
+  /**
    * <p>Get bean in lazy mode (if bean is null then initialize it).</p>
    * @param pBeanName - bean name
    * @return Object - requested bean
    * @throws Exception - an exception
    */
   @Override
-  public final synchronized Object lazyGet(
+  public final Object lazyGet(
     final String pBeanName) throws Exception {
+    if (this.isReconfiguring) {
+      throw new ExceptionWithCode(ExceptionWithCode.SYSTEM_RECONFIGURING,
+        "system_reconfiguring");
+    }
     setLastRequestTime(new Date().getTime());
-    if ("ISrvOrm".equals(pBeanName)) {
-      return lazyGetSrvOrm();
-    } else if ("srvAbout".equals(pBeanName)) {
-      return lazyGetSrvAbout();
-    } else if ("importFullDatabaseCopy".equals(pBeanName)) {
-      return lazyGetImportFullDatabaseCopy();
-    } else if ("IDatabaseWriter".equals(pBeanName)) {
-      return lazyGetDbWriterFullCopy();
-    } else if ("IUtilXml".equals(pBeanName)) {
-      return lazyGetUtilXml();
-    } else if ("ILogger".equals(pBeanName)) {
-      return lazyGetLogger();
-    } else if ("IMngSoftware".equals(pBeanName)) {
-      return lazyGetMngSoftware();
-    } else if ("ISrvI18n".equals(pBeanName)) {
-      return lazyGetSrvI18n();
-    } else if ("UtlJsp".equals(pBeanName)) {
-      return lazyGetUtlJsp();
-    } else if ("ISrvWebEntity".equals(pBeanName)) {
-      return lazyGetSrvWebEntity();
-    } else if ("ISrvRecordRetriever".equals(pBeanName)) {
-      return lazyGetSrvRecordRetriever();
-    } else if ("ISrvDatabase".equals(pBeanName)) {
-      return lazyGetSrvDatabase();
-    } else if ("ISrvPage".equals(pBeanName)) {
-      return lazyGetSrvPage();
-    } else if ("ISrvWebMvc".equals(pBeanName)) {
-      return lazyGetSrvWebMvc();
-    } else if ("mngUvdSettings".equals(pBeanName)) {
-      return lazyGetMngUvdSettings();
-    } else if ("UtlProperties".equals(pBeanName)) {
-      return lazyGetUtlProperties();
-    } else if ("UtlReflection".equals(pBeanName)) {
-      return lazyGetUtlReflection();
-    } else if ("HlpInsertUpdate".equals(pBeanName)) {
-      return lazyGetHlpInsertUpdate();
-    } else {
-      Object bean = lazyGetOtherBean(pBeanName);
-      if (bean != null) {
-        return bean;
-      } else {
-        if (this.factoryOverBeans != null) {
-          bean = this.factoryOverBeans.lazyGet(pBeanName);
-        }
-        if (bean != null) {
-          return bean;
-        }
-        //common entity services
-        bean = lazyGetSrvEntity(pBeanName);
-        if (bean != null) {
-          return bean;
+    Object bean = this.beansMap.get(pBeanName);
+    // see in beige-common:
+    // org.beigesoft.test.DoubleCkeckLockingWrApTest
+    if (bean == null) {
+      // locking:
+      synchronized (this) {
+        // make sure again whether it's null after locking:
+        bean = this.beansMap.get(pBeanName);
+        if (bean == null) {
+          if (getHandlerEntityRequestName().equals(pBeanName)) {
+            bean = this.factoryBldServices.lazyGetHandlerEntityRequest();
+          } else if (getHandlerAboutName().equals(pBeanName)) {
+            bean = lazyGetHandlerAbout();
+          } else if (getSrvOrmName().equals(pBeanName)) {
+            bean = lazyGetSrvOrm();
+          } else if (getImportFullDatabaseCopyName().equals(pBeanName)) {
+            bean = lazyGetImportFullDatabaseCopy();
+          } else if (getDatabaseWriterName().equals(pBeanName)) {
+            bean = lazyGetDbWriterFullCopy();
+          } else if (getMailSenderName().equals(pBeanName)) {
+            bean = lazyGetMailSender();
+          } else if (getUtilXmlName().equals(pBeanName)) {
+            bean = lazyGetUtilXml();
+          } else if (getLoggerName().equals(pBeanName)) {
+            bean = lazyGetLogger();
+          } else if (getMngSoftwareName().equals(pBeanName)) {
+            bean = lazyGetMngSoftware();
+          } else if (getSrvI18nName().equals(pBeanName)) {
+            bean = lazyGetSrvI18n();
+          } else if (getUtlJspName().equals(pBeanName)) {
+            bean = lazyGetUtlJsp();
+          } else if (getSrvDatabaseName().equals(pBeanName)) {
+            bean = lazyGetSrvDatabase();
+          } else if (getSrvEntitiesPageName().equals(pBeanName)) {
+            bean = lazyGetSrvEntitiesPage();
+          } else if (getSrvDateName().equals(pBeanName)) {
+            bean = lazyGetSrvDate();
+          } else if (getSrvPageName().equals(pBeanName)) {
+            bean = lazyGetSrvPage();
+          } else if (getFillEntityFromReqName().equals(pBeanName)) {
+            bean = lazyGetFillEntityFromReq();
+          } else if (getMngUvdSettingsName().equals(pBeanName)) {
+            bean = lazyGetMngUvdSettings();
+          } else if (getUtlPropertiesName().equals(pBeanName)) {
+            bean = lazyGetUtlProperties();
+          } else if (getUtlReflectionName().equals(pBeanName)) {
+            bean = lazyGetUtlReflection();
+          } else if (getMngSettingsGetDbCopyName().equals(pBeanName)) {
+            bean = lazyGetMngSettingsGetDbCopy();
+          } else if (getHldFieldsCnvTfsNamesName().equals(pBeanName)) {
+            bean = lazyGetHldFieldsCnvTfsNames();
+          } else if (getFctConvertersToFromStringName().equals(pBeanName)) {
+            bean = lazyGetFctConvertersToFromString();
+          } else if (getFctFillersObjectFieldsName().equals(pBeanName)) {
+            bean = lazyGetFctFillersObjectFields();
+          } else if (getHolderRapiSettersName().equals(pBeanName)) {
+            bean = lazyGetHolderRapiSetters();
+          } else if (getHolderRapiGettersName().equals(pBeanName)) {
+            bean = lazyGetHolderRapiGetters();
+          } else if (getHolderRapiFieldsName().equals(pBeanName)) {
+            bean = lazyGetHolderRapiFields();
+          } else if (getHlpInsertUpdateName().equals(pBeanName)) {
+            bean = lazyGetHlpInsertUpdate();
+          } else if (getFillerEntitiesFromRsName().equals(pBeanName)) {
+            bean = lazyGetFillerEntitiesFromRs();
+          } else if (getFctBnCnvBnFromRsName().equals(pBeanName)) {
+            bean = lazyGetFctBnCnvBnFromRs();
+          } else if (getFctBnCnvIbnToColumnValuesName().equals(pBeanName)) {
+            bean = lazyGetFctBnCnvIbnToColumnValues();
+          } else if (getSrvSqlEscapeName().equals(pBeanName)) {
+            bean = lazyGetSrvSqlEscape();
+          } else if (getHldCnvToColumnsValuesNamesName().equals(pBeanName)) {
+            bean = lazyGetHldCnvToColumnsValuesNames();
+          } else if (getPrepareDbAfterFullImportName().equals(pBeanName)) {
+            bean = lazyGetPrepareDbAfterFullImport();
+          } else if (getHldCnvFromRsNamesName().equals(pBeanName)) {
+            bean = lazyGetHldCnvFromRsNames();
+          } else if (getFctBcFctSimpleEntitiesName().equals(pBeanName)) {
+            bean = this.factoryBldServices.lazyGetFctBcFctSimpleEntities();
+          } else if (getFctBcCnvEntityToColumnsValuesName().equals(pBeanName)) {
+            bean = lazyGetFctBcCnvEntityToColumnsValues();
+          } else {
+            bean = lazyGetOtherBean(pBeanName);
+            if (bean == null && this.factoryOverBeans != null) {
+                bean = this.factoryOverBeans.lazyGet(pBeanName);
+            }
+          }
         }
       }
-      lazyGetLogger().info(AFactoryAppBeans.class,
-        "There is no bean for name " + pBeanName);
-      return null;
     }
+    if (bean == null) {
+      throw new ExceptionWithCode(ExceptionWithCode.CONFIGURATION_MISTAKE,
+        "There is no bean with name " + pBeanName);
+    }
+    return bean;
+  }
+
+  /**
+   * <p>Release beans (memory). This is "memory friendly" factory.
+   * All beans (include from sub-factories) are here.</p>
+   * @throws Exception - an exception
+   */
+  @Override
+  public final synchronized void releaseBeans() throws Exception {
+    getEntitiesMap().clear();
+    getBeansMap().clear();
   }
 
   //To override:
@@ -288,6 +333,20 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
   public abstract ILogger lazyGetLogger() throws Exception;
 
   /**
+   * <p>Is need to SQL escape (character ').</p>
+   * @return for Android false, JDBC - true.
+   */
+  public abstract boolean getIsNeedsToSqlEscape();
+
+  /**
+   * <p>Getter of Logger name.</p>
+   * @return service name
+   **/
+  public final String getLoggerName() {
+    return "ILogger";
+  }
+
+  /**
    * <p>Get Service that prepare Database after full import
    * in lazy mode.</p>
    * @return IDelegator - preparator Database after full import.
@@ -297,53 +356,30 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
     lazyGetPrepareDbAfterFullImport() throws Exception;
 
   /**
-   * <p>Get SrvRecordRetriever in lazy mode.</p>
-   * @return SrvRecordRetriever - SrvRecordRetriever
-   * @throws Exception - an exception
-   */
-  public abstract ISrvRecordRetriever<RS>
-    lazyGetSrvRecordRetriever() throws Exception;
+   * <p>Getter of Prepare DB After Full Import service name.</p>
+   * @return service name
+   **/
+  public final String getPrepareDbAfterFullImportName() {
+    return "prepareDbAfterFullImport";
+  }
 
   /**
    * <p>Get SrvDatabase in lazy mode.</p>
    * @return ISrvDatabase - SrvDatabase
    * @throws Exception - an exception
    */
-  public abstract ISrvDatabase<RS> lazyGetSrvDatabase() throws Exception;
+  public abstract ISrvDatabase<RS>
+    lazyGetSrvDatabase() throws Exception;
 
-  //Work:
   /**
-   * <p>Get SrvOrmH2 in lazy mode.</p>
-   * @return SrvOrmH2 - SrvOrmH2
-   * @throws Exception - an exception
-   */
-  public final synchronized ASrvOrm<RS>
-    lazyGetSrvOrm() throws Exception {
-    if (this.srvOrm == null) {
-      this.srvOrm = instantiateSrvOrm();
-      this.srvOrm.setSrvRecordRetriever(lazyGetSrvRecordRetriever());
-      this.srvOrm.setNewDatabaseId(this.newDatabaseId);
-      this.srvOrm.setSrvDatabase(lazyGetSrvDatabase());
-      this.srvOrm.setSrvSqlEscape(new SrvSqlEscape());
-      this.srvOrm.setHlpInsertUpdate(lazyGetHlpInsertUpdate());
-      this.srvOrm.setLogger(lazyGetLogger());
-      MngSettings mngOrmSettings = new MngSettings();
-      mngOrmSettings.setLogger(lazyGetLogger());
-      this.srvOrm.setMngSettings(mngOrmSettings);
-      this.srvOrm.loadConfiguration(this.ormSettingsDir,
-        this.ormSettingsBaseFile);
-      this.srvOrm.initializeDatabase();
-      this.entitiesMap = new HashMap<String, Class<?>>();
-      for (Class<?> clazz : this.srvOrm.getMngSettings()
-        .getClasses()) {
-        this.entitiesMap.put(clazz.getSimpleName(), clazz);
-      }
-      lazyGetLogger().info(AFactoryAppBeans.class,
-        "ASrvOrm has been created.");
-    }
-    return this.srvOrm;
+   * <p>Getter of Database service name.</p>
+   * @return service name
+   **/
+  public final String getSrvDatabaseName() {
+    return "ISrvDatabase";
   }
 
+  //Work:
   /**
    * <p>Handler of event on database changed,
    * right now SQlite DB is able to be changed.</p>
@@ -354,15 +390,75 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
   }
 
   /**
+   * <p>Get SrvOrm in lazy mode.</p>
+   * @return SrvOrm - SrvOrm
+   * @throws Exception - an exception
+   */
+  public final ASrvOrm<RS>
+    lazyGetSrvOrm() throws Exception {
+    String beanName = getSrvOrmName();
+    @SuppressWarnings("unchecked")
+    ASrvOrm<RS> srvOrm = (ASrvOrm<RS>) this.beansMap.get(beanName);
+    if (srvOrm == null) {
+      srvOrm = instantiateSrvOrm();
+      srvOrm.setNewDatabaseId(this.newDatabaseId);
+      srvOrm.setSrvDatabase(lazyGetSrvDatabase());
+      srvOrm.setHlpInsertUpdate(lazyGetHlpInsertUpdate());
+      srvOrm.setLogger(lazyGetLogger());
+      srvOrm.setUtlReflection(lazyGetUtlReflection());
+      srvOrm.setFctFillersObjectFields(lazyGetFctFillersObjectFields());
+      srvOrm.setEntitiesFactoriesFatory(this.factoryBldServices
+        .lazyGetFctBcFctSimpleEntities());
+      FctBcCnvEntityToColumnsValues fctBcCnvEntityToColumnsValues =
+        lazyGetFctBcCnvEntityToColumnsValues();
+      srvOrm.setFactoryCnvEntityToColumnsValues(
+        fctBcCnvEntityToColumnsValues);
+      FillerEntitiesFromRs<RS> fillerEntitiesFromRs =
+        lazyGetFillerEntitiesFromRs();
+      srvOrm.setFillerEntitiesFromRs(fillerEntitiesFromRs);
+      MngSettings mngOrmSettings = new MngSettings();
+      mngOrmSettings.setLogger(lazyGetLogger());
+      srvOrm.setMngSettings(mngOrmSettings);
+      srvOrm.loadConfiguration(this.ormSettingsDir,
+        this.ormSettingsBaseFile);
+      fctBcCnvEntityToColumnsValues
+        .setTablesMap(srvOrm.getTablesMap());
+      lazyGetFctBnCnvBnFromRs().setTablesMap(srvOrm.getTablesMap());
+      lazyGetFctBnCnvIbnToColumnValues().setTablesMap(srvOrm.getTablesMap());
+      fillerEntitiesFromRs.setTablesMap(srvOrm.getTablesMap());
+      Map<String, Object> addParam = new Hashtable<String, Object>();
+      srvOrm.initializeDatabase(addParam);
+      this.entitiesMap = new Hashtable<String, Class<?>>();
+      for (Class<?> clazz : srvOrm.getMngSettings()
+        .getClasses()) {
+        this.entitiesMap.put(clazz.getSimpleName(), clazz);
+      }
+      this.beansMap.put(beanName, srvOrm);
+      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+        + " has been created.");
+    }
+    return srvOrm;
+  }
+
+  /**
+   * <p>Getter of ORM service name.</p>
+   * @return service name
+   **/
+  public final String getSrvOrmName() {
+    return "ISrvOrm";
+  }
+
+  /**
    * <p>Get ReplicatorXmlHttp full import in lazy mode.</p>
    * @return ReplicatorXmlHttp - ReplicatorXmlHttp
    * @throws Exception - an exception
    */
-  public final synchronized ReplicatorXmlHttp<RS>
+  public final ReplicatorXmlHttp<RS>
     lazyGetImportFullDatabaseCopy() throws Exception {
+    String beanName = getImportFullDatabaseCopyName();
     @SuppressWarnings("unchecked")
     ReplicatorXmlHttp<RS> srvGetDbCopyXml =
-      (ReplicatorXmlHttp<RS>) this.beansMap.get("srvGetDbCopyXml");
+      (ReplicatorXmlHttp<RS>) this.beansMap.get(beanName);
     if (srvGetDbCopyXml == null) {
       srvGetDbCopyXml = new ReplicatorXmlHttp<RS>();
       SrvEntityReaderXml srvEntityReaderXml = new SrvEntityReaderXml();
@@ -386,7 +482,7 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
       SrvEntityFieldUserTomcatRepl srvEntityFieldUserTomcatRepl =
         new SrvEntityFieldUserTomcatRepl();
       Map<String, ISrvEntityFieldFiller> fieldsFillersMap =
-        new HashMap<String, ISrvEntityFieldFiller>();
+        new Hashtable<String, ISrvEntityFieldFiller>();
       fieldsFillersMap.put("SrvEntityFieldFillerStd",
         srvEntityFieldFillerStd);
       fieldsFillersMap.put("SrvEntityFieldPersistableBaseRepl",
@@ -406,7 +502,7 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
       databaseReaderIdenticalXml.setSrvDatabase(lazyGetSrvDatabase());
       databaseReaderIdenticalXml.setSrvOrm(lazyGetSrvOrm());
       databaseReaderIdenticalXml.setLogger(lazyGetLogger());
-      SrvClearDatabase srvClearDatabase = new SrvClearDatabase();
+      SrvClearDatabase<RS> srvClearDatabase = new SrvClearDatabase<RS>();
       srvClearDatabase.setMngSettings(lazyGetMngSettingsGetDbCopy());
       srvClearDatabase.setLogger(lazyGetLogger());
       srvClearDatabase.setSrvDatabase(lazyGetSrvDatabase());
@@ -419,11 +515,19 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
       srvGetDbCopyXml.setSrvDatabase(lazyGetSrvDatabase());
       srvGetDbCopyXml.setDatabaseReader(databaseReaderIdenticalXml);
       srvGetDbCopyXml.setLogger(lazyGetLogger());
-      lazyGetLogger().info(AFactoryAppBeans.class,
-        "importFullDatabaseCopy has been created.");
-      this.beansMap.put("srvGetDbCopyXml", srvGetDbCopyXml);
+      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+        + " has been created.");
+      this.beansMap.put(beanName, srvGetDbCopyXml);
     }
     return srvGetDbCopyXml;
+  }
+
+  /**
+   * <p>Getter of Import Full Database Copy service name.</p>
+   * @return service name
+   **/
+  public final String getImportFullDatabaseCopyName() {
+    return "importFullDatabaseCopy";
   }
 
   /**
@@ -431,11 +535,12 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
    * @return DatabaseWriterXml - DatabaseWriterXml
    * @throws Exception - an exception
    */
-  public final synchronized DatabaseWriterXml<RS> lazyGetDbWriterFullCopy(
-    ) throws Exception {
+  public final DatabaseWriterXml<RS>
+    lazyGetDbWriterFullCopy() throws Exception {
+    String beanName = getDatabaseWriterName();
     @SuppressWarnings("unchecked")
     DatabaseWriterXml<RS> dbWriterXmlFullImport =
-      (DatabaseWriterXml<RS>) this.beansMap.get("dbWriterXmlFullImport");
+      (DatabaseWriterXml<RS>) this.beansMap.get(beanName);
     if (dbWriterXmlFullImport == null) {
       dbWriterXmlFullImport = new DatabaseWriterXml<RS>();
       SrvEntityWriterXml srvEntityWriterXml = new SrvEntityWriterXml();
@@ -446,7 +551,7 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
       srvFieldHasIdWriterXml.setUtilXml(lazyGetUtilXml());
       srvEntityWriterXml.setUtlReflection(lazyGetUtlReflection());
       Map<String, ISrvFieldWriter> fieldsWritersMap =
-        new HashMap<String, ISrvFieldWriter>();
+        new Hashtable<String, ISrvFieldWriter>();
       fieldsWritersMap.put("SrvFieldWriterXmlStd", srvFieldWriterXmlStd);
       fieldsWritersMap.put("SrvFieldHasIdWriterXml", srvFieldHasIdWriterXml);
       srvEntityWriterXml.setFieldsWritersMap(fieldsWritersMap);
@@ -455,11 +560,19 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
       dbWriterXmlFullImport.setSrvEntityWriter(srvEntityWriterXml);
       dbWriterXmlFullImport.setSrvDatabase(lazyGetSrvDatabase());
       dbWriterXmlFullImport.setSrvOrm(lazyGetSrvOrm());
-      lazyGetLogger().info(AFactoryAppBeans.class,
-        "DatabaseWriterXml full import has been created.");
-      this.beansMap.put("dbWriterXmlFullImport", dbWriterXmlFullImport);
+      this.beansMap.put(beanName, dbWriterXmlFullImport);
+      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+        + " has been created.");
     }
     return dbWriterXmlFullImport;
+  }
+
+  /**
+   * <p>Getter of Database Writer service name.</p>
+   * @return service name
+   **/
+  public final String getDatabaseWriterName() {
+    return "IDatabaseWriter";
   }
 
   /**
@@ -467,41 +580,116 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
    * @return MngSettings - MngSettings replicator
    * @throws Exception - an exception
    */
-  public final synchronized MngSettings lazyGetMngSettingsGetDbCopy(
-    ) throws Exception {
+  public final MngSettings
+    lazyGetMngSettingsGetDbCopy() throws Exception {
+    String beanName = getMngSettingsGetDbCopyName();
     MngSettings mngSettingsGetDbCopy =
-      (MngSettings) this.beansMap.get("mngSettingsGetDbCopy");
+      (MngSettings) this.beansMap.get(beanName);
     if (mngSettingsGetDbCopy == null) {
       mngSettingsGetDbCopy = new MngSettings();
       mngSettingsGetDbCopy.setLogger(lazyGetLogger());
       mngSettingsGetDbCopy
         .loadConfiguration("beige-get-db-copy", "base.xml");
-      lazyGetLogger().info(AFactoryAppBeans.class,
-        "MngSettings replicator full import has been created.");
-      this.beansMap.put("mngSettingsGetDbCopy", mngSettingsGetDbCopy);
+      this.beansMap.put(beanName, mngSettingsGetDbCopy);
+      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+        + " has been created.");
     }
     return mngSettingsGetDbCopy;
   }
 
   /**
-   * <p>Get SrvAbout in lazy mode.</p>
-   * @return SrvAbout - SrvAbout
+   * <p>Getter of Manager Settings for Get DB Copy name.</p>
+   * @return service name
+   **/
+  public final String getMngSettingsGetDbCopyName() {
+    return "mngSettingsGetDbCopy";
+  }
+
+  /**
+   * <p>Getter of About service name.</p>
+   * @return service name
+   **/
+  public final String getHandlerEntityRequestName() {
+    return "handlerEntityRequest";
+  }
+
+  /**
+   * <p>Get HandlerAbout in lazy mode.</p>
+   * @return HandlerAbout - HandlerAbout
    * @throws Exception - an exception
    */
-  public final synchronized SrvAbout<RS> lazyGetSrvAbout(
-    ) throws Exception {
+  public final HandlerAbout<RS> lazyGetHandlerAbout() throws Exception {
+    String beanName = getHandlerAboutName();
     @SuppressWarnings("unchecked")
-    SrvAbout<RS> srvAbout =
-      (SrvAbout<RS>) this.beansMap.get("srvAbout");
+    HandlerAbout<RS> srvAbout =
+      (HandlerAbout<RS>) this.beansMap.get(beanName);
     if (srvAbout == null) {
-      srvAbout = new SrvAbout<RS>();
+      srvAbout = new HandlerAbout<RS>();
       srvAbout.setSrvOrm(lazyGetSrvOrm());
       srvAbout.setSrvDatabase(lazyGetSrvDatabase());
-      lazyGetLogger().info(AFactoryAppBeans.class,
-        "SrvAbout has been created.");
-      this.beansMap.put("srvAbout", srvAbout);
+      this.beansMap.put(beanName, srvAbout);
+      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+        + " has been created.");
     }
     return srvAbout;
+  }
+
+  /**
+   * <p>Getter of About service name.</p>
+   * @return service name
+   **/
+  public final String getHandlerAboutName() {
+    return "hndAbout";
+  }
+
+  /**
+   * <p>Get MailSenderStd in lazy mode.</p>
+   * @return MailSenderStd - MailSenderStd
+   * @throws Exception - an exception
+   */
+  public final MailSenderStd lazyGetMailSender() throws Exception {
+    String beanName = getMailSenderName();
+    MailSenderStd mailSender = (MailSenderStd) this.beansMap.get(beanName);
+    if (mailSender == null) {
+      mailSender = new MailSenderStd(lazyGetLogger());
+      this.beansMap.put(beanName, mailSender);
+      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+        + " has been created.");
+    }
+    return mailSender;
+  }
+
+  /**
+   * <p>Getter of Mail Sender service name.</p>
+   * @return service name
+   **/
+  public final String getMailSenderName() {
+    return "IMailSender";
+  }
+
+  /**
+   * <p>Get SrvSqlEscape in lazy mode.</p>
+   * @return SrvSqlEscape - SrvSqlEscape
+   * @throws Exception - an exception
+   */
+  public final SrvSqlEscape lazyGetSrvSqlEscape() throws Exception {
+    String beanName = getSrvSqlEscapeName();
+    SrvSqlEscape srvSqlEscape = (SrvSqlEscape) this.beansMap.get(beanName);
+    if (srvSqlEscape == null) {
+      srvSqlEscape = new SrvSqlEscape();
+      this.beansMap.put(beanName, srvSqlEscape);
+      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+        + " has been created.");
+    }
+    return srvSqlEscape;
+  }
+
+  /**
+   * <p>Getter of Util Xml service name.</p>
+   * @return service name
+   **/
+  public final String getSrvSqlEscapeName() {
+    return "ISrvSqlEscape";
   }
 
   /**
@@ -509,14 +697,24 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
    * @return UtilXml - UtilXml
    * @throws Exception - an exception
    */
-  public final synchronized UtilXml lazyGetUtilXml(
-    ) throws Exception {
-    if (this.utilXml == null) {
-      this.utilXml = new UtilXml();
-      lazyGetLogger().info(AFactoryAppBeans.class,
-        "UtilXml has been created.");
+  public final UtilXml lazyGetUtilXml() throws Exception {
+    String beanName = getUtilXmlName();
+    UtilXml utilXml = (UtilXml) this.beansMap.get(beanName);
+    if (utilXml == null) {
+      utilXml = new UtilXml();
+      this.beansMap.put(beanName, utilXml);
+      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+        + " has been created.");
     }
-    return this.utilXml;
+    return utilXml;
+  }
+
+  /**
+   * <p>Getter of Util Xml service name.</p>
+   * @return service name
+   **/
+  public final String getUtilXmlName() {
+    return "IUtilXml";
   }
 
   /**
@@ -524,14 +722,26 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
    * @return HlpInsertUpdate - HlpInsertUpdate
    * @throws Exception - an exception
    */
-  public final synchronized HlpInsertUpdate lazyGetHlpInsertUpdate(
-    ) throws Exception {
-    if (this.hlpInsertUpdate == null) {
-      this.hlpInsertUpdate = new HlpInsertUpdate();
-      lazyGetLogger().info(AFactoryAppBeans.class,
-        "HlpInsertUpdate has been created.");
+  public final HlpInsertUpdate
+    lazyGetHlpInsertUpdate() throws Exception {
+    String beanName = getHlpInsertUpdateName();
+    HlpInsertUpdate hlpInsertUpdate =
+      (HlpInsertUpdate) this.beansMap.get(beanName);
+    if (hlpInsertUpdate == null) {
+      hlpInsertUpdate = new HlpInsertUpdate();
+      this.beansMap.put(beanName, hlpInsertUpdate);
+      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+        + " has been created.");
     }
-    return this.hlpInsertUpdate;
+    return hlpInsertUpdate;
+  }
+
+  /**
+   * <p>Getter of Helper Insert/Update name.</p>
+   * @return service name
+   **/
+  public final String getHlpInsertUpdateName() {
+    return "HlpInsertUpdate";
   }
 
   /**
@@ -539,14 +749,24 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
    * @return UtlJsp - UtlJsp
    * @throws Exception - an exception
    */
-  public final synchronized UtlJsp lazyGetUtlJsp(
-    ) throws Exception {
-    if (this.utlJsp == null) {
-      this.utlJsp = new UtlJsp();
-      lazyGetLogger().info(AFactoryAppBeans.class,
-        "UtlJsp has been created.");
+  public final UtlJsp lazyGetUtlJsp() throws Exception {
+    String beanName = getUtlJspName();
+    UtlJsp utlJsp = (UtlJsp) this.beansMap.get(beanName);
+    if (utlJsp == null) {
+      utlJsp = new UtlJsp();
+      this.beansMap.put(beanName, utlJsp);
+      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+        + " has been created.");
     }
-    return this.utlJsp;
+    return utlJsp;
+  }
+
+  /**
+   * <p>Getter of UtlJsp service name.</p>
+   * @return service name
+   **/
+  public final String getUtlJspName() {
+    return "UtlJsp";
   }
 
   /**
@@ -554,15 +774,25 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
    * @return MngSoftware - MngSoftware
    * @throws Exception - an exception
    */
-  public final synchronized MngSoftware lazyGetMngSoftware(
-    ) throws Exception {
-    if (this.mngSoftware == null) {
-      this.mngSoftware = new MngSoftware();
-      this.mngSoftware.setLogger(lazyGetLogger());
-      lazyGetLogger().info(AFactoryAppBeans.class,
-        "MngSoftware has been created.");
+  public final MngSoftware lazyGetMngSoftware() throws Exception {
+    String beanName = getMngSoftwareName();
+    MngSoftware mngSoftware = (MngSoftware) this.beansMap.get(beanName);
+    if (mngSoftware == null) {
+      mngSoftware = new MngSoftware();
+      mngSoftware.setLogger(lazyGetLogger());
+      this.beansMap.put(beanName, mngSoftware);
+      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+        + " has been created.");
     }
-    return this.mngSoftware;
+    return mngSoftware;
+  }
+
+  /**
+   * <p>Getter of  service name.</p>
+   * @return service name
+   **/
+  public final String getMngSoftwareName() {
+    return "IMngSoftware";
   }
 
   /**
@@ -570,14 +800,25 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
    * @return UtlProperties - UtlProperties
    * @throws Exception - an exception
    */
-  public final synchronized UtlProperties lazyGetUtlProperties(
-    ) throws Exception {
-    if (this.utlProperties == null) {
-      this.utlProperties = new UtlProperties();
-      lazyGetLogger().info(AFactoryAppBeans.class,
-        "UtlProperties has been created.");
+  public final UtlProperties
+    lazyGetUtlProperties() throws Exception {
+    String beanName = getUtlPropertiesName();
+    UtlProperties utlProperties = (UtlProperties) this.beansMap.get(beanName);
+    if (utlProperties == null) {
+      utlProperties = new UtlProperties();
+      this.beansMap.put(beanName, utlProperties);
+      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+        + " has been created.");
     }
-    return this.utlProperties;
+    return utlProperties;
+  }
+
+  /**
+   * <p>Getter of Utils Properties service name.</p>
+   * @return service name
+   **/
+  public final String getUtlPropertiesName() {
+    return "UtlProperties";
   }
 
   /**
@@ -585,14 +826,25 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
    * @return UtlReflection - UtlReflection
    * @throws Exception - an exception
    */
-  public final synchronized UtlReflection lazyGetUtlReflection(
-    ) throws Exception {
-    if (this.utlReflection == null) {
-      this.utlReflection = new UtlReflection();
-      lazyGetLogger().info(AFactoryAppBeans.class,
-        "UtlReflection has been created.");
+  public final UtlReflection
+    lazyGetUtlReflection() throws Exception {
+    String beanName = getUtlReflectionName();
+    UtlReflection utlReflection = (UtlReflection) this.beansMap.get(beanName);
+    if (utlReflection == null) {
+      utlReflection = new UtlReflection();
+      this.beansMap.put(beanName, utlReflection);
+      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+        + " has been created.");
     }
-    return this.utlReflection;
+    return utlReflection;
+  }
+
+  /**
+   * <p>Getter of Utils Reflection name.</p>
+   * @return service name
+   **/
+  public final String getUtlReflectionName() {
+    return "IUtlReflection";
   }
 
   /**
@@ -600,13 +852,87 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
    * @return SrvI18n - SrvI18n
    * @throws Exception - an exception
    */
-  public final synchronized SrvI18n lazyGetSrvI18n() throws Exception {
-    if (this.srvI18n == null) {
-      this.srvI18n = new SrvI18n();
-      lazyGetLogger().info(AFactoryAppBeans.class,
-        "SrvI18n has been created.");
+  public final SrvI18n lazyGetSrvI18n() throws Exception {
+    String beanName = getSrvI18nName();
+    SrvI18n srvI18n = (SrvI18n) this.beansMap.get(beanName);
+    if (srvI18n == null) {
+      srvI18n = new SrvI18n();
+      this.beansMap.put(beanName, srvI18n);
+      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+        + " has been created.");
     }
-    return this.srvI18n;
+    return srvI18n;
+  }
+
+  /**
+   * <p>Getter of I18n service name.</p>
+   * @return service name
+   **/
+  public final String getSrvI18nName() {
+    return "ISrvI18n";
+  }
+
+  /**
+   * <p>Get SrvEntitiesPage in lazy mode.</p>
+   * @return SrvEntitiesPage - SrvEntitiesPage
+   * @throws Exception - an exception
+   */
+  public final SrvEntitiesPage<RS> lazyGetSrvEntitiesPage() throws Exception {
+    String beanName = getSrvEntitiesPageName();
+    @SuppressWarnings("unchecked")
+    SrvEntitiesPage<RS> srvEntitiesPage =
+      (SrvEntitiesPage<RS>) this.beansMap.get(beanName);
+    if (srvEntitiesPage == null) {
+      srvEntitiesPage = new SrvEntitiesPage<RS>();
+      srvEntitiesPage.setFieldsRapiHolder(lazyGetHolderRapiFields());
+      srvEntitiesPage.setSrvI18n(lazyGetSrvI18n());
+      srvEntitiesPage.setSrvOrm(lazyGetSrvOrm());
+      srvEntitiesPage.setSrvPage(lazyGetSrvPage());
+      srvEntitiesPage.setSrvDate(lazyGetSrvDate());
+      srvEntitiesPage.setMngUvdSettings(lazyGetMngUvdSettings());
+      srvEntitiesPage.setEntitiesMap(getEntitiesMap());
+      srvEntitiesPage
+        .setConvertersFieldsFatory(lazyGetFctConvertersToFromString());
+      srvEntitiesPage
+        .setFieldConverterNamesHolder(lazyGetHldFieldsCnvTfsNames());
+      this.beansMap.put(beanName, srvEntitiesPage);
+      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+        + " has been created.");
+    }
+    return srvEntitiesPage;
+  }
+
+  /**
+   * <p>Getter of Date service name.</p>
+   * @return service name
+   **/
+  public final String getSrvEntitiesPageName() {
+    return "ISrvEntitiesPage";
+  }
+
+  /**
+   * <p>Get SrvDate in lazy mode.</p>
+   * @return SrvDate - SrvDate
+   * @throws Exception - an exception
+   */
+  public final SrvDate lazyGetSrvDate() throws Exception {
+    String beanName = getSrvDateName();
+    SrvDate srvDate = (SrvDate) this.beansMap.get(beanName);
+    if (srvDate == null) {
+      srvDate = new SrvDate();
+      this.beansMap.put(beanName, srvDate);
+      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+        + " has been created.");
+    }
+    return srvDate;
+  }
+
+  /**
+   * <p>Getter of Date service name.</p>
+   * @return service name
+   **/
+  public final String getSrvDateName() {
+    return "ISrvDate";
   }
 
   /**
@@ -614,13 +940,24 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
    * @return SrvPage - SrvPage
    * @throws Exception - an exception
    */
-  public final synchronized SrvPage lazyGetSrvPage() throws Exception {
-    if (this.srvPage == null) {
-      this.srvPage = new SrvPage();
-      lazyGetLogger().info(AFactoryAppBeans.class,
-        "SrvPage has been created.");
+  public final SrvPage lazyGetSrvPage() throws Exception {
+    String beanName = getSrvPageName();
+    SrvPage srvPage = (SrvPage) this.beansMap.get(beanName);
+    if (srvPage == null) {
+      srvPage = new SrvPage();
+      this.beansMap.put(beanName, srvPage);
+      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+        + " has been created.");
     }
-    return this.srvPage;
+    return srvPage;
+  }
+
+  /**
+   * <p>Getter of Page service name.</p>
+   * @return service name
+   **/
+  public final String getSrvPageName() {
+    return "ISrvPage";
   }
 
   /**
@@ -628,214 +965,534 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
    * @return MngSettings - MngSettings
    * @throws Exception - an exception
    */
-  public final synchronized MngSettings
+  public final MngSettings
     lazyGetMngUvdSettings() throws Exception {
-    if (this.mngUvdSettings == null) {
-      this.mngUvdSettings = new MngSettings();
-      this.mngUvdSettings.setLogger(lazyGetLogger());
-      this.mngUvdSettings.loadConfiguration(this.uvdSettingsDir,
+    String beanName = getMngUvdSettingsName();
+    MngSettings mngUvdSettings = (MngSettings) this.beansMap.get(beanName);
+    if (mngUvdSettings == null) {
+      mngUvdSettings = new MngSettings();
+      mngUvdSettings.setLogger(lazyGetLogger());
+      mngUvdSettings.loadConfiguration(this.uvdSettingsDir,
         this.uvdSettingsBaseFile);
-      lazyGetLogger().info(AFactoryAppBeans.class,
-        "mngUvdSettings has been created.");
+      HolderRapiFields holderRapiFields = lazyGetHolderRapiFields();
+      // prepare for setting fieldFromToStringConverter
+      // according Specification Beige-WEB interface version #2:
+      for (Class<?> clazz : mngUvdSettings.getClasses()) {
+        for (String fieldNm : mngUvdSettings.getFieldsSettings()
+          .get(clazz).keySet()) {
+          String convName = mngUvdSettings.getFieldsSettings()
+            .get(clazz).get(fieldNm).get("fieldFromToStringConverter");
+          if (convName != null && (CnvTfsEnum.class.getSimpleName()
+            .equals(convName) || CnvTfsObject.class.getSimpleName()
+              .equals(convName) || convName.startsWith(CnvTfsHasId.class
+                  .getSimpleName()))) {
+            Field field = holderRapiFields.getFor(clazz, fieldNm);
+            mngUvdSettings.getFieldsSettings().get(clazz).get(fieldNm)
+              .put("fieldFromToStringConverter", convName + field.getType()
+                .getSimpleName());
+          }
+        }
+      }
+      this.beansMap.put(beanName, mngUvdSettings);
+      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+        + " has been created.");
     }
-    return this.mngUvdSettings;
+    return mngUvdSettings;
   }
 
   /**
-   * <p>Get SrvWebMvc in lazy mode.</p>
-   * @return SrvWebMvc - SrvWebMvc
-   * @throws Exception - an exception
-   */
-  public final synchronized SrvWebMvc<RS> lazyGetSrvWebMvc() throws Exception {
-    if (this.srvWebMvc == null) {
-      this.srvWebMvc = new SrvWebMvc<RS>();
-      this.srvWebMvc.setLogger(lazyGetLogger());
-      this.srvWebMvc.setSrvOrm(lazyGetSrvOrm());
-      this.srvWebMvc.setUtlReflection(lazyGetUtlReflection());
-      lazyGetLogger().info(AFactoryAppBeans.class,
-        "ISrvWebMvc has been created.");
-    }
-    return this.srvWebMvc;
+   * <p>Getter of manager Uvd Settings service name.</p>
+   * @return service name
+   **/
+  public final String getMngUvdSettingsName() {
+    return "mngUvdSettings";
   }
 
   /**
-   * <p>Get SrvWebEntity in lazy mode.</p>
-   * @return SrvWebEntity - SrvWebEntity
+   * <p>Get HolderRapiFields in lazy mode.</p>
+   * @return HolderRapiFields - HolderRapiFields
    * @throws Exception - an exception
    */
-  public final synchronized SrvWebEntity lazyGetSrvWebEntity()
-    throws Exception {
-    if (this.srvWebEntity == null) {
-      this.srvWebEntity = new SrvWebEntity();
-      this.srvWebEntity.setSrvWebMvc(lazyGetSrvWebMvc());
-      this.srvWebEntity.setSrvOrm(lazyGetSrvOrm());
-      this.srvWebEntity.setSrvDatabase(lazyGetSrvDatabase());
-      this.srvWebEntity.setMngUvdSettings(lazyGetMngUvdSettings());
-      this.srvWebEntity.setSrvPage(lazyGetSrvPage());
-      this.srvWebEntity.setEntitiesMap(this.entitiesMap);
-      this.srvWebEntity.setSrvI18n(lazyGetSrvI18n());
-      this.srvWebEntity.setUtlJsp(lazyGetUtlJsp());
-      this.srvWebEntity.setUtlReflection(lazyGetUtlReflection());
-      this.srvWebEntity.setLogger(lazyGetLogger());
-      this.srvWebEntity.setFactoryEntityServices(this);
-      lazyGetLogger().info(AFactoryAppBeans.class,
-        "ISrvWebEntity has been created.");
+  public final HolderRapiFields
+    lazyGetHolderRapiFields() throws Exception {
+    String beanName = getHolderRapiFieldsName();
+    HolderRapiFields holderRapiFields =
+      (HolderRapiFields) this.beansMap.get(beanName);
+    if (holderRapiFields == null) {
+      holderRapiFields = new HolderRapiFields();
+      holderRapiFields.setUtlReflection(lazyGetUtlReflection());
+      this.beansMap.put(beanName, holderRapiFields);
+      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+        + " has been created.");
     }
-    return this.srvWebEntity;
+    return holderRapiFields;
   }
 
   /**
-   * <p>Get SrvEntity in lazy mode.</p>
-   * @param pSrvName - service name
-   * @return SrvWebEntity - SrvWebEntity
+   * <p>Getter of HolderRapiFields name.</p>
+   * @return service name
+   **/
+  public final String getHolderRapiFieldsName() {
+    return "holderRapiFields";
+  }
+
+  /**
+   * <p>Get HolderRapiGetters in lazy mode.</p>
+   * @return HolderRapiGetters - HolderRapiGetters
    * @throws Exception - an exception
    */
-  protected final synchronized Object lazyGetSrvEntity(
-    final String pSrvName) throws Exception {
-    Object srvEntity = beansMap.get(pSrvName);
-    if (srvEntity == null) {
-      Class<?> entityClass = this.entitiesMap
-        .get(pSrvName.replaceFirst("srv", ""));
-      if (entityClass != null) {
-        srvEntity = new SrvEntitySimple(entityClass, lazyGetSrvOrm());
-        beansMap.put(pSrvName, srvEntity);
-        lazyGetLogger().info(AFactoryAppBeans.class,
-          pSrvName + " has been created.");
-        //owned must be settled
-        Map<String, String> clSettings = lazyGetMngUvdSettings()
-          .getClassesSettings().get(entityClass.getCanonicalName());
-        if (clSettings != null) { //ORM has persitable
-          // entities that never shown
-          String ownedLists = clSettings.get("ownedLists");
-          if (ownedLists != null) {
-            LinkedHashSet<String> ownedListsSet = lazyGetUtlProperties()
-              .evalPropsStringsSet(ownedLists);
-            for (String className : ownedListsSet) {
-              Class<?> classOwned = Class.forName(className);
-              @SuppressWarnings("unchecked")
-              Object srvEntityOwned = new SrvEntityOwnedSimple(classOwned,
-                entityClass, lazyGetSrvOrm());
-              this.beansMap.put("srv" + classOwned.getSimpleName(),
-                srvEntityOwned);
-              lazyGetLogger().info(AFactoryAppBeans.class,
-                "srv" + classOwned.getSimpleName() + " has been created.");
+  public final HolderRapiGetters
+    lazyGetHolderRapiGetters() throws Exception {
+    String beanName = getHolderRapiGettersName();
+    HolderRapiGetters holderRapiGetters =
+      (HolderRapiGetters) this.beansMap.get(beanName);
+    if (holderRapiGetters == null) {
+      holderRapiGetters = new HolderRapiGetters();
+      holderRapiGetters.setUtlReflection(lazyGetUtlReflection());
+      this.beansMap.put(beanName, holderRapiGetters);
+      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+        + " has been created.");
+    }
+    return holderRapiGetters;
+  }
+
+  /**
+   * <p>Getter of HolderRapiGetters name.</p>
+   * @return service name
+   **/
+  public final String getHolderRapiGettersName() {
+    return "holderRapiGetters";
+  }
+
+  /**
+   * <p>Get HolderRapiSetters in lazy mode.</p>
+   * @return HolderRapiSetters - HolderRapiSetters
+   * @throws Exception - an exception
+   */
+  public final HolderRapiSetters
+    lazyGetHolderRapiSetters() throws Exception {
+    String beanName = getHolderRapiSettersName();
+    HolderRapiSetters holderRapiSetters =
+      (HolderRapiSetters) this.beansMap.get(beanName);
+    if (holderRapiSetters == null) {
+      holderRapiSetters = new HolderRapiSetters();
+      holderRapiSetters.setUtlReflection(lazyGetUtlReflection());
+      this.beansMap.put(beanName, holderRapiSetters);
+      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+        + " has been created.");
+    }
+    return holderRapiSetters;
+  }
+
+  /**
+   * <p>Getter of HolderRapiSetters name.</p>
+   * @return service name
+   **/
+  public final String getHolderRapiSettersName() {
+    return "holderRapiSetters";
+  }
+
+  /**
+   * <p>Get HldCnvToColumnsValuesNames in lazy mode.</p>
+   * @return HldCnvToColumnsValuesNames - HldCnvToColumnsValuesNames
+   * @throws Exception - an exception
+   */
+  public final HldCnvToColumnsValuesNames
+    lazyGetHldCnvToColumnsValuesNames() throws Exception {
+    String beanName = getHldCnvToColumnsValuesNamesName();
+    HldCnvToColumnsValuesNames hldCnvToColumnsValuesNames =
+      (HldCnvToColumnsValuesNames) this.beansMap.get(beanName);
+    if (hldCnvToColumnsValuesNames == null) {
+      hldCnvToColumnsValuesNames = new HldCnvToColumnsValuesNames();
+      hldCnvToColumnsValuesNames.setFieldsRapiHolder(lazyGetHolderRapiFields());
+      this.beansMap.put(beanName, hldCnvToColumnsValuesNames);
+      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+        + " has been created.");
+    }
+    return hldCnvToColumnsValuesNames;
+  }
+
+  /**
+   * <p>Getter of HldCnvToColumnsValuesNames name.</p>
+   * @return service name
+   **/
+  public final String getHldCnvToColumnsValuesNamesName() {
+    return "hldCnvToColumnsValuesNames";
+  }
+
+  /**
+   * <p>Get FctBnCnvIbnToColumnValues in lazy mode.</p>
+   * @return FctBnCnvIbnToColumnValues - FctBnCnvIbnToColumnValues
+   * @throws Exception - an exception
+   */
+  public final FctBnCnvIbnToColumnValues
+    lazyGetFctBnCnvIbnToColumnValues() throws Exception {
+    String beanName = getFctBnCnvIbnToColumnValuesName();
+    FctBnCnvIbnToColumnValues fctBnCnvIbnToColumnValues =
+      (FctBnCnvIbnToColumnValues) this.beansMap.get(beanName);
+    if (fctBnCnvIbnToColumnValues == null) {
+      fctBnCnvIbnToColumnValues = new FctBnCnvIbnToColumnValues();
+      fctBnCnvIbnToColumnValues.setUtlReflection(lazyGetUtlReflection());
+      fctBnCnvIbnToColumnValues.setFieldsRapiHolder(lazyGetHolderRapiFields());
+      fctBnCnvIbnToColumnValues
+        .setGettersRapiHolder(lazyGetHolderRapiGetters());
+      fctBnCnvIbnToColumnValues.setIsNeedsToSqlEscape(getIsNeedsToSqlEscape());
+      fctBnCnvIbnToColumnValues.setSrvSqlEscape(lazyGetSrvSqlEscape());
+      this.beansMap.put(beanName, fctBnCnvIbnToColumnValues);
+      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+        + " has been created.");
+    }
+    return fctBnCnvIbnToColumnValues;
+  }
+
+  /**
+   * <p>Getter of FctBnCnvIbnToColumnValues name.</p>
+   * @return service name
+   **/
+  public final String getFctBnCnvIbnToColumnValuesName() {
+    return "fctBnCnvIbnToColumnValues";
+  }
+
+  /**
+   * <p>Get FctBcCnvEntityToColumnsValues in lazy mode.</p>
+   * @return FctBcCnvEntityToColumnsValues - FctBcCnvEntityToColumnsValues
+   * @throws Exception - an exception
+   */
+  public final FctBcCnvEntityToColumnsValues
+    lazyGetFctBcCnvEntityToColumnsValues() throws Exception {
+    String beanName = getFctBcCnvEntityToColumnsValuesName();
+    FctBcCnvEntityToColumnsValues fctBcCnvEntityToColumnsValues =
+      (FctBcCnvEntityToColumnsValues) this.beansMap.get(beanName);
+    if (fctBcCnvEntityToColumnsValues == null) {
+      fctBcCnvEntityToColumnsValues = new FctBcCnvEntityToColumnsValues();
+      fctBcCnvEntityToColumnsValues.setLogger(lazyGetLogger());
+      fctBcCnvEntityToColumnsValues
+        .setFieldsConvertersFatory(lazyGetFctBnCnvIbnToColumnValues());
+      fctBcCnvEntityToColumnsValues
+        .setFieldsConvertersNamesHolder(lazyGetHldCnvToColumnsValuesNames());
+      fctBcCnvEntityToColumnsValues
+        .setFieldsRapiHolder(lazyGetHolderRapiFields());
+      fctBcCnvEntityToColumnsValues
+        .setGettersRapiHolder(lazyGetHolderRapiGetters());
+      this.beansMap.put(beanName, fctBcCnvEntityToColumnsValues);
+      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+        + " has been created.");
+    }
+    return fctBcCnvEntityToColumnsValues;
+  }
+
+  /**
+   * <p>Getter of FctBcCnvEntityToColumnsValues name.</p>
+   * @return service name
+   **/
+  public final String getFctBcCnvEntityToColumnsValuesName() {
+    return "fctBcCnvEntityToColumnsValues";
+  }
+
+  /**
+   * <p>Get FctFillersObjectFields in lazy mode.</p>
+   * @return FctFillersObjectFields - FctFillersObjectFields
+   * @throws Exception - an exception
+   */
+  public final FctFillersObjectFields
+    lazyGetFctFillersObjectFields() throws Exception {
+    String beanName = getFctFillersObjectFieldsName();
+    FctFillersObjectFields fctFillersObjectFields =
+      (FctFillersObjectFields) this.beansMap.get(beanName);
+    if (fctFillersObjectFields == null) {
+      fctFillersObjectFields = new FctFillersObjectFields();
+      fctFillersObjectFields.setUtlReflection(lazyGetUtlReflection());
+      fctFillersObjectFields
+        .setSettersRapiHolder(lazyGetHolderRapiSetters());
+      this.beansMap.put(beanName, fctFillersObjectFields);
+      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+        + " has been created.");
+    }
+    return fctFillersObjectFields;
+  }
+
+  /**
+   * <p>Getter of FctFillersObjectFields name.</p>
+   * @return service name
+   **/
+  public final String getFctFillersObjectFieldsName() {
+    return "fctFillersObjectFields";
+  }
+
+  /**
+   * <p>Get FctConvertersToFromString in lazy mode.</p>
+   * @return FctConvertersToFromString - FctConvertersToFromString
+   * @throws Exception - an exception
+   */
+  public final FctConvertersToFromString
+    lazyGetFctConvertersToFromString() throws Exception {
+    String beanName = getFctConvertersToFromStringName();
+    FctConvertersToFromString fctConvertersToFromString =
+      (FctConvertersToFromString) this.beansMap.get(beanName);
+    if (fctConvertersToFromString == null) {
+      fctConvertersToFromString = new FctConvertersToFromString();
+      fctConvertersToFromString.setUtlReflection(lazyGetUtlReflection());
+      fctConvertersToFromString
+        .setFieldsRapiHolder(lazyGetHolderRapiFields());
+      fctConvertersToFromString
+        .setGettersRapiHolder(lazyGetHolderRapiGetters());
+      fctConvertersToFromString
+        .setSettersRapiHolder(lazyGetHolderRapiSetters());
+      HldFieldsSettings hldFieldsCnvTfsNames = lazyGetHldFieldsCnvTfsNames();
+      fctConvertersToFromString
+        .setFieldConverterNamesHolder(hldFieldsCnvTfsNames);
+      HolderRapiFields holderRapiFields = lazyGetHolderRapiFields();
+      ASrvOrm<RS> srvOrm = lazyGetSrvOrm();
+      // prepare for setting fieldFromToStringConverter
+      // according Specification Beige-WEB interface version #2:
+      for (Class<?> clazz : hldFieldsCnvTfsNames
+        .getMngSettings().getClasses()) {
+        for (String fieldNm : hldFieldsCnvTfsNames.getMngSettings()
+          .getFieldsSettings().get(clazz).keySet()) {
+          String convName = hldFieldsCnvTfsNames.getMngSettings()
+            .getFieldsSettings().get(clazz).get(fieldNm)
+              .get("fieldFromToStringConverter");
+          if (convName.startsWith(CnvTfsEnum.class.getSimpleName())
+              || convName.startsWith(CnvTfsObject.class.getSimpleName())
+                || convName.startsWith(CnvTfsHasId
+                  .class.getSimpleName())) {
+            Field field = holderRapiFields.getFor(clazz, fieldNm);
+            Class ngClass = field.getType();
+            if (convName.startsWith(CnvTfsEnum.class.getSimpleName())) {
+              fctConvertersToFromString
+                .getEnumsClasses().add(ngClass);
+            } else if (convName.startsWith(CnvTfsObject.class
+              .getSimpleName())) {
+              fctConvertersToFromString
+                .getCompositeClasses().add(field.getType());
+            } else if (convName.startsWith(CnvTfsHasId
+                    .class.getSimpleName())) {
+              TableSql tableSql = srvOrm.getTablesMap()
+                .get(field.getType().getSimpleName());
+              if (convName.startsWith(CnvTfsHasId
+                    .class.getSimpleName() + "Long")) {
+                fctConvertersToFromString.getHasLongIdMap()
+                  .put(ngClass, tableSql.getIdFieldName());
+              } else if (convName.startsWith(CnvTfsHasId
+                    .class.getSimpleName() + "Integer")) {
+                fctConvertersToFromString.getHasIntegerIdMap()
+                  .put(ngClass, tableSql.getIdFieldName());
+              } else if (convName.startsWith(CnvTfsHasId
+                    .class.getSimpleName() + "String")) {
+                fctConvertersToFromString.getHasStringIdMap()
+                  .put(ngClass, tableSql.getIdFieldName());
+              } else if (convName.startsWith(CnvTfsHasId
+                    .class.getSimpleName() + "Composite")) {
+                fctConvertersToFromString.getHasCompositeIdMap()
+                  .put(ngClass, tableSql.getIdFieldName());
+              }
             }
           }
         }
       }
+      this.beansMap.put(beanName, fctConvertersToFromString);
+      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+        + " has been created.");
     }
-    return srvEntity;
-  }
-
-  //Simple setters to replace services during runtime:
-  /**
-   * <p>Setter for utlReflection.</p>
-   * @param pUtlReflection reference
-   **/
-  public final synchronized void setUtlReflection(
-    final UtlReflection pUtlReflection) {
-    this.utlReflection = pUtlReflection;
+    return fctConvertersToFromString;
   }
 
   /**
-   * <p>Setter for utlProperties.</p>
-   * @param pUtlProperties reference
+   * <p>Getter of FctConvertersToFromString name.</p>
+   * @return service name
    **/
-  public final synchronized void setUtlProperties(
-    final UtlProperties pUtlProperties) {
-    this.utlProperties = pUtlProperties;
+  public final String getFctConvertersToFromStringName() {
+    return "fctConvertersToFromString";
   }
 
   /**
-   * <p>Setter for utlJsp.</p>
-   * @param pUtlJsp reference
-   **/
-  public final synchronized void setUtlJsp(final UtlJsp pUtlJsp) {
-    this.utlJsp = pUtlJsp;
+   * <p>Get FctBnCnvBnFromRs in lazy mode.</p>
+   * @return FctBnCnvBnFromRs - FctBnCnvBnFromRs
+   * @throws Exception - an exception
+   */
+  public final FctBnCnvBnFromRs<RS>
+    lazyGetFctBnCnvBnFromRs() throws Exception {
+    String beanName = getFctBnCnvBnFromRsName();
+    @SuppressWarnings("unchecked")
+    FctBnCnvBnFromRs<RS> fctBnCnvBnFromRs =
+      (FctBnCnvBnFromRs<RS>) this.beansMap.get(beanName);
+    if (fctBnCnvBnFromRs == null) {
+      fctBnCnvBnFromRs = new FctBnCnvBnFromRs<RS>();
+      fctBnCnvBnFromRs.setEntitiesFactoriesFatory(this.factoryBldServices
+        .lazyGetFctBcFctSimpleEntities());
+      fctBnCnvBnFromRs
+        .setFillersFieldsFactory(lazyGetFctFillersObjectFields());
+      fctBnCnvBnFromRs.setFieldsRapiHolder(lazyGetHolderRapiFields());
+      this.beansMap.put(beanName, fctBnCnvBnFromRs);
+      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+        + " has been created.");
+    }
+    return fctBnCnvBnFromRs;
   }
 
   /**
-   * <p>Setter for srvI18n.</p>
-   * @param pSrvI18n reference
+   * <p>Getter of FctBnCnvBnFromRs name.</p>
+   * @return service name
    **/
-  public final synchronized void setSrvI18n(final SrvI18n pSrvI18n) {
-    this.srvI18n = pSrvI18n;
+  public final String getFctBnCnvBnFromRsName() {
+    return "fctBnCnvBnFromRs";
   }
 
   /**
-   * <p>Setter for mngUvdSettings.</p>
-   * @param pMngUvdSettings reference
-   **/
-  public final synchronized void setMngUvdSettings(
-    final MngSettings pMngUvdSettings) {
-    this.mngUvdSettings = pMngUvdSettings;
+   * <p>Get FillerEntitiesFromRs in lazy mode.</p>
+   * @return FillerEntitiesFromRs - FillerEntitiesFromRs
+   * @throws Exception - an exception
+   */
+  public final FillerEntitiesFromRs<RS>
+    lazyGetFillerEntitiesFromRs() throws Exception {
+    String beanName = getFillerEntitiesFromRsName();
+    @SuppressWarnings("unchecked")
+    FillerEntitiesFromRs<RS> fillerEntitiesFromRs =
+      (FillerEntitiesFromRs<RS>) this.beansMap.get(beanName);
+    if (fillerEntitiesFromRs == null) {
+      fillerEntitiesFromRs = new FillerEntitiesFromRs<RS>();
+      fillerEntitiesFromRs.setLogger(lazyGetLogger());
+      fillerEntitiesFromRs
+        .setFillersFieldsFactory(lazyGetFctFillersObjectFields());
+      FctBnCnvBnFromRs<RS> fctBnCnvBnFromRs = lazyGetFctBnCnvBnFromRs();
+      fillerEntitiesFromRs
+        .setConvertersFieldsFatory(fctBnCnvBnFromRs);
+      fctBnCnvBnFromRs.setFillerObjectsFromRs(fillerEntitiesFromRs);
+      fillerEntitiesFromRs
+        .setFieldConverterNamesHolder(lazyGetHldCnvFromRsNames());
+      fillerEntitiesFromRs.setFieldsRapiHolder(lazyGetHolderRapiFields());
+      this.beansMap.put(beanName, fillerEntitiesFromRs);
+      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+        + " has been created.");
+    }
+    return fillerEntitiesFromRs;
   }
 
   /**
-   * <p>Setter for srvWebEntity.</p>
-   * @param pSrvWebEntity reference
+   * <p>Getter of FillerEntitiesFromRs name.</p>
+   * @return service name
    **/
-  public final synchronized void setSrvWebEntity(
-    final SrvWebEntity pSrvWebEntity) {
-    this.srvWebEntity = pSrvWebEntity;
+  public final String getFillerEntitiesFromRsName() {
+    return "fillerEntitiesFromRs";
   }
 
   /**
-   * <p>Setter for srvPage.</p>
-   * @param pSrvPage reference
-   **/
-  public final synchronized void setSrvPage(final SrvPage pSrvPage) {
-    this.srvPage = pSrvPage;
+   * <p>Get HldCnvFromRsNames in lazy mode.</p>
+   * @return HldCnvFromRsNames - HldCnvFromRsNames
+   * @throws Exception - an exception
+   */
+  public final HldCnvFromRsNames
+    lazyGetHldCnvFromRsNames() throws Exception {
+    String beanName = getHldCnvFromRsNamesName();
+    HldCnvFromRsNames hldCnvFromRsNames =
+      (HldCnvFromRsNames) this.beansMap.get(beanName);
+    if (hldCnvFromRsNames == null) {
+      hldCnvFromRsNames = new HldCnvFromRsNames();
+      hldCnvFromRsNames.setFieldsRapiHolder(lazyGetHolderRapiFields());
+      this.beansMap.put(beanName, hldCnvFromRsNames);
+      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+        + " has been created.");
+    }
+    return hldCnvFromRsNames;
   }
 
   /**
-   * <p>Setter for mngSoftware.</p>
-   * @param pMngSoftware reference
+   * <p>Getter of HldCnvFromRsNames name.</p>
+   * @return service name
    **/
-  public final synchronized void setMngSoftware(
-    final MngSoftware pMngSoftware) {
-    this.mngSoftware = pMngSoftware;
+  public final String getHldCnvFromRsNamesName() {
+    return "hldCnvFromRsNames";
   }
 
   /**
-   * <p>Setter for srvOrm.</p>
-   * @param pSrvOrm reference
+   * <p>Getter of FctBcFctSimpleEntities name.</p>
+   * @return service name
    **/
-  public final synchronized void setSrvOrm(final ASrvOrm<RS> pSrvOrm) {
-    this.srvOrm = pSrvOrm;
+  public final String getFctBcFctSimpleEntitiesName() {
+    return "fctBcFctSimpleEntities";
   }
 
   /**
-   * <p>Setter for srvWebMvc.</p>
-   * @param pSrvWebMvc reference
-   **/
-  public final synchronized void setSrvWebMvc(final SrvWebMvc<RS> pSrvWebMvc) {
-    this.srvWebMvc = pSrvWebMvc;
+   * <p>Get HldFieldsSettings in lazy mode.</p>
+   * @return HldFieldsSettings - HldFieldsSettings
+   * @throws Exception - an exception
+   */
+  public final HldFieldsSettings
+    lazyGetHldFieldsCnvTfsNames() throws Exception {
+    String beanName = getHldFieldsCnvTfsNamesName();
+    HldFieldsSettings hldFieldsCnvTfsNames =
+      (HldFieldsSettings) this.beansMap.get(beanName);
+    if (hldFieldsCnvTfsNames == null) {
+      hldFieldsCnvTfsNames =
+        new HldFieldsSettings("fieldFromToStringConverter");
+      hldFieldsCnvTfsNames.setMngSettings(lazyGetMngUvdSettings());
+      this.beansMap.put(beanName, hldFieldsCnvTfsNames);
+      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+        + " has been created.");
+    }
+    return hldFieldsCnvTfsNames;
   }
 
   /**
-   * <p>Setter for hlpInsertUpdate.</p>
-   * @param pHlpInsertUpdate reference
+   * <p>Getter of HldFieldsSettings name.</p>
+   * @return service name
    **/
-  public final synchronized void setHlpInsertUpdate(
-    final HlpInsertUpdate pHlpInsertUpdate) {
-    this.hlpInsertUpdate = pHlpInsertUpdate;
+  public final String getHldFieldsCnvTfsNamesName() {
+    return "hldFieldsCnvTfsNames";
   }
 
   /**
-   * <p>Getter for entitiesMap.</p>
-   * @return Map<String, Class<?>>
-   **/
-  public final synchronized Map<String, Class<?>> getEntitiesMap() {
-    return this.entitiesMap;
+   * <p>Get FillEntityFromReq in lazy mode.</p>
+   * @return FillEntityFromReq - FillEntityFromReq
+   * @throws Exception - an exception
+   */
+  public final FillEntityFromReq
+    lazyGetFillEntityFromReq() throws Exception {
+    String beanName = getFillEntityFromReqName();
+    FillEntityFromReq fillEntityFromReq =
+      (FillEntityFromReq) this.beansMap.get(beanName);
+    if (fillEntityFromReq == null) {
+      fillEntityFromReq = new FillEntityFromReq();
+      fillEntityFromReq.setLogger(lazyGetLogger());
+      fillEntityFromReq
+        .setFillersFieldsFactory(lazyGetFctFillersObjectFields());
+      fillEntityFromReq
+        .setFieldConverterNamesHolder(lazyGetHldFieldsCnvTfsNames());
+      fillEntityFromReq
+        .setConvertersFieldsFatory(lazyGetFctConvertersToFromString());
+      this.beansMap.put(beanName, fillEntityFromReq);
+      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+        + " has been created.");
+    }
+    return fillEntityFromReq;
   }
 
   /**
-   * <p>Getter for beansMap.</p>
-   * @return Map<String, Object>
+   * <p>Getter of Fill Entity From Request service name.</p>
+   * @return service name
    **/
-  public final synchronized Map<String, Object> getBeansMap() {
-    return this.beansMap;
+  public final String getFillEntityFromReqName() {
+    return "IFillEntityFromReq";
+  }
+
+  //Synchronized SGS:
+  /**
+   * <p>Setter for any bean.</p>
+   * @param pBeanName Bean Name
+   * @param pBean Bean
+   **/
+  public final synchronized void setBean(final String pBeanName,
+    final Object pBean) {
+    this.beansMap.put(pBeanName, pBean);
+  }
+
+  /**
+   * <p>Setter for factoryOverBeans.</p>
+   * @param pFactoryOverBeans reference
+   **/
+  public final synchronized void setFactoryOverBeans(
+    final IFactoryAppBeans pFactoryOverBeans) {
+    this.factoryOverBeans = pFactoryOverBeans;
   }
 
   /**
@@ -847,27 +1504,36 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
   }
 
   /**
-   * <p>Setter for factoryOverBeans.</p>
-   * @param pFactoryOverBeans reference
+   * <p>Getter for factoryBldServices.</p>
+   * @return IFactoryBldServices<RS>
    **/
-  public final synchronized void setFactoryOverBeans(
-    final IFactoryAppBeans pFactoryOverBeans) {
-    this.factoryOverBeans = pFactoryOverBeans;
+  public final synchronized IFactoryBldServices<RS> getFactoryBldServices() {
+    return this.factoryBldServices;
   }
+
   /**
-   * <p>Setter for utilXml.</p>
-   * @param pUtilXml reference
+   * <p>Setter for factoryBldServices.</p>
+   * @param pFactoryBldServices reference
    **/
-  public final synchronized void setUtilXml(
-    final UtilXml pUtilXml) {
-    this.utilXml = pUtilXml;
+  public final synchronized void setFactoryBldServices(
+    final IFactoryBldServices<RS> pFactoryBldServices) {
+    this.factoryBldServices = pFactoryBldServices;
   }
-  //Simple getters and setters:
+
+  //Simple getters and setters of startup settings
+  /**
+   * <p>Getter for entitiesMap.</p>
+   * @return Map<String, Class<?>>
+   **/
+  public final Map<String, Class<?>> getEntitiesMap() {
+    return this.entitiesMap;
+  }
+
   /**
    * <p>Getter for minutesOfIdle.</p>
    * @return int
    **/
-  public final synchronized int getMinutesOfIdle() {
+  public final int getMinutesOfIdle() {
     return this.minutesOfIdle;
   }
 
@@ -875,7 +1541,7 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
    * <p>Setter for minutesOfIdle.</p>
    * @param pMinutesOfIdle reference
    **/
-  public final synchronized void setMinutesOfIdle(final int pMinutesOfIdle) {
+  public final void setMinutesOfIdle(final int pMinutesOfIdle) {
     this.minutesOfIdle = pMinutesOfIdle;
   }
 
@@ -883,7 +1549,7 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
    * <p>Getter for lastRequestTime.</p>
    * @return long
    **/
-  public final synchronized long getLastRequestTime() {
+  public final long getLastRequestTime() {
     return this.lastRequestTime;
   }
 
@@ -891,13 +1557,61 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
    * <p>Setter for lastRequestTime.</p>
    * @param pLastRequestTime reference
    **/
-  public final synchronized void setLastRequestTime(
+  public final void setLastRequestTime(
     final long pLastRequestTime) {
     this.lastRequestTime = pLastRequestTime;
   }
 
   /**
-   * <p>Geter for ormSettingsDir.</p>
+   * <p>Getter for uploadDirectory.</p>
+   * @return String
+   **/
+  public final String getUploadDirectory() {
+    return this.uploadDirectory;
+  }
+
+  /**
+   * <p>Setter for uploadDirectory.</p>
+   * @param pUploadDirectory reference
+   **/
+  public final void setUploadDirectory(final String pUploadDirectory) {
+    this.uploadDirectory = pUploadDirectory;
+  }
+
+  /**
+   * <p>Getter for webAppPath.</p>
+   * @return String
+   **/
+  public final String getWebAppPath() {
+    return this.webAppPath;
+  }
+
+  /**
+   * <p>Setter for webAppPath.</p>
+   * @param pWebAppPath reference
+   **/
+  public final void setWebAppPath(final String pWebAppPath) {
+    this.webAppPath = pWebAppPath;
+  }
+
+  /**
+   * <p>Getter for isShowDebugMessages.</p>
+   * @return boolean
+   **/
+  public final boolean getIsShowDebugMessages() {
+    return this.isShowDebugMessages;
+  }
+
+  /**
+   * <p>Setter for isShowDebugMessages.</p>
+   * @param pIsShowDebugMessages reference
+   **/
+  public final void setIsShowDebugMessages(final boolean pIsShowDebugMessages) {
+    this.isShowDebugMessages = pIsShowDebugMessages;
+  }
+
+  /**
+   * <p>Getter for ormSettingsDir.</p>
    * @return String
    **/
   public final String getOrmSettingsDir() {
@@ -906,14 +1620,14 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
 
   /**
    * <p>Setter for ormSettingsDir.</p>
-   * @param pOrmSettingsDir reference/value
+   * @param pOrmSettingsDir reference
    **/
   public final void setOrmSettingsDir(final String pOrmSettingsDir) {
     this.ormSettingsDir = pOrmSettingsDir;
   }
 
   /**
-   * <p>Geter for ormSettingsBaseFile.</p>
+   * <p>Getter for ormSettingsBaseFile.</p>
    * @return String
    **/
   public final String getOrmSettingsBaseFile() {
@@ -922,14 +1636,14 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
 
   /**
    * <p>Setter for ormSettingsBaseFile.</p>
-   * @param pOrmSettingsBaseFile reference/value
+   * @param pOrmSettingsBaseFile reference
    **/
   public final void setOrmSettingsBaseFile(final String pOrmSettingsBaseFile) {
     this.ormSettingsBaseFile = pOrmSettingsBaseFile;
   }
 
   /**
-   * <p>Geter for uvdSettingsDir.</p>
+   * <p>Getter for uvdSettingsDir.</p>
    * @return String
    **/
   public final String getUvdSettingsDir() {
@@ -945,7 +1659,7 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
   }
 
   /**
-   * <p>Geter for uvdSettingsBaseFile.</p>
+   * <p>Getter for uvdSettingsBaseFile.</p>
    * @return String
    **/
   public final String getUvdSettingsBaseFile() {
@@ -958,23 +1672,6 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
    **/
   public final void setUvdSettingsBaseFile(final String pUvdSettingsBaseFile) {
     this.uvdSettingsBaseFile = pUvdSettingsBaseFile;
-  }
-
-  /**
-   * <p>Set is show debug messages.</p>
-   * @param pIsShowDebugMessage is show debug messages?
-   **/
-  public final synchronized void setIsShowDebugMessages(
-    final  boolean pIsShowDebugMessage) {
-    this.isShowDebugMessage = pIsShowDebugMessage;
-  }
-
-  /**
-   * <p>Get is show debug messages.</p>
-   * @return is show debug messages?
-   **/
-  public final synchronized boolean getIsShowDebugMessages() {
-    return this.isShowDebugMessage;
   }
 
   /**
@@ -1026,22 +1723,42 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
   }
 
   /**
-   * <p>Getter for new database ID.
-   * Any database mist has ID, int is suitable type for that cause
-   * its range is enough and it's faster than String.</p>
-   * @return ID for new database
+   * <p>Getter for beansMap.</p>
+   * @return final Map<String, Object>
+   **/
+  public final Map<String, Object> getBeansMap() {
+    return this.beansMap;
+  }
+
+  /**
+   * <p>Getter for newDatabaseId.</p>
+   * @return int
    **/
   public final int getNewDatabaseId() {
     return this.newDatabaseId;
   }
 
   /**
-   * <p>Setter for new database ID.
-   * Any database mist has ID, int is suitable type for that cause
-   * its range is enough and it's faster than String.</p>
-   * @param pNewDatabaseId ID for new database
+   * <p>Setter for newDatabaseId.</p>
+   * @param pNewDatabaseId reference
    **/
   public final void setNewDatabaseId(final int pNewDatabaseId) {
     this.newDatabaseId = pNewDatabaseId;
+  }
+
+  /**
+   * <p>Getter for isReconfiguring.</p>
+   * @return boolean
+   **/
+  public final boolean getIsReconfiguring() {
+    return this.isReconfiguring;
+  }
+
+  /**
+   * <p>Setter for isReconfiguring.</p>
+   * @param pIsReconfiguring reference
+   **/
+  public final void setIsReconfiguring(final boolean pIsReconfiguring) {
+    this.isReconfiguring = pIsReconfiguring;
   }
 }

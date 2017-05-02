@@ -32,56 +32,6 @@ import java.sql.ResultSet;
 public class FactoryAppBeansH2 extends AFactoryAppBeansJdbc {
 
   /**
-   * <p>Service that  release AppFactory beans.</p>
-   */
-  private PrepareDbAfterGetCopy prepareDbAfterGetCopy;
-
-  /**
-   * <p>Data Source.</p>
-   */
-  private HikariDataSource dataSource;
-
-  /**
-   * <p>Release beans (memory). This is "memory friendly" factory</p>
-   * @throws Exception - an exception
-   */
-  public final synchronized void releaseBeans() throws Exception {
-    if (getFactoryOverBeans() != null) {
-      try {
-        getFactoryOverBeans().releaseBeans();
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    }
-    if (this.dataSource != null) {
-      try {
-        this.dataSource.close();
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-      this.dataSource = null;
-    }
-    this.prepareDbAfterGetCopy = null;
-    setLogger(null);
-    setSrvRecordRetriever(null);
-    setSrvDatabase(null);
-    setUtlReflection(null);
-    setUtlProperties(null);
-    setUtlJsp(null);
-    setSrvI18n(null);
-    setMngUvdSettings(null);
-    setSrvWebEntity(null);
-    setSrvPage(null);
-    setMngSoftware(null);
-    setSrvOrm(null);
-    setSrvWebMvc(null);
-    setHlpInsertUpdate(null);
-    setUtilXml(null);
-    getEntitiesMap().clear();
-    getBeansMap().clear();
-  }
-
-  /**
    * <p>Get other RDBMS specific bean in lazy mode
    * (if bean is null then initialize it).</p>
    * @param pBeanName - bean name
@@ -111,18 +61,22 @@ public class FactoryAppBeansH2 extends AFactoryAppBeansJdbc {
    */
   @Override
   public final synchronized DataSource lazyGetDataSource() throws Exception {
-    if (this.dataSource == null) {
+    String beanName = getDataSourceName();
+    HikariDataSource dataSource =
+      (HikariDataSource) getBeansMap().get(beanName);
+    if (dataSource == null) {
       Properties props = new Properties();
       props.setProperty("dataSourceClassName", "org.h2.jdbcx.JdbcDataSource");
       props.setProperty("dataSource.user", getDatabaseUser());
       props.setProperty("dataSource.password", getDatabasePassword());
       props.setProperty("dataSource.Url", getDatabaseName());
       HikariConfig config = new HikariConfig(props);
-      this.dataSource = new HikariDataSource(config);
-      lazyGetLogger().info(FactoryAppBeansH2.class,
-        "HikariDataSource has been created.");
+      dataSource = new HikariDataSource(config);
+      getBeansMap().put(beanName, dataSource);
+      lazyGetLogger().info(FactoryAppBeansH2.class, beanName
+        + " has been created.");
     }
-    return this.dataSource;
+    return dataSource;
   }
 
   /**
@@ -134,23 +88,17 @@ public class FactoryAppBeansH2 extends AFactoryAppBeansJdbc {
   @Override
   public final synchronized PrepareDbAfterGetCopy
     lazyGetPrepareDbAfterFullImport() throws Exception {
-    if (this.prepareDbAfterGetCopy == null) {
-      this.prepareDbAfterGetCopy = new PrepareDbAfterGetCopy();
-      this.prepareDbAfterGetCopy.setLogger(lazyGetLogger());
-      this.prepareDbAfterGetCopy.setFactoryAppBeans(this);
-      lazyGetLogger().info(FactoryAppBeansH2.class,
-        "PrepareDbAfterGetCopy has been created.");
+    String beanName = getPrepareDbAfterFullImportName();
+    PrepareDbAfterGetCopy prepareDbAfterGetCopy =
+      (PrepareDbAfterGetCopy) getBeansMap().get(beanName);
+    if (prepareDbAfterGetCopy == null) {
+      prepareDbAfterGetCopy = new PrepareDbAfterGetCopy();
+      prepareDbAfterGetCopy.setLogger(lazyGetLogger());
+      prepareDbAfterGetCopy.setFactoryAppBeans(this);
+      getBeansMap().put(beanName, prepareDbAfterGetCopy);
+      lazyGetLogger().info(FactoryAppBeansH2.class, beanName
+        + " has been created.");
     }
-    return this.prepareDbAfterGetCopy;
-  }
-
-  //Simple setters to replace services during runtime:
-  /**
-   * <p>Setter for dataSource.</p>
-   * @param pDataSource reference
-   **/
-  public final synchronized void setDataSource(
-    final HikariDataSource pDataSource) {
-    this.dataSource = pDataSource;
+    return prepareDbAfterGetCopy;
   }
 }

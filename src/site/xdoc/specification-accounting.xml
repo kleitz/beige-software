@@ -305,6 +305,14 @@
           <li>nameFillWageLinesMethod - Name of method(service in factory app-beans) that fill wage lines, not null.</li>
           <li>description - String e.g. "method#1".</li>
           <li>cogsMethod - CogsMethod, COGS method, e.g. FIFO Perpetual</li>
+          <li>regEmail - String, if exist</li>
+          <li>regAddress1 - String, if exist</li>
+          <li>regAddress2 - String, if exist</li>
+          <li>regZip - String, if exist</li>
+          <li>regCountry - String, if exist</li>
+          <li>regState - String, if exist</li>
+          <li>regCity - String, if exist</li>
+          <li>regPhone - String, if exist</li>
           <li>accEntriesSources - List&gt;AccEntriesSourcesLine&lt; accounting entries sources</li>
           <li>cogsItemSources - List&gt;CogsItemSourcesLine&lt; sources for InvItem to be draw by sales, loss (they have theRest>0
           and makes accounting COGS entries)</li>
@@ -383,6 +391,14 @@
         <ul>
           <li>Subaccount fields implements IHasTypeCode</li>
           <li>itsCategory - DebtorCreditorCategory, not null</li>
+          <li>regEmail - String, if exist</li>
+          <li>regAddress1 - String, if exist</li>
+          <li>regAddress2 - String, if exist</li>
+          <li>regZip - String, if exist</li>
+          <li>regCountry - String, if exist</li>
+          <li>regState - String, if exist</li>
+          <li>regCity - String, if exist</li>
+          <li>regPhone - String, if exist</li>
         </ul>
         constTypeCode() = 2004<br></br>
       </p>

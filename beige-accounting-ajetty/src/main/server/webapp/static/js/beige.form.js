@@ -124,8 +124,8 @@ function closeDlg(nameDlg) {
 };
 
 function closeDlgCareful(idDomBase) {
-  var frm=document.getElementById(idDomBase + "Frm");
-  if (formHasBeenChanged(frm)) {
+  var pFrm=document.getElementById(idDomBase + "Frm");
+  if (formHasBeenChanged(pFrm)) {
     var funcYes = function() {
       document.getElementById(idDomBase + "Dlg").close();
       document.getElementById('dlgConfirm').close();
@@ -141,22 +141,43 @@ function clearChangesAndCloseDialog(idDomBase) {
   removeFormChanges(document.getElementById(idDomBase + "Frm"));
 };
 
-function checkSubmitForm(idFrm, isMustHasChanges) {
-  var frm = document.getElementById(idFrm);
-  if (!frm.checkValidity()){
-    document.getElementById(idFrm + 'FakeSubmit').click();
+function submitFormByAjaxConfirm(pIdFrm, pIsMustHasChanges, pAddParams) {
+  var funcYes = function() {
+    document.getElementById('dlgConfirm').close();
+    submitFormByAjax(pIdFrm, pIsMustHasChanges, pAddParams);
+  };
+  showConfirm(MSGS['are_you_sure'], funcYes);
+};
+
+function submitFormByAjax(pIdFrm, pIsMustHasChanges, pAddParams) {
+  var frm = document.getElementById(pIdFrm);
+  if (checkForm(frm, pIsMustHasChanges)) {
+    sendFormByAjax(frm, pAddParams);
+  }
+};
+
+function submitFormForNewWindow(pIdFrm, pIsMustHasChanges) {
+  var frm = document.getElementById(pIdFrm);
+  if (checkForm(frm, pIsMustHasChanges)) {
+    frm.submit();
+    removeFormChanges(frm);
+  }
+};
+
+function checkForm(pFrm, pIsMustHasChanges) {
+  if (!pFrm.checkValidity()){
+    document.getElementById(pFrm.id + 'FakeSubmit').click();
     return false;
   }
-  if (isMustHasChanges == null || 
-    (isMustHasChanges != null && isMustHasChanges)) {
-    if (!formHasBeenChanged(frm)){
+  if (pIsMustHasChanges == null || pIsMustHasChanges) {
+    if (!formHasBeenChanged(pFrm)){
       showWarning(MSGS["nothingToSend"]);
       return false;
     }
   }
   //validation of owned entity
   reqiredChildSelected = true;
-  inputs = frm.querySelectorAll('input[type="hidden"][required]');
+  inputs = pFrm.querySelectorAll('input[type="hidden"][required]');
   for (var i=0; i < inputs.length; i++)
     if(inputs[i].value==""){
       reqiredChildSelected=false;
@@ -166,233 +187,65 @@ function checkSubmitForm(idFrm, isMustHasChanges) {
     showWarning(MSGS['select_child']);
     return false;
   }
-  removeFormChanges(frm);
-  frm.submit();
+  return true;
 };
 
-function submitFormByAjaxConfirm(idFrm, isMustHasChanges, addParams) {
-  var funcYes = function() {
-    document.getElementById('dlgConfirm').close();
-    submitFormByAjax(idFrm, isMustHasChanges, addParams);
-  };
-  showConfirm(MSGS['are_you_sure'], funcYes);
+function formHasBeenChanged(pFrm) {
+  var childrenChanged = pFrm.querySelectorAll(".changed");
+  if (childrenChanged.length > 0) {
+    return true;
+  }
+  return false;
 };
 
-function submitFormByAjax(idFrm, isMustHasChanges, addParams) {
-  var frm = document.getElementById(idFrm);
-  if (!frm.checkValidity()){
-    document.getElementById(idFrm + 'FakeSubmit').click();
-    return false;
-  }
-  if (isMustHasChanges == null || 
-    (isMustHasChanges != null && isMustHasChanges)) {
-    if (!formHasBeenChanged(frm)){
-      showWarning(MSGS["nothingToSend"]);
-      return;
-    }
-  }
-  //validation of owned entity
-  reqiredChildSelected = true;
-  inputs = frm.querySelectorAll('input[type="hidden"][required]');
-  for (var i=0; i < inputs.length; i++)
-    if(inputs[i].value==""){
-      reqiredChildSelected=false;
-      break;
-    }
-  if(!reqiredChildSelected) {
-    showWarning(MSGS['select_child']);
-    return false;
-  }
-  var params = retrieveParams(frm);
-  if(addParams != null) {
-    params += addParams;
-  }
-  sendFormAjax(frm, params);
-};
-
-function submitFormForNewWindow(idFrm, isMustHasChanges, addParams) {
-  var frm = document.getElementById(idFrm);
-  if (!frm.checkValidity()){
-    document.getElementById(idFrm + 'FakeSubmit').click();
-    return false;
-  }
-  if (isMustHasChanges == null || 
-    (isMustHasChanges != null && isMustHasChanges)) {
-    if (!formHasBeenChanged(frm)){
-      showWarning(MSGS["nothingToSend"]);
-      return;
-    }
-  }
-  //validation of owned entity
-  reqiredChildSelected = true;
-  inputs = frm.querySelectorAll('input[type="hidden"][required]');
-  for (var i=0; i < inputs.length; i++)
-    if(inputs[i].value==""){
-      reqiredChildSelected=false;
-      break;
-    }
-  if(!reqiredChildSelected) {
-    showWarning(MSGS['select_child']);
-    return false;
-  }
-  var params = retrieveParams(frm);
-  if(addParams != null) {
-    params += addParams;
-  }
-  window.open(frm.action + '?' + params, '_blank');
-  removeFormChanges(frm);
-};
-
-function retrieveParams(frm) {
-  var params="";
-  var inputs = frm.querySelectorAll('input[type="radio"]:checked:not([disabled])');
-  for (var i = 0; i < inputs.length; i++) {
-    if(params.length > 0) {
-      params += "&";
-    }
-    params += inputs[i].name + "=" + inputs[i].value;
-  }
-  inputs = frm.querySelectorAll('select:not([disabled])');
-  for (var i=0; i < inputs.length; i++) {
-    if (inputs[i].name != "") {
-      if(params.length > 0) {
-        params += "&";
-      }
-      params += inputs[i].name + "=" + inputs[i].options[inputs[i].selectedIndex].value;
-    }
-  }
-  inputs = frm.querySelectorAll('input[type="checkbox"]:not([disabled])');
-  for (var i=0; i < inputs.length; i++) {
-    if (inputs[i].name != "") {
-      if(params.length > 0) {
-        params += "&";
-      }
-      params += inputs[i].name + "=" + (inputs[i].checked ? "on" : "off");
-    }
-  }
-  inputs = frm.querySelectorAll('input[type="text"]:not([disabled])');
-  for (var i=0; i < inputs.length; i++) {
-    if (inputs[i].name != "") {
-      if(params.length > 0) {
-        params += "&";
-      }
-      params += inputs[i].name + "=" + escape(inputs[i].value);
-    }
-  }
-  inputs = frm.querySelectorAll('textarea:not([disabled])');
-  for (var i=0; i < inputs.length; i++) {
-    if (inputs[i].name != "") {
-      if(params.length > 0) {
-        params += "&";
-      }
-      params += inputs[i].name + "=" + escape(inputs[i].value);
-    }
-  }
-  inputs = frm.querySelectorAll('input[type="hidden"]:not([disabled])');
-  for (var i=0; i < inputs.length; i++) {
-    if (inputs[i].name != "") {
-      if(params.length > 0) {
-        params += "&";
-      }
-      params += inputs[i].name + "=" + escape(inputs[i].value);
-    }
-  }
-  inputs = frm.querySelectorAll('input[type="textarea"]:not([disabled])');
-  for (var i=0; i < inputs.length; i++) {
-    if (inputs[i].name != "") {
-      if(params.length > 0) {
-        params += "&";
-      }
-      params += inputs[i].name + "=" + escape(inputs[i].value);
-    }
-  }
-  inputs = frm.querySelectorAll('input[type="datetime-local"]:not([disabled])');
-  var timeOffset = (new Date()).getTimezoneOffset() * 60000;
-  for (var i=0; i < inputs.length; i++) {
-    if (inputs[i].name != "" && inputs[i].value != null && inputs[i].value != "") {
-      if(params.length > 0) {
-        params += "&";
-      }
-      params += inputs[i].name + "=" + (inputs[i].valueAsNumber + timeOffset);
-    }
-  }
-  inputs = frm.querySelectorAll('input[type="date"]:not([disabled])');
-  for (var i=0; i < inputs.length; i++) {
-    if (inputs[i].name != "") {
-      if(params.length > 0) {
-        params += "&";
-      }
-      params += inputs[i].name + "=" + (inputs[i].valueAsNumber + timeOffset);
-    }
-  }
-  inputs = frm.querySelectorAll('input[type="number"]:not([disabled])');
-  for (var i=0; i < inputs.length; i++) {
-    if (inputs[i].name != "") {
-      if(params.length > 0) {
-        params += "&";
-      }
-      params += inputs[i].name + "=" + inputs[i].value;
-    }
-  }
-  return params;
-};
-
-function removeFormChanges(frm){
-  inputs = frm.querySelectorAll(".changed");
+function removeFormChanges(pFrm) {
+  inputs = pFrm.querySelectorAll(".changed");
   for (var i=0; i < inputs.length; i++) {
     inputs[i].classList.remove('changed');
   }
-  var inputs = frm.querySelectorAll('input[type="radio"]:not([disabled])');
+  var inputs = pFrm.querySelectorAll('input[type="radio"]:not([disabled])');
   for (var i=0; i < inputs.length; i++){
     inputs[i].defaultChecked = inputs[i].checked;     
   }
-  inputs = frm.querySelectorAll('select:not([disabled])');
+  inputs = pFrm.querySelectorAll('select:not([disabled])');
   for (var i=0; i < inputs.length; i++) {
     for (var j=0; j < inputs[i].options.length; j++) {
       inputs[i].options[j].defaultSelected = false;
     }
     inputs[i].options[inputs[i].selectedIndex].defaultSelected = true;
   }
-  inputs = frm.querySelectorAll('input[type="checkbox"]:not([disabled])');
+  inputs = pFrm.querySelectorAll('input[type="checkbox"]:not([disabled])');
   for (var i=0; i < inputs.length; i++) {
     inputs[i].defaultChecked = inputs[i].checked;
   }
-  inputs = frm.querySelectorAll('input[type="text"]');
+  inputs = pFrm.querySelectorAll('input[type="text"]');
   for (var i=0; i < inputs.length; i++) {
     inputs[i].defaultValue=inputs[i].value;
   }
-  inputs = frm.querySelectorAll('textarea');
+  inputs = pFrm.querySelectorAll('textarea');
   for (var i=0; i < inputs.length; i++) {
     inputs[i].defaultValue=inputs[i].value;
   }
-  inputs = frm.querySelectorAll('input[type="hidden"]:not([disabled])');
+  inputs = pFrm.querySelectorAll('input[type="hidden"]:not([disabled])');
   for (var i=0; i < inputs.length; i++) {
     inputs[i].defaultValue=inputs[i].value;
   }
-  inputs = frm.querySelectorAll('input[type="textarea"]:not([disabled])');
+  inputs = pFrm.querySelectorAll('input[type="textarea"]:not([disabled])');
   for (var i=0; i < inputs.length; i++) {
     inputs[i].defaultValue=inputs[i].value;
   }
-  inputs = frm.querySelectorAll('input[type="datetime-local"]:not([disabled])');
+  inputs = pFrm.querySelectorAll('input[type="datetime-local"]:not([disabled])');
   for (var i=0; i < inputs.length; i++) {
     inputs[i].defaultValue=inputs[i].value;
   }
-  inputs = frm.querySelectorAll('input[type="date"]:not([disabled])');
+  inputs = pFrm.querySelectorAll('input[type="date"]:not([disabled])');
   for (var i=0; i < inputs.length; i++) {
     inputs[i].defaultValue=inputs[i].value;
   }
-  inputs = frm.querySelectorAll('input[type="number"]:not([disabled])');
+  inputs = pFrm.querySelectorAll('input[type="number"]:not([disabled])');
   for (var i=0; i < inputs.length; i++) {
     inputs[i].defaultValue=inputs[i].value;
   }
-};
-
-function formHasBeenChanged(frm) {
-  var childrenChanged = frm.querySelectorAll(".changed");
-  if (childrenChanged.length > 0) {
-    return true;
-  }
-  return false;
 };
 
 function selectEntity(entityId, entityAppearance, idDomBasePicker) {
@@ -457,7 +310,7 @@ function openEntityPicker(pickedEntity, pickingEntity, pickingField, addParam){
     pikerRenderer = "pickerWholeJson";
   }
   if (pikerRenderer != null) {
-    var paramsStr = "entityList/?page=1&nameRenderer=" + pikerRenderer + "&nameEntity="
+    var paramsStr = "service/?nmsAct=list&page=1&nmRnd=" + pikerRenderer + "&nmEnt="
     + pickedEntity;
     cnvState["Who Picking"][pickerPlace + pickedEntity + "addParam"] = addParam;
     if (addParam != null) {

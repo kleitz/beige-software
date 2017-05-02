@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Beigesoft ™
+  Licensed under the Apache License, Version 2.0
+ 
+  You may obtain a copy of the License at
+ 
+  http://www.apache.org/licenses/LICENSE-2.0
+ -->
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+<comment>Explicit final definition.</comment>
+<entry key="itsIdorderShowForm">-99</entry>
+<entry key="itsIdorderPrintForm">-99</entry>
+<entry key="itsIdorderPrintfullForm">-99</entry>
+<entry key="itsIdorderPrintList">-99</entry>
+<entry key="itsIdorderPrintfullList">-99</entry>
+<entry key="itsIdorderShowList">-99</entry>
+<entry key="itsIdorderShowPicker">-99</entry>
+<entry key="goodsorderShowForm">1</entry>
+<entry key="goodsorderShowList">1</entry>
+<entry key="specificsorderShowForm">2</entry>
+<entry key="specificsorderShowList">2</entry>
+<entry key="numericValue1orderShowForm">3</entry>
+<entry key="numericValue1orderShowList">3</entry>
+<entry key="numericValue2orderShowForm">4</entry>
+<entry key="numericValue2orderShowList">4</entry>
+<entry key="longValue1orderShowForm">5</entry>
+<entry key="longValue1orderShowList">5</entry>
+<entry key="longValue2orderShowForm">6</entry>
+<entry key="longValue2orderShowList">6</entry>
+<entry key="stringValue1orderShowForm">7</entry>
+<entry key="stringValue1orderShowList">7</entry>
+<entry key="stringValue2orderShowForm">8</entry>
+<entry key="stringValue2orderShowList">8</entry>
+<entry key="specificswdgEditForm">inputEntityHasNameReadOnly</entry>
+<entry key="specificswdgDeleteForm">inputEntityHasNameReadOnly</entry>
+<entry key="goodswdgNewForm">inputGoods</entry>
+<entry key="goodswdgEditForm">inputEntityHasNameReadOnly</entry>
+<entry key="goodswdgDeleteForm">inputEntityHasNameReadOnly</entry>
+<entry key="numericValue1wdgInputWrapper">inpWrGoodsSpecificVals</entry>
+<entry key="numericValue1wdgEditForm">fake</entry>
+<entry key="numericValue1wdgNewForm">fake</entry>
+<entry key="numericValue2wdgNewForm">null</entry>
+<entry key="numericValue2wdgEditForm">null</entry>
+<entry key="longValue1wdgNewForm">null</entry>
+<entry key="longValue1wdgEditForm">null</entry>
+<entry key="longValue2wdgNewForm">null</entry>
+<entry key="longValue2wdgEditForm">null</entry>
+<entry key="stringValue1wdgEditForm">null</entry>
+<entry key="stringValue1wdgNewForm"></entry>
+<entry key="stringValue2wdgEditForm">null</entry>
+<entry key="stringValue1wdgDeleteForm">inputReadOnly</entry>
+<entry key="stringValue2wdgDeleteForm">inputReadOnly</entry>
+<entry key="stringValue2wdgNewForm">null</entry>
+</properties>

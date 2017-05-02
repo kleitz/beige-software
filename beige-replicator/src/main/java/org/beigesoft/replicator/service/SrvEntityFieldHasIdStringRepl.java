@@ -37,16 +37,16 @@ public class SrvEntityFieldHasIdStringRepl implements ISrvEntityFieldFiller {
    * Fill given field of given entity according value represented as
    * string.
    * </p>
+   * @param pAddParam additional params
    * @param pEntity Entity.
    * @param pFieldName Field Name
    * @param pFieldStrValue Field value
-   * @param pAddParam additional params
    * @throws Exception - an exception
    **/
   @Override
-  public final void fill(final Object pEntity, final String pFieldName,
-    final String pFieldStrValue,
-      final Map<String, Object> pAddParam) throws Exception {
+  public final void fill(final Map<String, Object> pAddParam,
+    final Object pEntity, final String pFieldName,
+      final String pFieldStrValue) throws Exception {
     Field rField = getUtlReflection().retrieveField(pEntity.getClass(),
       pFieldName);
     rField.setAccessible(true);

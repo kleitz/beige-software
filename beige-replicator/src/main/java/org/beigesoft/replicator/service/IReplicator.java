@@ -26,6 +26,5 @@ public interface IReplicator {
    * @param pAddParam additional params
    * @throws Exception - an exception
    **/
-  void replicate(
-    Map<String, Object> pAddParam) throws Exception;
+  void replicate(Map<String, Object> pAddParam) throws Exception;
 }

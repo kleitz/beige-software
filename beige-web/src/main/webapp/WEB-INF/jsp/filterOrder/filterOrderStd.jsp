@@ -3,16 +3,25 @@
 <dialog id="${prefixFilterOrderForm}FltOrdDlg" class="dlg" oncancel="return false;">
   <div class="form-std">
     <div class="dialog-title">
-      <c:set var="nameEnts" value="${param.nameEntity}s"/>
+      <c:set var="nameEnts" value="${param.nmEnt}s"/>
       ${srvI18n.getMsg(nameEnts)} ${srvI18n.getMsg("filterOrder")}
       <button onclick="closeDlgCareful('${prefixFilterOrderForm}FltOrd')" class="btn-close">x</button>
     </div>
-    <form class="filter" id="${prefixFilterOrderForm}FltOrdFrm" action="entityList/" method="POST">
-      <input type="hidden" name="nameRenderer" value="${nameRendererList}">
-      <input type="hidden" name="nameEntity" value="${param.nameEntity}">
+    <form class="filter" id="${prefixFilterOrderForm}FltOrdFrm" action="service/" method="POST">
+      <input type="hidden" name="nmRnd" value="${nmRndList}">
+      <input type="hidden" name="nmHnd" value="${param.nmHnd}">
+      <input type="hidden" name="nmsAct" value="list">
+      <input type="hidden" name="nmEnt" value="${classEntity.simpleName}">
       <input type="hidden" name="page" value="${param.page}">
       <input type="hidden" name="javascript" value="clearChangesAndCloseDialog('${prefixFilterOrderForm}FltOrd')">
-      <input type="hidden" name="mobile" value="${param.mobile}">
+      <c:forEach items="${param}" var="par">
+        <c:if test="${par.key.startsWith('fly')}">
+          <input type="hidden" name="${par.key}" value="${par.value}">
+        </c:if>
+      </c:forEach>
+      <c:if test="${not empty param.mobile}">
+        <input type="hidden" name="mobile" value="${param.mobile}">
+      </c:if>
       <c:forEach var="entry" items="${fieldsForList}" varStatus="vs">
         <c:if test="${not empty entry.value.get('wdgFilter')}">
           <c:set var="fieldName" value="${entry.key}" scope="request"/>

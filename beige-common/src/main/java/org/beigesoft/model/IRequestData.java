@@ -11,15 +11,16 @@ package org.beigesoft.model;
  */
 
 import java.util.Map;
+import org.beigesoft.holder.IAttributes;
 
 /**
  * <p>Abstraction of request data (get/set param, attribute)
- * that usually wrap HttpServletRequest(parameters/attributes).
+ * that usually wrap HttpServletRequest/HttpServletRresponse.
  * </p>
  *
  * @author Yury Demidenko
  */
-public interface IRequestData {
+public interface IRequestData extends IAttributes {
 
   /**
    * <p>Getter for parameter.</p>
@@ -36,16 +37,20 @@ public interface IRequestData {
   Map<String, String[]> getParameterMap();
 
   /**
-   * <p>Getter for attribute.</p>
-   * @param pAttrName Attribute name
-   * @return Attribute
+   * <p>Getter of user name.</p>
+   * @return User name if he/she logged
    **/
-  Object getAttribute(String pAttrName);
+  String getUserName();
 
   /**
-   * <p>Setter for attribute.</p>
-   * @param pAttrName Attribute name
-   * @param pAttribute reference
+   * <p>Getter of cookies.</p>
+   * @return cookies
    **/
-  void setAttribute(String pAttrName, Object pAttribute);
+  ICookie[] getCookies();
+
+  /**
+   * <p>Add cookie.</p>
+   * @param pCookie Cookie
+   **/
+  void addCookie(ICookie pCookie);
 }

@@ -11,4 +11,10 @@
 <comment>Correspondence of Java types to services that explain about property. ORDER is essential, the LAST value will be used.</comment>
 <entry key="org.beigesoft.model.IHasId">filterOrderStd</entry>
 <entry key="org.beigesoft.test.persistable.GoodVersionTime">null</entry>
+<entry key="org.beigesoft.persistable.UserJetty">null</entry>
+<entry key="org.beigesoft.persistable.RoleJetty">null</entry>
+<entry key="org.beigesoft.persistable.UserTomcat">null</entry>
+<entry key="org.beigesoft.persistable.UserRoleTomcat">null</entry>
+<entry key="org.beigesoft.test.persistable.UserRoleTomcatPriority">null</entry>
+<entry key="org.beigesoft.persistable.UserRoleJetty">null</entry>
 </properties>

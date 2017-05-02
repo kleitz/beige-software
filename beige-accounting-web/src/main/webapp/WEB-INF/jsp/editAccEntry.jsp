@@ -3,16 +3,20 @@
 <dialog id="${namePlaceForm}EditDlg" class="dlg dlg-sub" oncancel="return false;">
   <div class="form-std">
     <div class="dialog-title">
-      ${srvI18n.getMsg("Edit")} ${srvI18n.getMsg(param.nameEntity)}
+      ${srvI18n.getMsg("Edit")} ${srvI18n.getMsg(param.nmEnt)}
       <button onclick="closeDlgCareful('${namePlaceForm}Edit')" class="btn-close">x</button>
     </div>
-    <form id="${namePlaceForm}EditFrm" action="entity/" method="POST">
-      <input type="hidden" name="nameAction" value="save">
-      <input type="hidden" name="nameEntity" value="${param.nameEntity}">
+    <form id="${namePlaceForm}EditFrm" action="service/" method="POST" enctype="multipart/form-data">
+      <input type="hidden" name="nmsAct" value="entitySave,list">
+      <input type="hidden" name="nmHnd" value="${param.nmHnd}">
+      <input type="hidden" name="nmEnt" value="${param.nmEnt}">
+      <input type="hidden" name="nmRnd" value="listAccEntriesAfterEditJson">
+      <input type="hidden" name="nmRndList" value="${param.nmRndList}">
+      <input type="hidden" name="msgSuccess" value="edit_ok">
       <input type="hidden" name="page" value="${param.page}">
-      <input type="hidden" name="mobile" value="${param.mobile}">
-      <input type="hidden" name="nameRenderer" value="listAccEntriesAfterEditJson">
-      <input type="hidden" name="nameSrvEntity" value="srvAccEntryEditDescr">
+      <c:if test="${not empty param.mobile}">
+        <input type="hidden" name="mobile" value="${param.mobile}">
+      </c:if>
       <c:forEach items="${param}" var="par">
         <c:if test="${par.key.startsWith('fltordM')}">
           <input type="hidden" name="${par.key}" value="${par.value}">

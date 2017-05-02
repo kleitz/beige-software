@@ -18,5 +18,4 @@
 <entry key="itsDateTime">inputDateTimeReadOnly</entry>
 <entry key="itsPassword">inputPassword</entry>
 <entry key="description">inputText</entry>
-<entry key="itsOwner">inputEntityHasIdHidden</entry>
 </properties>

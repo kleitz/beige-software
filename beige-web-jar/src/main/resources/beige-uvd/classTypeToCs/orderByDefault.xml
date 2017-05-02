@@ -12,4 +12,7 @@
         Use exactly case sensitive fields names.</comment>
 <entry key="org.beigesoft.model.IHasId">itsId</entry>
 <entry key="org.beigesoft.model.IHasName">itsName</entry>
+<entry key="org.beigesoft.persistable.UserTomcat">itsUser</entry>
+<entry key="org.beigesoft.persistable.UserRoleTomcat">itsUser</entry>
+<entry key="org.beigesoft.persistable.UserRoleJetty">itsUser</entry>
 </properties>

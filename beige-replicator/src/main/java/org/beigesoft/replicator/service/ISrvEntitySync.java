@@ -27,11 +27,11 @@ public interface ISrvEntitySync {
    * Usually just return isNew. For APersistableBase it must fill
    * properly {itsId, idBirth and idDatabaseBirth}.
    * </p>
-   * @param pEntity object
    * @param pAddParam additional params
+   * @param pEntity object
    * @return isNew if entity exist in database (need update)
    * @throws Exception - an exception
    **/
-  boolean sync(Object pEntity,
-    Map<String, Object> pAddParam) throws Exception;
+  boolean sync(Map<String, Object> pAddParam,
+    Object pEntity) throws Exception;
 }

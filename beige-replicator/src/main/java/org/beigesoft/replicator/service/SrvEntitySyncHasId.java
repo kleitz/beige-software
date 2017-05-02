@@ -34,15 +34,15 @@ public class SrvEntitySyncHasId<RS> implements ISrvEntitySync {
    * Synchronize entity (that just read) with entity in database.
    * It just check if it's new.
    * </p>
-   * @param pEntity object
    * @param pAddParam additional params
+   * @param pEntity object
    * @return isNew if entity exist in database (need update)
    * @throws Exception - an exception
    **/
   @Override
-  public final boolean sync(final Object pEntity,
-    final Map<String, Object> pAddParam) throws Exception {
-    Object entityPbDb = getSrvOrm().retrieveEntity(pEntity);
+  public final boolean sync(final Map<String, Object> pAddParam,
+    final Object pEntity) throws Exception {
+    Object entityPbDb = getSrvOrm().retrieveEntity(pAddParam, pEntity);
     return entityPbDb == null;
   }
 

@@ -10,6 +10,8 @@ package org.beigesoft.factory;
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
+import java.util.Map;
+
 /**
  * <pre>
  * Simple factory that create a request(or) scoped bean.
@@ -22,7 +24,9 @@ public interface IFactorySimple<M> {
 
   /**
    * <p>Create a bean.</p>
+   * @param pAddParam additional param
    * @return M request(or) scoped bean
+   * @throws Exception - an exception
    */
-  M create();
+  M create(Map<String, Object> pAddParam) throws Exception;
 }

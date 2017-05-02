@@ -20,8 +20,12 @@ import java.io.InputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormat;
+import java.lang.reflect.Method;
 
 import org.beigesoft.exception.ExceptionWithCode;
+import org.beigesoft.factory.IFactoryAppBeansByClass;
+import org.beigesoft.factory.IFactorySimple;
+import org.beigesoft.holder.IHolderForClassByName;
 import org.beigesoft.service.ISrvI18n;
 import org.beigesoft.accounting.persistable.base.ADrawItemSourcesLine;
 import org.beigesoft.accounting.persistable.base.ADrawItemEntry;
@@ -30,7 +34,7 @@ import org.beigesoft.accounting.persistable.IMakingWarehouseEntry;
 import org.beigesoft.accounting.persistable.PurchaseInvoice;
 import org.beigesoft.accounting.persistable.IDrawItemSource;
 import org.beigesoft.accounting.persistable.IDocWarehouse;
-import org.beigesoft.orm.service.ISrvOrm;
+import org.beigesoft.orm.service.ASrvOrm;
 import org.beigesoft.orm.service.ISrvDatabase;
 import org.beigesoft.orm.model.IRecordSet;
 
@@ -58,7 +62,7 @@ public abstract class ASrvDrawItemEntry<T extends ADrawItemEntry, RS>
   /**
    * <p>ORM service.</p>
    **/
-  private ISrvOrm<RS> srvOrm;
+  private ASrvOrm<RS> srvOrm;
 
   /**
    * <p>Database service.</p>
@@ -82,31 +86,14 @@ public abstract class ASrvDrawItemEntry<T extends ADrawItemEntry, RS>
   private final Map<String, String> queries = new HashMap<String, String>();
 
   /**
-   * <p>minimum constructor.</p>
+   * <p>Fields getters RAPI holder.</p>
    **/
-  public ASrvDrawItemEntry() {
-  }
+  private IHolderForClassByName<Method> settersRapiHolder;
 
   /**
-   * <p>Useful constructor.</p>
-   * @param pSrvOrm ORM service
-   * @param pSrvDatabase Database service
-   * @param pSrvTypeCode service for code - java type map of material holders
-   * @param pSrvAccSettings AccSettings service
-   * @param pSrvI18n I18N service
-   * @param pDateFormatter for description
+   * <p>Entitie's factories factory.</p>
    **/
-  public ASrvDrawItemEntry(final ISrvOrm<RS> pSrvOrm,
-      final ISrvDatabase<RS> pSrvDatabase, final ISrvTypeCode pSrvTypeCode,
-        final ISrvAccSettings pSrvAccSettings,
-          final ISrvI18n pSrvI18n, final DateFormat pDateFormatter) {
-    this.srvDatabase = pSrvDatabase;
-    this.srvOrm = pSrvOrm;
-    this.srvTypeCode = pSrvTypeCode;
-    this.srvAccSettings = pSrvAccSettings;
-    this.srvI18n = pSrvI18n;
-    this.dateFormatter = pDateFormatter;
-  }
+  private IFactoryAppBeansByClass<IFactorySimple<?>> entitiesFactoriesFatory;
 
   /**
    * <p>Withdrawal warehouse item for use/sale/loss.</p>
@@ -125,11 +112,12 @@ public abstract class ASrvDrawItemEntry<T extends ADrawItemEntry, RS>
       throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
         "can_not_make_di_entry_for_foreign_src");
     }
-    String queryMain = lazyGetQuery(srvAccSettings.lazyGetAccSettings().
-      getCogsMethod().getFileName());
+    String queryMain = lazyGetQuery(srvAccSettings
+      .lazyGetAccSettings(pAddParam).getCogsMethod().getFileName());
     StringBuffer sb = new StringBuffer();
     int i = 0;
-    for (ADrawItemSourcesLine drawItemSourceLine : getDrawItemSources()) {
+    for (ADrawItemSourcesLine drawItemSourceLine
+      : getDrawItemSources(pAddParam)) {
       if (drawItemSourceLine.getIsUsed()) {
         String query = lazyGetQuery(drawItemSourceLine.getFileName());
         query = query.replace(":IDDATABASEBIRTH", String.valueOf(getSrvOrm()
@@ -160,17 +148,13 @@ public abstract class ASrvDrawItemEntry<T extends ADrawItemEntry, RS>
       recordSet = getSrvDatabase().retrieveRecords(queryMain);
       if (recordSet.moveToFirst()) {
         do {
-          Long sourceId = getSrvDatabase().getSrvRecordRetriever()
-            .getLong(recordSet.getRecordSet(), "SOURCEID");
-          Integer sourceType = getSrvDatabase().getSrvRecordRetriever()
-            .getInteger(recordSet.getRecordSet(), "SOURCETYPE");
-          Long sourceOwnerId = getSrvDatabase().getSrvRecordRetriever()
-            .getLong(recordSet.getRecordSet(), "SOURCEOWNERID");
-          Integer sourceOwnerType = getSrvDatabase().getSrvRecordRetriever()
-            .getInteger(recordSet.getRecordSet(), "SOURCEOWNERTYPE");
-          BigDecimal theRest = getSrvDatabase().getSrvRecordRetriever()
-            .getBigDecimal(recordSet.getRecordSet(), "THEREST");
-          T source = createDrawItemEntry();
+          Long sourceId = recordSet.getLong("SOURCEID");
+          Integer sourceType = recordSet.getInteger("SOURCETYPE");
+          Long sourceOwnerId = recordSet.getLong("SOURCEOWNERID");
+          Integer sourceOwnerType = recordSet.getInteger("SOURCEOWNERTYPE");
+          BigDecimal theRest = BigDecimal
+              .valueOf(recordSet.getDouble("THEREST"));
+          T source = createDrawItemEntry(pAddParam);
           source.setSourceId(sourceId);
           source.setSourceType(sourceType);
           source.setSourceOwnerId(sourceOwnerId);
@@ -193,9 +177,18 @@ public abstract class ASrvDrawItemEntry<T extends ADrawItemEntry, RS>
     }
     BigDecimal quantityToDrawRest = pEntity.getItsQuantity();
     for (T source : sources) {
-      IDrawItemSource drawed = (IDrawItemSource) srvOrm
-        .retrieveEntityById(srvTypeCode.getTypeCodeMap()
-          .get(source.getSourceType()), source.getSourceId());
+      @SuppressWarnings("unchecked")
+      IFactorySimple<IDrawItemSource> fctDis =
+        (IFactorySimple<IDrawItemSource>) this.entitiesFactoriesFatory
+         .lazyGet(pAddParam, srvTypeCode.getTypeCodeMap()
+          .get(source.getSourceType()));
+      IDrawItemSource drawed = fctDis.create(pAddParam);
+      String fldIdName = this.srvOrm.getTablesMap()
+        .get(drawed.getClass().getSimpleName()).getIdFieldName();
+      Method setterId = this.settersRapiHolder
+        .getFor(drawed.getClass(), fldIdName);
+      setterId.invoke(drawed, source.getSourceId());
+      drawed = srvOrm.retrieveEntity(pAddParam, drawed);
       BigDecimal quantityToDraw;
       if (quantityToDrawRest.compareTo(drawed.getTheRest()) < 0) {
         quantityToDraw = quantityToDrawRest;
@@ -227,7 +220,7 @@ public abstract class ASrvDrawItemEntry<T extends ADrawItemEntry, RS>
       throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
         "can_not_make_di_entry_for_foreign_src");
     }
-    T die = createDrawItemEntry();
+    T die = createDrawItemEntry(pAddParam);
     die.setItsDate(pEntity.getDocumentDate());
     die.setIdDatabaseBirth(getSrvOrm().getIdDatabase());
     die.setSourceType(pSource.constTypeCode());
@@ -244,12 +237,12 @@ public abstract class ASrvDrawItemEntry<T extends ADrawItemEntry, RS>
     die.setUnitOfMeasure(pEntity.getUnitOfMeasure());
     die.setItsTotal(pSource.getItsCost().
       multiply(die.getItsQuantity()).setScale(getSrvAccSettings()
-        .lazyGetAccSettings().getCostPrecision(), getSrvAccSettings()
-          .lazyGetAccSettings().getRoundingMode()));
+        .lazyGetAccSettings(pAddParam).getCostPrecision(), getSrvAccSettings()
+          .lazyGetAccSettings(pAddParam).getRoundingMode()));
     die.setDescription(makeDescription(pEntity, die));
-    this.srvOrm.insertEntity(die);
+    this.srvOrm.insertEntity(pAddParam, die);
     pSource.setTheRest(pSource.getTheRest().subtract(pQuantityToDraw));
-    this.srvOrm.updateEntity(pSource);
+    this.srvOrm.updateEntity(pAddParam, pSource);
   }
 
   /**
@@ -270,7 +263,7 @@ public abstract class ASrvDrawItemEntry<T extends ADrawItemEntry, RS>
         "can_not_make_di_entry_for_foreign_src");
     }
     String tblNm = getDrawItemEntryClass().getSimpleName().toUpperCase();
-    List<T> diel = getSrvOrm().retrieveListWithConditions(
+    List<T> diel = getSrvOrm().retrieveListWithConditions(pAddParam,
       getDrawItemEntryClass(), " where DRAWINGTYPE=" + pEntity.constTypeCode()
         + " and " + tblNm + ".IDDATABASEBIRTH=" + getSrvOrm().getIdDatabase()
           + " and DRAWINGID=" + pEntity.getReversedId());
@@ -280,7 +273,7 @@ public abstract class ASrvDrawItemEntry<T extends ADrawItemEntry, RS>
         throw new ExceptionWithCode(ExceptionWithCode.FORBIDDEN,
           "Attempt to reverse reversed " + pAddParam.get("user"));
       }
-      T die = createDrawItemEntry();
+      T die = createDrawItemEntry(pAddParam);
       die.setItsDate(pDateAccount);
       die.setIdDatabaseBirth(getSrvOrm().getIdDatabase());
       die.setSourceType(dies.getSourceType());
@@ -306,17 +299,26 @@ public abstract class ASrvDrawItemEntry<T extends ADrawItemEntry, RS>
       die.setDescription(makeDescription(pEntity, dies) + " "
         + getSrvI18n().getMsg("reversed_entry_n")
           + getSrvOrm().getIdDatabase() + "-" + dies.getItsId());
-      getSrvOrm().insertEntity(die);
-      IDrawItemSource drawed = (IDrawItemSource) srvOrm
-        .retrieveEntityById(srvTypeCode.getTypeCodeMap()
-          .get(dies.getSourceType()), dies.getSourceId());
+      getSrvOrm().insertEntity(pAddParam, die);
+      @SuppressWarnings("unchecked")
+      IFactorySimple<IDrawItemSource> fctDis =
+        (IFactorySimple<IDrawItemSource>) this.entitiesFactoriesFatory
+         .lazyGet(pAddParam, srvTypeCode.getTypeCodeMap()
+          .get(dies.getSourceType()));
+      IDrawItemSource drawed = fctDis.create(pAddParam);
+      String fldIdName = this.srvOrm.getTablesMap()
+        .get(drawed.getClass().getSimpleName()).getIdFieldName();
+      Method setterId = this.settersRapiHolder
+        .getFor(drawed.getClass(), fldIdName);
+      setterId.invoke(drawed, dies.getSourceId());
+      drawed = srvOrm.retrieveEntity(pAddParam, drawed);
       drawed.setTheRest(drawed.getTheRest().add(dies.getItsQuantity()));
-      srvOrm.updateEntity(drawed);
+      srvOrm.updateEntity(pAddParam, drawed);
       dies.setReversedId(die.getItsId());
       dies.setDescription(dies.getDescription() + " "
         + getSrvI18n().getMsg("reversing_entry_n")
           + getSrvOrm().getIdDatabase() + "-" + die.getItsId()); //only local
-      getSrvOrm().updateEntity(dies);
+      getSrvOrm().updateEntity(pAddParam, dies);
     }
     if (quantityToLeaveRst.doubleValue() != 0) {
       throw new ExceptionWithCode(ExceptionWithCode.SOMETHING_WRONG,
@@ -353,7 +355,7 @@ public abstract class ASrvDrawItemEntry<T extends ADrawItemEntry, RS>
     }
     List<T> result = null;
     if (where != null) {
-      result = getSrvOrm().retrieveListWithConditions(
+      result = getSrvOrm().retrieveListWithConditions(pAddParam,
         getDrawItemEntryClass(), where);
       where = null;
     }
@@ -364,10 +366,10 @@ public abstract class ASrvDrawItemEntry<T extends ADrawItemEntry, RS>
     }
     if (where != null) {
       if (result == null) {
-        result = getSrvOrm().retrieveListWithConditions(
+        result = getSrvOrm().retrieveListWithConditions(pAddParam,
           getDrawItemEntryClass(), where);
       } else {
-        result.addAll(getSrvOrm().retrieveListWithConditions(
+        result.addAll(getSrvOrm().retrieveListWithConditions(pAddParam,
           getDrawItemEntryClass(), where));
       }
       where = null;
@@ -386,10 +388,10 @@ public abstract class ASrvDrawItemEntry<T extends ADrawItemEntry, RS>
     }
     if (where != null) {
       if (result == null) {
-        result = getSrvOrm().retrieveListWithConditions(
+        result = getSrvOrm().retrieveListWithConditions(pAddParam,
           getDrawItemEntryClass(), where);
       } else {
-        result.addAll(getSrvOrm().retrieveListWithConditions(
+        result.addAll(getSrvOrm().retrieveListWithConditions(pAddParam,
           getDrawItemEntryClass(), where));
       }
     }
@@ -405,17 +407,19 @@ public abstract class ASrvDrawItemEntry<T extends ADrawItemEntry, RS>
 
   /**
    * <p>Create draw item entry.</p>
+   * @param pAddParam additional param
    * @return draw item entry
    **/
-  public abstract T createDrawItemEntry();
+  public abstract T createDrawItemEntry(Map<String, Object> pAddParam);
 
   /**
    * <p>Get draw item sources.</p>
+   * @param pAddParam additional param
    * @return draw item sources
    * @throws Exception - an exception
    **/
   public abstract List<? extends ADrawItemSourcesLine>
-    getDrawItemSources() throws Exception;
+    getDrawItemSources(Map<String, Object> pAddParam) throws Exception;
 
   //Utils:
   /**
@@ -491,9 +495,9 @@ public abstract class ASrvDrawItemEntry<T extends ADrawItemEntry, RS>
   //Simple getters and setters:
   /**
    * <p>Getter for srvOrm.</p>
-   * @return ISrvOrm<RS>
+   * @return ASrvOrm<RS>
    **/
-  public final ISrvOrm<RS> getSrvOrm() {
+  public final ASrvOrm<RS> getSrvOrm() {
     return this.srvOrm;
   }
 
@@ -501,7 +505,7 @@ public abstract class ASrvDrawItemEntry<T extends ADrawItemEntry, RS>
    * <p>Setter for srvOrm.</p>
    * @param pSrvOrm reference
    **/
-  public final void setSrvOrm(final ISrvOrm<RS> pSrvOrm) {
+  public final void setSrvOrm(final ASrvOrm<RS> pSrvOrm) {
     this.srvOrm = pSrvOrm;
   }
 
@@ -591,5 +595,41 @@ public abstract class ASrvDrawItemEntry<T extends ADrawItemEntry, RS>
    **/
   public final void setSrvDatabase(final ISrvDatabase<RS> pSrvDatabase) {
     this.srvDatabase = pSrvDatabase;
+  }
+
+  /**
+   * <p>Getter for settersRapiHolder.</p>
+   * @return IHolderForClassByName<Method>
+   **/
+  public final IHolderForClassByName<Method> getSettersRapiHolder() {
+    return this.settersRapiHolder;
+  }
+
+  /**
+   * <p>Setter for settersRapiHolder.</p>
+   * @param pSettersRapiHolder reference
+   **/
+  public final void setSettersRapiHolder(
+    final IHolderForClassByName<Method> pSettersRapiHolder) {
+    this.settersRapiHolder = pSettersRapiHolder;
+  }
+
+  /**
+   * <p>Getter for entitiesFactoriesFatory.</p>
+   * @return IFactoryAppBeansByClass<IFactorySimple<?>>
+   **/
+  public final IFactoryAppBeansByClass<IFactorySimple<?>>
+    getEntitiesFactoriesFatory() {
+    return this.entitiesFactoriesFatory;
+  }
+
+  /**
+   * <p>Setter for entitiesFactoriesFatory.</p>
+   * @param pEntitiesFactoriesFatory reference
+   **/
+  public final void setEntitiesFactoriesFatory(
+    final IFactoryAppBeansByClass<IFactorySimple<?>>
+      pEntitiesFactoriesFatory) {
+    this.entitiesFactoriesFatory = pEntitiesFactoriesFatory;
   }
 }

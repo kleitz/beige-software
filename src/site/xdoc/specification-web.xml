@@ -4,13 +4,13 @@
   xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
 
   <properties>
-    <title>Beigesoft WEB interface specification version #1</title>
+    <title>Beigesoft WEB interface specification version #2</title>
   </properties>
 
   <body>
 
     <!-- The body of the document contains a number of sections -->
-    <section name="Specification WEB interface version #1">
+    <section name="Specification Beige-WEB interface version #2">
       <p>It designed to be used for a single user(on Android, Windows) as well as standard heavy load WEB application.
       </p>
       <p>It supply unified interface for render list (pages) of a model and its form.</p>
@@ -183,7 +183,78 @@
       <p>
         Forced filter implemented with parameter [prefixFilterOrder]forcedFor that contains fields names filter forced for.
       </p>
-          </section>
+    
+      <h4>Object (Entity) editor.</h4>
+      <h5>Standards, Facts And Requirements:</h5>
+      <p>* Input name is [entity simple name].[field name], e.g. "CustomerInvoice.itsDate"</p>
+      <p>* Input value is made by field converter <b>org.beigesoft.converter.IConverterToFromString.toString([field])</b></p>
+      <p>* Filling entity field is made by field converter <b>org.beigesoft.converter.IConverterToFromString.fromString([string value])</b></p>
+      <p>* Converting result for fields of simple types like Integer, Long is <b>[field].toString()</b></p>
+      <p>* Converting result for fields of formatable types like Date depends of desired format,
+        e.g. itsDate can be "2001-07-04T12:08:56.235" or "2001-07-04T12:08:56" or "2001-07-04"</p>
+      <p>* Foreign entities like "InvItemCategory" in "InvItem" represented as foreign entity ID, e.g. "1" for "itsCategory"
+        that means "Ingredients"</p>
+      <p>* Primary key that is also foreign entity e.g. "goods" in <b>org.beigesoft.webstore.persistable.GoodsRating</b>
+        represented as foreign entity ID</p>
+      <p>* Composite primary key, e.g. <b>org.beigesoft.persistable.IdUserRoleTomcat</b>
+        is represented as their fields comma separated set "name=value": "itsUser=admin,itsRole=role",
+        where itsUser is foreign entity which ID type is String, and itsRole is String type.</p>
+      <p>* Converters of simple types like Integer, Long is suitable for any fields of same type of any class,
+        but a customized converter can be assigned to a field.</p>
+      <p>* Formatable types like Date require specific converter for specific format.</p>
+      <p>* So, any field can has its own converter and it can be changed during runtime.
+        Beige-Settings is suitable for handling this.</p>
+      <p>* request phases:
+        <ul>
+          <li>reveal object class - usually by class simple name in request</li>
+          <li>create object by factory for its class.</li>
+          <li>fill object from request for each field name from <b>IFillerObject.getFieldsNames()</b>:
+            <ul>convert string value to field by <b>IConverterToFromString</b></ul>
+            <ul>fill object field with <b>IFillerObject.fill([object], [field_value], [field_name])</b></ul>
+          </li>
+        </ul>
+      </p>
+
+      <h4>Assigning fields converters names</h4>
+      <p>It's used Beige-Settings field setting called <b>fieldFromToStringConverter</b></p>
+      <p>Fields converter name is made of converter class simple name (and (plus) static type), e.g.:
+        <ul>
+          <li>Fields Long type - "LongConverter"</li>
+          <li>Fields BigDecimal type - "BigDecimalConverter"</li>
+        </ul>
+        It's used full converter name for such fields.
+      </p>
+      <p>Fields converter name is made of converter class simple name and names (plus) field simple class name, e.g.:
+        <ul>
+          <li>Fields compisite ID e.g. "org.beigesoft.persistable.IdUserRoleTomcat" type - "ObjectConverterStdIdUserRoleTomcat"</li>
+          <li>Fields Enum type e.g. "org.beigesoft.model.EPeriod" type - "EnumConverterEPeriod"</li>
+          <li>Fields foreign ID e.g. "org.beigesoft.persistable.UserTomcat" type which ID of type String - "HasSimpleIdConverterStringUserTomcat"</li>
+        </ul>
+        It's used part converter name for such fields, e.g. "EnumConverter". The rest is field simple class name
+        that revealed after settings is loaded.
+      </p>
+      <p>
+        Settings file beige-uvd/fieldTypeToFs/fieldFromToStringConverter.xml:
+        <pre>
+&lt;!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd"&gt;
+&lt;properties&gt;
+&lt;comment&gt;Correspondence of Java types to field from/to string converter name. ORDER is essential, the LAST value will be used.&lt;/comment&gt;
+&lt;entry key="java.lang.Object"&gt;ObjectConverterStd&lt;/entry&gt;&lt;!--part name for composite ID converter--&gt;
+&lt;entry key="java.lang.Enum"&gt;EnumConverter&lt;/entry&gt;&lt;!--part name for enum converter--&gt;
+&lt;entry key="org.beigesoft.persistable.AHasIdLong"&gt;HasSimpleIdConverterLong&lt;/entry&gt;&lt;!--part name for HasSimpleIdConverterLong converter--&gt;
+&lt;entry key="org.beigesoft.persistable.AHasIdString"&gt;HasSimpleIdConverterString&lt;/entry&gt;&lt;!--part name for HasSimpleIdConverterString converter--&gt;
+&lt;entry key="java.math.BigDecimal"&gt;BigDecimalConverter&lt;/entry&gt;
+&lt;entry key="java.lang.Integer"&gt;IntegerConverter&lt;/entry&gt;
+&lt;entry key="java.lang.Double"&gt;DoubleConverter&lt;/entry&gt;
+&lt;entry key="java.lang.Float"&gt;FloatConverter&lt;/entry&gt;
+&lt;entry key="java.lang.Long"&gt;LongConverter&lt;/entry&gt;
+&lt;entry key="java.lang.Boolean"&gt;BooleanConverter&lt;/entry&gt;
+&lt;entry key="java.util.Date"&gt;DateTimeConverter&lt;/entry&gt;
+&lt;/properties&gt;
+        </pre>
+      </p>
+      
+    </section>
 
   </body>
 

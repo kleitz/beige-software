@@ -44,17 +44,17 @@ public class SrvEntityWriterXml implements ISrvEntityWriter {
    * <p>
    * Write entity into a stream (writer - file or pass it through network).
    * </p>
+   * @param pAddParam additional params (e.g. exclude fields set)
    * @param pEntity object
    * @param pWriter writer
-   * @param pAddParam additional params (e.g. exclude fields set)
    * @throws Exception - an exception
    **/
   @Override
-  public final void write(final Object pEntity, final Writer pWriter,
-    final Map<String, Object> pAddParam) throws Exception {
+  public final void write(final Map<String, Object> pAddParam,
+    final Object pEntity, final Writer pWriter) throws Exception {
     Map<String, Map<String, String>> fieldsSettingsMap =
       getMngSettings().getFieldsSettings()
-        .get(pEntity.getClass().getCanonicalName());
+        .get(pEntity.getClass());
     pWriter.write("<entity class=\"" + pEntity.getClass().getCanonicalName()
       + "\"\n");
     for (Map.Entry<String, Map<String, String>> entry
@@ -72,7 +72,7 @@ public class SrvEntityWriterXml implements ISrvEntityWriter {
               .getValue().get("ISrvFieldWriter") + " for "
                 + pEntity.getClass() + " / " + field.getName());
         }
-        srvFieldWriter.write(fieldValue, field.getName(), pWriter, pAddParam);
+        srvFieldWriter.write(pAddParam, fieldValue, field.getName(), pWriter);
       }
     }
     pWriter.write("/>\n");

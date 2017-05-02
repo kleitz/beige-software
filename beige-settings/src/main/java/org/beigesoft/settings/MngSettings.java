@@ -29,7 +29,8 @@ import org.beigesoft.log.ILogger;
 
 /**
  * <p>Make settings  for application, classes and its fields
- * according properties XML. Specification #2.</p>
+ * according properties XML.
+ * According Beige-Settings specification #2.</p>
  *
  * @author Yury Demidenko
  */
@@ -63,12 +64,12 @@ public class MngSettings implements IMngSettings {
   /**
    * <p>Classes settings.</p>
    */
-  private Map<String, Map<String, String>> classesSettings;
+  private Map<Class<?>, Map<String, String>> classesSettings;
 
   /**
    * <p>Fields settings.</p>
    */
-  private Map<String, Map<String, Map<String, String>>> fieldsSettings;
+  private Map<Class<?>, Map<String, Map<String, String>>> fieldsSettings;
 
   /**
    * <p>Load configuration(settings) from given folder and file.</p>
@@ -138,7 +139,7 @@ public class MngSettings implements IMngSettings {
   /**
    * <p>Make for given class sorted entries of fields settings
    * and also removed those with negative value of sodted property.</p>
-   * @param pEntityName entity canonical name
+   * @param pClass entity class
    * @param pOrderKey key of order property
    * @return List<Map.Entry<String, Map<String, String>>> list ordered according
    * entry.getValue().get(pOrderKey) that is Integer.toString()
@@ -146,13 +147,13 @@ public class MngSettings implements IMngSettings {
    */
   @Override
   public final List<Map.Entry<String, Map<String, String>>> makeFldPropLst(
-    final String pEntityName, final String pOrderKey) throws Exception {
+    final Class<?> pClass, final String pOrderKey) throws Exception {
     Map<String, Map<String, String>> map =
-      this.fieldsSettings.get(pEntityName);
+      this.fieldsSettings.get(pClass);
     if (map == null) {
       throw new ExceptionWithCode(ExceptionWithCode.CONFIGURATION_MISTAKE,
         "There is no entries of fields settings for "
-          + pEntityName + " order key " + pOrderKey);
+          + pClass + " order key " + pOrderKey);
     }
     return sortRemoveIntVal(map.entrySet(), pOrderKey);
   }
@@ -195,49 +196,49 @@ public class MngSettings implements IMngSettings {
 
   /**
    * <p>Get class settings.
-   * This is Map "classCanonicalName" -
+   * This is Map "Class<?>" -
    * "Map<String, String>>"</p>
-   * @return Map<String, Map<String, String>> class settings
+   * @return Map<Class<?>, Map<String, String>> class settings
    */
   @Override
-  public final Map<String, Map<String, String>> getClassesSettings() {
+  public final Map<Class<?>, Map<String, String>> getClassesSettings() {
     return this.classesSettings;
   }
 
   /**
    * <p>Set class settings.
-   * This is Map "classCanonicalName" -
+   * This is Map "Class<?>" -
    * "Map<String, String>>"</p>
-   * @param pClassSettings Map<String, Map<String, String>> class settings
+   * @param pClassSettings Map<Class<?>, Map<String, String>> class settings
    */
   @Override
   public final void setClassesSettings(
-    final Map<String, Map<String, String>> pClassSettings) {
+    final Map<Class<?>, Map<String, String>> pClassSettings) {
       this.classesSettings = pClassSettings;
   }
 
   /**
    * <p>Get fields settings.
-   * This is Map "classCanonicalName" -
+   * This is Map "Class<?>" -
    * "Map "fieldName" - "Map "settingName"-"settingValue"""</p>
-   * @return Map<String, Map<String, Map<String, String>>> fields settings
+   * @return Map<Class<?>, Map<String, Map<String, String>>> fields settings
    */
   @Override
-  public final Map<String, Map<String, Map<String, String>>>
+  public final Map<Class<?>, Map<String, Map<String, String>>>
     getFieldsSettings() {
     return this.fieldsSettings;
   }
 
   /**
    * <p>Set fields settings.
-   * This is Map "classCanonicalName" -
+   * This is Map "Class<?>" -
    * "Map "fieldName" - "Map "settingName"-"settingValue"""</p>
-   * @param pFieldsSettings Map<String, Map<String, Map<String, String>>>
+   * @param pFieldsSettings Map<Class<?>, Map<String, Map<String, String>>>
    *  fields settings
    */
   @Override
   public final void setFieldsSettings(
-    final Map<String, Map<String, Map<String, String>>> pFieldsSettings) {
+    final Map<Class<?>, Map<String, Map<String, String>>> pFieldsSettings) {
     this.fieldsSettings = pFieldsSettings;
   }
 
@@ -279,7 +280,7 @@ public class MngSettings implements IMngSettings {
   public final void retrieveClasesSettings(final String pDirName,
     final LinkedProperties pProps) throws Exception {
     this.classesSettings =
-      new HashMap<String, Map<String, String>>();
+      new HashMap<Class<?>, Map<String, String>>();
     Map<String, LinkedProperties> javaTypeToStMap
       = new HashMap<String, LinkedProperties>();
     String subFolder = evalSubfolder(pProps);
@@ -326,7 +327,7 @@ public class MngSettings implements IMngSettings {
           }
         }
       }
-      this.classesSettings.put(clazz.getCanonicalName(), classSettings);
+      this.classesSettings.put(clazz, classSettings);
     }
   }
 
@@ -413,7 +414,7 @@ public class MngSettings implements IMngSettings {
   public final void retrieveFieldsSettings(final String pDirName,
     final LinkedProperties pProps) throws Exception {
     this.fieldsSettings =
-      new HashMap<String, Map<String, Map<String, String>>>();
+      new HashMap<Class<?>, Map<String, Map<String, String>>>();
     String subFolder = evalSubfolder(pProps);
     Map<String, LinkedProperties> javaTypeToStMap =
       new HashMap<String, LinkedProperties>();
@@ -472,8 +473,12 @@ public class MngSettings implements IMngSettings {
           + clazz.getSimpleName() + " in " + FOLDER_CLASS_TO_FS);
       }
       for (Field field : fields) {
-        if (excludedFields == null
-          || !excludedFields.contains(field.getName())) {
+        String strExldFldForClass = getClassesSettings().get(clazz)
+          .get(KEY_EXCLUDED_FIELDS);
+        if (!java.util.Collection.class.isAssignableFrom(field.getType())
+          && (strExldFldForClass == null || !strExldFldForClass
+            .contains(field.getName())) && (excludedFields == null
+              || !excludedFields.contains(field.getName()))) {
           Map<String, String> fldSettings =
             new HashMap<String, String>();
           for (String settingName : settingsNames) {
@@ -538,7 +543,7 @@ public class MngSettings implements IMngSettings {
           fieldsDescriptor.put(field.getName(), fldSettings);
         }
       }
-      this.fieldsSettings.put(clazz.getCanonicalName(), fieldsDescriptor);
+      this.fieldsSettings.put(clazz, fieldsDescriptor);
     }
   }
 

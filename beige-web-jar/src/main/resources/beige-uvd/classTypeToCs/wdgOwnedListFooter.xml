@@ -10,4 +10,5 @@
 <properties>
 <comment>Correspondence of Java types to widget owned list. ORDER is essential, the LAST value will be used.</comment>
 <entry key="java.lang.Object">wdgOwnedListFooter</entry>
+<entry key="org.beigesoft.persistable.Eattachment">wdgOwnedFileListFooter</entry>
 </properties>

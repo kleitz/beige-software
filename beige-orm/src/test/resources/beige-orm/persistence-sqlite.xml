@@ -17,11 +17,20 @@
   org.beigesoft.persistable.UserRoleJetty,
   org.beigesoft.test.persistable.Department,
   org.beigesoft.test.persistable.GoodVersionTime,
+  org.beigesoft.test.persistable.GoodsRating,
   org.beigesoft.test.persistable.PersistableHead,
   org.beigesoft.test.persistable.PersistableLine,
+  org.beigesoft.persistable.EmailConnect,
+  org.beigesoft.persistable.EmailStringProperty,
+  org.beigesoft.persistable.EmailIntegerProperty,
+  org.beigesoft.persistable.EmailMsg,
+  org.beigesoft.persistable.Eattachment,
+  org.beigesoft.persistable.Erecipient,
   org.beigesoft.persistable.UserTomcat,
-  org.beigesoft.persistable.UserRoleTomcat</entry>
-<entry key="settingsKeysForClasses">idName, idDefinitionForeign, constraintAdd, constraint, isFullDefinedInXml, excludeFields, versionAlgorithm</entry>
-<entry key="settingsKeysForFields">definition, isNullable, foreignEntity</entry>
-<entry key="excludeFields">isNew, tmpDescription, persistableLines</entry>
+  org.beigesoft.persistable.UserRoleTomcat,
+  org.beigesoft.test.persistable.UserRoleTomcatLine,
+  org.beigesoft.test.persistable.UserRoleTomcatPriority</entry>
+<entry key="settingsKeysForClasses">idColumnsNames, idFieldName, ownerFieldName, constraintAdd, excludeFields, versionAlgorithm</entry>
+<entry key="settingsKeysForFields">definition, isNullable</entry>
+<entry key="excludeFields">isNew, tmpDescription</entry>
 </properties>

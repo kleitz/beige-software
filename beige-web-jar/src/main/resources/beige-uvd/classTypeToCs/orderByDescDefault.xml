@@ -12,4 +12,7 @@
           Use exactle HTML checkbox values on/off.</comment>
 <entry key="org.beigesoft.model.IHasId">on</entry>
 <entry key="org.beigesoft.model.IHasName">off</entry>
+<entry key="org.beigesoft.persistable.UserTomcat">off</entry>
+<entry key="org.beigesoft.persistable.UserRoleTomcat">off</entry>
+<entry key="org.beigesoft.persistable.UserRoleJetty">off</entry>
 </properties>

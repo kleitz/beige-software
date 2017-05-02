@@ -8,6 +8,26 @@
  * http://www.apache.org/licenses/LICENSE-2.0
  */
 
+function submitGoodsSpecificByAjax(pIdFrm) {
+  var frm = document.getElementById(pIdFrm);
+  var gsAlUpUrl = document.getElementById("GoodsSpecific.stringValue1");
+  var gsFile = document.getElementById("GoodsSpecific.path");
+  if (gsAlUpUrl.value == "" && gsFile.value == "") {
+    showWarning(MSGS["enterEitherAlreadyOrLoadNew"]);
+  } else {
+    var addParams;
+    if (gsFile.value != "") {
+      var inpNmsAct = document.getElementById(pIdFrm + ".nmsAct");
+      inpNmsAct.value = "entitySave,list";
+      frm.action = "uploadSingle/";
+      addParams = "&nmRnd=listAfterFormActionJson";
+    } else {
+      addParams = "&nmRnd=editEntitySavedJson";
+    }
+    sendFormByAjax(frm, addParams);
+  }
+};
+
 function setCostUom(cost, uomId, uomName, idDomBasePicker) {
   var whoPicking = cnvState["Who Picking"][idDomBasePicker];
   if (cost != null) {
@@ -33,13 +53,13 @@ function setCostUom(cost, uomId, uomName, idDomBasePicker) {
   calculateTotal(whoPicking["pickingEntity"]);
 };
 
-function openPickerSubacc(entitySimpleName, accName, subaccName, paramMobile) {
+function openPickerSubacc(entitySimpleName, accName, subaccName, paramsAdd) {
   var inpAccId = document.getElementById(entitySimpleName + accName + "Id");
   if (inpAccId.value == "") {
     showError(MSGS['choose_account_first']);
   } else {
     openEntityPicker('SubaccountLine', entitySimpleName, subaccName, "&fltordPitsOwnerValId='"
-      + inpAccId.value + "'&fltordPitsOwnerOpr=eq&fltordPforcedFor=itsOwner&mobile=" + paramMobile);
+      + inpAccId.value + "'&fltordPitsOwnerOpr=eq&fltordPforcedFor=itsOwner" + paramsAdd);
   }
 };
 
@@ -52,6 +72,16 @@ function selectSubacc(subaccId, subaccType, subaccAppearance, idDomBasePicker) {
   inpVisible.value = subaccAppearance;
   inpVisible.onchange();
   document.getElementById(idDomBasePicker+"Dlg").close();
+};
+
+function selectChooseableSpecType(typeId, typeAppearance, idDomBasePicker) {
+  whoPicking = cnvState["Who Picking"][idDomBasePicker];
+  document.getElementById(whoPicking["pickingEntity"] + whoPicking["pickingField"] +"TypeId").setAttribute("value", typeId);
+  var inpAppearance = document.getElementById(whoPicking["pickingEntity"] + whoPicking["pickingField"] + "TypeAppearance");
+  inpAppearance.setAttribute("value", typeAppearance);
+  var inpAppearanceVisible = document.getElementById(whoPicking["pickingEntity"] + whoPicking["pickingField"] + "TypeAppearanceVisible");
+  inpAppearanceVisible.value = typeAppearance;
+  inpAppearanceVisible.onchange();
 };
 
 /**

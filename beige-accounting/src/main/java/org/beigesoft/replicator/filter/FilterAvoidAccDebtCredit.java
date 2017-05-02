@@ -17,9 +17,9 @@ import org.beigesoft.delegate.IDelegator;
 import org.beigesoft.delegate.IDelegateEvalExt;
 import org.beigesoft.handler.IHandlerModelChanged;
 import org.beigesoft.accounting.persistable.AccountingEntry;
-import org.beigesoft.accounting.persistable.ReplicationAccMethod;
-import org.beigesoft.accounting.persistable.ReplExcludeAccountsCredit;
-import org.beigesoft.accounting.persistable.ReplExcludeAccountsDebit;
+import org.beigesoft.replicator.persistable.ReplicationAccMethod;
+import org.beigesoft.replicator.persistable.ReplExcludeAccountsCredit;
+import org.beigesoft.replicator.persistable.ReplExcludeAccountsDebit;
 import org.beigesoft.exception.ExceptionWithCode;
 import org.beigesoft.orm.service.ISrvOrm;
 
@@ -57,7 +57,7 @@ public class FilterAvoidAccDebtCredit<RS> implements IFilterEntities,
    * Interactive filter of accounting entries.
    * </p>
    * @param pEntityClass Entity Class
-   * @param pAddParams additional params (must present requestedDatabaseId
+   * @param pAddParam additional params (must present requestedDatabaseId
    * and replicationMethodId of String type (WEB parameters))
    * @return filter e.g. "((ITSID>0 and IDDATABASEBIRTH=2135)
    * and ((ACCDEBIT isnull or ACCDEBIT not in ('BadDebts'))
@@ -66,13 +66,13 @@ public class FilterAvoidAccDebtCredit<RS> implements IFilterEntities,
    **/
   @Override
   public final String makeFilter(final Class<?> pEntityClass,
-    final Map<String, Object> pAddParams) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     if (!AccountingEntry.class.isAssignableFrom(pEntityClass)) {
       throw new ExceptionWithCode(ExceptionWithCode.CONFIGURATION_MISTAKE,
         "This class not descendant of AccountingEntry: "
           + pEntityClass);
     }
-    lazyEvalReplicationMethod(pAddParams);
+    lazyEvalReplicationMethod(pAddParam);
     StringBuffer filterAvoidAccDbCr = new StringBuffer("");
     if (this.replicationMethod.getExcludeDebitAccounts().size() > 0) {
       filterAvoidAccDbCr.append(" and ((ACCDEBIT isnull or ACCDEBIT not in (");
@@ -117,10 +117,10 @@ public class FilterAvoidAccDebtCredit<RS> implements IFilterEntities,
     }
     if (this.replicationMethod.getExcludeDebitAccounts().size() > 0
       || this.replicationMethod.getExcludeCreditAccounts().size() > 0) {
-      return "(" + this.filterId.makeFilter(pEntityClass, pAddParams)
+      return "(" + this.filterId.makeFilter(pEntityClass, pAddParam)
         + filterAvoidAccDbCr.toString() + ")";
     }
-    return this.filterId.makeFilter(pEntityClass, pAddParams);
+    return this.filterId.makeFilter(pEntityClass, pAddParam);
   }
 
 
@@ -138,15 +138,15 @@ public class FilterAvoidAccDebtCredit<RS> implements IFilterEntities,
 
   /**
    * <p>Evaluate (retrieve) model.</p>
-   * @param pAddParams additional params, (must present
+   * @param pAddParam additional params, (must present
    * replicationMethodId of String type (WEB parameters)).
    * @throws Exception - an exception
    * @return evaluated data
    **/
   @Override
   public final Date evalData(
-    final Map<String, Object> pAddParams) throws Exception {
-    lazyEvalReplicationMethod(pAddParams);
+    final Map<String, Object> pAddParam) throws Exception {
+    lazyEvalReplicationMethod(pAddParam);
     if (this.replicationMethod.getLastDateReplication() == null) {
       return new Date(1L);
     }
@@ -155,44 +155,48 @@ public class FilterAvoidAccDebtCredit<RS> implements IFilterEntities,
 
   /**
    * <p>It prepares database after import.</p>
-   * @param pAddParams additional params
+   * @param pAddParam additional params
    * @throws Exception - an exception
    **/
   @Override
   public final void make(
-    final Map<String, Object> pAddParams) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     this.replicationMethod.setLastDateReplication(new Date());
-    getSrvOrm().updateEntity(this.replicationMethod);
+    getSrvOrm().updateEntity(pAddParam, this.replicationMethod);
   }
 
   //Utils:
   /**
    * <p>Lazy Evaluate Replication Method.</p>
-   * @param pAddParams additional params, (must present
+   * @param pAddParam additional params, (must present
    * replicationMethodId of String type (WEB parameters)).
    * @throws Exception - an exception
    **/
   public final void lazyEvalReplicationMethod(
-    final Map<String, Object> pAddParams) throws Exception {
+    final Map<String, Object> pAddParam) throws Exception {
     Long replicationMethodId;
     try {
-      replicationMethodId = Long.parseLong(pAddParams
+      replicationMethodId = Long.parseLong(pAddParam
         .get("replicationMethodId").toString());
     } catch (Exception e) {
       throw new ExceptionWithCode(ExceptionWithCode.WRONG_PARAMETER,
-        "Wrong or missing parameter replicationMethodId (in pAddParams): "
-          + pAddParams.get("replicationMethodId"));
+        "Wrong or missing parameter replicationMethodId (in pAddParam): "
+          + pAddParam.get("replicationMethodId"));
     }
     if (this.replicationMethod == null || !this.replicationMethod
       .getItsId().equals(replicationMethodId)) {
+      this.replicationMethod = new ReplicationAccMethod();
+      this.replicationMethod.setItsId(replicationMethodId);
       this.replicationMethod = getSrvOrm()
-        .retrieveEntityById(ReplicationAccMethod.class, replicationMethodId);
+        .retrieveEntity(pAddParam, this.replicationMethod);
+      ReplExcludeAccountsDebit ead = new ReplExcludeAccountsDebit();
+      ead.setItsOwner(this.replicationMethod);
       this.replicationMethod.setExcludeDebitAccounts(getSrvOrm()
-        .retrieveEntityOwnedlist(ReplExcludeAccountsDebit.class,
-          this.replicationMethod));
+        .retrieveListForField(pAddParam, ead, "itsOwner"));
+      ReplExcludeAccountsCredit eac = new ReplExcludeAccountsCredit();
+      eac.setItsOwner(this.replicationMethod);
       this.replicationMethod.setExcludeCreditAccounts(getSrvOrm()
-        .retrieveEntityOwnedlist(ReplExcludeAccountsCredit.class,
-          this.replicationMethod));
+        .retrieveListForField(pAddParam, eac, "itsOwner"));
     }
   }
 

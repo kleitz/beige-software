@@ -37,6 +37,7 @@
         <include>org.beigesoft:beige-replicator</include>
         <include>org.beigesoft:beige-web-jar</include>
         <include>org.beigesoft:beige-web</include>
+        <include>org.beigesoft:beige-webstore</include>
         <include>org.beigesoft:beige-accounting</include>
         <include>org.beigesoft:beige-accounting-web-jar</include>
         <include>org.beigesoft:beige-accounting-web</include>
@@ -51,9 +52,11 @@
             <excludes>
               <exclude>**/src/uml/**</exclude>
               <exclude>target/**</exclude>
+              <exclude>uploads/**</exclude>
               <exclude>WebContent/**</exclude>
               <exclude>**/trash/**</exclude>
               <exclude>/findbug-exclude.xml</exclude>
+              <exclude>/beigeaccounting.sqlite</exclude>
             </excludes>
           </fileSet>
         </fileSets>

@@ -11,4 +11,6 @@
 <comment>Correspondence of Java types to widget print. ORDER is essential, the LAST value will be used.</comment>
 <entry key="java.lang.Object">wdgPrint</entry>
 <entry key="org.beigesoft.accounting.persistable.IDoc">wdgPrintDoc</entry>
+<entry key="org.beigesoft.accounting.persistable.SalesInvoice">wdgPrintSalesInvoice</entry>
+<entry key="org.beigesoft.accounting.persistable.MoveItems">wdgPrintDoc</entry>
 </properties>

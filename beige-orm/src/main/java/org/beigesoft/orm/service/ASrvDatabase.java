@@ -36,11 +36,6 @@ public abstract class ASrvDatabase<RS> implements ISrvDatabase<RS> {
   private ILogger logger;
 
   /**
-   * <p>Record retriever.</p>
-   **/
-  private ISrvRecordRetriever<RS> srvRecordRetriever;
-
-  /**
    * <p>Evaluate single Integer result.</p>
    * @param pQuery Query
    * @param pColumnName Column Name
@@ -55,8 +50,7 @@ public abstract class ASrvDatabase<RS> implements ISrvDatabase<RS> {
     try {
       recordSet = retrieveRecords(pQuery);
       if (recordSet.moveToFirst()) {
-        result = getSrvRecordRetriever().getInteger(recordSet.getRecordSet(),
-          pColumnName);
+        result = recordSet.getInteger(pColumnName);
       }
     } finally {
       if (recordSet != null) {
@@ -81,8 +75,7 @@ public abstract class ASrvDatabase<RS> implements ISrvDatabase<RS> {
     try {
       recordSet = retrieveRecords(pQuery);
       if (recordSet.moveToFirst()) {
-        result = getSrvRecordRetriever().getLong(recordSet.getRecordSet(),
-          pColumnName);
+        result = recordSet.getLong(pColumnName);
       }
     } finally {
       if (recordSet != null) {
@@ -107,8 +100,7 @@ public abstract class ASrvDatabase<RS> implements ISrvDatabase<RS> {
     try {
       recordSet = retrieveRecords(pQuery);
       if (recordSet.moveToFirst()) {
-        result = getSrvRecordRetriever().getFloat(recordSet.getRecordSet(),
-          pColumnName);
+        result = recordSet.getFloat(pColumnName);
       }
     } finally {
       if (recordSet != null) {
@@ -133,8 +125,7 @@ public abstract class ASrvDatabase<RS> implements ISrvDatabase<RS> {
     try {
       recordSet = retrieveRecords(pQuery);
       if (recordSet.moveToFirst()) {
-        result = getSrvRecordRetriever().getDouble(recordSet.getRecordSet(),
-          pColumnName);
+        result = recordSet.getDouble(pColumnName);
       }
     } finally {
       if (recordSet != null) {
@@ -160,8 +151,7 @@ public abstract class ASrvDatabase<RS> implements ISrvDatabase<RS> {
       recordSet = retrieveRecords(pQuery);
       if (recordSet.moveToFirst()) {
         for (int i = 0; i < pColumnNames.length; i++) {
-          result[i] = getSrvRecordRetriever()
-            .getDouble(recordSet.getRecordSet(), pColumnNames[i]);
+          result[i] = recordSet.getDouble(pColumnNames[i]);
         }
       }
     } finally {
@@ -227,25 +217,6 @@ public abstract class ASrvDatabase<RS> implements ISrvDatabase<RS> {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
-  }
-
-  /**
-   * <p>Get recordset retriever.</p>
-   * @return recordset retriever
-   **/
-  @Override
-  public final ISrvRecordRetriever<RS> getSrvRecordRetriever() {
-    return this.srvRecordRetriever;
-  }
-
-  /**
-   * <p>Set recordset retriever.</p>
-   * @param pSrvRecordRetriever recordset retriever
-   **/
-  @Override
-  public final void setSrvRecordRetriever(
-    final ISrvRecordRetriever<RS> pSrvRecordRetriever) {
-    this.srvRecordRetriever = pSrvRecordRetriever;
   }
 
   //Simple getters and setters:

@@ -41,9 +41,14 @@
       <version>${beige.version}</version>
     </dependency>
     <dependency>
+      <groupId>com.sun.mail</groupId>
+      <artifactId>javax.mail</artifactId>
+      <version>1.5.6</version>
+    </dependency>
+    <dependency>
       <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <version>${servlet.version}</version>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>3.0.1</version>
       <scope>provided</scope>
     </dependency>
     <dependency>
@@ -55,7 +60,7 @@
     </dependency>
     <dependency>
       <groupId>org.beigesoft</groupId>
-      <artifactId>beige-settings</artifactId>
+      <artifactId>beige-common</artifactId>
       <version>${beige.version}</version>
       <type>test-jar</type>
       <scope>test</scope>

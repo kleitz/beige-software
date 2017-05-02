@@ -11,11 +11,10 @@
 <comment>Correspondence of Java types order show in list(minus-1 no show, 1, 4... - order).
   ORDER is essential, the LAST value will be used.</comment>
 <entry key="java.lang.Object">2000</entry>
-<entry key="java.lang.Long">1</entry><!--Entity ID-->
 <entry key="java.util.Date">100</entry><!--Doc Date-->
-<entry key="org.beigesoft.model.IHasId">200</entry><!--e.g. Customer-->
+<entry key="java.lang.String">150</entry><!--e.g. itsName-->
+<entry key="org.beigesoft.model.IHasId">200</entry><!--e.g. Customer, itsCategory-->
 <entry key="java.lang.Enum">300</entry><!--e.g. sales tax-->
 <entry key="java.math.BigDecimal">400</entry><!--e.g. itsTotal-->
-<entry key="java.lang.String">1000</entry><!--e.g. description-->
 <entry key="java.lang.Boolean">1100</entry><!--e.g. is accounted-->
 </properties>
