@@ -1,13 +1,15 @@
 package org.beigesoft.orm.service;
 
 /*
- * Beigesoft ™
+ * Copyright (c) 2015-2017 Beigesoft ™
  *
- * Licensed under the Apache License, Version 2.0
+ * Licensed under the GNU General Public License (GPL), Version 2.0
+ * (the "License");
+ * you may not use this file except in compliance with the License.
  *
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
  */
 
 import java.util.Map;
@@ -638,18 +640,6 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
       .getAppSettings().get(PropertiesBase.KEY_JDBC_DRIVER_CLASS));
     this.propertiesBase.setDatabaseName(this.mngSettings
       .getAppSettings().get(PropertiesBase.KEY_DATABASE_NAME));
-    if (this.propertiesBase.getDatabaseName() != null
-      && this.propertiesBase.getDatabaseName().contains(WORD_CURRENT_DIR)) {
-      String currDir = System.getProperty("user.dir");
-      this.propertiesBase.setDatabaseName(this.propertiesBase.getDatabaseName()
-        .replace(WORD_CURRENT_DIR, currDir + File.separator));
-    } else if (this.propertiesBase.getDatabaseName() != null
-      && this.propertiesBase.getDatabaseName()
-        .contains(WORD_CURRENT_PARENT_DIR)) {
-      File fcd = new File(System.getProperty("user.dir"));
-      this.propertiesBase.setDatabaseName(this.propertiesBase.getDatabaseName()
-        .replace(WORD_CURRENT_PARENT_DIR, fcd.getParent() + File.separator));
-    }
     this.propertiesBase.setDataSourceClassName(this.mngSettings
       .getAppSettings().get(PropertiesBase.KEY_DATASOURCE_CLASS));
     this.propertiesBase.setUserName(this.mngSettings
@@ -658,15 +648,26 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
       .getAppSettings().get(PropertiesBase.KEY_USER_PASSWORD));
     this.propertiesBase.setDatabaseUrl(this.mngSettings
       .getAppSettings().get(PropertiesBase.KEY_DATABASE_URL));
+    String currDir = System.getProperty("user.dir");
+    if (this.propertiesBase.getDatabaseName() != null
+      && this.propertiesBase.getDatabaseName().contains(WORD_CURRENT_DIR)) {
+      this.propertiesBase.setDatabaseName(this.propertiesBase.getDatabaseName()
+        .replace(WORD_CURRENT_DIR, currDir + File.separator));
+    } else if (this.propertiesBase.getDatabaseName() != null
+      && this.propertiesBase.getDatabaseName()
+        .contains(WORD_CURRENT_PARENT_DIR)) {
+      File fcd = new File(currDir);
+      this.propertiesBase.setDatabaseName(this.propertiesBase.getDatabaseName()
+        .replace(WORD_CURRENT_PARENT_DIR, fcd.getParent() + File.separator));
+    }
     if (this.propertiesBase.getDatabaseUrl() != null
       && this.propertiesBase.getDatabaseUrl().contains(WORD_CURRENT_DIR)) {
-      String currDir = System.getProperty("user.dir");
       this.propertiesBase.setDatabaseUrl(this.propertiesBase.getDatabaseUrl()
         .replace(WORD_CURRENT_DIR, currDir + File.separator));
     } else if (this.propertiesBase.getDatabaseUrl() != null
       && this.propertiesBase.getDatabaseUrl()
         .contains(WORD_CURRENT_PARENT_DIR)) {
-      File fcd = new File(System.getProperty("user.dir"));
+      File fcd = new File(currDir);
       this.propertiesBase.setDatabaseUrl(this.propertiesBase.getDatabaseUrl()
         .replace(WORD_CURRENT_PARENT_DIR, fcd.getParent() + File.separator));
     }
@@ -763,6 +764,12 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
               }
             } else {
               fkNames = field.getName().toUpperCase();
+              if (fieldSql.getDefinition() == null) {
+                throw new ExceptionWithCode(ExceptionWithCode
+                  .CONFIGURATION_MISTAKE,
+                    "Where is no definition FID class/name: "
+                      + clazz.getSimpleName() + "/" + field.getName());
+              }
             }
             String constraintFk = "constraint fk"
               + clazz.getSimpleName()
@@ -1098,17 +1105,18 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
       String initSql = loadString(dirPath + useSubFolder
           + "/" + "init.sql");
       if (initSql != null) {
-        getLogger().info(ASrvOrm.class, "init.sql found, try to execute.");
+        getLogger().info(null, ASrvOrm.class,
+          "init.sql found, try to execute.");
         for (String initSingle : initSql.split("\n")) {
           if (initSingle.trim().length() > 1 && !initSingle.startsWith("/")) {
             srvDatabase.executeQuery(initSingle);
           }
         }
       } else {
-        getLogger().info(ASrvOrm.class, "init.sql not found.");
+        getLogger().info(null, ASrvOrm.class, "init.sql not found.");
       }
       if (ifAllTablesCreated) {
-        getLogger().info(ASrvOrm.class, "all tables has been created.");
+        getLogger().info(null, ASrvOrm.class, "all tables has been created.");
         DatabaseInfo databaseInfo = new DatabaseInfo();
         int dbVer = Integer.parseInt(this.mngSettings
         .getAppSettings().get("databaseVersion"));
@@ -1119,7 +1127,7 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
         insertEntity(pAddParam, databaseInfo);
         String insertSql = loadString(dirPath + "insert.sql");
         if (insertSql != null) {
-          getLogger().info(ASrvOrm.class, dirPath
+          getLogger().info(null, ASrvOrm.class, dirPath
             + "insert.sql found, try to execute.");
           for (String insertSingle : insertSql.split("\n")) {
             if (insertSingle.trim().length() > 1
@@ -1128,12 +1136,13 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
             }
           }
         } else {
-          getLogger().info(ASrvOrm.class, dirPath + "insert.sql not found.");
+          getLogger().info(null, ASrvOrm.class,
+            dirPath + "insert.sql not found.");
         }
       } else if (ifCreatedOrAdded) {
-        getLogger().info(ASrvOrm.class, "new tables has been added.");
+        getLogger().info(null, ASrvOrm.class, "new tables has been added.");
       } else {
-        getLogger().info(ASrvOrm.class, "tables already created.");
+        getLogger().info(null, ASrvOrm.class, "tables already created.");
       }
       if (!ifAllTablesCreated) {
         tryUgradeDatabaseAnyWay(dirPath + useSubFolder + "/");
@@ -1155,7 +1164,7 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
     String upgradeSqlName = "upgrade_" + nextVersion + ".sql";
     String upgradeSql = loadString(pUpgradeDir + upgradeSqlName);
     while (upgradeSql != null) {
-      getLogger().info(ASrvOrm.class, pUpgradeDir
+      getLogger().info(null, ASrvOrm.class, pUpgradeDir
         + upgradeSqlName + " found, try to execute.");
       //in single transaction:
       try {
@@ -1195,7 +1204,7 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
     String upgradeSqlName = "upgrade_" + nextVersion + ".sql";
     String upgradeSql = loadString(pUpgradeDir + upgradeSqlName);
     while (upgradeSql != null) {
-      getLogger().info(ASrvOrm.class, pUpgradeDir
+      getLogger().info(null, ASrvOrm.class, pUpgradeDir
         + upgradeSqlName + " found, try to execute.");
       for (String upgradeSingle : upgradeSql.split("\n")) {
         if (upgradeSingle.trim().length() > 1
@@ -1415,7 +1424,6 @@ public abstract class ASrvOrm<RS> implements ISrvOrm<RS> {
       pFctFillersObjectFields) {
     this.fctFillersObjectFields = pFctFillersObjectFields;
   }
-
 
   /**
    * <p>Geter for logger.</p>

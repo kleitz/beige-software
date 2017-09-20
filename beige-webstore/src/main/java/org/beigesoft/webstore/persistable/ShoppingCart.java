@@ -1,13 +1,15 @@
 package org.beigesoft.webstore.persistable;
 
 /*
- * Beigesoft ™
+ * Copyright (c) 2015-2017 Beigesoft ™
  *
- * Licensed under the Apache License, Version 2.0
+ * Licensed under the GNU General Public License (GPL), Version 2.0
+ * (the "License");
+ * you may not use this file except in compliance with the License.
  *
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
  */
 
 import java.util.List;
@@ -42,54 +44,55 @@ public class ShoppingCart extends AEditableHasVersion
   private Integer totalItems;
 
   /**
-   * <p>Recipient name.</p>
+   * <p>Recipient name, if buyer bought for someone else i.e. for this recipient
+   * or buyer want to receive goods at different address.</p>
    **/
   private String recipientName;
 
   /**
-   * <p>Recipient Address1.</p>
+   * <p>Recipient Address1, if applied.</p>
    **/
   private String recipientAddress1;
 
   /**
-   * <p>Recipient Address2.</p>
+   * <p>Recipient Address2, if applied.</p>
    **/
   private String recipientAddress2;
 
   /**
-   * <p>Recipient Zip.</p>
+   * <p>Recipient Zip, if applied.</p>
    **/
   private String recipientZip;
 
   /**
-   * <p>Recipient Country.</p>
+   * <p>Recipient Country, if applied.</p>
    **/
   private String recipientCountry;
 
   /**
-   * <p>Recipient State.</p>
+   * <p>Recipient State, if applied.</p>
    **/
   private String recipientState;
 
   /**
-   * <p>Recipient City.</p>
+   * <p>Recipient City, if applied.</p>
    **/
   private String recipientCity;
 
   /**
-   * <p>Recipient Phone.</p>
+   * <p>Recipient Phone, if applied.</p>
    **/
-  private Long recipientPhone;
-
-  /**
-   * <p>Recipient Phone Extension.</p>
-   **/
-  private Integer recipientPhoneExtension;
+  private String recipientPhone;
 
   /**
    * <p>Items.</p>
    **/
   private List<CartItem> itsItems;
+
+  /**
+   * <p>Taxes.</p>
+   **/
+  private List<CartTaxLine> taxes;
 
   /**
    * <p>Usually it's simple getter that return model ID.</p>
@@ -272,9 +275,9 @@ public class ShoppingCart extends AEditableHasVersion
 
   /**
    * <p>Getter for recipientPhone.</p>
-   * @return Long
+   * @return String
    **/
-  public final Long getRecipientPhone() {
+  public final String getRecipientPhone() {
     return this.recipientPhone;
   }
 
@@ -282,25 +285,8 @@ public class ShoppingCart extends AEditableHasVersion
    * <p>Setter for recipientPhone.</p>
    * @param pRecipientPhone reference
    **/
-  public final void setRecipientPhone(final Long pRecipientPhone) {
+  public final void setRecipientPhone(final String pRecipientPhone) {
     this.recipientPhone = pRecipientPhone;
-  }
-
-  /**
-   * <p>Getter for recipientPhoneExtension.</p>
-   * @return Integer
-   **/
-  public final Integer getRecipientPhoneExtension() {
-    return this.recipientPhoneExtension;
-  }
-
-  /**
-   * <p>Setter for recipientPhoneExtension.</p>
-   * @param pRecipientPhoneExtension reference
-   **/
-  public final void setRecipientPhoneExtension(
-    final Integer pRecipientPhoneExtension) {
-    this.recipientPhoneExtension = pRecipientPhoneExtension;
   }
 
   /**
@@ -317,5 +303,21 @@ public class ShoppingCart extends AEditableHasVersion
    **/
   public final void setItsItems(final List<CartItem> pItsItems) {
     this.itsItems = pItsItems;
+  }
+
+  /**
+   * <p>Getter for taxes.</p>
+   * @return List<CartTaxLine>
+   **/
+  public final List<CartTaxLine> getTaxes() {
+    return this.taxes;
+  }
+
+  /**
+   * <p>Setter for taxes.</p>
+   * @param pTaxes reference
+   **/
+  public final void setTaxes(final List<CartTaxLine> pTaxes) {
+    this.taxes = pTaxes;
   }
 }

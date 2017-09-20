@@ -27,9 +27,9 @@
       <p>useSubFolder - <b>sqlite</b> | <b>postgresql</b> | <b>h2</b>. It used as name of directory that contains RDBMS specific configuration files.</p>
       <p>classes - array of classes names(name include package same as getClass().getCanonicalName()) that
         represent persistable models.</p>
-      <p>settingsKeysForClases - "idColumnsNames, constraintAdd, excludeFields".</p>
+      <p>settingsKeysForClases - "idColumnsNames, idFieldName, ownerFieldName, constraintAdd, excludeFields, versionAlgorithm".</p>
       <p>settingsKeysForFields - "definition, isNullable".</p>
-      <p>excludeFields - array of non-persistable fields names for all classes, e.g. <b>isNew</b>.</p>
+      <p>excludeFields - array of non-persistable fields names for all classes, only <b>isNew</b>.</p>
       
       <h5>Application settings file <b>[RDBMS]/app-settings.xml</b> consist of:</h5>
       <p>databaseVersion - current database version to create new database, must be equals to DataInfo</p>
@@ -43,6 +43,36 @@
       For multiplatform purpose there is non-standard word <b>#currentDir#</b> that point to current working directory = System.getProperty("user.dir").
       So JDBC URL will be <b>jdbc:h2:#currentDir#beigeaccountingtest</b> .Also word <b>#currentParentDir#</b> is point to System.getProperty("user.dir").
       So testing databases for JUnit used <b>#currentParentDir#</b> and will be at [sourceBeigeErp/]</p>
+      
+      <h4>Models to describe RDBMS tables</h4>
+      <p>These data beans are filled by using XML configuration and Reflection and they are used to create DDL/DML statement.</p>
+      <h5>SQL table descriptor org.beigesoft.orm.model.TableSql</h5>
+      <p>Consist of classes settings:
+        <ul>
+          <li>Map[fieldName-FieldSql] - fields settings map there fieldName same as in the class, e.g. "itsName"</li>
+          <li>versionAlgorithm - optimistic locking version algorithm. 0 - autoincrement, 1 - date changed.</li>
+          <li>constraint - table all CONSTRAINTs e.g. PRIMARY KEY ("id"), FOREIGN KEY.....</li>
+          <li>idColumnsNames - String[] ID columns names from XML-setting <b>idColumnsNames</b> e.g. "itsId" or comma separated names for composite ID,
+            e.g. "goods,priceCategory". It's used to make DDL/DML and filling/retrieving ID.</li>
+          <li>idFieldName - ID field (in class) name, e.g. composite ID in class "itsId" but in table ID columns {"goods","place"}</li>
+          <li>ownerFieldName - owner's field (in class) name if exist, e.g. "customerInvoice" for  InvoiceLine</li>
+        </ul>
+      </p>
+      <h5>SQL field descriptor org.beigesoft.orm.model.FieldSql</h5>
+      <p>Represent field of entity that reflect to column(s) of SQL table. Consist of fields settings:
+        <ul>
+          <li>definition - DDL string e.g. "INTEGER NOT NULL", may be null for deriving fields like composite FK</li>
+          <li>foreignEntity - simple class name o foreign (owned) entity e.g. for itsDepartment "Department".
+          It used to resolve LEFT JOIN in SELECT statement.</li>
+          <li>typeField - ETypeField.STANDARD/COMPOSITE_PK/COMPOSITE/DERIVED_FROM_COMPOSITE.
+            E.g. composite foreign ID that converted into ID-fields that not present in entity,
+            so it doesn't presents in any DML/DDL statement,
+            but used to convert to/from ID-fields.
+          </li>
+        </ul>
+      </p>
+      <h5>Tables descriptor.</h5>
+      <p>This is map ["EntitySimpleName - TableSql"]</p>
 
       <h4>Common rules to generate DDL and SQL statements for persistable models.</h4>
       <p>ALTER TABLE not supported automatically yet, so just make upgrade.sql manually.</p>
@@ -93,6 +123,7 @@
 &lt;entry key="org.beigesoft.persistable.APersistableBase"&gt;bigint unsigned&lt;/entry&gt;
 &lt;entry key="org.beigesoft.persistable.UserTomcat"&gt;char(25) not null&lt;/entry&gt;
 &lt;entry key="org.beigesoft.persistable.AHasIdString"&gt;char(25)&lt;/entry&gt;
+&lt;/properties&gt;
 &lt;/properties&gt;
         </pre>
       </p>
@@ -194,6 +225,7 @@ CREATE TABLE GOODSRATING (
 &lt;entry key="java.lang.String"&gt;text not null primary key&lt;/entry&gt;
 &lt;/properties&gt;
         </pre>
+        * this file overrides main file "beige-orm/sqlite/fieldTypeToFs/definition.xml" for field of name "itsId"
       </p>
       <p>Complex ID also defined by <b>definition</b> and additionally by <b>idName</b> setting,
         Complex ID is either composite ID e.g. IdUserRoleTomcat{itsUser, itsRole},
@@ -203,8 +235,9 @@ CREATE TABLE GOODSRATING (
           <li>itsUser definition = char(25)</li>
           <li>itsRole definition = char(25) not null</li>
         </ul>
-        idName used to automatically make constraint PK in case if idName not equals "itsId":
-        "CONSTRAINT pkUserRoleTomcatitsId PRIMARY KEY (ITSUSER,ITSROLE)".
+        idName used to automatically make constraint PK in case if idName is complex or field ID is foreign entity:
+        "CONSTRAINT pkUserRoleTomcatitsId PRIMARY KEY (ITSUSER,ITSROLE)"
+        or "CONSTRAINT pkGoodsRatingId PRIMARY KEY (GOODS)".
       </p>
 
       <h4>Reveal DDL for foreign ID automatically.</h4>
@@ -213,9 +246,12 @@ CREATE TABLE GOODSRATING (
         and get idName to make constraint FK, e.g:
         "CONSTRAINT fkUserRoleTomcatUserTomcatitsUser FOREIGN KEY (ITSUSER) REFERENCES USERTOMCAT (ITSUSER)".
       </p>
+      <p>For foreign entities which foreign PK is also FK you must add definition by hand, see org.beigesoft.webstore.persistable.SeGoods
+        whose seller FK is seller PK-FK(DebtorCredtor) in SeSeller, because standard "fieldTypeToFs/definition.xml" did not handle it.
+      </p>
       <p>Foreign entity with composite ID e.g. <b>org.beigesoft.test.persistable.UserRoleTomcatLine</b>,
         their itsOwner - UserRoleTomcat foreign complex ID will be replaced with {itsUser,itsRole} from foreign tableSql,
-        and idName used to automatically make constraint FK:
+        and idName used to automatically make constraint FK and definition according foreign:
         "CONSTRAINT fkUserRoleTomcatLineUserRoleTomcatitsUseritsRole FOREIGN KEY (ITSUSER,ITSROLE) REFERENCES USERROLETOMCAT (ITSUSER,ITSROLE)".
       </p>
       
@@ -282,40 +318,8 @@ CREATE TABLE GOODSRATING (
       </p>
       <p>Services IFillFieldToSql and IEvalEntityIdWhere with reflection implementation must use shared
       reflection methods (get field's values), i.e. IFactory must handle this</p>
-      
-      <h4>SQL descriptor TableSql</h4>
-      <p>Consist of classes settings:
-        <ul>
-          <li>Map[fieldName-FieldSql] - fields settings map there fieldName same as in the class, e.g. "itsName"</li>
-          <li>versionAlgorithm - optimistic locking version algorithm. 0 - autoincrement, 1 - date changed.</li>
-          <li>constraint - table all CONSTRAINTs e.g. PRIMARY KEY ("id"), FOREIGN KEY.....</li>
-          <li>idColumnsNames - String[] ID columns names from XML-setting <b>idColumnsNames</b> e.g. "itsId" or comma separated names for composite ID,
-            e.g. "goods,priceCategory". It's used to make DDL/DML and filling/retrieving ID.</li>
-          <li>idFieldName - ID field (in class) name, e.g. composite ID in class "itsId" but in table ID columns {"goods","place"}</li>
-          <li>ownerFieldName - owner's field (in class) name if exist, e.g. "customerIncoice" for  InvoiceLine</li>
-        </ul>
-      </p>
-      
-      <h4>SQL descriptor FieldSql</h4>
-      <p>Represent field of entity that reflect to column(s) of SQL table. Consist of fields settings:
-        <ul>
-          <li>definition - DDL string e.g. "INTEGER NOT NULL", may be null for deriving fields like composite FK</li>
-          <li>foreignEntity - simple class name o foreign (owned) entity e.g. for itsDepartment "Department".
-          It used to resolve LEFT JOIN in SELECT statement.</li>
-          <li>typeField - ETypeField.STANDARD/COMPOSITE_PK/COMPOSITE/DERIVED_FROM_COMPOSITE.
-            E.g. composite foreign ID that converted into ID-fields that not present in entity,
-            so it doesn't presents in any DML/DDL statement,
-            but used to convert to/from ID-fields.
-          </li>
-        </ul>
-      </p>
-      
-      <h4>Tables descriptor.</h4>
-      <p>This is map ["EntitySimpleName - TableSql"]</p>
         
-
-
-      <h5>Database Info persistable model</h5>
+      <h4>Database Info persistable model</h4>
       <p>Persistable model org.beigesoft.persistable.DatabaseInfo consist of:
         <ul>
           <li>databaseId - Integer, not null primary key and database ID</li>
@@ -390,7 +394,7 @@ CREATE TABLE GOODSRATING (
         business service with new logic by invoking simple setter for it during runtime.
       </p>
       
-      <h5>Depending performance of ID type</h5>
+      <h4>Depending performance of ID type</h4>
       <h6>1. Non-complex ID</h6>
       <p>RDBMS must be optimized for working with keys of any type - String(varchar, char), integer.
         Beige Accounting uses mostly ID of type <b>Long</b>, but for <b>Account</b> it uses <b>String</b> cause it
@@ -399,7 +403,7 @@ CREATE TABLE GOODSRATING (
       </p>
       <h6>2. Complex (composite) ID</h6>
       <p>Beige Accounting uses complex triple ID (idProduct, idUnitOfMeasure, idWarehousePlace) for <b>WarehouseRests</b>
-        model. MySql, SQlite, H2 automatically makes index for complex ID. I think it's more difficult to RDBMS
+        model. MySql, SQlite, H2 automatically makes index for complex ID. Maybe it's more difficult to RDBMS
         to recognize complex ID in SQL query to transform it into index "hidden integer ID".
       </p>
       <p>Conclusion - RDBMS automatically makes index for constraint <b>primary key</b> for both composite and non-composite.
@@ -408,8 +412,37 @@ CREATE TABLE GOODSRATING (
         But insert command is expensive for composite and string ID cause reindexing, so avoid such ID types for entities like Invoice Line or Accounting entry.
       </p>
       
-
-      <h5>Exceptions throw ExceptionWithCode:</h5>
+      <h4>Using caching.</h4>
+      <h5>Generated queries caching</h5>
+[c]      <p>To improve performance generated SELECT queries for each entity may be cached.</p>
+      <h5>Allocated memory caching</h5>
+[c]      <p>Memory for retrieved from database entities may be also cached.
+        In that way entity creating(new)/storing for reusing/destroying(remove last reference) is handled by IFactoryCache.</p>
+      <h5>Caching of database ORM entities.</h5>
+      <p>This is common used practice to cache database ORM entities in memory to reduce number of simple queries to RDBMS.
+        But complex business logic involved complex SQL queries (they depends of several tables and custom conditions)
+        not subject for ORM caching. For example webstore goods list:
+<pre style="white-space: pre-wrap;">
+select ITSTYPE, ITEMID, ITSNAME, IMAGEURL, SPECIFICINLIST, ITSPRICE, PREVIOUSPRICE, AVAILABLEQUANTITY, ITSRATING
+from (
+  select ITSTYPE, ITEMID, ITSNAME, IMAGEURL, SPECIFICINLIST, ITSPRICE, PREVIOUSPRICE, AVAILABLEQUANTITY, ITSRATING
+  from ITEMINLIST
+  where AVAILABLEQUANTITY>0
+ ) as ALLGOODS
+join (
+  select GOODS as GOODSINCATALOG from GOODSCATALOGS where ITSCATALOG=:ITSCATALOG
+ ) as GOODSINCATALOGALL on GOODSINCATALOGALL.GOODSINCATALOG=ALLGOODS.ITEMID
+</pre>
+  This query retrieves only non-auctioning goods (part of ITEMINLIST fields are omitted).
+  Caching ORM entities possible only in simple way - find by ID.
+  Even simple pagination query is hard for ORM caching.
+  ORM can uses cache for set of entities for example if last two SELECT queries is identical
+  and there is no INSERT/UPDATE/DELETE between them.
+  So the most queries aren't possible (or too hard) for ORM caching.
+  Any way RDBMSs themselves use caching, many of them are written in C, and so they are faster.
+      </p>
+      
+      <h4>Exceptions throw ExceptionWithCode:</h4>
       <ul>
         <li>1000 - not_yet_implemented</li>
         <li>1001 - Something goes wrong, e.g. attempt to update entity with complex ID by update without where that not yet supported</li>
@@ -419,13 +452,6 @@ CREATE TABLE GOODSRATING (
         <li>1153 - BAD_PARAMS bad parameters e.g. isolation level</li>
         <li>1154 - SQL_EXEC_ERROR SQL exception</li>
       </ul>
-      
-      <h4>TODO specification #3</h4>
-      <p>Cause Beige-ORM retrieves unneeded owned entities, it is need to add <b>entity retriever descriptor</b>.
-        This descriptor consist of tree of owned entities that should be retrieved. This tree can be in any depth.
-        The simplest model of this tree is Map&lt;String, List&lt;String&gt;&gt; [Entity name]-[List of owned entities names that should be retrieved (not only ID)].
-        Beige-ORM version 2 doesn't uses super-abstraction parameter <b>params Map&lt;String, Object&gt;</b>, so its needs to add new methods into <b>ISrvOrm</b>.
-      </p>
     </section>
 
   </body>

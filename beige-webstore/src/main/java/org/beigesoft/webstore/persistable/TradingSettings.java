@@ -1,13 +1,15 @@
 package org.beigesoft.webstore.persistable;
 
 /*
- * Beigesoft ™
+ * Copyright (c) 2015-2017 Beigesoft ™
  *
- * Licensed under the Apache License, Version 2.0
+ * Licensed under the GNU General Public License (GPL), Version 2.0
+ * (the "License");
+ * you may not use this file except in compliance with the License.
  *
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
  */
 
 import org.beigesoft.persistable.AHasIdLongVersion;
@@ -52,6 +54,22 @@ public class TradingSettings extends AHasIdLongVersion {
   private Boolean isSeServiceStore;
 
   /**
+   * <p>Not null, default false, is use auction.</p>
+   **/
+  private Boolean isUseAuction;
+
+  /**
+   * <p>Not Null, default true,
+   * is show file static/img/logo-web-store.png in the top menu.</p>
+   **/
+  private Boolean isShowLogo;
+
+  /**
+   * <p>Name that will be appeared in the top menu (if present).</p>
+   **/
+  private String webStoreName;
+
+  /**
    * <p>Not Null, default false, is use goods advising.</p>
    **/
   private Boolean isUseGoodsAdvising;
@@ -73,31 +91,21 @@ public class TradingSettings extends AHasIdLongVersion {
   private Boolean isUsePriceForCustomer;
 
   /**
-   * <p>Not Null, default true,
-   * is show file static/img/logo-web-store.png in the top menu.</p>
-   **/
-  private Boolean isShowLogo;
-
-  /**
-   * <p>Name that will be appeared in the top menu (if present).</p>
-   **/
-  private String webStoreName;
-
-  /**
    * <p>Not null, default category for new created DebtorCreditor
    * for new OnlineBuyer.</p>
    **/
   private DebtorCreditorCategory defaultCustomerCategory;
 
   /**
-   * <p>Remember unauthorized user for N days, 0 default, not null.</p>
+   * <p>Remember unauthorized user for N days, 0 default,
+   * not null - for BI and advertising.</p>
    **/
   private Integer rememberUnauthorizedUserFor;
 
   /**
    * <p>not null, default 5, maximum quantity
    * of top level catalogs shown in menu,
-   * others will be in drobdown menu "others".</p>
+   * others will be in drop-down menu "others".</p>
    **/
   private Integer maxQuantityOfTopLevelCatalogs;
 
@@ -105,11 +113,6 @@ public class TradingSettings extends AHasIdLongVersion {
    * <p>Items per page, Not null, default 50.</p>
    **/
   private Integer itemsPerPage;
-
-  /**
-   * <p>Not null, default false, is use auction.</p>
-   **/
-  private Boolean isUseAuction;
 
   /**
    * <p>not null, default 50, maximum quantity
@@ -136,6 +139,14 @@ public class TradingSettings extends AHasIdLongVersion {
    * added any item to cart for farther suggesting goods.</p>
    **/
   private Boolean isCreateOnlineUserOnFirstVisit;
+
+  /**
+   * <p>Not null, false default, false means that web-store used only payment
+   * method, and consequently no need to divide customer order.
+   * Usually it's online payment. For small shop or service maker
+   * payment usually made by cash.</p>
+   **/
+  private Boolean isUsedSeveralPaymentMethods;
 
   //Simple getters and setters:
   /**
@@ -447,5 +458,22 @@ public class TradingSettings extends AHasIdLongVersion {
   public final void setIsCreateOnlineUserOnFirstVisit(
     final Boolean pIsCreateOnlineUserOnFirstVisit) {
     this.isCreateOnlineUserOnFirstVisit = pIsCreateOnlineUserOnFirstVisit;
+  }
+
+  /**
+   * <p>Getter for isUsedSeveralPaymentMethods.</p>
+   * @return Boolean
+   **/
+  public final Boolean getIsUsedSeveralPaymentMethods() {
+    return this.isUsedSeveralPaymentMethods;
+  }
+
+  /**
+   * <p>Setter for isUsedSeveralPaymentMethods.</p>
+   * @param pIsUsedSeveralPaymentMethods reference
+   **/
+  public final void setIsUsedSeveralPaymentMethods(
+    final Boolean pIsUsedSeveralPaymentMethods) {
+    this.isUsedSeveralPaymentMethods = pIsUsedSeveralPaymentMethods;
   }
 }

@@ -1,13 +1,15 @@
 package org.beigesoft.settings;
 
 /*
- * Beigesoft ™
+ * Copyright (c) 2015-2017 Beigesoft ™
  *
- * Licensed under the Apache License, Version 2.0
+ * Licensed under the GNU General Public License (GPL), Version 2.0
+ * (the "License");
+ * you may not use this file except in compliance with the License.
  *
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
  */
 
 import java.util.Collections;
@@ -24,7 +26,7 @@ import org.beigesoft.properties.LinkedProperties;
 import org.beigesoft.exception.ExceptionWithCode;
 import org.beigesoft.comparator.CmprEntryValueStringInt;
 import org.beigesoft.properties.UtlProperties;
-import org.beigesoft.service.UtlReflection;
+import org.beigesoft.service.IUtlReflection;
 import org.beigesoft.log.ILogger;
 
 /**
@@ -44,12 +46,12 @@ public class MngSettings implements IMngSettings {
   /**
    * <p>Reflection service.</p>
    **/
-  private final UtlReflection utlReflection = new UtlReflection();
+  private IUtlReflection utlReflection;
 
   /**
    * <p>LinkedProperties service.</p>
    **/
-  private final UtlProperties utlProperties = new UtlProperties();
+  private UtlProperties utlProperties;
 
   /**
    * <p>All involved clases.</p>
@@ -72,6 +74,11 @@ public class MngSettings implements IMngSettings {
   private Map<Class<?>, Map<String, Map<String, String>>> fieldsSettings;
 
   /**
+   * <p>Cached if show debug messages.</p>
+   */
+  private boolean isShowDebugMessages;
+
+  /**
    * <p>Load configuration(settings) from given folder and file.</p>
    * @param pDirName base properties directory name
    * @param pFileName base properties file name
@@ -80,10 +87,11 @@ public class MngSettings implements IMngSettings {
   @Override
   public final void loadConfiguration(final String pDirName,
     final String pFileName) throws Exception {
+    this.isShowDebugMessages = this.logger
+      .getIsShowDebugMessagesFor(getClass());
     String nameBaseXml = "/" + pDirName + "/"
       + pFileName;
-    getLogger().debug(MngSettings.class, "try to load: "
-      + nameBaseXml);
+    this.logger.info(null, MngSettings.class, "try to load: " + nameBaseXml);
     LinkedProperties props = this.utlProperties.loadPropertiesXml(nameBaseXml);
     if (props == null) {
       throw new ExceptionWithCode(ExceptionWithCode.CONFIGURATION_MISTAKE,
@@ -98,8 +106,8 @@ public class MngSettings implements IMngSettings {
         "There is no property " + KEY_CLASSES
         + " in base configuration file!");
     }
-    getLogger().debug(MngSettings.class, "classes: "
-      + strClasses);
+    this.logger.info(null, MngSettings.class, "classes: "
+        + strClasses);
     LinkedHashSet<String> classesNames = this.utlProperties
       .evalPropsStringsSet(strClasses);
     for (String className : classesNames) {
@@ -263,8 +271,10 @@ public class MngSettings implements IMngSettings {
         .loadPropertiesXml(nameAppStXml);
       for (String settingName : propAppStXml.stringPropertyNames()) {
         String settingVal = propAppStXml.getProperty(settingName);
-        getLogger().debug(MngSettings.class, "add app setting: "
-          + settingName + " - " + settingVal);
+        if (this.isShowDebugMessages) {
+          this.logger.debug(null, MngSettings.class, "add app setting: "
+            + settingName + " - " + settingVal);
+        }
         this.appSettings.put(settingName,
           settingVal);
       }
@@ -290,8 +300,10 @@ public class MngSettings implements IMngSettings {
         "There is no property " + KEY_CLASS_SETTINGS_NAMES
           + " in base configuration file!");
     }
-    getLogger().debug(MngSettings.class, "classes settings keys: "
-      + strClasses);
+    if (this.isShowDebugMessages) {
+      this.logger.debug(null, MngSettings.class, "classes settings keys: "
+        + strClasses);
+    }
     LinkedHashSet<String> settingsNames = this.utlProperties
       .evalPropsStringsSet(strClasses);
     for (String settingName : settingsNames) {
@@ -299,8 +311,10 @@ public class MngSettings implements IMngSettings {
         "/" + pDirName + "/" + subFolder
           + FOLDER_CLASS_TYPE_TO_CS + "/" + settingName + ".xml");
       if (propJaTyToCs != null) {
-        getLogger().debug(MngSettings.class, "add class setting file: "
-          + settingName + " in " + FOLDER_CLASS_TYPE_TO_CS);
+        if (this.isShowDebugMessages) {
+          this.logger.debug(null, MngSettings.class, "add class setting file: "
+            + settingName + " in " + FOLDER_CLASS_TYPE_TO_CS);
+        }
         javaTypeToStMap.put(settingName, propJaTyToCs);
       }
     }
@@ -310,8 +324,9 @@ public class MngSettings implements IMngSettings {
         .loadPropertiesXml("/" + pDirName + "/"
           + subFolder + FOLDER_CLASS_TO_CS + "/"
             + clazz.getSimpleName() + ".xml");
-      if (propsClassToSetting != null) {
-        getLogger().debug(MngSettings.class, "add class setting file: "
+      if (propsClassToSetting != null
+        && this.isShowDebugMessages) {
+        this.logger.debug(null, MngSettings.class, "add class setting file: "
           + clazz.getSimpleName() + " in " + FOLDER_CLASS_TO_CS);
       }
       for (String settingName : settingsNames) {
@@ -353,9 +368,11 @@ public class MngSettings implements IMngSettings {
         if (javaTypeClass.isAssignableFrom(pClazzKey)) {
           String settingVal = this.utlProperties
             .evalPropVal(pProps, javaTypeName);
-          getLogger().debug(MngSettings.class, pDebugMsg
-            + " add setting by type : " + pSettingName + " - "
-              + settingVal);
+          if (this.isShowDebugMessages) {
+            this.logger.debug(null, MngSettings.class, pDebugMsg
+              + " add setting by type : " + pSettingName + " - "
+                + settingVal);
+          }
           pSettings.put(pSettingName,
             settingVal);
         }
@@ -378,11 +395,13 @@ public class MngSettings implements IMngSettings {
         final String pDebugMsg) {
     String settingValue = pProps.getProperty(pPropKey);
     if (settingValue != null) {
-      if (UtlProperties.NULL.equals(settingValue)) {
+      if (this.utlProperties.constNull().equals(settingValue)) {
         settingValue = null;
       }
-      getLogger().debug(MngSettings.class, pDebugMsg + " add setting : "
-        + pSettingName + " - " + settingValue);
+      if (this.isShowDebugMessages) {
+        this.logger.debug(null, MngSettings.class, pDebugMsg + " add setting : "
+          + pSettingName + " - " + settingValue);
+      }
       pSettings.put(pSettingName, settingValue);
       return true;
     }
@@ -436,8 +455,10 @@ public class MngSettings implements IMngSettings {
         "There is no property "
         + KEY_FIELD_SETTINGS_NAMES + " in base configuration file!");
     }
-    getLogger().debug(MngSettings.class, "fields settings keys: "
-      + strFields);
+    if (this.isShowDebugMessages) {
+      this.logger.debug(null, MngSettings.class, "fields settings keys: "
+        + strFields);
+    }
     LinkedHashSet<String> settingsNames = this.utlProperties
       .evalPropsStringsSet(strFields);
     for (String settingName : settingsNames) {
@@ -446,8 +467,10 @@ public class MngSettings implements IMngSettings {
         + "/" + subFolder + FOLDER_FIELD_TYPE_TO_FS
           + "/" + settingName + ".xml");
       if (propJaTyToSt != null) {
-        getLogger().debug(MngSettings.class, "add field setting file: "
-          + settingName + " in " + FOLDER_FIELD_TYPE_TO_FS);
+        if (this.isShowDebugMessages) {
+          this.logger.debug(null, MngSettings.class, "add field setting file: "
+            + settingName + " in " + FOLDER_FIELD_TYPE_TO_FS);
+        }
         javaTypeToStMap.put(settingName, propJaTyToSt);
       }
       LinkedProperties propFldNmToSt = this.utlProperties
@@ -455,8 +478,10 @@ public class MngSettings implements IMngSettings {
         + "/" + subFolder + FOLDER_FIELD_NAME_TO_FS
           + "/" + settingName + ".xml");
       if (propFldNmToSt != null) {
-        getLogger().debug(MngSettings.class, "add field setting file: "
-          + settingName + " in " + FOLDER_FIELD_NAME_TO_FS);
+        if (this.isShowDebugMessages) {
+          this.logger.debug(null, MngSettings.class, "add field setting file: "
+            + settingName + " in " + FOLDER_FIELD_NAME_TO_FS);
+        }
         fieldNameToStMap.put(settingName, propFldNmToSt);
       }
     }
@@ -468,8 +493,9 @@ public class MngSettings implements IMngSettings {
         + "/" + subFolder + FOLDER_CLASS_TO_FS
           + "/" + clazz.getSimpleName() + ".xml");
       Field[] fields = getUtlReflection().retrieveFields(clazz);
-      if (propsClassToSetting != null) {
-        getLogger().debug(MngSettings.class, "add field setting file: "
+      if (propsClassToSetting != null
+        && this.isShowDebugMessages) {
+        this.logger.debug(null, MngSettings.class, "add field setting file: "
           + clazz.getSimpleName() + " in " + FOLDER_CLASS_TO_FS);
       }
       for (Field field : fields) {
@@ -562,13 +588,16 @@ public class MngSettings implements IMngSettings {
     if (result == null) {
       result = this.utlProperties.loadPropertiesXml(pFileName);
       if (result != null) {
-        getLogger().debug(MngSettings.class, "added setting file: "
-          + pFileName);
+        if (this.isShowDebugMessages) {
+          this.logger.debug(null, MngSettings.class, "added setting file: "
+            + pFileName);
+        }
         propsMap.put(pKey, result);
       }
     }
     return result;
   }
+
   //Simple getters and setters:
   /**
    * <p>Geter for logger.</p>
@@ -587,18 +616,51 @@ public class MngSettings implements IMngSettings {
   }
 
   /**
-   * <p>Geter for utlReflection.</p>
-   * @return UtlReflection
+   * <p>Getter for utlReflection.</p>
+   * @return IUtlReflection
    **/
-  public final UtlReflection getUtlReflection() {
+  public final IUtlReflection getUtlReflection() {
     return this.utlReflection;
   }
 
   /**
-   * <p>Geter for utlProperties.</p>
+   * <p>Setter for utlReflection.</p>
+   * @param pUtlReflection reference
+   **/
+  public final void setUtlReflection(final IUtlReflection pUtlReflection) {
+    this.utlReflection = pUtlReflection;
+  }
+
+  /**
+   * <p>Getter for utlProperties.</p>
    * @return UtlProperties
    **/
   public final UtlProperties getUtlProperties() {
     return this.utlProperties;
+  }
+
+  /**
+   * <p>Setter for utlProperties.</p>
+   * @param pUtlProperties reference
+   **/
+  public final void setUtlProperties(final UtlProperties pUtlProperties) {
+    this.utlProperties = pUtlProperties;
+  }
+
+
+  /**
+   * <p>Getter for isShowDebugMessages.</p>
+   * @return boolean
+   **/
+  public final boolean getIsShowDebugMessages() {
+    return this.isShowDebugMessages;
+  }
+
+  /**
+   * <p>Setter for isShowDebugMessages.</p>
+   * @param pIsShowDebugMessages reference
+   **/
+  public final void setIsShowDebugMessages(final boolean pIsShowDebugMessages) {
+    this.isShowDebugMessages = pIsShowDebugMessages;
   }
 }

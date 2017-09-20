@@ -1,6 +1,14 @@
 site: http://www.beigesoft.org
 or https://sites.google.com/site/beigesoftware
 
+version 1.1.4
+Fixed bugs "FORBIDDEN (that doesn't rise in Android version)" ...
+Too lot of changes.
+new Beige-ORM
+new Beige-WEB
+...
+added Beige-Webstore.
+
 version 1.1.3.
 Change conformation dialog
 Fix ID appearance
@@ -35,8 +43,9 @@ Files overview.
   It renders forms (include entity pickers) and lists of any entity according XML settings.
   It contains only non-java webapp files: JSP, js, css, web.xml.
 * Beige-Accounting consist of accounting models and services, e.g. SalesInvoice and SrvSalesInvoice.
+* Beige-Webstore consist of webstore models and services that implement selling of own or something else goods and services (draft).
 * Beige-Accounting-Web-Jar contains of servlets, application factory and other Java, properties and UVD settings XML files for Beige-Accounting-Web.
-* Beige-Accounting-Web is BeigeAccounting web application that contains of JSP, JS, CSS files.
+* Beige-Accounting-Web is BeigeAccounting web application that contains of JSP, JS, CSS files that implement user interface.
 * Beige-Accounting-AJetty is BeigeAccounting based on embedded A-Jetty for standard Java and SQLite.
 * Beige-Android-Jar is library for Android that consist of implementation of database service for use in Beige-ORM and some other Java classes.
 * Beige-Android-Test is tests of Beige-ORM for Android platform.
@@ -44,15 +53,16 @@ Files overview.
 
 There are dependencies:
 
-https://github.com/demidenko05/a-javabeans - sources of OpenJDK7 javabeans adapted for Android (a-tomcat and a-jetty use it).
+https://github.com/demidenko05/a-javabeans8 - sources of OpenJDK8 javabeans adapted for Android (a-tomcat and a-jetty use it).
 
 https://github.com/demidenko05/a-tomcat-all - source of Apache Tomcat to precompile JSP/JSTL for A-Jetty.
 
 https://github.com/demidenko05/a-jetty-all - source of A-Jetty is Jetty 9.2 adapted for Android
 
 Prerequisites for building from source:
-* JDK7 (not 8, jdk 8 can not compile a-javabeans, but can run it).
+* JDK8 (not 7, jdk 7 can not compile a-javabeans8, but can run it).
 * last of Apache Maven and Ant.
+* Postgresql9+ with registered user/password "beigeaccounting/beigeaccounting" and created databases "beigeaccounting" and "beigeaccountingtest".
 * MySql 5.1.7+ with registered user/password "beigeaccounting/beigeaccounting" and created databases "beigeaccounting" and "beigeaccountingtest".
 * Android SDK without Studio and downloaded last version and 19 API. It requires some 32bit libs for 64bit Fedora (dnf install glibc.i686 glibc-devel.i686 libstdc++.i686 zlib-devel.i686 ncurses-devel.i686 libX11-devel.i686 libXrender.i686 libXrandr.i686)
 * Google Chrome, Opera, or Chromium browser (html5-dialog ready).
@@ -61,10 +71,8 @@ SQlite is already inside JDBC driver (its size is 5MB)
 
 Installation:
 All software are installed by simple "mvn clean install".
-Test web application Beige-WEB can be started by "mvn clean install tomcat7:run -P webtest" then open "http://localhost:8080/beige-web/"
-but after that run "mvn clean install" to install it as WEB library.
-Web application beige-accounting-web can be started by "mvn clean install tomcat7:run -P mysql"
-or just copy war file inside a JEE server, also copy mysql-jdbc-connector5.1.40.jar and HikariCP-2.4.3.jar into [server]/lib.
+Web application beige-accounting-web can be started by copy war file inside JEE server.
+The server must has slf4j-api-1.7.12.jar, mysql-jdbc-connector5.1.40.jar and HikariCP-2.4.3.jar in its libraries (versions are minimum).
 
 You can make your own JEE(JSP/JSTL) web-app to run on embedded A-Jetty for Standard Java or Android Java.
 To do this:
@@ -83,3 +91,8 @@ To do this:
 11. copy directory server from source anywhere and copy there your jar with dependencies
 12. start your jar with dependencies "java -jar [your jar]"
 13. to make your webapp working on embedded A-Jetty on Android see example beige-accounting-android.
+
+licenses:
+GNU General Public License version 2 - http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
+The Eclipse Public License, Version 1.0 - http://www.eclipse.org/legal/epl-v10.html
+The Apache Software License, Version 2.0 - http://www.apache.org/licenses/LICENSE-2.0.txt

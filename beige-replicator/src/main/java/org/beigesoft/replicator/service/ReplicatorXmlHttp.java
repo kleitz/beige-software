@@ -1,13 +1,15 @@
 package org.beigesoft.replicator.service;
 
 /*
- * Beigesoft ™
+ * Copyright (c) 2015-2017 Beigesoft ™
  *
- * Licensed under the Apache License, Version 2.0
+ * Licensed under the GNU General Public License (GPL), Version 2.0
+ * (the "License");
+ * you may not use this file except in compliance with the License.
  *
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
  */
 
 import java.util.Map;
@@ -146,7 +148,7 @@ public class ReplicatorXmlHttp<RS>
         pAddParams.put("statusString", new Date().toString() + ", "
           + ReplicatorXmlHttp.class.getSimpleName()
           + statusString);
-        this.logger.info(ReplicatorXmlHttp.class, statusString);
+        this.logger.info(null, ReplicatorXmlHttp.class, statusString);
         htmlWriter.write("<table>");
         htmlWriter.write("<tr><th style=\"padding: 5px;\">Class</th><th style=\"padding: 5px;\">Total records</th></tr>");
         for (Map.Entry<String, Integer> entry : classesCounts.entrySet()) {
@@ -163,7 +165,7 @@ public class ReplicatorXmlHttp<RS>
         + ReplicatorXmlHttp.class.getSimpleName()
           + ", " + ex.getShortMessage());
       }
-      this.logger.error(ReplicatorXmlHttp.class,
+      this.logger.error(null, ReplicatorXmlHttp.class,
         ex.getShortMessage());
       throw ex;
     }
@@ -261,7 +263,7 @@ public class ReplicatorXmlHttp<RS>
             entitiesReceived = Integer.parseInt(entitiesCountStr);
             if (entitiesReceived > 0) {
               classCount += entitiesReceived;
-              this.logger.info(ReplicatorXmlHttp.class,
+              this.logger.info(null, ReplicatorXmlHttp.class,
                 "Try to parse entities total: " + entitiesReceived + " of "
                   + entityClass.getCanonicalName());
               if (!isDbPreparedBefore) {
@@ -389,15 +391,22 @@ public class ReplicatorXmlHttp<RS>
         "application/x-www-form-urlencoded");
       urlConnection.addRequestProperty("Content-Length",
         String.valueOf(paramStr.length()));
-      this.logger.debug(ReplicatorXmlHttp.class,
-        "Request before flush auth:");
+      boolean isDbg = getLogger().getIsShowDebugMessagesFor(getClass());
+      if (isDbg) {
+        getLogger().debug(null, ReplicatorXmlHttp.class,
+          "Request before flush auth:");
+      }
       for (Map.Entry<String, List<String>> entry
         : urlConnection.getRequestProperties().entrySet()) {
-        this.logger.debug(ReplicatorXmlHttp.class,
-          "  Request entry key: " + entry.getKey());
+        if (isDbg) {
+          this.logger.debug(null, ReplicatorXmlHttp.class,
+            "  Request entry key: " + entry.getKey());
+        }
         for (String val : entry.getValue()) {
-          this.logger.debug(ReplicatorXmlHttp.class,
-            "   Request entry value: " + val);
+          if (isDbg) {
+            this.logger.debug(null, ReplicatorXmlHttp.class,
+              "   Request entry value: " + val);
+          }
         }
       }
       writer = new OutputStreamWriter(urlConnection

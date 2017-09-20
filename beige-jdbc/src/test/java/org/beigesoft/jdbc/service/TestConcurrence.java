@@ -1,13 +1,15 @@
 package org.beigesoft.jdbc.service;
 
 /*
- * Beigesoft ™
+ * Copyright (c) 2015-2017 Beigesoft ™
  *
- * Licensed under the Apache License, Version 2.0
+ * Licensed under the GNU General Public License (GPL), Version 2.0
+ * (the "License");
+ * you may not use this file except in compliance with the License.
  *
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
  */
 
 import java.math.BigDecimal;
@@ -88,7 +90,7 @@ public class TestConcurrence {
     int attempt = 0;
     while (!lIsThread3End && attempt < 20) {
       attempt++;
-      logger.info(this.getClass(), "Th0: waiting for Th3");
+      logger.info(null, this.getClass(), "Th0: waiting for Th3");
       Thread.sleep(700);
       synchronized (isThread3End) {
         lIsThread3End = isThread3End;
@@ -98,8 +100,8 @@ public class TestConcurrence {
     assertTrue(isThread2Ok);
     assertTrue(isThread3Ok);
     assertTrue(TestConcurrence.this.connThread1 != TestConcurrence.this.connThread2);
-    logger.info(this.getClass(), "Connection in thread1 - " + TestConcurrence.this.connThread1);
-    logger.info(this.getClass(), "Connection in thread2 - " + TestConcurrence.this.connThread2);
+    logger.info(null, this.getClass(), "Connection in thread1 - " + TestConcurrence.this.connThread1);
+    logger.info(null, this.getClass(), "Connection in thread2 - " + TestConcurrence.this.connThread2);
   }
 
   public void doThread1() {
@@ -119,7 +121,7 @@ public class TestConcurrence {
           cake = TestConcurrence.this.srvOrm.retrieveEntity(addParam, cake);
           TestConcurrence.this.srvDatabase.commitTransaction();
           TestConcurrence.this.cakeId = cake.getItsId();
-          logger.info(this.getClass(), "Th1: cake inserted");
+          logger.info(null, this.getClass(), "Th1: cake inserted");
           assertNotNull(cake.getItsVersion());
           synchronized (TestConcurrence.this.isCakeInserted) {
             TestConcurrence.this.isCakeInserted = true;
@@ -128,7 +130,7 @@ public class TestConcurrence {
           int attempt = 0;
           while (!lIsCakeUpdatedByTh2 && attempt < 20) {
             attempt++;
-            logger.info(this.getClass(), "Th1: waiting for updating cake by Th2");
+            logger.info(null, this.getClass(), "Th1: waiting for updating cake by Th2");
             Thread.sleep(200);
             synchronized (TestConcurrence.this.isCakeUpdatedByTh2) {
               lIsCakeUpdatedByTh2 = TestConcurrence.this.isCakeUpdatedByTh2;
@@ -142,7 +144,7 @@ public class TestConcurrence {
           } catch (ExceptionWithCode ex) {
             if (ex.getCode() == SrvDatabase.DIRTY_READ) {
               isCakeChangedByTh2 = true;
-              logger.info(this.getClass(), "Th1 exeption: " + ex.getMessage());
+              logger.info(null, this.getClass(), "Th1 exeption: " + ex.getMessage());
               TestConcurrence.this.srvDatabase.rollBackTransaction();
             }
           }
@@ -151,7 +153,7 @@ public class TestConcurrence {
           synchronized (TestConcurrence.this.isThread1End) {
             TestConcurrence.this.isThread1End = true;
           }
-          logger.info(this.getClass(), "Th1: exit");
+          logger.info(null, this.getClass(), "Th1: exit");
           TestConcurrence.this.isThread1Ok = true;
         } catch (Exception ex) {
           ex.printStackTrace();
@@ -193,7 +195,7 @@ public class TestConcurrence {
           TestConcurrence.this.srvDatabase.beginTransaction();
           TestConcurrence.this.srvOrm.insertEntity(addParam, sugar);
           TestConcurrence.this.srvDatabase.commitTransaction();
-          logger.info(this.getClass(), "Th2: sugar inserted");
+          logger.info(null, this.getClass(), "Th2: sugar inserted");
           TestConcurrence.this.sugarId = sugar.getItsId();
           boolean lIsCakeInserted = false;
           synchronized (TestConcurrence.this.isCakeInserted) {
@@ -202,7 +204,7 @@ public class TestConcurrence {
           int attempt = 0;
           while (!lIsCakeInserted && attempt < 20) {
             attempt++;
-            logger.info(this.getClass(), "Th2: waiting for cake");
+            logger.info(null, this.getClass(), "Th2: waiting for cake");
             Thread.sleep(200);
             synchronized (TestConcurrence.this.isCakeInserted) {
               lIsCakeInserted = TestConcurrence.this.isCakeInserted;
@@ -218,7 +220,7 @@ public class TestConcurrence {
           //cake = TestConcurrence.this.srvOrm.retrieveEntity(addParam, cake); // refresh
           TestConcurrence.this.srvDatabase.commitTransaction();
           assertNotSame(oldVersion, cake.getItsVersion());
-          logger.info(this.getClass(), "Th2: cake updated");
+          logger.info(null, this.getClass(), "Th2: cake updated");
           synchronized (TestConcurrence.this.isCakeUpdatedByTh2) {
             TestConcurrence.this.isCakeUpdatedByTh2 = true;
           }
@@ -226,7 +228,7 @@ public class TestConcurrence {
           synchronized (TestConcurrence.this.isThread2End) {
             TestConcurrence.this.isThread2End = true;
           }
-          logger.info(this.getClass(), "Th2: exit");
+          logger.info(null, this.getClass(), "Th2: exit");
           TestConcurrence.this.isThread2Ok = true;
         } catch (Exception ex) {
           ex.printStackTrace();
@@ -260,7 +262,7 @@ public class TestConcurrence {
           Map<String, Object> addParam = new HashMap<String, Object>();
           while (!lIsThread1End && attempt < 20) {
             attempt++;
-            logger.info(this.getClass(), "Th3: waiting for Th1");
+            logger.info(null, this.getClass(), "Th3: waiting for Th1");
             Thread.sleep(450);
             synchronized (TestConcurrence.this.isThread1End) {
               lIsThread1End = TestConcurrence.this.isThread1End;
@@ -273,7 +275,7 @@ public class TestConcurrence {
           attempt = 0;
           while (!lIsThread2End && attempt < 20) {
             attempt++;
-            logger.info(this.getClass(), "Th3: waiting for Th2");
+            logger.info(null, this.getClass(), "Th3: waiting for Th2");
             Thread.sleep(450);
             synchronized (TestConcurrence.this.isThread2End) {
               lIsThread2End = TestConcurrence.this.isThread2End;
@@ -284,18 +286,18 @@ public class TestConcurrence {
             GoodVersionTime cake = new GoodVersionTime();
             cake.setItsId(cakeId);
             TestConcurrence.this.srvOrm.deleteEntity(addParam, cake);
-            logger.info(this.getClass(), "Th3: cake deleted");
+            logger.info(null, this.getClass(), "Th3: cake deleted");
           }
           if (sugarId != null) {
             GoodVersionTime sugar = new GoodVersionTime();
             sugar.setItsId(sugarId);
             TestConcurrence.this.srvOrm.deleteEntity(addParam, sugar);
-            logger.info(this.getClass(), "Th3: sugar deleted");
+            logger.info(null, this.getClass(), "Th3: sugar deleted");
           }
           synchronized (TestConcurrence.this.isThread3End) {
             TestConcurrence.this.isThread3End = true;
           }
-          logger.info(this.getClass(), "Th3: exit");
+          logger.info(null, this.getClass(), "Th3: exit");
           TestConcurrence.this.isThread3Ok = true;
         } catch (Exception ex) {
           ex.printStackTrace();

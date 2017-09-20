@@ -4,11 +4,14 @@ This software requires:
 * Google Chrome, Opera, or Chromium browser (html5-dialog ready).
 
 To start application:
-1. either double click on <b>startup.bat</b>
-  or start command prompt in beige-accounting folder and enter command:
-  java -jar beige-accounting-ajetty-jar-with-dependencies.jar port=8080.
-  Port may be 8081, 8082...
-2. open Google Chrome (Opera) and type "http://localhost:8080"
+1. After installing Java (Oracle) you can run any Java "JAR" file by double click on it.
+  Do it with beige-accounting-ajetty-jar-with-dependencies.jar.
+  You also can launch "JAR" file from command prompt (terminal) with command:
+  "java -jar beige-accounting-ajetty-jar-with-dependencies.jar"
+2. Application menu to start/stop server will be appeared.
+3. Press "Start" button, then wait while server has been started
+  (for the 1-st time it may takes up to 1 minute to create database),
+  then press button "http://localhost:8080" to start browser.
 
 licenses:
 GNU General Public License version 2 - http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html

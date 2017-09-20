@@ -1,13 +1,15 @@
 package org.beigesoft.settings;
 
 /*
- * Beigesoft ™
+ * Copyright (c) 2015-2017 Beigesoft ™
  *
- * Licensed under the Apache License, Version 2.0
+ * Licensed under the GNU General Public License (GPL), Version 2.0
+ * (the "License");
+ * you may not use this file except in compliance with the License.
  *
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
  */
 
 import java.util.Map;
@@ -17,6 +19,8 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import org.beigesoft.log.LoggerSimple;
+import org.beigesoft.properties.UtlProperties;
+import org.beigesoft.service.UtlReflection;
 
 /**
  * <p>Test of CLS service.
@@ -31,6 +35,8 @@ public class TestSrvCls {
   @Test
   public void tests() throws Exception {
     MngSettings mngSettings = new MngSettings();
+    mngSettings.setUtlProperties(new UtlProperties());
+    mngSettings.setUtlReflection(new UtlReflection());
     mngSettings.setLogger(logger);
     mngSettings.loadConfiguration("beige-settings","base.xml");
     assertEquals("select * from INFORMATION_SCHEMA.TABLES where TABLE_NAME=':tableName';",

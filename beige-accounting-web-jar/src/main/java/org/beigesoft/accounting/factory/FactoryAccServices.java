@@ -1,13 +1,15 @@
 package org.beigesoft.accounting.factory;
 
 /*
- * Beigesoft ™
+ * Copyright (c) 2015-2017 Beigesoft ™
  *
- * Licensed under the Apache License, Version 2.0
+ * Licensed under the GNU General Public License (GPL), Version 2.0
+ * (the "License");
+ * you may not use this file except in compliance with the License.
  *
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
  */
 
 import java.util.Map;
@@ -681,7 +683,7 @@ public class FactoryAccServices<RS> implements IFactoryAppBeans {
         .lazyGetSrvDatabase());
       srvReplTaxMarketXml.setDatabaseReader(databaseReaderSyncStdXml);
       srvReplTaxMarketXml.setLogger(this.factoryAppBeans.lazyGetLogger());
-      this.factoryAppBeans.lazyGetLogger().info(FactoryAccServices.class,
+      this.factoryAppBeans.lazyGetLogger().info(null, FactoryAccServices.class,
         "srvReplTaxMarketXml has been created.");
       this.factoryAppBeans.getBeansMap()
         .put(beanName, srvReplTaxMarketXml);
@@ -730,7 +732,7 @@ public class FactoryAccServices<RS> implements IFactoryAppBeans {
       dbWriterXmlReplTaxMarket.setSrvDatabase(this.factoryAppBeans
         .lazyGetSrvDatabase());
       dbWriterXmlReplTaxMarket.setSrvOrm(this.factoryAppBeans.lazyGetSrvOrm());
-      this.factoryAppBeans.lazyGetLogger().info(FactoryAccServices.class,
+      this.factoryAppBeans.lazyGetLogger().info(null, FactoryAccServices.class,
         "DatabaseWriterXml tax-market has been created.");
       this.factoryAppBeans.getBeansMap()
         .put(beanName, dbWriterXmlReplTaxMarket);
@@ -760,9 +762,13 @@ public class FactoryAccServices<RS> implements IFactoryAppBeans {
     if (mngSettingsReplTaxMarket == null) {
       mngSettingsReplTaxMarket = new MngSettings();
       mngSettingsReplTaxMarket.setLogger(this.factoryAppBeans.lazyGetLogger());
+      mngSettingsReplTaxMarket.setUtlProperties(this.factoryAppBeans
+        .lazyGetUtlProperties());
+      mngSettingsReplTaxMarket.setUtlReflection(this.factoryAppBeans
+        .lazyGetUtlReflection());
       mngSettingsReplTaxMarket
         .loadConfiguration("tax-to-market", "base.xml");
-      this.factoryAppBeans.lazyGetLogger().info(FactoryAccServices.class,
+      this.factoryAppBeans.lazyGetLogger().info(null, FactoryAccServices.class,
         "MngSettings tax-market replicator has been created.");
       this.factoryAppBeans.getBeansMap()
         .put(beanName, mngSettingsReplTaxMarket);
@@ -801,7 +807,7 @@ public class FactoryAccServices<RS> implements IFactoryAppBeans {
         .factoryAppBeans.lazyGetSrvDatabase(), lazyGetSrvAccSettings(),
           lazyGetSrvBalanceStd());
       srvReqBalanceSheet.setSrvBalanceSheet(srvBalanceSheet);
-      this.factoryAppBeans.lazyGetLogger().info(FactoryAccServices.class,
+      this.factoryAppBeans.lazyGetLogger().info(null, FactoryAccServices.class,
         "SrvReqBalanceSheet has been created.");
       this.factoryAppBeans.getBeansMap()
         .put(beanName, srvReqBalanceSheet);

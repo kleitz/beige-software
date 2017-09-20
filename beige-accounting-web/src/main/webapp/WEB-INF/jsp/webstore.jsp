@@ -10,23 +10,23 @@
     <meta name="description" content="">
     <meta name="author" content="">
     
-    <link rel="icon" type="image/png" href="../static/img/favicon.png">
+    <link rel="icon" type="image/png" href="static/img/favicon.png">
 
     <title>Beige-WEB-Store</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="static/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap theme -->
-    <link href="../static/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="static/css/bootstrap-theme.min.css" rel="stylesheet">
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <link href="../static/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+    <link href="static/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="../static/css/theme.css" rel="stylesheet">
+    <link href="static/css/theme.css" rel="stylesheet">
 
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><script src="../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
-    <script src="../static/js/ie-emulation-modes-warning.js"></script>
+    <script src="static/js/ie-emulation-modes-warning.js"></script>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -49,9 +49,9 @@
             <span class="icon-bar"></span>
           </button>
           <c:if test="${tradingSettings.isShowLogo}">
-            <a href="service?nmRnd=webstore&nmHnd=hndTrdTrnsReq&nmPrc=PrcWebstorePage&catalogId" class="navbar-brand navbar-brand-img"><img src="../static/img/logo-web-store.png"></a>
+            <a href="servicePublic?nmRnd=webstore&nmHnd=hndTrdTrnsReq&nmPrc=PrcWebstorePage&catalogId" class="navbar-brand navbar-brand-img"><img src="static/img/logo-web-store.png"></a>
           </c:if>
-          <a class="navbar-brand" href="service?nmRnd=webstore&nmHnd=hndTrdTrnsReq&nmPrc=PrcWebstorePage">${tradingSettings.webStoreName}</a>
+          <a class="navbar-brand" href="servicePublic?nmRnd=webstore&nmHnd=hndTrdTrnsReq&nmPrc=PrcWebstorePage">${tradingSettings.webStoreName}</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
@@ -65,14 +65,14 @@
                         <li><a href="#" data-toggle="modal" data-target="#subcatalogsMdl${cat2l.itsId}">${cat2l.itsName}</a></li>
                       </c:if>
                       <c:if test="${empty cat2l.subcatalogs}">
-                        <li><a href="service?nmRnd=webstore&nmHnd=hndTrdTrnsReq&nmPrc=PrcWebstorePage&catalogName=${cat2l.itsName}&catalogId=${cat2l.itsId}">${cat2l.itsName}</a></li>
+                        <li><a href="servicePublic?nmRnd=webstore&nmHnd=hndTrdTrnsReq&nmPrc=PrcWebstorePage&catalogName=${cat2l.itsName}&catalogId=${cat2l.itsId}">${cat2l.itsName}</a></li>
                       </c:if>
                     </c:forEach>
                   </ul>
                 </li>
               </c:if>
               <c:if test="${empty cat1l.subcatalogs}">
-                <li><a href="service?nmRnd=webstore&nmHnd=hndTrdTrnsReq&nmPrc=PrcWebstorePage&catalogName=${cat1l.itsName}&catalogId=${cat1l.itsId}">${cat1l.itsName}</a></li>
+                <li><a href="servicePublic?nmRnd=webstore&nmHnd=hndTrdTrnsReq&nmPrc=PrcWebstorePage&catalogName=${cat1l.itsName}&catalogId=${cat1l.itsId}">${cat1l.itsName}</a></li>
               </c:if>
               <c:if test="${not empty listFilter}">
                 <li><a href="#" data-toggle="modal" data-target="#filterMdl"><span class="glyphicon glyphicon-filter"></span><span class="glyphicon glyphicon-sort"></span></a></li>
@@ -178,7 +178,7 @@
         <h4 class="modal-title" id="cartAddMdlLabel"><span class="glyphicon glyphicon-shopping-cart"></span><span class="glyphicon glyphicon-cart"></span>${srvI18n.getMsg("add_item_to_cart")}</h4>
       </div>
       <div class="modal-body">
-        <form action="service" method="POST">
+        <form action="servicePublic" method="POST">
           <input type="hidden" name="nmRnd" value="webstore">
           <input type="hidden" name="nmHnd" value="hndTrdTrnsReq">
           <input type="hidden" name="nmPrc" value="PrcItemInCart">
@@ -219,7 +219,7 @@
         <h4 class="modal-title" id="cartEditMdlLabel"><span class="glyphicon glyphicon-shopping-cart"></span><span class="glyphicon glyphicon-cart"></span>${srvI18n.getMsg("item_change_quantity")}</h4>
       </div>
       <div class="modal-body">
-        <form action="service" method="POST">
+        <form action="servicePublic" method="POST">
           <input type="hidden" name="nmRnd" value="webstore">
           <input type="hidden" name="nmHnd" value="hndTrdTrnsReq">
           <input type="hidden" name="nmPrc" value="PrcItemInCart">
@@ -261,7 +261,7 @@
         <h4 class="modal-title" id="cartDelMdlLabel"><span class="glyphicon glyphicon-shopping-cart"></span><span class="glyphicon glyphicon-cart"></span>${srvI18n.getMsg("item_remove")}</h4>
       </div>
       <div class="modal-body">
-        <form action="service" method="POST">
+        <form action="servicePublic" method="POST">
           <input type="hidden" name="nmRnd" value="webstore">
           <input type="hidden" name="nmHnd" value="hndTrdTrnsReq">
           <input type="hidden" name="nmPrc" value="PrcDelItemFromCart">
@@ -361,7 +361,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">${srvI18n.getMsg("Close")}</button>
-        <a href="service?nmRnd=webstore&nmHnd=hndTrdTrnsReq&nmPrc=PrcCartCheckOut" type="button" class="btn btn-primary">${srvI18n.getMsg("check_out")}</a>
+        <a href="servicePublic?nmRnd=webstore&nmHnd=hndTrdTrnsReq&nmPrc=PrcCartCheckOut" type="button" class="btn btn-primary">${srvI18n.getMsg("check_out")}</a>
       </div>
     </div>
   </div>
@@ -399,27 +399,27 @@
             <c:forEach var="cat3l" items="${entry.value}">
               <li>
                 <c:if test="${empty cat3l.subcatalogs}">
-                  <a href="service?nmRnd=webstore&nmHnd=hndTrdTrnsReq&nmPrc=PrcWebstorePage&catalogId=${cat3l.itsId}&catalogName=${cat3l.itsName}" class="cat3ml">${cat3l.itsName}</a>
+                  <a href="servicePublic?nmRnd=webstore&nmHnd=hndTrdTrnsReq&nmPrc=PrcWebstorePage&catalogId=${cat3l.itsId}&catalogName=${cat3l.itsName}" class="cat3ml">${cat3l.itsName}</a>
                 </c:if>
                 <c:if test="${not empty cat3l.subcatalogs}">
                   <a href="#" class="cat3ml">${cat3l.itsName}</a>
                   <c:forEach var="cat4l" items="${cat3l.subcatalogs}">
                     <li>
                       <c:if test="${empty cat4l.subcatalogs}">
-                        <a href="service?nmRnd=webstore&nmHnd=hndTrdTrnsReq&nmPrc=PrcWebstorePage&catalogId=${cat4l.itsId}&catalogName=${cat4l.itsName}" class="cat3ml">${cat4l.itsName}</a>
+                        <a href="servicePublic?nmRnd=webstore&nmHnd=hndTrdTrnsReq&nmPrc=PrcWebstorePage&catalogId=${cat4l.itsId}&catalogName=${cat4l.itsName}" class="cat3ml">${cat4l.itsName}</a>
                       </c:if>
                       <c:if test="${not empty cat4l.subcatalogs}">
                         <a href="#" class="cat3ml">${cat4l.itsName}</a>
                         <c:forEach var="cat5l" items="${cat4l.subcatalogs}">
                           <li>
                             <c:if test="${empty cat5l.subcatalogs}">
-                              <a href="service?nmRnd=webstore&nmHnd=hndTrdTrnsReq&nmPrc=PrcWebstorePage&catalogId=${cat5l.itsId}&catalogName=${cat5l.itsName}" class="cat3ml">${cat5l.itsName}</a>
+                              <a href="servicePublic?nmRnd=webstore&nmHnd=hndTrdTrnsReq&nmPrc=PrcWebstorePage&catalogId=${cat5l.itsId}&catalogName=${cat5l.itsName}" class="cat3ml">${cat5l.itsName}</a>
                             </c:if>
                             <c:if test="${not empty cat5l.subcatalogs}">
                               <a href="#" class="cat3ml">${cat5l.itsName}</a>
                               <c:forEach var="cat6l" items="${cat5l.subcatalogs}">
                                 <li>
-                                  <a href="service?nmRnd=webstore&nmHnd=hndTrdTrnsReq&nmPrc=PrcWebstorePage&catalogId=${cat6l.itsId}&catalogName=${cat6l.itsName}" class="cat3ml">${cat6l.itsName}</a>
+                                  <a href="servicePublic?nmRnd=webstore&nmHnd=hndTrdTrnsReq&nmPrc=PrcWebstorePage&catalogId=${cat6l.itsId}&catalogName=${cat6l.itsName}" class="cat3ml">${cat6l.itsName}</a>
                                 </li>
                               </c:forEach>
                             </c:if>
@@ -444,13 +444,13 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="../static/js/jquery.min.js"></script>
-    <script src="../static/js/bootstrap.min.js"></script>
-    <script src="../static/js/beige.webstore.js"></script>
+    <script src="static/js/jquery.min.js"></script>
+    <script src="static/js/bootstrap.min.js"></script>
+    <script src="static/js/beige.webstore.js"></script>
     <c:if test="${not empty param.cartItemItsId}">
       <script>$('#cartMdl').modal('show');</script>
     </c:if>
      <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="../static/js/ie10-viewport-bug-workaround.js"></script>
+    <script src="static/js/ie10-viewport-bug-workaround.js"></script>
   </body>
 </html>

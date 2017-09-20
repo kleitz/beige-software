@@ -31,4 +31,12 @@
     <Valve className="org.apache.catalina.valves.CometConnectionManagerValve" />
     -->
 
+  <Realm className="org.apache.catalina.realm.JDBCRealm" 
+    connectionURL="jdbc:mysql://localhost/beigeaccounting?user=beigeaccounting&amp;password=beigeaccounting"
+    driverName="com.mysql.jdbc.Driver"
+    roleNameCol="ITSROLE"
+    userCredCol="ITSPASSWORD"
+    userNameCol="ITSUSER"
+    userRoleTable="USERROLETOMCAT"
+    userTable="USERTOMCAT"/>  
 </Context>

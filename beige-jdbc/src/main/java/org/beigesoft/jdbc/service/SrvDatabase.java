@@ -1,13 +1,15 @@
 package org.beigesoft.jdbc.service;
 
 /*
- * Beigesoft ™
+ * Copyright (c) 2015-2017 Beigesoft ™
  *
- * Licensed under the Apache License, Version 2.0
+ * Licensed under the GNU General Public License (GPL), Version 2.0
+ * (the "License");
+ * you may not use this file except in compliance with the License.
  *
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
  */
 
 import java.sql.Savepoint;
@@ -167,8 +169,10 @@ public class SrvDatabase extends ASrvDatabase<ResultSet> {
   @Override
   public final void
     rollBackTransaction(final String pSavepointName) throws Exception {
-    getLogger().debug(SrvDatabase.class, "try to rollback to savepoint: "
-      + pSavepointName);
+    if (getLogger().getIsShowDebugMessagesFor(getClass())) {
+      getLogger().debug(null, SrvDatabase.class,
+        "try to rollback to savepoint: " + pSavepointName);
+    }
     this.threadConnection.get().
       rollback(savepointsMap.get(pSavepointName));
     savepointsMap.remove(pSavepointName);
@@ -224,9 +228,11 @@ public class SrvDatabase extends ASrvDatabase<ResultSet> {
   public final IRecordSet<ResultSet>
     retrieveRecords(final String pSelect) throws Exception {
     try {
-      getLogger().debug(SrvDatabase.class, "Thread ID=" + Thread.currentThread()
-        .getId() + ", try to retrieve records: "
-        + pSelect);
+      if (getLogger().getIsShowDebugMessagesFor(getClass())) {
+        getLogger().debug(null, SrvDatabase.class, "Thread ID="
+          + Thread.currentThread().getId() + ", try to retrieve records: "
+            + pSelect);
+      }
       final Statement stmt = getOrEstablishConnection().createStatement();
       final ResultSet rs = stmt.executeQuery(pSelect);
       return new RecordSetJdbc(rs, stmt);
@@ -247,9 +253,11 @@ public class SrvDatabase extends ASrvDatabase<ResultSet> {
   public final void executeQuery(final String pQuery) throws Exception {
     Statement stmt = null;
     try {
-      getLogger().debug(SrvDatabase.class, "Thread ID=" + Thread.currentThread()
-        .getId() + ", try to execute query: "
-        + pQuery);
+      if (getLogger().getIsShowDebugMessagesFor(getClass())) {
+        getLogger().debug(null, SrvDatabase.class, "Thread ID="
+          + Thread.currentThread().getId() + ", try to execute query: "
+            + pQuery);
+      }
       stmt = getOrEstablishConnection().createStatement();
       stmt.executeUpdate(pQuery);
     } catch (SQLException sqle) {
@@ -281,9 +289,11 @@ public class SrvDatabase extends ASrvDatabase<ResultSet> {
     String query = getHlpInsertUpdate().evalSqlUpdate(pTable,
       pColumnsVals, pWhere);
     try {
-      getLogger().debug(SrvDatabase.class, "Thread ID=" + Thread.currentThread()
-        .getId() + ", try to execute update: "
-        + query);
+      if (getLogger().getIsShowDebugMessagesFor(getClass())) {
+        getLogger().debug(null, SrvDatabase.class, "Thread ID="
+          + Thread.currentThread().getId() + ", try to execute update: "
+            + query);
+      }
       stmt = getOrEstablishConnection().createStatement();
       return stmt.executeUpdate(query);
     } catch (SQLException sqle) {
@@ -312,9 +322,12 @@ public class SrvDatabase extends ASrvDatabase<ResultSet> {
     Statement stmt = null;
     String query = getHlpInsertUpdate().evalSqlInsert(pTable, pColumnsVals);
     try {
-      getLogger().debug(SrvDatabase.class, "Thread ID=" + Thread.currentThread()
-        .getId() + ", try to execute insert: "
-        + query);
+      if (getLogger().getIsShowDebugMessagesFor(getClass())) {
+        getLogger().debug(null, SrvDatabase.class, "Thread ID="
+          + Thread.currentThread()
+          .getId() + ", try to execute insert: "
+          + query);
+      }
       stmt = getOrEstablishConnection().createStatement();
       return stmt.executeUpdate(query);
     } catch (SQLException sqle) {
@@ -347,9 +360,11 @@ public class SrvDatabase extends ASrvDatabase<ResultSet> {
     }
     String query = "delete from " + pTable + strWhere + ";";
     try {
-      getLogger().debug(SrvDatabase.class, "Thread ID=" + Thread.currentThread()
-        .getId() + ", try to execute delete: "
-        + query);
+      if (getLogger().getIsShowDebugMessagesFor(getClass())) {
+        getLogger().debug(null, SrvDatabase.class, "Thread ID="
+          + Thread.currentThread().getId() + ", try to execute delete: "
+            + query);
+      }
       stmt = getOrEstablishConnection().createStatement();
       return stmt.executeUpdate(query);
     } catch (SQLException sqle) {

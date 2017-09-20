@@ -1,13 +1,15 @@
 package org.beigesoft.accounting.service;
 
 /*
- * Beigesoft ™
+ * Copyright (c) 2015-2017 Beigesoft ™
  *
- * Licensed under the Apache License, Version 2.0
+ * Licensed under the GNU General Public License (GPL), Version 2.0
+ * (the "License");
+ * you may not use this file except in compliance with the License.
  *
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
  */
 
 import java.util.List;
@@ -119,8 +121,8 @@ public class SrvBalanceStd<RS> implements ISrvBalance {
     }
     if (!lazyGetBalanceAtAllDirtyCheck(pAddParam).getBalanceStorePeriod()
       .equals(pPeriod)) {
-      getLogger().info(SrvBalanceStd.class, SrvBalanceStd.class.getSimpleName()
-        + ": changing period from " + lazyGetBalanceAtAllDirtyCheck(pAddParam)
+      getLogger().info(null, SrvBalanceStd.class,
+        "changing period from " + lazyGetBalanceAtAllDirtyCheck(pAddParam)
           .getBalanceStorePeriod() + " to " + pPeriod);
       lazyGetBalanceAtAllDirtyCheck(pAddParam).setBalanceStorePeriod(pPeriod);
       if (!getSrvAccSettings().lazyGetAccSettings(pAddParam)
@@ -151,8 +153,8 @@ public class SrvBalanceStd<RS> implements ISrvBalance {
     if (!lazyGetBalanceAtAllDirtyCheck(pAddParam).getBalanceStorePeriod()
       .equals(getSrvAccSettings().lazyGetAccSettings(pAddParam)
         .getBalanceStorePeriod())) {
-      getLogger().info(SrvBalanceStd.class, SrvBalanceStd.class.getSimpleName()
-        + ": changing period from " + lazyGetBalanceAtAllDirtyCheck(pAddParam)
+      getLogger().info(null, SrvBalanceStd.class,
+        "changing period from " + lazyGetBalanceAtAllDirtyCheck(pAddParam)
           .getBalanceStorePeriod() + " to " + getSrvAccSettings()
             .lazyGetAccSettings(pAddParam).getBalanceStorePeriod());
       lazyGetBalanceAtAllDirtyCheck(pAddParam)
@@ -201,10 +203,12 @@ public class SrvBalanceStd<RS> implements ISrvBalance {
       final Long pSubaccId, final Date pDateAt) throws Exception {
     if (lazyGetBalanceAtAllDirtyCheck(pAddParam).getLeastAccountingEntryDate()
       .getTime() > pDateAt.getTime()) {
-      getLogger().debug(SrvBalanceStd.class, SrvBalanceStd.class.getSimpleName()
-        + ": changing least last entry date from "
-          + lazyGetBalanceAtAllDirtyCheck(pAddParam)
-            .getLeastAccountingEntryDate() + " to " + pDateAt);
+      if (getLogger().getIsShowDebugMessagesFor(getClass())) {
+        getLogger().debug(null, SrvBalanceStd.class,
+          "changing least last entry date from "
+            + lazyGetBalanceAtAllDirtyCheck(pAddParam)
+              .getLeastAccountingEntryDate() + " to " + pDateAt);
+      }
       lazyGetBalanceAtAllDirtyCheck(pAddParam)
         .setLeastAccountingEntryDate(pDateAt);
     }
@@ -264,8 +268,8 @@ public class SrvBalanceStd<RS> implements ISrvBalance {
   public final synchronized void recalculateAll(
     final Map<String, Object> pAddParam, final Date pDateFor,
       final boolean pIsPrepareNeed) throws Exception {
-    getLogger().info(SrvBalanceStd.class, SrvBalanceStd.class.getSimpleName()
-      + ": recalculation start BalanceAtAllDirtyCheck was "
+    getLogger().info(null, SrvBalanceStd.class,
+      "recalculation start BalanceAtAllDirtyCheck was "
         + lazyGetBalanceAtAllDirtyCheck(pAddParam));
     if (pIsPrepareNeed) {
       //must be before evalDateBalanceStoreStart!!!
@@ -273,8 +277,8 @@ public class SrvBalanceStd<RS> implements ISrvBalance {
       evalDateBalanceStoreStart(pAddParam);
     }
     if (lazyGetBalanceAtAllDirtyCheck(pAddParam).getIsPeriodChanged()) {
-      getLogger().info(SrvBalanceStd.class, SrvBalanceStd.class.getSimpleName()
-        + ": deleting all stored balances cause period has changed");
+      getLogger().info(null, SrvBalanceStd.class,
+        "deleting all stored balances cause period has changed");
       getSrvDatabase().executeDelete(BalanceAt.class.getSimpleName()
         .toUpperCase(), null);
       lazyGetBalanceAtAllDirtyCheck(pAddParam).setIsPeriodChanged(false);
@@ -286,15 +290,15 @@ public class SrvBalanceStd<RS> implements ISrvBalance {
       //recalculate from start;
       date = evalDateNextPeriodStart(pAddParam,
         lazyGetBalanceAtAllDirtyCheck(pAddParam).getDateBalanceStoreStart());
-      getLogger().info(SrvBalanceStd.class, SrvBalanceStd.class.getSimpleName()
-        + ": recalculating balances from start " + date + " <- "
+      getLogger().info(null, SrvBalanceStd.class,
+        "recalculating balances from start " + date + " <- "
         + lazyGetBalanceAtAllDirtyCheck(pAddParam).getDateBalanceStoreStart());
     } else {
       //recalculate from current end;
       date = evalDateNextPeriodStart(pAddParam,
         lazyGetBalanceAtAllDirtyCheck(pAddParam).getCurrentBalanceDate());
-      getLogger().info(SrvBalanceStd.class, SrvBalanceStd.class.getSimpleName()
-        + ": recalculating balances from current end " + date + " <- "
+      getLogger().info(null, SrvBalanceStd.class,
+        "recalculating balances from current end " + date + " <- "
           + lazyGetBalanceAtAllDirtyCheck(pAddParam).getCurrentBalanceDate());
     }
     Date lastBalanceStoredDate = date;
@@ -338,8 +342,8 @@ public class SrvBalanceStd<RS> implements ISrvBalance {
       }
       date = evalDateNextPeriodStart(pAddParam, date);
     } while (date.getTime() <= pDateFor.getTime());
-    getLogger().info(SrvBalanceStd.class, SrvBalanceStd.class.getSimpleName()
-      + ": last stored balance date " + lastBalanceStoredDate + ", date for "
+    getLogger().info(null, SrvBalanceStd.class,
+      "last stored balance date " + lastBalanceStoredDate + ", date for "
         + pDateFor);
     if (lastBalanceStoredDate.getTime() > pDateFor.getTime()) {
       lazyGetBalanceAtAllDirtyCheck(pAddParam)
@@ -352,8 +356,8 @@ public class SrvBalanceStd<RS> implements ISrvBalance {
           .getCurrentBalanceDate());
     getSrvOrm()
       .updateEntity(pAddParam, lazyGetBalanceAtAllDirtyCheck(pAddParam));
-    getLogger().info(SrvBalanceStd.class, SrvBalanceStd.class.getSimpleName()
-      + ": recalculation end BalanceAtAllDirtyCheck is "
+    getLogger().info(null, SrvBalanceStd.class,
+      "recalculation end BalanceAtAllDirtyCheck is "
         + lazyGetBalanceAtAllDirtyCheck(pAddParam));
   }
 

@@ -47,9 +47,15 @@
         <a href="bobs-pizza.html">See Beige Accounting Bob's Pizza example.</a>
       </p>
       <p>
-        Beige-Accounting for MS Windows/Mac/*Nix  - <b>beige-accounting-ajetty.zip</b> you can find in <a href="https://sourceforge.net/projects/beige-accounting/">https://sourceforge.net/projects/beige-accounting/</a>
+        Beige-Accounting for MS Windows/Mac/*Nix - <b>beige-accounting-ajetty.zip</b>, for Android - <b></b> you can find in <a href="https://sourceforge.net/projects/beige-accounting/">https://sourceforge.net/projects/beige-accounting/</a>
       </p>
-      <p>Beige Accounting for Android you can find in Google Play Store (search "Beige Accounting").</p>
+      <p>Beige Accounting for Android - <b>beige-accounting-android-1.1.3.apk</b> you can find in central Maven repository <a href="https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.beigesoft%22">https://search.maven.org/#search%7Cga%7C1%7Cg%3A%22org.beigesoft%22</a>.</p>
+      <p>Beige-Accounting doesn't comply new rules <a href="https://play.google.com/about/privacy-security/personal-sensitive/">https://play.google.com/about/privacy-security/personal-sensitive/</a>
+        that is sqlite archived non-encrypted databases are stored in "not-secure" place,
+        it also doesn't uses encrypted (HTTPS) connection (although A-Jetty is not available through network).
+        So Beige-Accounting was unpublished form Play Store, but it still available as APK installation file.
+        For security reasons you should not install software from non-trusted sources.
+      </p>
       <p>
         Source code of Beige-Accounting you can find in <a href="https://github.com/demidenko05/beige-software">https://github.com/demidenko05/beige-software</a>
       </p>

@@ -1,13 +1,15 @@
 package org.beigesoft.web.servlet;
 
 /*
- * Beigesoft ™
+ * Copyright (c) 2015-2017 Beigesoft ™
  *
- * Licensed under the Apache License, Version 2.0
+ * Licensed under the GNU General Public License (GPL), Version 2.0
+ * (the "License");
+ * you may not use this file except in compliance with the License.
  *
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
  */
 
 import java.io.IOException;
@@ -18,14 +20,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.RequestDispatcher;
 
+import org.beigesoft.log.ILogger;
 import org.beigesoft.service.ISrvI18n;
 import org.beigesoft.web.service.UtlJsp;
 import org.beigesoft.web.model.HttpRequestData;
 import org.beigesoft.handler.IHandlerRequest;
 import org.beigesoft.factory.IFactoryAppBeans;
 import org.beigesoft.exception.ExceptionWithCode;
-import org.beigesoft.delegate.IDelegateExc;
-import org.beigesoft.web.model.FactoryAndServlet;
 
 /**
  * <p>Generic servlet that delegate request to a
@@ -39,7 +40,7 @@ import org.beigesoft.web.model.FactoryAndServlet;
 public class WService extends HttpServlet {
 
   /**
-   * <p>App beans factort.</p>
+   * <p>App beans factory.</p>
    **/
   private IFactoryAppBeans factoryAppBeans;
 
@@ -55,22 +56,18 @@ public class WService extends HttpServlet {
     try {
       this.factoryAppBeans = (IFactoryAppBeans) getServletContext()
         .getAttribute("IFactoryAppBeans");
-      if (factoryAppBeans == null) {
-        String factoryAppBeansClass = getInitParameter("factoryAppBeansClass");
-        Object factoryObject = Class.forName(factoryAppBeansClass)
-          .newInstance();
-        factoryAppBeans = (IFactoryAppBeans) factoryObject;
-        getServletContext().setAttribute("IFactoryAppBeans",
-          factoryAppBeans);
-        String initFactoryClass = getInitParameter("initFactoryClass");
-        Object initFactoryObject = Class.forName(initFactoryClass)
-          .newInstance();
-        @SuppressWarnings("unchecked")
-        IDelegateExc<FactoryAndServlet> initFactory =
-          (IDelegateExc<FactoryAndServlet>) initFactoryObject;
-        initFactory.makeWith(new FactoryAndServlet(factoryAppBeans, this));
-      }
     } catch (Exception e) {
+      if (this.factoryAppBeans != null) {
+        ILogger logger = null;
+        try {
+          logger = (ILogger) this.factoryAppBeans.lazyGet("ILogger");
+        } catch (Exception e1) {
+          e1.printStackTrace();
+        }
+        if (logger != null) {
+          logger.error(null, getClass(), "INIT", e);
+        }
+      }
       throw new ServletException(e);
     }
   }
@@ -114,7 +111,21 @@ public class WService extends HttpServlet {
       RequestDispatcher rd = getServletContext().getRequestDispatcher(path);
       rd.include(pReq, pResp);
     } catch (Exception e) {
-      e.printStackTrace();
+      if (this.factoryAppBeans != null) {
+        ILogger logger = null;
+        try {
+          logger = (ILogger) this.factoryAppBeans.lazyGet("ILogger");
+        } catch (Exception e1) {
+          e1.printStackTrace();
+        }
+        if (logger != null) {
+          logger.error(null, getClass(), "WORK", e);
+        } else {
+          e.printStackTrace();
+        }
+      } else {
+        e.printStackTrace();
+      }
       if (e instanceof ExceptionWithCode) {
         pReq.setAttribute("error_code",
           ((ExceptionWithCode) e).getCode());

@@ -1,19 +1,21 @@
 package org.beigesoft.service;
 
+/*
+ * Copyright (c) 2015-2017 Beigesoft ™
+ *
+ * Licensed under the GNU General Public License (GPL), Version 2.0
+ * (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ * You may obtain a copy of the License at
+ *
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
+ */
+
 import java.util.Map;
 import java.util.Date;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-
-/*
- * Beigesoft ™
- *
- * Licensed under the Apache License, Version 2.0
- *
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- */
 
 /**
  * <p>Date service standard JSE7 implementation.</p>

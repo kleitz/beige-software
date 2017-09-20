@@ -1,13 +1,15 @@
 package org.beigesoft.jdbc.service;
 
 /*
- * Beigesoft ™
+ * Copyright (c) 2015-2017 Beigesoft ™
  *
- * Licensed under the Apache License, Version 2.0
+ * Licensed under the GNU General Public License (GPL), Version 2.0
+ * (the "License");
+ * you may not use this file except in compliance with the License.
  *
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
  */
 
 import java.math.BigDecimal;
@@ -47,6 +49,7 @@ import org.beigesoft.persistable.UserRoleTomcat;
 import org.beigesoft.persistable.IdUserRoleTomcat;
 import org.beigesoft.test.persistable.UserRoleTomcatPriority;
 import org.beigesoft.service.IUtlReflection;
+import org.beigesoft.properties.UtlProperties;
 import org.beigesoft.service.UtlReflection;
 import org.beigesoft.settings.MngSettings;
 import org.beigesoft.orm.factory.FctBnCnvIbnToColumnValues;
@@ -82,7 +85,7 @@ public class TestH2 {
   private IUtlReflection utlReflection = new UtlReflection();
 
   public TestH2() throws Exception {
-    logger.setIsShowDebugMessages(true);
+    logger.setIsShowDebugMessages(false);
     srvOrm = new SrvOrmH2<ResultSet>();
     srvDatabase = new SrvDatabase();
     srvDatabase.setLogger(logger);
@@ -93,6 +96,8 @@ public class TestH2 {
     srvDatabase.setHlpInsertUpdate(srvOrm.getHlpInsertUpdate());
     MngSettings mngSettings = new MngSettings();
     mngSettings.setLogger(logger);
+    mngSettings.setUtlProperties(new UtlProperties());
+    mngSettings.setUtlReflection(new UtlReflection());
     srvOrm.setMngSettings(mngSettings);
     srvOrm.loadConfiguration("beige-orm", "persistence-h2.xml");
     Properties props = new Properties();

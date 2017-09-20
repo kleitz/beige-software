@@ -1,13 +1,15 @@
 package org.beigesoft.replicator.service;
 
 /*
- * Beigesoft ™
+ * Copyright (c) 2015-2017 Beigesoft ™
  *
- * Licensed under the Apache License, Version 2.0
+ * Licensed under the GNU General Public License (GPL), Version 2.0
+ * (the "License");
+ * you may not use this file except in compliance with the License.
  *
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
  */
 
 import java.util.Map;
@@ -117,14 +119,14 @@ public class HttpURLConnectionTest {
       //urlConnection.addRequestProperty("Accept-Language", "en-US,en;q=0.8,ru;q=0.6");
       //urlConnection.addRequestProperty("Accept-Encoding", "gzip, deflate, br");
       //urlConnection.addRequestProperty("Cache-Control", "max-age=0");
-      this.logger.info(HttpURLConnectionTest.class,
+      this.logger.info(null, HttpURLConnectionTest.class,
         "Request before flush auth:");
       for (Map.Entry<String,List<String>> entry
         : urlConnection.getRequestProperties().entrySet()) {
-        this.logger.info(HttpURLConnectionTest.class,
+        this.logger.info(null, HttpURLConnectionTest.class,
           "  Request entry key: " + entry.getKey());
         for (String val : entry.getValue()) {
-          this.logger.info(HttpURLConnectionTest.class,
+          this.logger.info(null, HttpURLConnectionTest.class,
             "   Request entry value: " + val);
         }
       }
@@ -132,7 +134,7 @@ public class HttpURLConnectionTest {
         .getOutputStream(), Charset.forName("UTF-8").newEncoder());
       writer.write(paramStr);
       writer.flush();
-      this.logger.info(HttpURLConnectionTest.class,
+      this.logger.info(null, HttpURLConnectionTest.class,
         "send aparms: " + paramStr);
       //j_username=admin&j_password=admin - length=33
       reader = new BufferedReader(new InputStreamReader(urlConnection
@@ -184,14 +186,14 @@ public class HttpURLConnectionTest {
       //urlConnection.addRequestProperty("Accept-Language", "en-US,en;q=0.8,ru;q=0.6");
       //urlConnection.addRequestProperty("Accept-Encoding", "gzip, deflate, sdch, br");
       //urlConnection.addRequestProperty("Cache-Control", "max-age=0");
-      this.logger.info(HttpURLConnectionTest.class,
+      this.logger.info(null, HttpURLConnectionTest.class,
         "Request tstAuthGet:");
       for (Map.Entry<String,List<String>> entry
         : urlConnection.getRequestProperties().entrySet()) {
-        this.logger.info(HttpURLConnectionTest.class,
+        this.logger.info(null, HttpURLConnectionTest.class,
           "  Request entry key: " + entry.getKey());
         for (String val : entry.getValue()) {
-          this.logger.info(HttpURLConnectionTest.class,
+          this.logger.info(null, HttpURLConnectionTest.class,
             "    Request entry value: " + val);
         }
       }
@@ -205,7 +207,7 @@ public class HttpURLConnectionTest {
         assertTrue(isAuthForm);
         this.utilXml.readUntilStart(reader, "kkkkkkkkkkkkklok"); //just read out
         for (HttpCookie cookie : pCookieManager.getCookieStore().getCookies()) {
-          this.logger.info(HttpURLConnectionTest.class,
+          this.logger.info(null, HttpURLConnectionTest.class,
             "tstAuthGet after read: " + cookie.getName() + " - " + cookie.getValue());
         }*/
       } else {
@@ -256,14 +258,14 @@ public class HttpURLConnectionTest {
       //urlConnection.addRequestProperty("Accept-Language", "en-US,en;q=0.8,ru;q=0.6");
       //urlConnection.addRequestProperty("Accept-Encoding", "gzip, deflate, sdch, br");
       //urlConnection.addRequestProperty("Cache-Control", "max-age=0");
-      this.logger.info(HttpURLConnectionTest.class,
+      this.logger.info(null, HttpURLConnectionTest.class,
         "Request try again:");
       for (Map.Entry<String,List<String>> entry
         : urlConnection.getRequestProperties().entrySet()) {
-        this.logger.info(HttpURLConnectionTest.class,
+        this.logger.info(null, HttpURLConnectionTest.class,
           "  Request entry key: " + entry.getKey());
         for (String val : entry.getValue()) {
-          this.logger.info(HttpURLConnectionTest.class,
+          this.logger.info(null, HttpURLConnectionTest.class,
             "    Request entry value: " + val);
         }
       }
@@ -308,14 +310,14 @@ public class HttpURLConnectionTest {
       urlConnection.setRequestMethod("POST");
       urlConnection.addRequestProperty("Connection" , "keep-alive");
       urlConnection.setDoOutput(true);
-      this.logger.info(HttpURLConnectionTest.class,
+      this.logger.info(null, HttpURLConnectionTest.class,
         "Request tstAuthPost:");
       for (Map.Entry<String,List<String>> entry
         : urlConnection.getRequestProperties().entrySet()) {
-        this.logger.info(HttpURLConnectionTest.class,
+        this.logger.info(null, HttpURLConnectionTest.class,
           "  Request entry key: " + entry.getKey());
         for (String val : entry.getValue()) {
-          this.logger.info(HttpURLConnectionTest.class,
+          this.logger.info(null, HttpURLConnectionTest.class,
             "    Request entry value: " + val);
         }
       }
@@ -330,7 +332,7 @@ public class HttpURLConnectionTest {
         assertTrue(isAuthForm);
         this.utilXml.readUntilStart(reader, "kkkkkkkkkkkkklok"); //just read out
         for (HttpCookie cookie : pCookieManager.getCookieStore().getCookies()) {
-          this.logger.info(HttpURLConnectionTest.class,
+          this.logger.info(null, HttpURLConnectionTest.class,
             "tstAuthPost after read: " + cookie.getName() + " - " + cookie.getValue());
         }
       } else {
@@ -377,14 +379,14 @@ public class HttpURLConnectionTest {
       urlConnection.setRequestMethod("POST");
       urlConnection.addRequestProperty("Connection" , "keep-alive");
       urlConnection.setDoOutput(true);
-      this.logger.info(HttpURLConnectionTest.class,
+      this.logger.info(null, HttpURLConnectionTest.class,
         "Request tryAgainPost:");
       for (Map.Entry<String,List<String>> entry
         : urlConnection.getRequestProperties().entrySet()) {
-        this.logger.info(HttpURLConnectionTest.class,
+        this.logger.info(null, HttpURLConnectionTest.class,
           "  Request entry key: " + entry.getKey());
         for (String val : entry.getValue()) {
-          this.logger.info(HttpURLConnectionTest.class,
+          this.logger.info(null, HttpURLConnectionTest.class,
             "    Request entry value: " + val);
         }
       }
@@ -399,7 +401,7 @@ public class HttpURLConnectionTest {
         assertTrue(isMessage);
         this.utilXml.readUntilStart(reader, "kkkkkkkkkkkkklok"); //just read out
         for (HttpCookie cookie : pCookieManager.getCookieStore().getCookies()) {
-          this.logger.info(HttpURLConnectionTest.class,
+          this.logger.info(null, HttpURLConnectionTest.class,
             "tryAgainPost after read: " + cookie.getName() + " - " + cookie.getValue());
         }
       } else {

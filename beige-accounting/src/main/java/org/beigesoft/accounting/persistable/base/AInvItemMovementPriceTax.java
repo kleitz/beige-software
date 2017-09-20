@@ -1,13 +1,15 @@
 package org.beigesoft.accounting.persistable.base;
 
 /*
- * Beigesoft ™
+ * Copyright (c) 2015-2017 Beigesoft ™
  *
- * Licensed under the Apache License, Version 2.0
+ * Licensed under the GNU General Public License (GPL), Version 2.0
+ * (the "License");
+ * you may not use this file except in compliance with the License.
  *
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
  */
 
 import java.math.BigDecimal;
@@ -22,14 +24,14 @@ import java.math.BigDecimal;
 public abstract class AInvItemMovementPriceTax extends AInvItemMovementPrice {
 
   /**
-   * <p>Total taxes.</p>
+   * <p>Subtotal without taxes.</p>
    **/
-  private BigDecimal totalTaxes = new BigDecimal("0.00");
+  private BigDecimal subtotal;
 
   /**
-   * <p>Total with taxes.</p>
+   * <p>Total taxes.</p>
    **/
-  private BigDecimal subtotal = new BigDecimal("0.00");
+  private BigDecimal totalTaxes;
 
   /**
    * <p>Taxes description, uneditable,

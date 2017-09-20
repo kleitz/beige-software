@@ -1,13 +1,15 @@
 package org.beigesoft.web.factory;
 
 /*
- * Beigesoft ™
+ * Copyright (c) 2015-2017 Beigesoft ™
  *
- * Licensed under the Apache License, Version 2.0
+ * Licensed under the GNU General Public License (GPL), Version 2.0
+ * (the "License");
+ * you may not use this file except in compliance with the License.
  *
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
  */
 
 import org.beigesoft.handler.HandlerEntityRequest;
@@ -61,7 +63,7 @@ public class FactoryBldServices<RS> implements IFactoryBldServices<RS> {
         .setEntitiesProcessorsNamesHolder(new HldEntitiesProcessorNames());
       hndlEntityReq.setEntitiesMap(this.factoryAppBeans.getEntitiesMap());
       this.factoryAppBeans.getBeansMap().put(beanName, hndlEntityReq);
-      this.factoryAppBeans.lazyGetLogger().info(AFactoryAppBeans.class,
+      this.factoryAppBeans.lazyGetLogger().info(null, AFactoryAppBeans.class,
         beanName + " has been created.");
     }
     return hndlEntityReq;
@@ -83,7 +85,7 @@ public class FactoryBldServices<RS> implements IFactoryBldServices<RS> {
       fctBcFctSimpleEntities
         .setSrvDatabase(this.factoryAppBeans.lazyGetSrvDatabase());
       this.factoryAppBeans.getBeansMap().put(beanName, fctBcFctSimpleEntities);
-      this.factoryAppBeans.lazyGetLogger().info(AFactoryAppBeans.class,
+      this.factoryAppBeans.lazyGetLogger().info(null, AFactoryAppBeans.class,
         beanName + " has been created.");
     }
     return fctBcFctSimpleEntities;

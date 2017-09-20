@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+  <properties>
+    <title>Linux screen saver that can show Caps Lock status and keyboard layout.</title>
+   </properties>
+
+  <body>
+
+    <section name="Linux screen saver that can show Caps Lock status and keyboard layout.">
+
+      <h4>Make xsecurelock show keyboard layout and LED mask.</h4>
+      <p>All screen savers for Linux can't show Caps Lock status and keyboard layout. So make xsecurelock do this:
+        <ul>
+          <li>remove current screen sever, it's usually xscreensaver.</li>
+          <li>get xsecurelock source from <a href="https://github.com/google/xsecurelock">https://github.com/google/xsecurelock</a>
+            RELEASE V0.5(on Sep 2, 2014)! Last snapshot version doesn't works!</li>
+          <li>add header <b>#include &lt;X11/XKBlib.h&gt;</b> and change function <b>display_string</b> in file <b>helpers/auth_pam_x11.c</b> like this:
+      <pre style="white-space: pre-wrap;">
+  ...
+  if (region_w == 0 || region_h == 0) {
+    XClearWindow(display, window);
+  }
+
+  <b>//Reveal current keyboard ledmask and layout:
+  XKeyboardState xkbs;
+  XGetKeyboardControl(display, &amp;xkbs);
+  char ledMaskStr[43];
+  ledMaskStr[0] = 'L';
+  ledMaskStr[1] = 'e';
+  ledMaskStr[2] = 'd';
+  ledMaskStr[3] = ' ';
+  ledMaskStr[4] = 'm';
+  ledMaskStr[5] = 'a';
+  ledMaskStr[6] = 's';
+  ledMaskStr[7] = 'k';
+  ledMaskStr[8] = ':';
+  ledMaskStr[9] = ' ';
+  ledMaskStr[42] = '\0';
+  unsigned long unsLngMsk = 0x80000000ul;
+  for (int i = 10; i &lt; 42; i++) {
+    ledMaskStr[i] = ((xkbs.led_mask &amp; unsLngMsk) == unsLngMsk) ? '1' : '0';
+    unsLngMsk &gt;&gt;= 1;
+  }
+  int lenLedMaskStr = 42;
+  int twLedMaskStr = XTextWidth(font, ledMaskStr, lenLedMaskStr);
+  XkbDescRec* kbdDescPtr = XkbAllocKeyboard();
+  XkbGetControls(display, XkbAllControlsMask, kbdDescPtr);
+  XkbGetNames(display, XkbSymbolsNameMask, kbdDescPtr);
+  XkbGetNames(display, XkbGroupNamesMask, kbdDescPtr);
+  XkbStateRec xkbState;
+  XkbGetState(display, XkbUseCoreKbd, &amp;xkbState);
+  int currentGroupNum = xkbState.group;
+  const Atom* groupSource = kbdDescPtr-&gt;names-&gt;groups;
+  char kbrLayoutStr[] = "Layout: ";
+  Atom curGroupAtom = groupSource[currentGroupNum];
+  strcat(kbrLayoutStr, XGetAtomName(display, curGroupAtom));
+  int lenKbrLayoutStr = strlen(kbrLayoutStr);
+  int twKbrLayoutStr = XTextWidth(font, kbrLayoutStr, lenKbrLayoutStr);</b>
+  
+  int i;
+  for (i = 0; i &lt; screens; ++i) {
+    int cx = (w * i) / screens + (w / screens) / 2;
+    int cy = h / 2;
+
+    // Clear the region last written to.
+    if (region_w != 0 &amp;&amp; region_h != 0) {
+      XClearArea(display, window, cx + region_x, cy + region_y, region_w,
+                 region_h, False);
+    }
+
+    <b>//Print keyboard ledmask
+    XDrawString(display, window, gc, cx - twLedMaskStr / 2,
+                cy - font-&gt;max_bounds.descent - 40, ledMaskStr, lenLedMaskStr);
+
+    //Print keyboard layout
+    XDrawString(display, window, gc, cx - twKbrLayoutStr / 2,
+                cy - font-&gt;max_bounds.descent - 24, kbrLayoutStr, lenKbrLayoutStr);</b>
+
+    XDrawString(display, window, gc, cx - tw_title / 2,
+                cy - font-&gt;max_bounds.descent - 8, title, len_title);
+
+    XDrawString(display, window, gc, cx - tw_str / 2,
+                cy + font-&gt;max_bounds.ascent + 8, str, len_str);
+  }
+
+  // Remember the region we just wrote to, relative to cx and cy.
+  <b>if (twLedMaskStr &gt; tw_str) {//Clear also keyboard ledmask and layout
+    region_x = -twLedMaskStr / 2;
+    region_w = twLedMaskStr;
+  } else {
+    region_x = -tw_str / 2;
+    region_w = tw_str;
+  }
+  region_y = -font-&gt;max_bounds.descent - 40 - font-&gt;max_bounds.ascent;//Clear also keyboard ledmask and layout -8 -&gt; -40
+  region_h = 4 * (font-&gt;max_bounds.ascent + font-&gt;max_bounds.descent + 8);//Clear also keyboard ledmask and layout 2* -&gt; 4*
+  </b>
+  ...
+      </pre>
+          </li>
+          <li>check xsecurelock dependencies, e.g. for Fedora:
+            <ul>
+              <li>dnf install automake</li>
+              <li>dnf install pam-devel</li>
+              <li>dnf install libX11-devel</li>
+            </ul>
+          </li>
+          <li>install xsecurelock from source:
+<pre style="white-space: pre-wrap;">
+  sh autogen.sh
+  //for Fedora:
+  ./configure --with-pam-service-name=system-auth
+  //for Debian:
+  ./configure --with-pam-service-name=common-auth
+  make
+  make install
+</pre>
+          </li>
+          <li>make sure that xss-lock is installed, it will invokes xsecurelock on events like suspend</li>
+          <li>Create file [home]/xsslock.sh, add entries:
+            <pre style="white-space: pre-wrap;">
+#!/bin/bash
+xss-lock xsecurelock auth_pam_x11 saver_blank
+            </pre>
+          </li>
+          <li>Open Applications Menu - Preferences - Default applications for LXSession then choose Autostart and add <b>@[home]/xsslock.sh</b></li>
+        </ul>
+        It will be blank screen with password input and current led mask and keyboard layout e.g.
+        <pre>
+          Led mask: 000000000000000000000010
+          Layout: English (US)
+          Password
+          *******
+        </pre> 
+      </p>
+    </section>
+
+  </body>
+
+</document>

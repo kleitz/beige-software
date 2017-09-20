@@ -1,13 +1,15 @@
 package org.beigesoft.replicator.service;
 
 /*
- * Beigesoft ™
+ * Copyright (c) 2015-2017 Beigesoft ™
  *
- * Licensed under the Apache License, Version 2.0
+ * Licensed under the GNU General Public License (GPL), Version 2.0
+ * (the "License");
+ * you may not use this file except in compliance with the License.
  *
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
  */
 
 import java.util.Date;
@@ -61,7 +63,7 @@ public class SrvClearDatabase<RS> implements IDelegator {
       this.srvDatabase.
         setTransactionIsolation(ISrvDatabase.TRANSACTION_READ_UNCOMMITTED);
       this.srvDatabase.beginTransaction();
-      this.logger.info(SrvClearDatabase.class, "Start clear database.");
+      this.logger.info(null, SrvClearDatabase.class, "Start clear database.");
       for (int i = classesArr.size() - 1; i >= 0; i--) {
         Class<?> entityClass = classesArr.get(i);
         this.srvDatabase.executeDelete(entityClass.getSimpleName()
@@ -74,7 +76,7 @@ public class SrvClearDatabase<RS> implements IDelegator {
         + SrvClearDatabase.class.getSimpleName()
           + ", database has been cleared" + "</h4>");
       }
-      this.logger.info(SrvClearDatabase.class, "Finish clear database.");
+      this.logger.info(null, SrvClearDatabase.class, "Finish clear database.");
     } catch (Exception ex) {
       this.srvDatabase.rollBackTransaction();
       throw ex;

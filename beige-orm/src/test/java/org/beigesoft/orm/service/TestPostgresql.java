@@ -1,13 +1,15 @@
 package org.beigesoft.orm.service;
 
 /*
- * Beigesoft ™
+ * Copyright (c) 2015-2017 Beigesoft ™
  *
- * Licensed under the Apache License, Version 2.0
+ * Licensed under the GNU General Public License (GPL), Version 2.0
+ * (the "License");
+ * you may not use this file except in compliance with the License.
  *
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
  */
 
 import java.util.Map;
@@ -41,6 +43,7 @@ import org.beigesoft.persistable.UserRoleTomcat;
 import org.beigesoft.persistable.IdUserRoleTomcat;
 import org.beigesoft.test.persistable.UserRoleTomcatPriority;
 import org.beigesoft.service.IUtlReflection;
+import org.beigesoft.properties.UtlProperties;
 import org.beigesoft.service.UtlReflection;
 import org.beigesoft.settings.MngSettings;
 import org.beigesoft.orm.factory.FctBnCnvIbnToColumnValues;
@@ -75,13 +78,15 @@ public class TestPostgresql<RS> {
   @Test
   public void testDdlPsql() throws Exception {
     //logger.setIsShowDebugMessages(true);
-    logger.debug(TestPostgresql.class, "Start Postgresql ORM tests");
+    logger.debug(null, TestPostgresql.class, "Start Postgresql ORM tests");
     SrvOrmPostgresql<RS> srvOrm = new SrvOrmPostgresql<RS>();
     srvOrm.setHlpInsertUpdate(new HlpInsertUpdate());
     srvOrm.setLogger(logger);
     srvOrm.setUtlReflection(getUtlReflection());
     MngSettings mngSettings = new MngSettings();
     mngSettings.setLogger(logger);
+    mngSettings.setUtlProperties(new UtlProperties());
+    mngSettings.setUtlReflection(getUtlReflection());
     srvOrm.setMngSettings(mngSettings);
     srvOrm.loadConfiguration("beige-orm", "persistence-postgresql.xml");
     FctBnCnvIbnToColumnValues facConvFields = new FctBnCnvIbnToColumnValues();
@@ -112,7 +117,7 @@ public class TestPostgresql<RS> {
     Class<?> clazzUserJet = org.beigesoft.persistable.UserJetty.class;
     String usJetNm = clazzUserJet.getSimpleName();
     TableSql tblSqlUserJet = srvOrm.getTablesMap().get(usJetNm);
-    logger.debug(TestPostgresql.class, "table name - " + usJetNm);
+    logger.debug(null, TestPostgresql.class, "table name - " + usJetNm);
     assertEquals("bigserial not null primary key", tblSqlUserJet.getFieldsMap().get("itsId").getDefinition());
     assertEquals("text not null unique", tblSqlUserJet.getFieldsMap().get("itsName").getDefinition());
     assertEquals("text not null", tblSqlUserJet.getFieldsMap().get("itsPassword").getDefinition());
@@ -120,14 +125,14 @@ public class TestPostgresql<RS> {
     Class<?> clazzRoleJet = org.beigesoft.persistable.RoleJetty.class;
     String roleJetNm = clazzRoleJet.getSimpleName();
     TableSql tblSqlRoleJet = srvOrm.getTablesMap().get(roleJetNm);
-    logger.debug(TestPostgresql.class, "table name - " + roleJetNm);
+    logger.debug(null, TestPostgresql.class, "table name - " + roleJetNm);
     assertEquals("bigserial not null primary key", tblSqlRoleJet.getFieldsMap().get("itsId").getDefinition());
     assertEquals("text not null unique", tblSqlRoleJet.getFieldsMap().get("itsName").getDefinition());
 
     Class<?> clazzUserTomcat = org.beigesoft.persistable.UserTomcat.class;
     String usTomcatNm = clazzUserTomcat.getSimpleName();
     TableSql tblSqlUserTomcat = srvOrm.getTablesMap().get(usTomcatNm);
-    logger.debug(TestPostgresql.class, "table name - " + usTomcatNm);
+    logger.debug(null, TestPostgresql.class, "table name - " + usTomcatNm);
     assertEquals(2, tblSqlUserTomcat.getFieldsMap().size());
     assertEquals("text not null primary key", tblSqlUserTomcat.getFieldsMap().get("itsUser").getDefinition());
     assertEquals("text not null", tblSqlUserTomcat.getFieldsMap().get("itsPassword").getDefinition());
@@ -135,7 +140,7 @@ public class TestPostgresql<RS> {
     Class<?> clazzUserRoleTomcat = org.beigesoft.persistable.UserRoleTomcat.class;
     String userRoleTomcatNm = clazzUserRoleTomcat.getSimpleName();
     TableSql tblSqlUserRoleTomcat = srvOrm.getTablesMap().get(userRoleTomcatNm);
-    logger.debug(TestPostgresql.class, "table name - " + userRoleTomcatNm);
+    logger.debug(null, TestPostgresql.class, "table name - " + userRoleTomcatNm);
     assertEquals(2, tblSqlUserRoleTomcat.getFieldsMap().size());
     assertEquals("text not null", tblSqlUserRoleTomcat.getFieldsMap().get("itsUser").getDefinition());
     assertEquals("text not null", tblSqlUserRoleTomcat.getFieldsMap().get("itsRole").getDefinition());
@@ -154,7 +159,7 @@ public class TestPostgresql<RS> {
     Class<?> clazzUserRolJet = org.beigesoft.persistable.UserRoleJetty.class;
     String usRolJetNm = clazzUserRolJet.getSimpleName();
     TableSql tblSqlUserRolJet = srvOrm.getTablesMap().get(usRolJetNm);
-    logger.debug(TestPostgresql.class, "table name - " + usRolJetNm);
+    logger.debug(null, TestPostgresql.class, "table name - " + usRolJetNm);
     assertEquals(2, tblSqlUserRolJet.getFieldsMap().size());
     assertEquals("bigint not null", tblSqlUserRolJet.getFieldsMap().get("itsUser").getDefinition());
     assertEquals("bigint not null", tblSqlUserRolJet.getFieldsMap().get("itsRole").getDefinition());
@@ -162,13 +167,13 @@ public class TestPostgresql<RS> {
     Class<?> clazzPersTest = org.beigesoft.test.persistable.PersistableHead.class;
     String namePersTest = clazzPersTest.getSimpleName();
     TableSql tblSqlPersTest = srvOrm.getTablesMap().get(namePersTest);
-    logger.debug(TestPostgresql.class, "table name - " + namePersTest);
+    logger.debug(null, TestPostgresql.class, "table name - " + namePersTest);
     assertEquals("bigint not null", tblSqlPersTest.getFieldsMap().get("itsDepartment").getDefinition());
     assertEquals("integer not null", tblSqlPersTest.getFieldsMap().get("waitingTime").getDefinition());
     
     SrvOrmTestInd srvOrmTestInd = new SrvOrmTestInd();
     srvOrmTestInd.doRdbmsIndependentAssertions(srvOrm);
-    logger.debug(TestPostgresql.class, "Exit Postgresql ORM tests");
+    logger.debug(null, TestPostgresql.class, "Exit Postgresql ORM tests");
   }
 
   //Simple getters and setters:

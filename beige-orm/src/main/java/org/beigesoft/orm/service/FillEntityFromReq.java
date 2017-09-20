@@ -1,13 +1,15 @@
 package org.beigesoft.orm.service;
 
 /*
- * Beigesoft ™
+ * Copyright (c) 2015-2017 Beigesoft ™
  *
- * Licensed under the Apache License, Version 2.0
+ * Licensed under the GNU General Public License (GPL), Version 2.0
+ * (the "License");
+ * you may not use this file except in compliance with the License.
  *
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
  */
 
 import java.util.Map;
@@ -65,8 +67,12 @@ public class FillEntityFromReq implements IFillerObjectsFrom<IRequestData> {
   @Override
   public final <T> void fill(final Map<String, Object> pAddParam,
     final T pEntity, final IRequestData pReq) throws Exception {
-    getLogger().debug(FillEntityFromReq.class,
-      "Default charset = " + Charset.defaultCharset());
+    boolean isShowDbMsg = this.logger.getIsShowDebugMessagesFor(getClass());
+    int dbgDetLev = this.logger.getDetailLevel();
+    if (isShowDbMsg && dbgDetLev > 2) {
+      this.logger.debug(null, FillEntityFromReq.class,
+        "Default charset = " + Charset.defaultCharset());
+    }
     @SuppressWarnings("unchecked")
     IFillerObjectFields<T> filler = (IFillerObjectFields<T>)
       this.fillersFieldsFactory.lazyGet(pAddParam, pEntity.getClass());
@@ -77,17 +83,20 @@ public class FillEntityFromReq implements IFillerObjectsFrom<IRequestData> {
         if (valStr != null) { // e.g. Boolean checkbox or none-editable
           String convName = this.fieldConverterNamesHolder.getFor(pEntity
            .getClass(), fieldName);
-          getLogger().debug(FillEntityFromReq.class,
-            "Try fill field/inClass/converterName/value: " + fieldName + "/"
-              + pEntity.getClass().getCanonicalName() + "/" + convName
-                + "/" + valStr);
+          if (isShowDbMsg && dbgDetLev > 10) {
+            this.logger.debug(null, FillEntityFromReq.class,
+              "Try fill field/inClass/converterName/value: " + fieldName + "/"
+                + pEntity.getClass().getCanonicalName() + "/" + convName
+                  + "/" + valStr);
+          }
           IConverterToFromString conv = this.convertersFieldsFatory
             .lazyGet(pAddParam, convName);
           Object fieldVal = conv.fromString(pAddParam,  valStr);
-          if (fieldVal != null) {
-            getLogger().debug(FillEntityFromReq.class,
-              "Converted fieldClass/toString: " + fieldVal.getClass()
-                .getCanonicalName() + "/" + fieldVal);
+          if (fieldVal != null
+            && isShowDbMsg && dbgDetLev > 10) {
+              this.logger.debug(null, FillEntityFromReq.class,
+                "Converted fieldClass/toString: " + fieldVal.getClass()
+                  .getCanonicalName() + "/" + fieldVal);
           }
           filler.fill(pAddParam, pEntity, fieldVal, fieldName);
         }

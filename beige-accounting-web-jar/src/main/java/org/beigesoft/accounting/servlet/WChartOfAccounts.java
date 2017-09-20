@@ -1,13 +1,15 @@
 package org.beigesoft.accounting.servlet;
 
 /*
- * Beigesoft ™
+ * Copyright (c) 2015-2017 Beigesoft ™
  *
- * Licensed under the Apache License, Version 2.0
+ * Licensed under the GNU General Public License (GPL), Version 2.0
+ * (the "License");
+ * you may not use this file except in compliance with the License.
  *
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
  */
 
 import java.util.Hashtable;
@@ -21,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.RequestDispatcher;
 
+import org.beigesoft.log.ILogger;
 import org.beigesoft.service.ISrvI18n;
 import org.beigesoft.accounting.service.ISrvAccSettings;
 import org.beigesoft.accounting.persistable.Account;
@@ -60,6 +63,17 @@ public class WChartOfAccounts<RS> extends HttpServlet {
       factoryAppBeans = (IFactoryAppBeans) getServletContext()
         .getAttribute("IFactoryAppBeans");
     } catch (Exception e) {
+      if (this.factoryAppBeans != null) {
+        ILogger logger = null;
+        try {
+          logger = (ILogger) this.factoryAppBeans.lazyGet("ILogger");
+        } catch (Exception e1) {
+          e1.printStackTrace();
+        }
+        if (logger != null) {
+          logger.error(null, getClass(), "INIT", e);
+        }
+      }
       throw new ServletException(e);
     }
   }
@@ -138,7 +152,21 @@ public class WChartOfAccounts<RS> extends HttpServlet {
       pReq.setAttribute("accounts", accountsInChart);
       rd.include(pReq, pResp);
     } catch (Exception e) {
-      e.printStackTrace();
+      if (this.factoryAppBeans != null) {
+        ILogger logger = null;
+        try {
+          logger = (ILogger) this.factoryAppBeans.lazyGet("ILogger");
+        } catch (Exception e1) {
+          e1.printStackTrace();
+        }
+        if (logger != null) {
+          logger.error(null, getClass(), "WORK", e);
+        } else {
+          e.printStackTrace();
+        }
+      } else {
+        e.printStackTrace();
+      }
       if (e instanceof ExceptionWithCode) {
         pReq.setAttribute("error_code",
           ((ExceptionWithCode) e).getCode());

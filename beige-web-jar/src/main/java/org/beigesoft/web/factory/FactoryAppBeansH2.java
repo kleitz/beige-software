@@ -1,13 +1,15 @@
 package org.beigesoft.web.factory;
 
 /*
- * Beigesoft ™
+ * Copyright (c) 2015-2017 Beigesoft ™
  *
- * Licensed under the Apache License, Version 2.0
+ * Licensed under the GNU General Public License (GPL), Version 2.0
+ * (the "License");
+ * you may not use this file except in compliance with the License.
  *
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
  */
 
 import java.util.Properties;
@@ -73,7 +75,7 @@ public class FactoryAppBeansH2 extends AFactoryAppBeansJdbc {
       HikariConfig config = new HikariConfig(props);
       dataSource = new HikariDataSource(config);
       getBeansMap().put(beanName, dataSource);
-      lazyGetLogger().info(FactoryAppBeansH2.class, beanName
+      lazyGetLogger().info(null, FactoryAppBeansH2.class, beanName
         + " has been created.");
     }
     return dataSource;
@@ -96,7 +98,7 @@ public class FactoryAppBeansH2 extends AFactoryAppBeansJdbc {
       prepareDbAfterGetCopy.setLogger(lazyGetLogger());
       prepareDbAfterGetCopy.setFactoryAppBeans(this);
       getBeansMap().put(beanName, prepareDbAfterGetCopy);
-      lazyGetLogger().info(FactoryAppBeansH2.class, beanName
+      lazyGetLogger().info(null, FactoryAppBeansH2.class, beanName
         + " has been created.");
     }
     return prepareDbAfterGetCopy;

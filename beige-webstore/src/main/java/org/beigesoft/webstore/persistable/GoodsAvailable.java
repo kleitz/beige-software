@@ -1,16 +1,19 @@
 package org.beigesoft.webstore.persistable;
 
 /*
- * Beigesoft ™
+ * Copyright (c) 2015-2017 Beigesoft ™
  *
- * Licensed under the Apache License, Version 2.0
+ * Licensed under the GNU General Public License (GPL), Version 2.0
+ * (the "License");
+ * you may not use this file except in compliance with the License.
  *
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
  */
 
 import java.util.Date;
+import java.math.BigDecimal;
 
 import org.beigesoft.model.AEditableHasVersion;
 import org.beigesoft.model.IHasId;
@@ -18,7 +21,7 @@ import org.beigesoft.accounting.persistable.InvItem;
 
 /**
  * <pre>
- * Model of GoodsAvailable.
+ * Model of Goods Available - hold availability of a goods at pickup place.
  * </pre>
  *
  * @author Yury Demidenko
@@ -32,7 +35,7 @@ public class GoodsAvailable extends AEditableHasVersion
   private GoodsAvailableId itsId = new GoodsAvailableId();
 
   /**
-   * <p>Pick up (storage) place.</p>
+   * <p>Pick up (storage) place, not null.</p>
    **/
   private PickUpPlace pickUpPlace;
 
@@ -42,7 +45,7 @@ public class GoodsAvailable extends AEditableHasVersion
   private InvItem goods;
 
   /**
-   * <p>Since date.</p>
+   * <p>Since date, not null.</p>
    **/
   private Date sinceDate;
 
@@ -52,10 +55,10 @@ public class GoodsAvailable extends AEditableHasVersion
   private Boolean isAlways;
 
   /**
-   * <p>if isAlways=true then must be more than zero
+   * <p>It's more or equals zero, if isAlways=true then must be more than zero
    * cause performance optimization (filter only "quantity>0").</p>
    **/
-  private Integer itsQuantity;
+  private BigDecimal itsQuantity;
 
   /**
    * <p>Usually it's simple getter that return model ID.</p>
@@ -166,9 +169,9 @@ public class GoodsAvailable extends AEditableHasVersion
 
   /**
    * <p>Getter for itsQuantity.</p>
-   * @return Integer
+   * @return BigDecimal
    **/
-  public final Integer getItsQuantity() {
+  public final BigDecimal getItsQuantity() {
     return this.itsQuantity;
   }
 
@@ -176,7 +179,7 @@ public class GoodsAvailable extends AEditableHasVersion
    * <p>Setter for itsQuantity.</p>
    * @param pItsQuantity reference
    **/
-  public final void setItsQuantity(final Integer pItsQuantity) {
+  public final void setItsQuantity(final BigDecimal pItsQuantity) {
     this.itsQuantity = pItsQuantity;
   }
 }

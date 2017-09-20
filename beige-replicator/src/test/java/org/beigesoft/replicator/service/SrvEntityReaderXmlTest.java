@@ -1,13 +1,15 @@
 package org.beigesoft.replicator.service;
 
 /*
- * Beigesoft ™
+ * Copyright (c) 2015-2017 Beigesoft ™
  *
- * Licensed under the Apache License, Version 2.0
+ * Licensed under the GNU General Public License (GPL), Version 2.0
+ * (the "License");
+ * you may not use this file except in compliance with the License.
  *
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
  */
 
 import java.util.Map;
@@ -29,6 +31,7 @@ import org.junit.Test;
 
 import org.beigesoft.log.LoggerSimple;
 import org.beigesoft.service.UtilXml;
+import org.beigesoft.properties.UtlProperties;
 import org.beigesoft.service.UtlReflection;
 import org.beigesoft.settings.MngSettings;
 
@@ -69,7 +72,7 @@ public class SrvEntityReaderXmlTest {
 
   public SrvEntityReaderXmlTest() throws Exception {
     this.logger = new LoggerSimple();
-    this.logger.info(SrvEntityReaderXmlTest.class, new Date().toString());
+    this.logger.info(null, SrvEntityReaderXmlTest.class, new Date().toString());
     this.srvEntityReaderXml = new SrvEntityReaderXml();
     this.utilXml = new UtilXml();
     this.srvEntityReaderXml.setUtilXml(utilXml);
@@ -86,6 +89,8 @@ public class SrvEntityReaderXmlTest {
     this.srvEntityReaderXml.setFieldsFillersMap(fieldsFillersMap);
     this.mngSettings = new MngSettings();
     this.mngSettings.setLogger(this.logger);
+    this.mngSettings.setUtlProperties(new UtlProperties());
+    this.mngSettings.setUtlReflection(this.utlReflection);
     this.mngSettings.loadConfiguration("beige-replicator","base.xml");
     this.srvEntityReaderXml.setMngSettings(this.mngSettings);
     this.srvEntityWriterXml = new SrvEntityWriterXml();

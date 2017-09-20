@@ -1,13 +1,15 @@
 package org.beigesoft.orm.service;
 
 /*
- * Beigesoft ™
+ * Copyright (c) 2015-2017 Beigesoft ™
  *
- * Licensed under the Apache License, Version 2.0
+ * Licensed under the GNU General Public License (GPL), Version 2.0
+ * (the "License");
+ * you may not use this file except in compliance with the License.
  *
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
  */
 
 import java.util.LinkedHashMap;
@@ -40,6 +42,7 @@ import org.beigesoft.persistable.UserRoleTomcat;
 import org.beigesoft.persistable.IdUserRoleTomcat;
 import org.beigesoft.test.persistable.UserRoleTomcatPriority;
 import org.beigesoft.service.IUtlReflection;
+import org.beigesoft.properties.UtlProperties;
 import org.beigesoft.service.UtlReflection;
 import org.beigesoft.settings.MngSettings;
 import org.beigesoft.orm.factory.FctBnCnvIbnToColumnValues;
@@ -81,6 +84,8 @@ public class TestH2<RS> {
     srvOrm.setLogger(logger);
     MngSettings mngSettings = new MngSettings();
     mngSettings.setLogger(logger);
+    mngSettings.setUtlProperties(new UtlProperties());
+    mngSettings.setUtlReflection(getUtlReflection());
     srvOrm.setMngSettings(mngSettings);
     srvOrm.loadConfiguration("beige-orm", "persistence-h2.xml");
     FctBnCnvIbnToColumnValues facConvFields = new FctBnCnvIbnToColumnValues();
@@ -103,7 +108,8 @@ public class TestH2<RS> {
     fcetcv.setFieldsRapiHolder(hrf);
     fcetcv.setFieldsConvertersFatory(facConvFields);
     srvOrm.setFactoryCnvEntityToColumnsValues(fcetcv);
-    File fcd = new File(System.getProperty("user.dir"));
+    String currDir = System.getProperty("user.dir");
+    File fcd = new File(currDir);
     assertEquals("jdbc:h2:" + fcd.getParent() + "/beigeaccountingtest", srvOrm.getPropertiesBase().getDatabaseUrl());
     assertEquals("beigeaccounting", srvOrm.getPropertiesBase().getUserName());
     assertEquals("beigeaccounting", srvOrm.getPropertiesBase().getUserPassword());

@@ -1,30 +1,36 @@
 package org.beigesoft.accounting.factory;
 
 /*
- * Beigesoft ™
+ * Copyright (c) 2015-2017 Beigesoft ™
  *
- * Licensed under the Apache License, Version 2.0
+ * Licensed under the GNU General Public License (GPL), Version 2.0
+ * (the "License");
+ * you may not use this file except in compliance with the License.
  *
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
  */
 
+import java.util.Properties;
 import java.io.File;
+import java.io.InputStream;
+import java.net.URL;
 
 import android.os.Environment;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
+import org.beigesoft.log.ILogger;
+import org.beigesoft.log.LoggerFile;
+import org.beigesoft.exception.ExceptionWithCode;
+import org.beigesoft.replicator.service.PrepareDbAfterGetCopy;
 import org.beigesoft.web.factory.AFactoryAppBeans;
 import org.beigesoft.orm.service.SrvOrmAndroid;
-import org.beigesoft.log.ILogger;
-import org.beigesoft.exception.ExceptionWithCode;
 
-import org.beigesoft.android.log.Logger;
-import org.beigesoft.replicator.service.PrepareDbAfterGetCopy;
 import org.beigesoft.android.sqlite.service.CursorFactory;
 import org.beigesoft.android.sqlite.service.SrvDatabase;
 
@@ -96,7 +102,7 @@ public class FactoryAppBeansAndroid extends AFactoryAppBeans<Cursor> {
       prepareDbAfterGetCopy.setLogger(lazyGetLogger());
       prepareDbAfterGetCopy.setFactoryAppBeans(this);
       getBeansMap().put(beanName, prepareDbAfterGetCopy);
-      lazyGetLogger().info(FactoryAppBeansAndroid.class, beanName
+      lazyGetLogger().info(null, FactoryAppBeansAndroid.class, beanName
         + " has been created.");
     }
     return prepareDbAfterGetCopy;
@@ -110,12 +116,67 @@ public class FactoryAppBeansAndroid extends AFactoryAppBeans<Cursor> {
   @Override
   public final ILogger lazyGetLogger() throws Exception {
     String beanName = getLoggerName();
-    Logger logger = (Logger) getBeansMap().get(beanName);
+    LoggerFile logger = (LoggerFile) getBeansMap().get(beanName);
     if (logger == null) {
-      logger = new Logger();
+      logger = new LoggerFile();
       logger.setIsShowDebugMessages(getIsShowDebugMessages());
+      String currDir = Environment.getExternalStorageDirectory()
+        .getAbsolutePath();
+      String fileBaseName = "beige-accounting";
+      logger.setFilePath(currDir + File.separator + fileBaseName);
+      Log.i("A-Jetty", "> Log file path: " + logger.getFilePath());
+      String logPropFn = "/" + fileBaseName + ".properties";
+      URL urlSetting = FactoryAppBeansAndroid.class.getResource(logPropFn);
+      if (urlSetting != null) {
+        Log.i("A-Jetty",
+          "> Found properties: " + logPropFn);
+        InputStream inputStream = null;
+        try {
+          Properties props = new Properties();
+          inputStream = FactoryAppBeansAndroid.class
+            .getResourceAsStream(logPropFn);
+          props.load(inputStream);
+          String fileMaxSizeStr = props.getProperty("fileMaxSize");
+          if (fileMaxSizeStr != null) {
+            Integer fileMaxSize = Integer.parseInt(fileMaxSizeStr);
+            logger.setFileMaxSize(fileMaxSize);
+          }
+          String maxIdleTimeStr = props.getProperty("maxIdleTime");
+          if (maxIdleTimeStr != null) {
+            Integer maxIdleTime = Integer.parseInt(maxIdleTimeStr);
+            logger.setMaxIdleTime(maxIdleTime);
+          }
+          String isCloseFileAfterRecordStr = props
+            .getProperty("isCloseFileAfterRecord");
+          if (isCloseFileAfterRecordStr != null) {
+            Boolean isCloseFileAfterRecord = Boolean
+              .valueOf(isCloseFileAfterRecordStr);
+            logger.setIsCloseFileAfterRecord(isCloseFileAfterRecord);
+          }
+          String isShowDebugMessagesStr = props
+            .getProperty("isShowDebugMessages");
+          if (isShowDebugMessagesStr != null) {
+            Boolean isShowDebugMessages = Boolean
+              .valueOf(isShowDebugMessagesStr);
+            logger.setIsShowDebugMessages(isShowDebugMessages);
+          }
+        } catch (Exception ex) {
+          ex.printStackTrace();
+        } finally {
+          if (inputStream != null) {
+            try {
+              inputStream.close();
+            } catch (Exception ex) {
+              ex.printStackTrace();
+            }
+          }
+        }
+      } else {
+        Log.i("A-Jetty",
+          "> There is no properties: " + logPropFn);
+      }
       getBeansMap().put(beanName, logger);
-      lazyGetLogger().info(FactoryAppBeansAndroid.class, beanName
+      lazyGetLogger().info(null, FactoryAppBeansAndroid.class, beanName
         + " has been created.");
     }
     return logger;
@@ -137,7 +198,7 @@ public class FactoryAppBeansAndroid extends AFactoryAppBeans<Cursor> {
       srvDatabase.setSqliteDatabase(db);
       srvDatabase.setLogger(lazyGetLogger());
       getBeansMap().put(beanName, srvDatabase);
-      lazyGetLogger().info(FactoryAppBeansAndroid.class, beanName
+      lazyGetLogger().info(null, FactoryAppBeansAndroid.class, beanName
         + " has been created.");
     }
     return srvDatabase;
@@ -167,7 +228,7 @@ public class FactoryAppBeansAndroid extends AFactoryAppBeans<Cursor> {
       }
       mngDatabaseAndroid.setBackupDir(bkDir.getAbsolutePath());
       getBeansMap().put(beanName, mngDatabaseAndroid);
-      lazyGetLogger().info(FactoryAppBeansAndroid.class, beanName
+      lazyGetLogger().info(null, FactoryAppBeansAndroid.class, beanName
         + " has been created.");
     }
     return mngDatabaseAndroid;
@@ -193,7 +254,7 @@ public class FactoryAppBeansAndroid extends AFactoryAppBeans<Cursor> {
     if (cursorFactory == null) {
       cursorFactory = new CursorFactory();
       getBeansMap().put(beanName, cursorFactory);
-      lazyGetLogger().info(FactoryAppBeansAndroid.class, beanName
+      lazyGetLogger().info(null, FactoryAppBeansAndroid.class, beanName
         + " has been created.");
     }
     return cursorFactory;

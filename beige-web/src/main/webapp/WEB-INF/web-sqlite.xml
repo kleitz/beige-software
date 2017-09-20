@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Beigesoft ™
-  Licensed under the Apache License, Version 2.0
+<!--
+ Copyright (c) 2015-2017 Beigesoft ™
  
-  You may obtain a copy of the License at
+ Licensed under the GNU General Public License (GPL), Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
  
-  http://www.apache.org/licenses/LICENSE-2.0
+  http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
  -->
 <web-app xmlns="http://java.sun.com/xml/ns/javaee"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -24,9 +26,9 @@
     <listener-class>org.beigesoft.web.listener.WebContextCleaner</listener-class>
   </listener>
   <servlet>
-    <servlet-name>service</servlet-name>
+    <servlet-name>servicePublic</servlet-name>
     <servlet-class>
-      org.beigesoft.web.servlet.WService
+      org.beigesoft.web.servlet.WServicePublic
     </servlet-class>
     <load-on-startup>1</load-on-startup>
     <init-param>
@@ -65,6 +67,25 @@
       <param-name>uvdSettingsBaseFile</param-name>
       <param-value>base.xml</param-value>
     </init-param>
+    <init-param>
+      <param-name>dirJsp</param-name>
+      <param-value>/WEB-INF/jsp/</param-value>
+    </init-param>
+    <multipart-config>
+      <max-file-size>10000</max-file-size>
+      <max-request-size>10000</max-request-size>
+      <file-size-threshold>10000</file-size-threshold>
+    </multipart-config>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>servicePublic</servlet-name>
+    <url-pattern>/servicePublic/*</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>service</servlet-name>
+    <servlet-class>
+      org.beigesoft.web.servlet.WService
+    </servlet-class>
     <init-param>
       <param-name>dirJsp</param-name>
       <param-value>/WEB-INF/jsp/</param-value>

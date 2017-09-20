@@ -14,11 +14,6 @@
 
   <licenses>
     <license>
-      <name>The Eclipse Public License, Version 1.0</name>
-      <url>http://www.eclipse.org/legal/epl-v10.html</url>
-      <distribution>repo</distribution>
-    </license>
-    <license>
       <name>The Apache Software License, Version 2.0</name>
       <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
       <distribution>repo</distribution>
@@ -28,6 +23,11 @@
       <url>http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html</url>
       <distribution>repo</distribution>
     </license>
+    <license>
+      <name>MIT License</name>
+      <url>	http://www.opensource.org/licenses/mit-license.php</url>
+      <distribution>repo</distribution>
+    </license>
   </licenses>
         
   <dependencies>
@@ -35,6 +35,12 @@
       <groupId>org.beigesoft</groupId>
       <artifactId>beige-accounting-web-jar</artifactId>
       <version>${beige.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>mysql</groupId>
+          <artifactId>mysql-connector-java</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.xerial</groupId>
@@ -43,13 +49,13 @@
     </dependency>
     <dependency>
       <groupId>com.github.demidenko05</groupId>
-      <artifactId>a-jetty-base</artifactId>
-      <version>1.0.1</version>
+      <artifactId>a-jetty-swing</artifactId>
+      <version>1.0.2-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-      <version>1.7.15</version>
+      <groupId>org.beigesoft</groupId>
+      <artifactId>beige-logging-slf4j</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
     </dependency>
   </dependencies>
 
@@ -59,17 +65,15 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
         <version>2.4</version>
-        <inherited>true</inherited>
         <configuration>
-          <runOnlyAtExecutionRoot>false</runOnlyAtExecutionRoot>
           <archive>
             <manifest>
-              <mainClass>org.beigesoft.ajetty.BootStrapEmbedded</mainClass>
+              <mainClass>org.beigesoft.ajetty.BootStrapEmbeddedSwing</mainClass>
             </manifest>
           </archive>
-          <descriptorRefs>
-            <descriptorRef>jar-with-dependencies</descriptorRef>
-          </descriptorRefs>
+          <descriptors>
+            <descriptor>assembly.xml</descriptor>
+          </descriptors>
         </configuration>
         <executions>
           <execution>

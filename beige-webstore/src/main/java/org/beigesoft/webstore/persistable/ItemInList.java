@@ -1,13 +1,15 @@
 package org.beigesoft.webstore.persistable;
 
 /*
- * Beigesoft ™
+ * Copyright (c) 2015-2017 Beigesoft ™
  *
- * Licensed under the Apache License, Version 2.0
+ * Licensed under the GNU General Public License (GPL), Version 2.0
+ * (the "License");
+ * you may not use this file except in compliance with the License.
  *
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
  */
 
 import java.math.BigDecimal;
@@ -81,7 +83,7 @@ public class ItemInList extends AHasNameIdLongVersion {
    * settled by GoodsAuction, after some time (e.g. till next day) auction
    * is end, quantity will settled to 0.</p>
    **/
-  private Integer availableQuantity;
+  private BigDecimal availableQuantity;
 
   // Auctioned fields:
   /**
@@ -314,9 +316,9 @@ public class ItemInList extends AHasNameIdLongVersion {
 
   /**
    * <p>Getter for availableQuantity.</p>
-   * @return Integer
+   * @return BigDecimal
    **/
-  public final Integer getAvailableQuantity() {
+  public final BigDecimal getAvailableQuantity() {
     return this.availableQuantity;
   }
 
@@ -324,7 +326,7 @@ public class ItemInList extends AHasNameIdLongVersion {
    * <p>Setter for availableQuantity.</p>
    * @param pAvailableQuantity reference
    **/
-  public final void setAvailableQuantity(final Integer pAvailableQuantity) {
+  public final void setAvailableQuantity(final BigDecimal pAvailableQuantity) {
     this.availableQuantity = pAvailableQuantity;
   }
 

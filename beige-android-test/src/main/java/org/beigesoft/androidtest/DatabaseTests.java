@@ -1,13 +1,15 @@
 package org.beigesoft.androidtest;
 
 /*
- * Beigesoft ™
+ * Copyright (c) 2015-2017 Beigesoft ™
  *
- * Licensed under the Apache License, Version 2.0
+ * Licensed under the GNU General Public License (GPL), Version 2.0
+ * (the "License");
+ * you may not use this file except in compliance with the License.
  *
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
  */
 
 import android.content.Context;
@@ -29,6 +31,7 @@ import org.beigesoft.test.persistable.Department;
 import org.beigesoft.holder.HolderRapiGetters;
 import org.beigesoft.holder.HolderRapiFields;
 import org.beigesoft.service.IUtlReflection;
+import org.beigesoft.properties.UtlProperties;
 import org.beigesoft.service.UtlReflection;
 import org.beigesoft.orm.factory.FctBnCnvIbnToColumnValues;
 import org.beigesoft.orm.factory.FctBcCnvEntityToColumnsValues;
@@ -86,9 +89,11 @@ public class DatabaseTests extends android.test.AndroidTestCase {
       srvOrm.setUtlReflection(getUtlReflection());
       MngSettings mngSettings = new MngSettings();
       mngSettings.setLogger(log);
+      mngSettings.setUtlProperties(new UtlProperties());
+      mngSettings.setUtlReflection(getUtlReflection());
       srvOrm.setLogger(log);
       srvOrm.setMngSettings(mngSettings);
-      log.debug(DatabaseTests.class, 
+      log.debug(null, DatabaseTests.class, 
         "loading configuration: beige-orm, persistence-sqlite.xml");
       srvOrm.loadConfiguration("beige-orm", "persistence-sqlite.xml");
       FctBnCnvIbnToColumnValues facConvFields = new FctBnCnvIbnToColumnValues();

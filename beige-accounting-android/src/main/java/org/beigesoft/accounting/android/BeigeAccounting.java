@@ -1,13 +1,15 @@
 package org.beigesoft.accounting.android;
 
 /*
- * Beigesoft ™
+ * Copyright (c) 2015-2017 Beigesoft ™
  *
- * Licensed under the Apache License, Version 2.0
+ * Licensed under the GNU General Public License (GPL), Version 2.0
+ * (the "License");
+ * you may not use this file except in compliance with the License.
  *
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
  */
 
 import java.io.File;
@@ -30,7 +32,8 @@ import android.os.AsyncTask;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.net.Uri;
@@ -79,9 +82,9 @@ public class BeigeAccounting extends Activity implements OnClickListener {
   private Button btnStartBrowser;
 
   /**
-   * <p>EditText Port.</p>
+   * <p>Combo-Box Port.</p>
    **/
-  private EditText etPort;
+  private Spinner cmbPort;
 
   /**
    * <p>TextView Status.</p>
@@ -135,7 +138,15 @@ public class BeigeAccounting extends Activity implements OnClickListener {
     this.beansMap = appPlus.getBeansMap();
     setContentView(R.layout.beigeaccounting);
     this.tvStatus = (TextView) findViewById(R.id.tvStatus);
-    this.etPort = (EditText) findViewById(R.id.etPort);
+    this.cmbPort = (Spinner) findViewById(R.id.cmbPort);
+    ArrayAdapter<Integer> cmbAdapter =
+      new ArrayAdapter<Integer>(this, android.R.layout.simple_spinner_item);
+    cmbAdapter.add(new Integer(8080));
+    cmbAdapter.add(new Integer(8081));
+    cmbAdapter.add(new Integer(8082));
+    cmbAdapter.add(new Integer(8083));
+    cmbPort.setAdapter(cmbAdapter);
+    cmbPort.setSelection(0);
     this.btnStart = (Button) findViewById(R.id.btnStart);
     this.btnStartBrowser = (Button) findViewById(R.id.btnStartBrowser);
     this.btnStartBrowser.setOnClickListener(this);
@@ -150,7 +161,7 @@ public class BeigeAccounting extends Activity implements OnClickListener {
       String nameFileVersion = "version" + packageInfo.versionCode;
       File fileVersion = new File(getFilesDir().getAbsolutePath()
        + "/" + APP_BASE + "/" + nameFileVersion);
-      if (!jettyBase.exists()) {
+      if (!jettyBase.exists()) { //new install
         if (!jettyBase.mkdirs()) {
           throw new ExceptionWithCode(ExceptionWithCode.SOMETHING_WRONG,
             "Can't create dir " + jettyBase);
@@ -160,8 +171,12 @@ public class BeigeAccounting extends Activity implements OnClickListener {
           "Beige Accounting directory has been  successfully created"
             + " and WEB static files has been copied!",
             Toast.LENGTH_SHORT).show();
-      } else if (!fileVersion.exists()) {
-        copyAssets(APP_BASE);
+        if (!fileVersion.createNewFile()) {
+          throw new ExceptionWithCode(ExceptionWithCode.SOMETHING_WRONG,
+            "Cant't create file " + fileVersion);
+        }
+      } else if (!fileVersion.exists()) { // upgrade
+        copyAssets(APP_BASE); // refresh from upgrade package
         if (!fileVersion.createNewFile()) {
           throw new ExceptionWithCode(ExceptionWithCode.SOMETHING_WRONG,
             "Cant't create file " + fileVersion);
@@ -189,18 +204,27 @@ public class BeigeAccounting extends Activity implements OnClickListener {
   @Override
   public final void onClick(final View pTarget) {
     if (pTarget == this.btnStart) {
-      this.btnStart.setEnabled(false);
-      Toast.makeText(getApplicationContext(),
-        "Sending request to start server, please wait", Toast.LENGTH_SHORT)
-          .show();
-      Intent intent = new Intent(this, JettyAccountingService.class);
-      intent.setAction(JettyAccountingService.ACTION_START);
-      startService(intent);
+      BootStrapEmbedded bootStrap = getOrInitBootStrap();
+      if (!bootStrap.getIsStarted()) {
+        bootStrap.setPort((Integer) cmbPort.getSelectedItem());
+        this.btnStart.setEnabled(false);
+        this.cmbPort.setEnabled(false);
+        Toast.makeText(getApplicationContext(),
+          "Sending request to start server, please wait", Toast.LENGTH_SHORT)
+            .show();
+        Intent intent = new Intent(this, JettyAccountingService.class);
+        intent.setAction(JettyAccountingService.ACTION_START);
+        startService(intent);
+      }
     } else if (pTarget == this.btnStop) {
-      this.btnStop.setEnabled(false);
-      Intent intent = new Intent(this, JettyAccountingService.class);
-      intent.setAction(JettyAccountingService.ACTION_STOP);
-      startService(intent);
+      BootStrapEmbedded bootStrap = getOrInitBootStrap();
+      if (bootStrap.getIsStarted()) {
+        this.btnStop.setEnabled(false);
+        this.btnStartBrowser.setEnabled(false);
+        Intent intent = new Intent(this, JettyAccountingService.class);
+        intent.setAction(JettyAccountingService.ACTION_STOP);
+        startService(intent);
+      }
     } else if (pTarget == this.btnStartBrowser) {
       startBrowser();
     }
@@ -239,7 +263,7 @@ public class BeigeAccounting extends Activity implements OnClickListener {
    * <p>Start browser.</p>
    */
   private void startBrowser() {
-    String url = "http://localhost:8080";
+    String url = this.btnStartBrowser.getText().toString();
     Intent i = new Intent(Intent.ACTION_VIEW);
     i.setData(Uri.parse(url));
     startActivity(i);
@@ -252,6 +276,7 @@ public class BeigeAccounting extends Activity implements OnClickListener {
     synchronized (this.beansMap) {
       BootStrapEmbedded bootStrap = getOrInitBootStrap();
       if (bootStrap.getIsStarted()) {
+        this.cmbPort.setEnabled(false);
         this.btnStart.setEnabled(false);
         this.btnStop.setEnabled(true);
         this.tvStatus.setText(getResources().getString(R.string.started));
@@ -261,12 +286,12 @@ public class BeigeAccounting extends Activity implements OnClickListener {
         this.btnStartBrowser.setText(text);
       } else {
         this.btnStart.setEnabled(true);
+        this.cmbPort.setEnabled(true);
         this.btnStop.setEnabled(false);
         this.tvStatus.setText(getResources().getString(R.string.stopped));
         this.btnStartBrowser.setEnabled(false);
         this.btnStartBrowser.setText("");
       }
-      this.etPort.setText(String.valueOf(bootStrap.getPort()));
     }
   }
 
@@ -281,20 +306,24 @@ public class BeigeAccounting extends Activity implements OnClickListener {
     if (bootStrapO != null) {
       bootStrap = (BootStrapEmbedded) bootStrapO;
     } else { // initialize:
-      bootStrap = new BootStrapEmbedded();
-      bootStrap.setWebAppPath(getFilesDir().getAbsolutePath()
-        + "/" + APP_BASE);
-      try {
-        bootStrap.setFactoryAppBeans(jettyFactoryAppBeans);
-        bootStrap.createServer(false);
-        bootStrap.getWebAppContext().setAttribute("android.content.Context",
-          this);
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
       synchronized (this.beansMap) {
-        this.beansMap
-          .put(BootStrapEmbedded.class.getCanonicalName(), bootStrap);
+        bootStrapO = this.beansMap
+          .get(BootStrapEmbedded.class.getCanonicalName());
+        if (bootStrapO == null) {
+          bootStrap = new BootStrapEmbedded();
+          bootStrap.setWebAppPath(getFilesDir().getAbsolutePath()
+            + "/" + APP_BASE);
+          try {
+            bootStrap.setFactoryAppBeans(jettyFactoryAppBeans);
+            // SERVER WILL BE CREATED BY START THREAD IN JettyAccountingService
+          } catch (Exception e) {
+            e.printStackTrace();
+          }
+          this.beansMap
+            .put(BootStrapEmbedded.class.getCanonicalName(), bootStrap);
+          // it will be removed from beans-map by STOP thread
+          // in JettyAccountingService
+        }
       }
     }
     return bootStrap;

@@ -33,4 +33,6 @@
     files="UtilXml|ASrvOrm|ReplicatorXmlHttp|MoveItems|MoveItemsLine|BeginningInventory|BeginningInventoryLine"/>
   <suppress checks="MagicNumberCheck"
     files="ServiceToSaleCategory|SrvBalanceSheet|TradingSettings|FillEntityFromReq|HolderRapiGetters|HolderRapiSetters"/>
+  <suppress checks="MagicNumberCheck"
+    files="CnvObjectToColumnsValues|FillerEntitiesFromRs"/>
 </suppressions>

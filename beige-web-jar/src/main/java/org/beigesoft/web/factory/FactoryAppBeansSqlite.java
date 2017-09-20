@@ -1,13 +1,15 @@
 package org.beigesoft.web.factory;
 
 /*
- * Beigesoft ™
+ * Copyright (c) 2015-2017 Beigesoft ™
  *
- * Licensed under the Apache License, Version 2.0
+ * Licensed under the GNU General Public License (GPL), Version 2.0
+ * (the "License");
+ * you may not use this file except in compliance with the License.
  *
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
  */
 
 import java.sql.ResultSet;
@@ -68,7 +70,7 @@ public class FactoryAppBeansSqlite extends AFactoryAppBeansJdbc {
       dataSource.setJdbcUrl(getDatabaseName());
       dataSource.setDriverClassName("org.sqlite.JDBC");
       getBeansMap().put(beanName, dataSource);
-      lazyGetLogger().info(FactoryAppBeansSqlite.class, beanName
+      lazyGetLogger().info(null, FactoryAppBeansSqlite.class, beanName
         + " has been created.");
     }
     return dataSource;
@@ -87,8 +89,9 @@ public class FactoryAppBeansSqlite extends AFactoryAppBeansJdbc {
     if (mngDatabaseSqlite == null) {
       mngDatabaseSqlite = new MngDatabaseSqlite();
       mngDatabaseSqlite.setFactoryAppBeansSqlite(this);
+      mngDatabaseSqlite.setDatabaseDir(getWebAppPath());
       getBeansMap().put(beanName, mngDatabaseSqlite);
-      lazyGetLogger().info(FactoryAppBeansSqlite.class, beanName
+      lazyGetLogger().info(null, FactoryAppBeansSqlite.class, beanName
         + " has been created.");
     }
     return mngDatabaseSqlite;
@@ -119,7 +122,7 @@ public class FactoryAppBeansSqlite extends AFactoryAppBeansJdbc {
       prepareDbAfterGetCopy.setLogger(lazyGetLogger());
       prepareDbAfterGetCopy.setFactoryAppBeans(this);
       getBeansMap().put(beanName, prepareDbAfterGetCopy);
-      lazyGetLogger().info(FactoryAppBeansSqlite.class, beanName
+      lazyGetLogger().info(null, FactoryAppBeansSqlite.class, beanName
         + " has been created.");
     }
     return prepareDbAfterGetCopy;

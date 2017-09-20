@@ -1,13 +1,15 @@
 package org.beigesoft.service;
 
 /*
- * Beigesoft ™
+ * Copyright (c) 2015-2017 Beigesoft ™
  *
- * Licensed under the Apache License, Version 2.0
+ * Licensed under the GNU General Public License (GPL), Version 2.0
+ * (the "License");
+ * you may not use this file except in compliance with the License.
  *
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
  */
 
 import java.util.Date;
@@ -64,7 +66,7 @@ public class MailSenderStd implements IMailSender {
       mc.addMailcap("text/plain;; x-java-content-handler=com.sun.mail.handlers.text_plain");
       mc.addMailcap("multipart/*;; x-java-content-handler=com.sun.mail.handlers.multipart_mixed");
       mc.addMailcap("message/rfc822;; x-java-content- handler=com.sun.mail.handlers.message_rfc822");
-      this.logger.info(MailSenderStd.class, "Mailcap has been fixed");
+      this.logger.info(null, MailSenderStd.class, "Mailcap has been fixed");
     }
   }
 

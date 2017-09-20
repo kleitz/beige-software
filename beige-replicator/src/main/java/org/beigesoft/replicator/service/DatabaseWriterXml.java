@@ -1,13 +1,15 @@
 package org.beigesoft.replicator.service;
 
 /*
- * Beigesoft ™
+ * Copyright (c) 2015-2017 Beigesoft ™
  *
- * Licensed under the Apache License, Version 2.0
+ * Licensed under the GNU General Public License (GPL), Version 2.0
+ * (the "License");
+ * you may not use this file except in compliance with the License.
  *
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
  */
 
 import java.util.Map;
@@ -90,7 +92,7 @@ public class DatabaseWriterXml<RS> implements IDatabaseWriter {
           if (requestedDatabaseId != di.getDatabaseId()) {
             String error = "Different requested database ID! required/is: "
                 + requestedDatabaseId + "/" + di.getDatabaseId();
-            this.logger.error(DatabaseWriterXml.class, error);
+            this.logger.error(null, DatabaseWriterXml.class, error);
             pWriter.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
             pWriter.write("<message error=\"" + error + "\">\n");
             pWriter.write("</message>\n");
@@ -111,7 +113,7 @@ public class DatabaseWriterXml<RS> implements IDatabaseWriter {
       } finally {
         this.srvDatabase.releaseResources();
       }
-      this.logger.info(DatabaseWriterXml.class, "Start write entities of "
+      this.logger.info(null, DatabaseWriterXml.class, "Start write entities of "
         + pEntityClass.getCanonicalName() + " count=" + entitiesCount);
       pWriter.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
       pWriter.write("<message databaseId=\"" + di.getDatabaseId()
@@ -122,9 +124,10 @@ public class DatabaseWriterXml<RS> implements IDatabaseWriter {
         this.srvEntityWriter.write(pAddParam, entity, pWriter);
       }
       pWriter.write("</message>\n");
-      this.logger.info(DatabaseWriterXml.class, "Entities has been wrote");
+      this.logger.info(null, DatabaseWriterXml.class,
+        "Entities has been wrote");
     } else {
-      this.logger.error(DatabaseWriterXml.class,
+      this.logger.error(null, DatabaseWriterXml.class,
         "Send error message - Different database version!");
       pWriter.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
       pWriter.write("<message error=\"Different database version!\">\n");

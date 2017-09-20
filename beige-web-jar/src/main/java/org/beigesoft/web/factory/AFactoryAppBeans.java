@@ -1,13 +1,15 @@
 package org.beigesoft.web.factory;
 
 /*
- * Beigesoft ™
+ * Copyright (c) 2015-2017 Beigesoft ™
  *
- * Licensed under the Apache License, Version 2.0
+ * Licensed under the GNU General Public License (GPL), Version 2.0
+ * (the "License");
+ * you may not use this file except in compliance with the License.
  *
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
  */
 
 import java.util.Date;
@@ -68,6 +70,7 @@ import org.beigesoft.replicator.service.SrvFieldWriterXmlStd;
 import org.beigesoft.replicator.service.SrvFieldHasIdWriterXml;
 import org.beigesoft.web.service.MngSoftware;
 import org.beigesoft.web.service.UtlJsp;
+import org.beigesoft.web.service.CheckerPublicReqHndl;
 
 /**
  * <p>Application beans factory for any RDBMS.
@@ -418,6 +421,8 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
       srvOrm.setFillerEntitiesFromRs(fillerEntitiesFromRs);
       MngSettings mngOrmSettings = new MngSettings();
       mngOrmSettings.setLogger(lazyGetLogger());
+      mngOrmSettings.setUtlReflection(lazyGetUtlReflection());
+      mngOrmSettings.setUtlProperties(lazyGetUtlProperties());
       srvOrm.setMngSettings(mngOrmSettings);
       srvOrm.loadConfiguration(this.ormSettingsDir,
         this.ormSettingsBaseFile);
@@ -434,7 +439,7 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
         this.entitiesMap.put(clazz.getSimpleName(), clazz);
       }
       this.beansMap.put(beanName, srvOrm);
-      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+      lazyGetLogger().info(null, AFactoryAppBeans.class, beanName
         + " has been created.");
     }
     return srvOrm;
@@ -515,7 +520,7 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
       srvGetDbCopyXml.setSrvDatabase(lazyGetSrvDatabase());
       srvGetDbCopyXml.setDatabaseReader(databaseReaderIdenticalXml);
       srvGetDbCopyXml.setLogger(lazyGetLogger());
-      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+      lazyGetLogger().info(null, AFactoryAppBeans.class, beanName
         + " has been created.");
       this.beansMap.put(beanName, srvGetDbCopyXml);
     }
@@ -561,7 +566,7 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
       dbWriterXmlFullImport.setSrvDatabase(lazyGetSrvDatabase());
       dbWriterXmlFullImport.setSrvOrm(lazyGetSrvOrm());
       this.beansMap.put(beanName, dbWriterXmlFullImport);
-      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+      lazyGetLogger().info(null, AFactoryAppBeans.class, beanName
         + " has been created.");
     }
     return dbWriterXmlFullImport;
@@ -588,10 +593,12 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
     if (mngSettingsGetDbCopy == null) {
       mngSettingsGetDbCopy = new MngSettings();
       mngSettingsGetDbCopy.setLogger(lazyGetLogger());
+      mngSettingsGetDbCopy.setUtlProperties(lazyGetUtlProperties());
+      mngSettingsGetDbCopy.setUtlReflection(lazyGetUtlReflection());
       mngSettingsGetDbCopy
         .loadConfiguration("beige-get-db-copy", "base.xml");
       this.beansMap.put(beanName, mngSettingsGetDbCopy);
-      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+      lazyGetLogger().info(null, AFactoryAppBeans.class, beanName
         + " has been created.");
     }
     return mngSettingsGetDbCopy;
@@ -628,7 +635,7 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
       srvAbout.setSrvOrm(lazyGetSrvOrm());
       srvAbout.setSrvDatabase(lazyGetSrvDatabase());
       this.beansMap.put(beanName, srvAbout);
-      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+      lazyGetLogger().info(null, AFactoryAppBeans.class, beanName
         + " has been created.");
     }
     return srvAbout;
@@ -653,7 +660,7 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
     if (mailSender == null) {
       mailSender = new MailSenderStd(lazyGetLogger());
       this.beansMap.put(beanName, mailSender);
-      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+      lazyGetLogger().info(null, AFactoryAppBeans.class, beanName
         + " has been created.");
     }
     return mailSender;
@@ -678,7 +685,7 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
     if (srvSqlEscape == null) {
       srvSqlEscape = new SrvSqlEscape();
       this.beansMap.put(beanName, srvSqlEscape);
-      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+      lazyGetLogger().info(null, AFactoryAppBeans.class, beanName
         + " has been created.");
     }
     return srvSqlEscape;
@@ -703,7 +710,7 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
     if (utilXml == null) {
       utilXml = new UtilXml();
       this.beansMap.put(beanName, utilXml);
-      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+      lazyGetLogger().info(null, AFactoryAppBeans.class, beanName
         + " has been created.");
     }
     return utilXml;
@@ -730,7 +737,7 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
     if (hlpInsertUpdate == null) {
       hlpInsertUpdate = new HlpInsertUpdate();
       this.beansMap.put(beanName, hlpInsertUpdate);
-      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+      lazyGetLogger().info(null, AFactoryAppBeans.class, beanName
         + " has been created.");
     }
     return hlpInsertUpdate;
@@ -755,7 +762,7 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
     if (utlJsp == null) {
       utlJsp = new UtlJsp();
       this.beansMap.put(beanName, utlJsp);
-      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+      lazyGetLogger().info(null, AFactoryAppBeans.class, beanName
         + " has been created.");
     }
     return utlJsp;
@@ -781,7 +788,7 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
       mngSoftware = new MngSoftware();
       mngSoftware.setLogger(lazyGetLogger());
       this.beansMap.put(beanName, mngSoftware);
-      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+      lazyGetLogger().info(null, AFactoryAppBeans.class, beanName
         + " has been created.");
     }
     return mngSoftware;
@@ -807,7 +814,7 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
     if (utlProperties == null) {
       utlProperties = new UtlProperties();
       this.beansMap.put(beanName, utlProperties);
-      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+      lazyGetLogger().info(null, AFactoryAppBeans.class, beanName
         + " has been created.");
     }
     return utlProperties;
@@ -833,7 +840,7 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
     if (utlReflection == null) {
       utlReflection = new UtlReflection();
       this.beansMap.put(beanName, utlReflection);
-      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+      lazyGetLogger().info(null, AFactoryAppBeans.class, beanName
         + " has been created.");
     }
     return utlReflection;
@@ -858,7 +865,7 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
     if (srvI18n == null) {
       srvI18n = new SrvI18n();
       this.beansMap.put(beanName, srvI18n);
-      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+      lazyGetLogger().info(null, AFactoryAppBeans.class, beanName
         + " has been created.");
     }
     return srvI18n;
@@ -896,7 +903,7 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
       srvEntitiesPage
         .setFieldConverterNamesHolder(lazyGetHldFieldsCnvTfsNames());
       this.beansMap.put(beanName, srvEntitiesPage);
-      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+      lazyGetLogger().info(null, AFactoryAppBeans.class, beanName
         + " has been created.");
     }
     return srvEntitiesPage;
@@ -921,7 +928,7 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
     if (srvDate == null) {
       srvDate = new SrvDate();
       this.beansMap.put(beanName, srvDate);
-      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+      lazyGetLogger().info(null, AFactoryAppBeans.class, beanName
         + " has been created.");
     }
     return srvDate;
@@ -946,7 +953,7 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
     if (srvPage == null) {
       srvPage = new SrvPage();
       this.beansMap.put(beanName, srvPage);
-      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+      lazyGetLogger().info(null, AFactoryAppBeans.class, beanName
         + " has been created.");
     }
     return srvPage;
@@ -972,6 +979,8 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
     if (mngUvdSettings == null) {
       mngUvdSettings = new MngSettings();
       mngUvdSettings.setLogger(lazyGetLogger());
+      mngUvdSettings.setUtlProperties(lazyGetUtlProperties());
+      mngUvdSettings.setUtlReflection(lazyGetUtlReflection());
       mngUvdSettings.loadConfiguration(this.uvdSettingsDir,
         this.uvdSettingsBaseFile);
       HolderRapiFields holderRapiFields = lazyGetHolderRapiFields();
@@ -994,7 +1003,7 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
         }
       }
       this.beansMap.put(beanName, mngUvdSettings);
-      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+      lazyGetLogger().info(null, AFactoryAppBeans.class, beanName
         + " has been created.");
     }
     return mngUvdSettings;
@@ -1022,7 +1031,7 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
       holderRapiFields = new HolderRapiFields();
       holderRapiFields.setUtlReflection(lazyGetUtlReflection());
       this.beansMap.put(beanName, holderRapiFields);
-      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+      lazyGetLogger().info(null, AFactoryAppBeans.class, beanName
         + " has been created.");
     }
     return holderRapiFields;
@@ -1050,7 +1059,7 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
       holderRapiGetters = new HolderRapiGetters();
       holderRapiGetters.setUtlReflection(lazyGetUtlReflection());
       this.beansMap.put(beanName, holderRapiGetters);
-      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+      lazyGetLogger().info(null, AFactoryAppBeans.class, beanName
         + " has been created.");
     }
     return holderRapiGetters;
@@ -1078,7 +1087,7 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
       holderRapiSetters = new HolderRapiSetters();
       holderRapiSetters.setUtlReflection(lazyGetUtlReflection());
       this.beansMap.put(beanName, holderRapiSetters);
-      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+      lazyGetLogger().info(null, AFactoryAppBeans.class, beanName
         + " has been created.");
     }
     return holderRapiSetters;
@@ -1106,7 +1115,7 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
       hldCnvToColumnsValuesNames = new HldCnvToColumnsValuesNames();
       hldCnvToColumnsValuesNames.setFieldsRapiHolder(lazyGetHolderRapiFields());
       this.beansMap.put(beanName, hldCnvToColumnsValuesNames);
-      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+      lazyGetLogger().info(null, AFactoryAppBeans.class, beanName
         + " has been created.");
     }
     return hldCnvToColumnsValuesNames;
@@ -1139,7 +1148,7 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
       fctBnCnvIbnToColumnValues.setIsNeedsToSqlEscape(getIsNeedsToSqlEscape());
       fctBnCnvIbnToColumnValues.setSrvSqlEscape(lazyGetSrvSqlEscape());
       this.beansMap.put(beanName, fctBnCnvIbnToColumnValues);
-      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+      lazyGetLogger().info(null, AFactoryAppBeans.class, beanName
         + " has been created.");
     }
     return fctBnCnvIbnToColumnValues;
@@ -1175,7 +1184,7 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
       fctBcCnvEntityToColumnsValues
         .setGettersRapiHolder(lazyGetHolderRapiGetters());
       this.beansMap.put(beanName, fctBcCnvEntityToColumnsValues);
-      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+      lazyGetLogger().info(null, AFactoryAppBeans.class, beanName
         + " has been created.");
     }
     return fctBcCnvEntityToColumnsValues;
@@ -1205,7 +1214,7 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
       fctFillersObjectFields
         .setSettersRapiHolder(lazyGetHolderRapiSetters());
       this.beansMap.put(beanName, fctFillersObjectFields);
-      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+      lazyGetLogger().info(null, AFactoryAppBeans.class, beanName
         + " has been created.");
     }
     return fctFillersObjectFields;
@@ -1291,7 +1300,7 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
         }
       }
       this.beansMap.put(beanName, fctConvertersToFromString);
-      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+      lazyGetLogger().info(null, AFactoryAppBeans.class, beanName
         + " has been created.");
     }
     return fctConvertersToFromString;
@@ -1324,7 +1333,7 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
         .setFillersFieldsFactory(lazyGetFctFillersObjectFields());
       fctBnCnvBnFromRs.setFieldsRapiHolder(lazyGetHolderRapiFields());
       this.beansMap.put(beanName, fctBnCnvBnFromRs);
-      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+      lazyGetLogger().info(null, AFactoryAppBeans.class, beanName
         + " has been created.");
     }
     return fctBnCnvBnFromRs;
@@ -1362,7 +1371,7 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
         .setFieldConverterNamesHolder(lazyGetHldCnvFromRsNames());
       fillerEntitiesFromRs.setFieldsRapiHolder(lazyGetHolderRapiFields());
       this.beansMap.put(beanName, fillerEntitiesFromRs);
-      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+      lazyGetLogger().info(null, AFactoryAppBeans.class, beanName
         + " has been created.");
     }
     return fillerEntitiesFromRs;
@@ -1390,7 +1399,7 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
       hldCnvFromRsNames = new HldCnvFromRsNames();
       hldCnvFromRsNames.setFieldsRapiHolder(lazyGetHolderRapiFields());
       this.beansMap.put(beanName, hldCnvFromRsNames);
-      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+      lazyGetLogger().info(null, AFactoryAppBeans.class, beanName
         + " has been created.");
     }
     return hldCnvFromRsNames;
@@ -1427,7 +1436,7 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
         new HldFieldsSettings("fieldFromToStringConverter");
       hldFieldsCnvTfsNames.setMngSettings(lazyGetMngUvdSettings());
       this.beansMap.put(beanName, hldFieldsCnvTfsNames);
-      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+      lazyGetLogger().info(null, AFactoryAppBeans.class, beanName
         + " has been created.");
     }
     return hldFieldsCnvTfsNames;
@@ -1461,7 +1470,7 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
       fillEntityFromReq
         .setConvertersFieldsFatory(lazyGetFctConvertersToFromString());
       this.beansMap.put(beanName, fillEntityFromReq);
-      lazyGetLogger().info(AFactoryAppBeans.class, beanName
+      lazyGetLogger().info(null, AFactoryAppBeans.class, beanName
         + " has been created.");
     }
     return fillEntityFromReq;
@@ -1473,6 +1482,34 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
    **/
   public final String getFillEntityFromReqName() {
     return "IFillEntityFromReq";
+  }
+
+  /**
+   * <p>Get CheckerPublicReqHndl in lazy mode.</p>
+   * @return CheckerPublicReqHndl - CheckerPublicReqHndl
+   * @throws Exception - an exception
+   */
+  public final CheckerPublicReqHndl
+    lazyGetCheckerPublic() throws Exception {
+    String beanName = getCheckerPublicName();
+    CheckerPublicReqHndl checkerPublic =
+      (CheckerPublicReqHndl) this.beansMap.get(beanName);
+    if (checkerPublic == null) {
+      checkerPublic =
+        new CheckerPublicReqHndl();
+      this.beansMap.put(beanName, checkerPublic);
+      lazyGetLogger().info(null, AFactoryAppBeans.class, beanName
+        + " has been created.");
+    }
+    return checkerPublic;
+  }
+
+  /**
+   * <p>Getter of CheckerPublicReqHndl name.</p>
+   * @return service name
+   **/
+  public final String getCheckerPublicName() {
+    return "checkerPublic";
   }
 
   //Synchronized SGS:

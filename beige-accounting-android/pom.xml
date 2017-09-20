@@ -22,8 +22,18 @@
     
   <licenses>
     <license>
-      <name>The Apache Software License, Version 2.0</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <name>GNU General Public License version 2</name>
+      <url>http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html</url>
+      <distribution>repo</distribution>
+    </license>
+    <license>
+      <name>The Eclipse Public License, Version 1.0</name>
+      <url>http://www.eclipse.org/legal/epl-v10.html</url>
+      <distribution>repo</distribution>
+    </license>
+    <license>
+      <name>MIT License</name>
+      <url>	http://www.opensource.org/licenses/mit-license.php</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
@@ -102,6 +112,10 @@
           <artifactId>HikariCP</artifactId>
         </exclusion>
         <exclusion>
+          <groupId>com.github.demidenko05</groupId>
+          <artifactId>a-jetty-swing</artifactId>
+        </exclusion>
+        <exclusion>
           <groupId>org.beigesoft</groupId>
           <artifactId>beige-jdbc</artifactId>
         </exclusion>
@@ -110,6 +124,11 @@
           <artifactId>javax.mail</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>com.github.demidenko05</groupId>
+      <artifactId>a-jetty-base</artifactId>
+      <version>1.0.2-SNAPSHOT</version>
     </dependency>
     <dependency>
         <groupId>com.sun.mail</groupId>
@@ -154,20 +173,25 @@
       </plugin>
     </plugins>
     <resources>
+      <!--Android Maven plugin will chooses these resources ordered by Maven Resource plugin
+        and removes other duplicates from jars:-->
       <resource>
-        <directory>../beige-orm/src/main/resources</directory>
+        <directory>src/main/resources</directory>
       </resource>
       <resource>
-        <directory>../beige-web-jar/src/main/resources</directory>
-      </resource>
-      <resource>
-        <directory>../beige-accounting/src/main/resources</directory>
+        <directory>../beige-accounting-web-jar/src/main/resources</directory>
       </resource>
       <resource>
         <directory>../beige-webstore/src/main/resources</directory>
       </resource>
       <resource>
-        <directory>../beige-accounting-web-jar/src/main/resources</directory>
+        <directory>../beige-accounting/src/main/resources</directory>
+      </resource>
+      <resource>
+        <directory>../beige-web-jar/src/main/resources</directory>
+      </resource>
+      <resource>
+        <directory>../beige-orm/src/main/resources</directory>
       </resource>
     </resources>
   </build>

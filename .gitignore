@@ -16,4 +16,4 @@ beige-accounting-web/*.sqlite
 */findbug-exclude.xml
 */*.tst.xml
 beigeaccountingtest.trace.db
-
+*.log

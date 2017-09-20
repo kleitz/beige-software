@@ -10,57 +10,24 @@
   <includeSiteDirectory>false</includeSiteDirectory>
   <fileSets>
     <fileSet>
+      <useDefaultExcludes>false</useDefaultExcludes>
       <includes>
-        <include>/src/**</include>
+        <include>**/src/**</include>
+        <include>/.gitattributes</include>
         <include>/.gitignore</include>
-        <include>/README.txt</include>
-        <include>/license.txt</include>
-        <include>/pom.xml</include>
-        <include>/assembly.xml</include>
-        <include>/command.txt</include>
+        <include>**/README.txt</include>
+        <include>/LICENSE</include>
+        <include>**/pom.xml</include>
+        <include>**/build.xml</include>
+        <include>**/assembly.xml</include>
         <include>/findbug-exclude.xml</include>
         <include>/checkstyle-suppressions.xml</include>
         <include>/maven-central-deploy.sh</include>
       </includes>
       <excludes>
+        <exclude>**/target/**</exclude>
         <exclude>**/src/uml/**</exclude>
       </excludes>
     </fileSet>
   </fileSets>
-  <moduleSets>
-    <moduleSet>
-      <includes>
-        <include>org.beigesoft:beige-common</include>
-        <include>org.beigesoft:beige-settings</include>
-        <include>org.beigesoft:beige-orm</include>
-        <include>org.beigesoft:beige-jdbc</include>
-        <include>org.beigesoft:beige-replicator</include>
-        <include>org.beigesoft:beige-web-jar</include>
-        <include>org.beigesoft:beige-web</include>
-        <include>org.beigesoft:beige-webstore</include>
-        <include>org.beigesoft:beige-accounting</include>
-        <include>org.beigesoft:beige-accounting-web-jar</include>
-        <include>org.beigesoft:beige-accounting-web</include>
-        <include>org.beigesoft:beige-accounting-ajetty</include>
-        <include>org.beigesoft:beige-android-jar</include>
-        <include>org.beigesoft:beige-android-test</include>
-        <include>org.beigesoft:beige-accounting-android</include>
-      </includes>
-      <sources>
-        <fileSets>
-           <fileSet>
-            <excludes>
-              <exclude>**/src/uml/**</exclude>
-              <exclude>target/**</exclude>
-              <exclude>uploads/**</exclude>
-              <exclude>WebContent/**</exclude>
-              <exclude>**/trash/**</exclude>
-              <exclude>/findbug-exclude.xml</exclude>
-              <exclude>/beigeaccounting.sqlite</exclude>
-            </excludes>
-          </fileSet>
-        </fileSets>
-      </sources>
-    </moduleSet>
-  </moduleSets>
 </assembly>

@@ -4,6 +4,9 @@
   <Match>
     <Package name="~org\.apache.*"/>
   </Match>
+  <Match>
+    <Package name="~org\.eclipse.*"/>
+  </Match>
   <!-- All android generated sources: -->
   <Match>
     <Class name="~.*R\$.*"/>

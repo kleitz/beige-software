@@ -1,13 +1,15 @@
 package org.beigesoft.webstore.persistable;
 
 /*
- * Beigesoft ™
+ * Copyright (c) 2015-2017 Beigesoft ™
  *
- * Licensed under the Apache License, Version 2.0
+ * Licensed under the GNU General Public License (GPL), Version 2.0
+ * (the "License");
+ * you may not use this file except in compliance with the License.
  *
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
  */
 
 import org.beigesoft.persistable.AHasNameIdLongVersion;
@@ -23,52 +25,52 @@ import org.beigesoft.accounting.persistable.DebtorCreditor;
 public class OnlineBuyer extends AHasNameIdLongVersion {
 
   /**
-   * <p>Registered Password.</p>
+   * <p>Registered Password, null for unregistered buyer.</p>
    **/
   private String registeredPassword;
 
   /**
-   * <p>Registered customer.</p>
+   * <p>Registered customer, null for unregistered buyer.</p>
    **/
   private DebtorCreditor regCustomer;
 
   /**
-   * <p>Registered email.</p>
+   * <p>Registered email, if applied.</p>
    **/
   private String regEmail;
 
   /**
-   * <p>Registered address1.</p>
+   * <p>Registered address1, if applied.</p>
    **/
   private String regAddress1;
 
   /**
-   * <p>Registered address2.</p>
+   * <p>Registered address2, if applied.</p>
    **/
   private String regAddress2;
 
   /**
-   * <p>Registered Zip.</p>
+   * <p>Registered Zip, if applied.</p>
    **/
   private String regZip;
 
   /**
-   * <p>Registered Country.</p>
+   * <p>Registered Country, if applied.</p>
    **/
   private String regCountry;
 
   /**
-   * <p>Registered State.</p>
+   * <p>Registered State, if applied.</p>
    **/
   private String regState;
 
   /**
-   * <p>Registered City.</p>
+   * <p>Registered City, if applied.</p>
    **/
   private String regCity;
 
   /**
-   * <p>Registered Phone.</p>
+   * <p>Registered Phone, if applied.</p>
    **/
   private String regPhone;
 

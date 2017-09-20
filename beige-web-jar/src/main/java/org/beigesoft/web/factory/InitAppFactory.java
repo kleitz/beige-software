@@ -1,13 +1,15 @@
 package org.beigesoft.web.factory;
 
 /*
- * Beigesoft ™
+ * Copyright (c) 2015-2017 Beigesoft ™
  *
- * Licensed under the Apache License, Version 2.0
+ * Licensed under the GNU General Public License (GPL), Version 2.0
+ * (the "License");
+ * you may not use this file except in compliance with the License.
  *
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
  */
 
 import java.io.File;
@@ -38,6 +40,8 @@ public class InitAppFactory<RS> implements IDelegateExc<FactoryAndServlet> {
     @SuppressWarnings("unchecked")
     AFactoryAppBeans<RS> factoryAppBeans =
       (AFactoryAppBeans<RS>) pFactoryAndServlet.getFactoryAppBeans();
+    factoryAppBeans.setWebAppPath(pFactoryAndServlet.getHttpServlet()
+      .getServletContext().getRealPath(""));
     FactoryBldServices<RS> factoryBldServices = new FactoryBldServices<RS>();
     factoryBldServices.setFactoryAppBeans(factoryAppBeans);
     factoryAppBeans.setFactoryBldServices(factoryBldServices);
@@ -45,7 +49,8 @@ public class InitAppFactory<RS> implements IDelegateExc<FactoryAndServlet> {
       .getInitParameter("isShowDebugMessages");
     factoryAppBeans.setIsShowDebugMessages(Boolean
       .valueOf(isShowDebugMessagesStr));
-    ILogger logger = (ILogger) factoryAppBeans.lazyGet("ILogger");
+    ILogger logger = (ILogger) factoryAppBeans
+      .lazyGet(factoryAppBeans.getLoggerName());
     String newDatabaseIdStr = pFactoryAndServlet.getHttpServlet()
       .getInitParameter("newDatabaseId");
     factoryAppBeans.setNewDatabaseId(Integer.parseInt(newDatabaseIdStr));
@@ -66,23 +71,21 @@ public class InitAppFactory<RS> implements IDelegateExc<FactoryAndServlet> {
     if (uploadDirectory != null) {
       factoryAppBeans.setUploadDirectory(uploadDirectory);
     }
-    factoryAppBeans.setWebAppPath(pFactoryAndServlet.getHttpServlet()
-      .getServletContext().getRealPath(""));
     File uploadDir = new File(factoryAppBeans.getWebAppPath() + File.separator
       + factoryAppBeans.getUploadDirectory());
     if (!uploadDir.exists()
       && !uploadDir.mkdirs()) { // e.g. run on maven-tomcat
-      logger.error(InitAppFactory.class, "Can't create UD " + uploadDirectory);
+      logger.error(null, InitAppFactory.class,
+        "Can't create UD " + uploadDirectory);
     }
     String jdbcUrl = pFactoryAndServlet.getHttpServlet()
       .getInitParameter("databaseName");
     if (jdbcUrl != null && jdbcUrl.contains(ISrvOrm.WORD_CURRENT_DIR)) {
-      String currDir = System.getProperty("user.dir");
       jdbcUrl = jdbcUrl.replace(ISrvOrm.WORD_CURRENT_DIR,
-        currDir + File.separator);
+        factoryAppBeans.getWebAppPath() + File.separator);
     } else if (jdbcUrl != null
       && jdbcUrl.contains(ISrvOrm.WORD_CURRENT_PARENT_DIR)) {
-      File fcd = new File(System.getProperty("user.dir"));
+      File fcd = new File(factoryAppBeans.getWebAppPath());
       jdbcUrl = jdbcUrl.replace(ISrvOrm.WORD_CURRENT_PARENT_DIR,
         fcd.getParent() + File.separator);
     }

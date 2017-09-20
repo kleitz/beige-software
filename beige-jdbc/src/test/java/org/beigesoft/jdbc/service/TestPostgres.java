@@ -1,0 +1,198 @@
+package org.beigesoft.jdbc.service;
+
+/*
+ * Copyright (c) 2015-2017 Beigesoft ™
+ *
+ * Licensed under the GNU General Public License (GPL), Version 2.0
+ * (the "License");
+ * you may not use this file except in compliance with the License.
+ *
+ * You may obtain a copy of the License at
+ *
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
+ */
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Properties;
+import java.util.LinkedHashMap;
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.sql.ResultSet;
+
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+
+import com.zaxxer.hikari.HikariDataSource;
+import com.zaxxer.hikari.HikariConfig;
+
+import org.beigesoft.model.IHasVersion;
+import org.beigesoft.orm.service.SrvOrmPostgresql;
+import org.beigesoft.settings.MngSettings;
+import org.beigesoft.orm.service.ISrvOrm;
+import org.beigesoft.orm.service.SrvSqlEscape;
+import org.beigesoft.exception.ExceptionWithCode;
+import org.beigesoft.test.persistable.PersistableHead;
+import org.beigesoft.test.persistable.GoodVersionTime;
+import org.beigesoft.test.persistable.GoodsRating;
+import org.beigesoft.factory.FctConvertersToFromString;
+import org.beigesoft.factory.FctFillersObjectFields;
+import org.beigesoft.holder.IHolderForClassByName;
+import org.beigesoft.holder.HolderRapiSetters;
+import org.beigesoft.holder.HolderRapiGetters;
+import org.beigesoft.holder.HolderRapiFields;
+import org.beigesoft.persistable.UserTomcat;
+import org.beigesoft.persistable.UserRoleTomcat;
+import org.beigesoft.persistable.IdUserRoleTomcat;
+import org.beigesoft.test.persistable.UserRoleTomcatPriority;
+import org.beigesoft.service.IUtlReflection;
+import org.beigesoft.properties.UtlProperties;
+import org.beigesoft.service.UtlReflection;
+import org.beigesoft.settings.MngSettings;
+import org.beigesoft.orm.factory.FctBnCnvIbnToColumnValues;
+import org.beigesoft.orm.factory.FctBcCnvEntityToColumnsValues;
+import org.beigesoft.orm.factory.FctBcFctSimpleEntities;
+import org.beigesoft.orm.factory.FctBnCnvBnFromRs;
+import org.beigesoft.orm.model.ColumnsValues;
+import org.beigesoft.orm.holder.HldCnvToColumnsValuesNames;
+import org.beigesoft.orm.holder.HldCnvFromRsNames;
+import org.beigesoft.orm.service.SrvSqlEscape;
+import org.beigesoft.orm.service.HlpInsertUpdate;
+import org.beigesoft.orm.service.FillerEntitiesFromRs;
+import org.beigesoft.orm.test.TestSimple;
+import org.beigesoft.log.LoggerSimple;
+import org.beigesoft.orm.converter.CnvHasVersionToColumnsValues;
+
+/**
+ * <p>Test of ORM, Entity and Database services.
+ * </p>
+ *
+ * @author Yury Demidenko
+ */
+public class TestPostgres {
+
+  SrvOrmPostgresql<ResultSet> srvOrm;
+
+  SrvDatabase srvDatabase;
+  
+  LoggerSimple logger = new LoggerSimple();
+
+  /**
+   * <p>Reflection service.</p>
+   **/
+  private IUtlReflection utlReflection = new UtlReflection();
+  
+  FctBcCnvEntityToColumnsValues fcetcv;
+
+  public TestPostgres() throws Exception {
+    logger.setIsShowDebugMessages(false);
+    srvOrm = new SrvOrmPostgresql<ResultSet>();
+    srvDatabase = new SrvDatabase();
+    srvDatabase.setLogger(logger);
+    srvOrm.setSrvDatabase(srvDatabase);
+    srvOrm.setLogger(logger);
+    srvOrm.setHlpInsertUpdate(new HlpInsertUpdate());
+    srvOrm.setUtlReflection(getUtlReflection());
+    srvDatabase.setHlpInsertUpdate(srvOrm.getHlpInsertUpdate());
+    MngSettings mngSettings = new MngSettings();
+    mngSettings.setLogger(logger);
+    mngSettings.setUtlProperties(new UtlProperties());
+    mngSettings.setUtlReflection(new UtlReflection());
+    srvOrm.setMngSettings(mngSettings);
+    srvOrm.loadConfiguration("beige-orm", "persistence-postgresql.xml");
+    Properties props = new Properties();
+    props.setProperty("dataSourceClassName", srvOrm.getPropertiesBase().getDataSourceClassName());
+    props.setProperty("dataSource.user", srvOrm.getPropertiesBase().getUserName());
+    props.setProperty("dataSource.password", srvOrm.getPropertiesBase().getUserPassword());
+    props.setProperty("dataSource.databaseName", srvOrm.getPropertiesBase().getDatabaseName());
+    FctBnCnvIbnToColumnValues facConvFields = new FctBnCnvIbnToColumnValues();
+    facConvFields.setUtlReflection(getUtlReflection());
+    facConvFields.setTablesMap(srvOrm.getTablesMap());
+    HolderRapiGetters hrg = new HolderRapiGetters();
+    hrg.setUtlReflection(getUtlReflection());
+    facConvFields.setGettersRapiHolder(hrg);
+    HolderRapiFields hrf = new HolderRapiFields();
+    hrf.setUtlReflection(getUtlReflection());
+    facConvFields.setFieldsRapiHolder(hrf);
+    facConvFields.setSrvSqlEscape(new SrvSqlEscape());
+    fcetcv = new FctBcCnvEntityToColumnsValues();
+    HldCnvToColumnsValuesNames hldConvFld = new HldCnvToColumnsValuesNames();
+    hldConvFld.setFieldsRapiHolder(hrf);
+    fcetcv.setLogger(logger);
+    fcetcv.setTablesMap(srvOrm.getTablesMap());
+    fcetcv.setFieldsConvertersNamesHolder(hldConvFld);
+    fcetcv.setGettersRapiHolder(hrg);
+    fcetcv.setFieldsRapiHolder(hrf);
+    fcetcv.setFieldsConvertersFatory(facConvFields);
+    srvOrm.setFactoryCnvEntityToColumnsValues(fcetcv);
+    FillerEntitiesFromRs<ResultSet> fillerEntitiesFromRs = new FillerEntitiesFromRs<ResultSet>();
+    fillerEntitiesFromRs.setTablesMap(srvOrm.getTablesMap());
+    fillerEntitiesFromRs.setLogger(logger);
+    fillerEntitiesFromRs.setFieldsRapiHolder(hrf);
+    FctFillersObjectFields fctFillersObjectFields = new FctFillersObjectFields();
+    fctFillersObjectFields.setUtlReflection(getUtlReflection());
+    HolderRapiSetters hrs = new HolderRapiSetters();
+    hrs.setUtlReflection(getUtlReflection());
+    fctFillersObjectFields.setSettersRapiHolder(hrs);
+    fillerEntitiesFromRs.setFillersFieldsFactory(fctFillersObjectFields);
+    srvOrm.setFctFillersObjectFields(fctFillersObjectFields);
+    FctBnCnvBnFromRs<ResultSet> fctBnCnvBnFromRs = new FctBnCnvBnFromRs<ResultSet>();
+    FctBcFctSimpleEntities fctBcFctSimpleEntities = new FctBcFctSimpleEntities();
+    fctBcFctSimpleEntities.setSrvDatabase(srvDatabase);
+    srvOrm.setEntitiesFactoriesFatory(fctBcFctSimpleEntities);
+    fctBnCnvBnFromRs.setEntitiesFactoriesFatory(fctBcFctSimpleEntities);
+    fctBnCnvBnFromRs.setFillersFieldsFactory(fctFillersObjectFields);
+    fctBnCnvBnFromRs.setTablesMap(srvOrm.getTablesMap());
+    fctBnCnvBnFromRs.setFieldsRapiHolder(hrf);
+    fctBnCnvBnFromRs.setFillerObjectsFromRs(fillerEntitiesFromRs);
+    fillerEntitiesFromRs.setConvertersFieldsFatory(fctBnCnvBnFromRs);
+    HldCnvFromRsNames hldCnvFromRsNames = new HldCnvFromRsNames();
+    hldCnvFromRsNames.setFieldsRapiHolder(hrf);
+    fillerEntitiesFromRs.setFieldConverterNamesHolder(hldCnvFromRsNames);
+    srvOrm.setFillerEntitiesFromRs(fillerEntitiesFromRs);
+    HikariConfig config = new HikariConfig(props);
+    HikariDataSource ds = new HikariDataSource(config);
+    srvDatabase.setDataSource(ds);
+  }
+
+  @Test
+  public void testAll() throws Exception {
+    String currDir = System.getProperty("user.dir");
+    System.out.println("Start test JDBC  Postgresql");
+    System.out.println("Current dir using System:" + currDir);
+    assertTrue(IHasVersion.class.isAssignableFrom(GoodVersionTime.class));
+    assertTrue(CnvHasVersionToColumnsValues.class  == this.fcetcv.lazyGet(null, GoodVersionTime.class).getClass());
+    TestSimple<ResultSet> testSimple = new TestSimple<ResultSet>();
+    testSimple.setLogger(logger);
+    testSimple.setSrvDatabase(srvDatabase);
+    testSimple.setSrvOrm(srvOrm);
+    testSimple.doTest1();
+    TestConcurrence testConcurrence = new TestConcurrence();
+    testConcurrence.setLogger(logger);
+    testConcurrence.setSrvDatabase(srvDatabase);
+    testConcurrence.setSrvOrm(srvOrm);
+    testConcurrence.tstThreads();
+    System.out.println("End test JDBC Postgresql");
+  }
+
+  //Simple getters and setters:
+  /**
+   * <p>Getter for utlReflection.</p>
+   * @return IUtlReflection
+   **/
+  public final IUtlReflection getUtlReflection() {
+    return this.utlReflection;
+  }
+
+  /**
+   * <p>Setter for utlReflection.</p>
+   * @param pUtlReflection reference
+   **/
+  public final void setUtlReflection(final IUtlReflection pUtlReflection) {
+    this.utlReflection = pUtlReflection;
+  }
+}

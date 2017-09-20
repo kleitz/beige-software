@@ -1,13 +1,15 @@
 package org.beigesoft.webstore.processor;
 
 /*
- * Beigesoft ™
+ * Copyright (c) 2015-2017 Beigesoft ™
  *
- * Licensed under the Apache License, Version 2.0
+ * Licensed under the GNU General Public License (GPL), Version 2.0
+ * (the "License");
+ * you may not use this file except in compliance with the License.
  *
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
  */
 
 import java.util.Map;
@@ -69,9 +71,9 @@ public class PrcItemInCart<RS> implements IProcessor {
       .getParameter("cartItemQuantity");
     String cartItemAvailableQuantityStr = pRequestData
       .getParameter("cartItemAvailableQuantity");
-    Integer cartItemQuantity = Integer.valueOf(cartItemQuantityStr);
-    Integer cartItemAvailableQuantity = Integer
-      .valueOf(cartItemAvailableQuantityStr);
+    BigDecimal cartItemQuantity = new BigDecimal(cartItemQuantityStr);
+    BigDecimal cartItemAvailableQuantity =
+      new BigDecimal(cartItemAvailableQuantityStr);
     String cartItemIdStr = pRequestData.getParameter("cartItemId");
     String cartItemTypeStr = pRequestData.getParameter("cartItemType");
     Long cartItemId = Long.valueOf(cartItemIdStr);
@@ -161,7 +163,7 @@ public class PrcItemInCart<RS> implements IProcessor {
     cartItem.setItsQuantity(cartItemQuantity);
     cartItem.setAvailableQuantity(cartItemAvailableQuantity);
     cartItem.setItsTotal(cartItem.getItsPrice()
-      .multiply(BigDecimal.valueOf(cartItem.getItsQuantity())));
+      .multiply(cartItem.getItsQuantity()));
     if (cartItem.getIsNew()) {
       this.prcWebstorePage.getSrvOrm().insertEntity(pAddParam, cartItem);
     } else {

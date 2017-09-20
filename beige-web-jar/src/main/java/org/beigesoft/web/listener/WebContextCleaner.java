@@ -1,13 +1,15 @@
 package org.beigesoft.web.listener;
 
 /*
- * Beigesoft ™
+ * Copyright (c) 2015-2017 Beigesoft ™
  *
- * Licensed under the Apache License, Version 2.0
+ * Licensed under the GNU General Public License (GPL), Version 2.0
+ * (the "License");
+ * you may not use this file except in compliance with the License.
  *
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
  */
 
 import javax.servlet.ServletContextListener;
@@ -34,13 +36,15 @@ public class WebContextCleaner implements ServletContextListener {
       HikariDataSource ds =
         (HikariDataSource) factoryAppBeans.lazyGet("DataSource");
       ILogger logger = (ILogger) factoryAppBeans.lazyGet("ILogger");
-      logger.info(WebContextCleaner.class,
+      logger.info(null, WebContextCleaner.class,
         "Try to shutdown HikariDataSource...");
       if (ds != null) {
         ds.close();
-        logger.info(WebContextCleaner.class, "HikariDataSource is shutdown!");
+        logger.info(null, WebContextCleaner.class,
+          "HikariDataSource is shutdown!");
       } else {
-        logger.info(WebContextCleaner.class, "HikariDataSource was NULL!!!");
+        logger.info(null, WebContextCleaner.class,
+          "HikariDataSource was NULL!!!");
       }
     } catch (Exception e) {
       e.printStackTrace();

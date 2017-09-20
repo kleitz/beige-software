@@ -1,13 +1,15 @@
 package org.beigesoft.android.sqlite.service;
 
 /*
- * Beigesoft ™
+ * Copyright (c) 2015-2017 Beigesoft ™
  *
- * Licensed under the Apache License, Version 2.0
+ * Licensed under the GNU General Public License (GPL), Version 2.0
+ * (the "License");
+ * you may not use this file except in compliance with the License.
  *
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
  */
 
 import java.util.Map;
@@ -121,8 +123,10 @@ public class SrvDatabase extends ASrvDatabase<Cursor> {
     rollBackTransaction(final String pSavepointName) throws Exception {
     //according https://code.google.com/p/android/issues/detail?id=38706
     //its very easy to make simple things complicated
-    getLogger().debug(SrvDatabase.class, "try to rollback to savepoint: "
-      + pSavepointName);
+    if (getLogger().getIsShowDebugMessagesFor(getClass())) {
+      getLogger().debug(null, SrvDatabase.class,
+        "try to rollback to savepoint: " + pSavepointName);
+    }
     executeQuery(";ROLLBACK TRANSACTION TO SAVEPOINT " + pSavepointName + ";");
   }
 
@@ -177,11 +181,16 @@ public class SrvDatabase extends ASrvDatabase<Cursor> {
   public final IRecordSet<Cursor>
     retrieveRecords(final String pSelect) throws ExceptionWithCode {
     try {
-      getLogger().debug(SrvDatabase.class, "try to retrieve records: "
-        + pSelect);
+      boolean isDbg = getLogger().getIsShowDebugMessagesFor(getClass());
+      if (isDbg) {
+        getLogger().debug(null, SrvDatabase.class, "try to retrieve records: "
+          + pSelect);
+      }
       Cursor rs = this.sqliteDatabase.rawQuery(pSelect, null);
       RecordSetAndroid rsa = new RecordSetAndroid(rs);
-      getLogger().debug(SrvDatabase.class, "Recordset: " + rsa);
+      if (isDbg) {
+        getLogger().debug(null, SrvDatabase.class, "Recordset: " + rsa);
+      }
       return rsa;
     } catch (Exception ex) {
       String msg = ex.getMessage() + ", query:\n" + pSelect;
@@ -201,8 +210,10 @@ public class SrvDatabase extends ASrvDatabase<Cursor> {
   @Override
   public final void executeQuery(final String pQuery) throws Exception {
     try {
-      getLogger().debug(SrvDatabase.class, "try to execute query: "
-        + pQuery);
+      if (getLogger().getIsShowDebugMessagesFor(getClass())) {
+        getLogger().debug(null, SrvDatabase.class, "try to execute query: "
+          + pQuery);
+      }
       this.sqliteDatabase.execSQL(pQuery);
     } catch (Exception ex) {
       String msg = ex.getMessage() + ", query:\n" + pQuery;
@@ -228,8 +239,10 @@ public class SrvDatabase extends ASrvDatabase<Cursor> {
     final ColumnsValues pColumnsVals,
      final String pWhere) throws Exception {
     try {
-      getLogger().debug(SrvDatabase.class, "try to update t: " + pTable
-        + " where: " + pWhere + " cv: " + pColumnsVals);
+      if (getLogger().getIsShowDebugMessagesFor(getClass())) {
+        getLogger().debug(null, SrvDatabase.class, "try to update t: " + pTable
+          + " where: " + pWhere + " cv: " + pColumnsVals);
+      }
       ContentValues contentValues = convertToContentValues(pColumnsVals);
       return this.sqliteDatabase.update(pTable,
         contentValues, pWhere, null);
@@ -257,12 +270,17 @@ public class SrvDatabase extends ASrvDatabase<Cursor> {
   public final long executeInsert(final String pTable,
     final ColumnsValues pColumnsVals) throws Exception {
     try {
-      getLogger().debug(SrvDatabase.class, "try to insert t: " + pTable
-        + " cv: " + pColumnsVals);
+      boolean isDbg = getLogger().getIsShowDebugMessagesFor(getClass());
+      if (isDbg) {
+        getLogger().debug(null, SrvDatabase.class, "try to insert t: " + pTable
+          + " cv: " + pColumnsVals);
+      }
       ContentValues contentValues = convertToContentValues(pColumnsVals);
       long result = this.sqliteDatabase.insert(pTable, null,
         contentValues);
-      getLogger().debug(SrvDatabase.class, "result insert:" + result);
+      if (isDbg) {
+        getLogger().debug(null, SrvDatabase.class, "result insert:" + result);
+      }
       if (result == -1) {
         throw new Exception("Result = -1!");
       }
@@ -290,8 +308,10 @@ public class SrvDatabase extends ASrvDatabase<Cursor> {
   public final int executeDelete(final String pTable,
     final String pWhere) throws Exception {
     try {
-      getLogger().debug(SrvDatabase.class, "try to delete t: " + pTable
-        + " where: " + pWhere);
+      if (getLogger().getIsShowDebugMessagesFor(getClass())) {
+        getLogger().debug(null, SrvDatabase.class, "try to delete t: " + pTable
+          + " where: " + pWhere);
+      }
       return this.sqliteDatabase.delete(pTable, pWhere, null);
     } catch (Exception ex) {
       String msg = ex.getMessage() + ", table: " + pTable

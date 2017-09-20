@@ -1,13 +1,15 @@
 package org.beigesoft.orm.service;
 
 /*
- * Beigesoft ™
+ * Copyright (c) 2015-2017 Beigesoft ™
  *
- * Licensed under the Apache License, Version 2.0
+ * Licensed under the GNU General Public License (GPL), Version 2.0
+ * (the "License");
+ * you may not use this file except in compliance with the License.
  *
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
  */
 
 import java.util.Map;
@@ -91,6 +93,8 @@ public class FillerEntitiesFromRs<RS>
     if (fieldsNames == null) {
       fieldsNames = tableSql.getFieldsMap().keySet();
     }
+    boolean isShowDbMsg = this.logger.getIsShowDebugMessagesFor(getClass());
+    int dbgDetLev = this.logger.getDetailLevel();
     for (String fieldName : fieldsNames) {
       if (!tableSql.getFieldsMap().get(fieldName).getTypeField()
             .equals(ETypeField.DERIVED_FROM_COMPOSITE)) {
@@ -137,10 +141,12 @@ public class FillerEntitiesFromRs<RS>
               }
             }
             Object fieldVal = conv.convert(pAddParam, pSource, parName);
-            getLogger().debug(FillerEntitiesFromRs.class,
-              "Converted from RS field/type/converter/value: " + fieldName
-                + "/" + field.getType().getSimpleName() + "/"
-                  + conv.getClass().getSimpleName() + "/" + fieldVal);
+            if (isShowDbMsg && dbgDetLev > 10) {
+              this.logger.debug(null, FillerEntitiesFromRs.class,
+                "Converted from RS field/type/converter/value: " + fieldName
+                  + "/" + field.getType().getSimpleName() + "/"
+                    + conv.getClass().getSimpleName() + "/" + fieldVal);
+            }
             filler.fill(pAddParam, pEntity, fieldVal, fieldName);
           } catch (Exception ex) {
             String msg = "Can't fill field/class: " + fieldName + "/"

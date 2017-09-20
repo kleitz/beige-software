@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Beigesoft ™
-  Licensed under the Apache License, Version 2.0
+<!--
+ Copyright (c) 2015-2017 Beigesoft ™
  
-  You may obtain a copy of the License at
+ Licensed under the GNU General Public License (GPL), Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
  
-  http://www.apache.org/licenses/LICENSE-2.0
+  http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
  -->
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
@@ -71,12 +73,12 @@
   org.beigesoft.accounting.persistable.PurchaseInvoiceLine,
   org.beigesoft.accounting.persistable.PurchaseInvoiceServiceLine,
   org.beigesoft.accounting.persistable.PurchaseInvoiceTaxLine,
+  org.beigesoft.accounting.persistable.GoodsLoss,
+  org.beigesoft.accounting.persistable.GoodsLossLine,
   org.beigesoft.accounting.persistable.BeginningInventory,
   org.beigesoft.accounting.persistable.BeginningInventoryLine,
-  org.beigesoft.accounting.persistable.GoodsLoss,
   org.beigesoft.accounting.persistable.MoveItems,
   org.beigesoft.accounting.persistable.MoveItemsLine,
-  org.beigesoft.accounting.persistable.GoodsLossLine,
   org.beigesoft.accounting.persistable.SalesReturn,
   org.beigesoft.accounting.persistable.SalesReturnLine,
   org.beigesoft.accounting.persistable.SalesReturnTaxLine,
@@ -110,10 +112,10 @@
   org.beigesoft.persistable.EmailMsg,
   org.beigesoft.persistable.Eattachment,
   org.beigesoft.persistable.Erecipient,
-  org.beigesoft.webstore.persistable.TradingSettings,
+  org.beigesoft.webstore.persistable.OnlineBuyer,
   org.beigesoft.webstore.persistable.GoodsRating,
-  org.beigesoft.webstore.persistable.PriceCategoryOfBuyers,
   org.beigesoft.webstore.persistable.PriceCategoryOfItems,
+  org.beigesoft.webstore.persistable.PriceCategoryOfBuyers,
   org.beigesoft.webstore.persistable.PriceCategory,
   org.beigesoft.webstore.persistable.GoodsPrice,
   org.beigesoft.webstore.persistable.BuyerPriceCategory,
@@ -136,9 +138,16 @@
   org.beigesoft.webstore.persistable.GoodsAvailable,
   org.beigesoft.webstore.persistable.GoodsInListLuv,
   org.beigesoft.webstore.persistable.SettingsAdd,
-  org.beigesoft.webstore.persistable.OnlineBuyer,
   org.beigesoft.webstore.persistable.ShoppingCart,
   org.beigesoft.webstore.persistable.CartItem,
+  org.beigesoft.webstore.persistable.CartTaxLine,
+  org.beigesoft.webstore.persistable.CustomerOrder,
+  org.beigesoft.webstore.persistable.CustomerOrderGoods,
+  org.beigesoft.webstore.persistable.CustomerOrderSeGoods,
+  org.beigesoft.webstore.persistable.CustomerOrderService,
+  org.beigesoft.webstore.persistable.CustomerOrderSeService,
+  org.beigesoft.webstore.persistable.CustomerOrderTaxLine,
+  org.beigesoft.webstore.persistable.TradingSettings,
   org.beigesoft.webstore.persistable.CustomerGoodsSeen</entry>
 <entry key="settingsKeysForClasses">idColumnsNames, idFieldName, ownerFieldName, constraintAdd, excludeFields, versionAlgorithm</entry>
 <entry key="settingsKeysForFields">definition, isNullable</entry>
