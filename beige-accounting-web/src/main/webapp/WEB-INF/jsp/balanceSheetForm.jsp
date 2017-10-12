@@ -7,9 +7,8 @@
       ${srvI18n.getMsg('balance_sheet')}
       <button onclick="closeDlgCareful('frmReportEdit')" class="btn-close">x</button>
     </div>
-    <form id="frmReportEditFrm" action="service/" method="GET" target="_blank">
-      <input type="hidden" name="nmRnd" value="balanceSheet">
-      <input type="hidden" name="nmHnd" value="srvReqBalanceSheet">
+    <form id="frmReportEditFrm" action="reportPdf/" method="GET" target="_blank">
+      <input type="hidden" name="nmHnd" value="hndlBalancePdfReq">
       <table class="tbl-fieldset">
         <tr>
           <td>

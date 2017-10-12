@@ -12,7 +12,9 @@ package org.beigesoft.accounting.factory;
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
  */
 
+import org.beigesoft.pdf.model.HasPdfContent;
 import org.beigesoft.handler.HandlerEntityRequest;
+import org.beigesoft.handler.HndlEntityFileReportReq;
 import org.beigesoft.orm.factory.FctBnProcessors;
 import org.beigesoft.orm.factory.FctBnEntitiesProcessors;
 import org.beigesoft.web.factory.IFactoryBldServices;
@@ -42,6 +44,36 @@ public class FactoryBldAccServices<RS> implements IFactoryBldServices<RS> {
    * <p>Factory accounting-beans.</p>
    **/
   private FactoryAccServices<RS> factoryAccServices;
+
+  /**
+   * <p>Get HndlEntityFileReportReq in lazy mode.</p>
+   * @return HndlEntityFileReportReq - HndlEntityFileReportReq
+   * @throws Exception - an exception
+   */
+  @Override
+  public final HndlEntityFileReportReq<RS>
+    lazyGetHndlEntityFileReportReq() throws Exception {
+    String beanName = this.factoryAppBeans.getHndlEntityFileReportReqName();
+    @SuppressWarnings("unchecked")
+    HndlEntityFileReportReq<RS> hndlEfrr = (HndlEntityFileReportReq<RS>)
+      this.factoryAppBeans.getBeansMap().get(beanName);
+    if (hndlEfrr == null) {
+      hndlEfrr = new HndlEntityFileReportReq<RS>();
+      hndlEfrr
+        .setSrvDatabase(this.factoryAppBeans.lazyGetSrvDatabase());
+      hndlEfrr.setFillEntityFromReq(
+        this.factoryAppBeans.lazyGetFillEntityFromReq());
+      hndlEfrr
+        .setEntitiesFactoriesFatory(lazyGetFctBcFctSimpleEntities());
+      hndlEfrr
+        .setFctEntitiesFileReporters(lazyGetFctEntitiesFileReportersPdf());
+      hndlEfrr.setEntitiesMap(this.factoryAppBeans.getEntitiesMap());
+      this.factoryAppBeans.getBeansMap().put(beanName, hndlEfrr);
+      this.factoryAppBeans.lazyGetLogger().info(null, AFactoryAppBeans.class,
+        beanName + " has been created.");
+    }
+    return hndlEfrr;
+  }
 
   /**
    * <p>Get HandlerEntityRequest in lazy mode.</p>
@@ -314,6 +346,39 @@ public class FactoryBldAccServices<RS> implements IFactoryBldServices<RS> {
    */
   public final String getFctBnEntitiesProcessorsName() {
     return "fctBnEntitiesProcessors";
+  }
+
+  /**
+   * <p>Get FctEntitiesFileReportersPdf in lazy mode.</p>
+   * @return FctEntitiesFileReportersPdf - FctEntitiesFileReportersPdf
+   * @throws Exception - an exception
+   */
+  public final FctEntitiesFileReportersPdf<RS, HasPdfContent>
+    lazyGetFctEntitiesFileReportersPdf() throws Exception {
+    String beanName = getFctEntitiesFileReportersPdfName();
+    @SuppressWarnings("unchecked")
+    FctEntitiesFileReportersPdf<RS, HasPdfContent> fctEfrPdf =
+      (FctEntitiesFileReportersPdf<RS, HasPdfContent>)
+        this.factoryAppBeans.getBeansMap().get(beanName);
+    if (fctEfrPdf == null) {
+      fctEfrPdf = new FctEntitiesFileReportersPdf<RS, HasPdfContent>();
+      fctEfrPdf.setSrvI18n(this.factoryAppBeans.lazyGetSrvI18n());
+      fctEfrPdf.setPdfFactory(this.factoryAccServices.lazyGetPdfFactory());
+      fctEfrPdf.setSrvOrm(this.factoryAppBeans.lazyGetSrvOrm());
+      fctEfrPdf.setLogger(this.factoryAppBeans.lazyGetLogger());
+      fctEfrPdf
+        .setSrvAccSettings(this.factoryAccServices.lazyGetSrvAccSettings());
+      this.factoryAppBeans.getBeansMap().put(beanName, fctEfrPdf);
+    }
+    return fctEfrPdf;
+  }
+
+  /**
+   * <p>Get fctEntitiesFileReportersPdf name.</p>
+   * @return fctEntitiesFileReportersPdf name
+   */
+  public final String getFctEntitiesFileReportersPdfName() {
+    return "fctEntitiesFileReportersPdf";
   }
 
   /**

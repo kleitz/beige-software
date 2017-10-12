@@ -16,6 +16,7 @@ import org.beigesoft.factory.IFactoryAppBeansByName;
 import org.beigesoft.factory.IFactoryAppBeansByClass;
 import org.beigesoft.factory.IFactorySimple;
 import org.beigesoft.handler.HandlerEntityRequest;
+import org.beigesoft.handler.HndlEntityFileReportReq;
 import org.beigesoft.service.IEntityProcessor;
 import org.beigesoft.service.IProcessor;
 
@@ -35,6 +36,14 @@ public interface IFactoryBldServices<RS> {
    */
   HandlerEntityRequest<RS>
     lazyGetHandlerEntityRequest() throws Exception;
+
+  /**
+   * <p>Get HndlEntityFileReportReq in lazy mode.</p>
+   * @return HndlEntityFileReportReq - HndlEntityFileReportReq
+   * @throws Exception - an exception
+   */
+  HndlEntityFileReportReq<RS>
+    lazyGetHndlEntityFileReportReq() throws Exception;
 
   /**
    * <p>Get FctBcFctSimpleEntities in lazy mode.</p>

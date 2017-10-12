@@ -215,6 +215,8 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
         if (bean == null) {
           if (getHandlerEntityRequestName().equals(pBeanName)) {
             bean = this.factoryBldServices.lazyGetHandlerEntityRequest();
+          } else if (getHndlEntityFileReportReqName().equals(pBeanName)) {
+            bean = this.factoryBldServices.lazyGetHndlEntityFileReportReq();
           } else if (getHandlerAboutName().equals(pBeanName)) {
             bean = lazyGetHandlerAbout();
           } else if (getSrvOrmName().equals(pBeanName)) {
@@ -618,6 +620,14 @@ public abstract class AFactoryAppBeans<RS> implements IFactoryAppBeans {
    **/
   public final String getHandlerEntityRequestName() {
     return "handlerEntityRequest";
+  }
+
+  /**
+   * <p>Getter of About service name.</p>
+   * @return service name
+   **/
+  public final String getHndlEntityFileReportReqName() {
+    return "hndlEntityFileReportReq";
   }
 
   /**

@@ -43,4 +43,5 @@
 <entry key="org.beigesoft.accounting.persistable.InvItemType">lstActInvItemType</entry>
 <entry key="org.beigesoft.accounting.persistable.MoveItems">lstActAll</entry>
 <entry key="org.beigesoft.webstore.persistable.GoodsSpecific">lstActGoodsSpecific</entry>
+<entry key="org.beigesoft.accounting.persistable.SalesInvoice">lstActSalesInvoice</entry>
 </properties>

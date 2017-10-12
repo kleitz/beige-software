@@ -82,6 +82,16 @@
     <url-pattern>/servicePublic/*</url-pattern>
   </servlet-mapping>
   <servlet>
+    <servlet-name>reportPdf</servlet-name>
+    <servlet-class>
+      org.beigesoft.web.servlet.WReportPdf
+    </servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>reportPdf</servlet-name>
+    <url-pattern>/secure/reportPdf/*</url-pattern>
+  </servlet-mapping>
+  <servlet>
     <servlet-name>service</servlet-name>
     <servlet-class>
       org.beigesoft.web.servlet.WService

@@ -12,7 +12,10 @@ package org.beigesoft.web.factory;
  * http://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
  */
 
+import org.beigesoft.service.IEntityFileReporter;
+import org.beigesoft.factory.IFactoryAppBeansByName;
 import org.beigesoft.handler.HandlerEntityRequest;
+import org.beigesoft.handler.HndlEntityFileReportReq;
 import org.beigesoft.orm.holder.HldProcessorNames;
 import org.beigesoft.orm.holder.HldEntitiesProcessorNames;
 import org.beigesoft.orm.factory.FctBnProcessors;
@@ -32,6 +35,42 @@ public class FactoryBldServices<RS> implements IFactoryBldServices<RS> {
    * <p>Factory app-beans.</p>
    **/
   private AFactoryAppBeans<RS> factoryAppBeans;
+
+  /**
+   * <p>Entities file-reporter factory.</p>
+   **/
+  private IFactoryAppBeansByName<IEntityFileReporter>
+    fctEntitiesFileReporters;
+
+  /**
+   * <p>Get HndlEntityFileReportReq in lazy mode.</p>
+   * @return HndlEntityFileReportReq - HndlEntityFileReportReq
+   * @throws Exception - an exception
+   */
+  @Override
+  public final HndlEntityFileReportReq<RS>
+    lazyGetHndlEntityFileReportReq() throws Exception {
+    String beanName = this.factoryAppBeans.getHndlEntityFileReportReqName();
+    @SuppressWarnings("unchecked")
+    HndlEntityFileReportReq<RS> hndlEfrr = (HndlEntityFileReportReq<RS>)
+      this.factoryAppBeans.getBeansMap().get(beanName);
+    if (hndlEfrr == null) {
+      hndlEfrr = new HndlEntityFileReportReq<RS>();
+      hndlEfrr
+        .setSrvDatabase(this.factoryAppBeans.lazyGetSrvDatabase());
+      hndlEfrr.setFillEntityFromReq(
+        this.factoryAppBeans.lazyGetFillEntityFromReq());
+      hndlEfrr
+        .setEntitiesFactoriesFatory(lazyGetFctBcFctSimpleEntities());
+      hndlEfrr
+        .setFctEntitiesFileReporters(this.fctEntitiesFileReporters);
+      hndlEfrr.setEntitiesMap(this.factoryAppBeans.getEntitiesMap());
+      this.factoryAppBeans.getBeansMap().put(beanName, hndlEfrr);
+      this.factoryAppBeans.lazyGetLogger().info(null, AFactoryAppBeans.class,
+        beanName + " has been created.");
+    }
+    return hndlEfrr;
+  }
 
   /**
    * <p>Get HandlerEntityRequest in lazy mode.</p>
@@ -188,5 +227,24 @@ public class FactoryBldServices<RS> implements IFactoryBldServices<RS> {
   public final void setFactoryAppBeans(
     final AFactoryAppBeans<RS> pFactoryAppBeans) {
     this.factoryAppBeans = pFactoryAppBeans;
+  }
+
+  /**
+   * <p>Getter for fctEntitiesFileReporters.</p>
+   * @return IFactoryAppBeansByName<IEntityFileReporter>
+   **/
+  public final IFactoryAppBeansByName<IEntityFileReporter>
+    getFctEntitiesFileReporters() {
+    return this.fctEntitiesFileReporters;
+  }
+
+  /**
+   * <p>Setter for fctEntitiesFileReporters.</p>
+   * @param pFctEntitiesFileReporters reference
+   **/
+  public final void setFctEntitiesFileReporters(
+    final IFactoryAppBeansByName<IEntityFileReporter>
+      pFctEntitiesFileReporters) {
+    this.fctEntitiesFileReporters = pFctEntitiesFileReporters;
   }
 }

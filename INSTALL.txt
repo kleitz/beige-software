@@ -1,0 +1,64 @@
+1. Install OpenJDK8. In Fedora - "dnf install java-1.8.0-openjdk-devel"
+
+2. <a target="#blank" href="http://maven.apache.org/download.html">Download Maven</a> e.g. Maven-3.5.0 then 
+unpack it into folder e.g. "$HOME/programmer/java/apache-maven-3.5.0" and add into PATH (see below)
+
+3. Download Android SDK tools without studio from <a href="http://developer.android.com/sdk/index.html#Other">http://developer.android.com/sdk/index.html#Other</a>.
+Unpack it (folder tools) into e.g. $HOME/programmer/android-sdk-linux. Add it into environment variables (see below).
+Launch:
+$ANDROID-SDK-HOME/tools/bin/sdkmanager tools the latest tools
+$ANDROID-SDK-HOME/tools/bin/sdkmanager --list to see available software names
+$ANDROID-SDK-HOME/tools/bin/sdkmanager "platform-tools" ONLY for 64 bit linux
+$ANDROID-SDK-HOME/tools/bin/sdkmanager "build-tools;[last-version]" ONLY for 64 bit linux
+for 32bit linux install old $ANDROID-SDK-HOME/tools/bin/sdkmanager "build-tools;23.0.3" and platform-tools r23.0.1
+$ANDROID-SDK-HOME/tools/bin/sdkmanager "platforms;android-24", and 19 for BeigeUML
+
+If it blame "File ~.android/repositories.cfg could not be loaded" then criate it (empty file).
+
+4. Add system variable JAVA_HOME, ANDROID_HOME and Maven bin directory and Android tools directory into PATH variable.
+For example in Linux add into .bashrc:
+export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk
+export ANDROID_HOME=$HOME/programmer/android-sdk-linux
+export PATH=$PATH:$HOME/programmer/java/apache-maven-3.5.0/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/tools
+
+Command "source ~/.bashrc" will reload settings.
+      
+4. Install Postgesql 9+
+In Fedora open root terminal and run "dnf install postgresql-server postgresql-contrib"
+Turn it on on startup: "systemctl enable postgresql"
+Initialize database: "postgresql-setup --initdb --unit postgresql"
+Start it manually: "systemctl start postgresql"
+Then login as "postgres" (It doesn't need password for postgres user when you login from root") - run "su - postgres"
+As user "postgres" run "psql"
+In psql add user beigeaccounting: "CREATE USER beigeaccounting WITH PASSWORD 'beigeaccounting';"
+Then add database beigeaccounting: "CREATE DATABASE beigeaccounting OWNER beigeaccounting;"
+Then add database beigeaccountingtest: "CREATE DATABASE beigeaccountingtest OWNER beigeaccounting;"
+Type "\q" to exit from psql
+Change authentication (change ident to password for IPV4): "nano /var/lib/pgsql/data/pg_hba.conf"
+To restart run: "systemctl restart postgresql"
+
+5. Install MySql:
+In Linux as root:
+$ dnf install community-mysql-server
+$ systemctl start mysqld // or service mysqld start
+$ systemctl enable mysqld
+$ mysql
+  >SHOW DATABASES;
+  >CREATE DATABASE beigeaccounting;
+  >CREATE DATABASE beigeaccountingtest;
+  >CREATE USER 'beigeaccounting'@'localhost'IDENTIFIED BY 'beigeaccounting';
+  >GRANT ALL ON beigeaccounting.* TO 'beigeaccounting'@'localhost';
+  >GRANT ALL ON beigeaccountingtest.* TO 'beigeaccounting'@'localhost';
+
+6. Install projects:
+
+Android parts require connected Android device (real or virtual emulator)
+
+Command "mvn clean install" will compile any Maven project.
+
+Compile all required projecs:
+1.beige-logging
+2.a-javabeans8
+3.a-tomcat-all
+4.a-jetty-all
+5.beige-software

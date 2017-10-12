@@ -16,6 +16,8 @@ import java.util.Map;
 import java.util.HashMap;
 import java.text.DateFormat;
 
+import org.beigesoft.pdf.service.PdfFactory;
+import org.beigesoft.pdf.model.HasPdfContent;
 import org.beigesoft.settings.MngSettings;
 import org.beigesoft.exception.ExceptionWithCode;
 import org.beigesoft.factory.IFactoryAppBeans;
@@ -60,6 +62,8 @@ import org.beigesoft.replicator.filter.FilterPersistableBaseImmutable;
 import org.beigesoft.replicator.filter.FilterAvoidAccDebtCredit;
 import org.beigesoft.accounting.report.SrvBalanceSheet;
 import org.beigesoft.accounting.report.SrvReqBalanceSheet;
+import org.beigesoft.accounting.report.HndlBalancePdfReq;
+import org.beigesoft.accounting.report.BalanceSheetPdf;
 import org.beigesoft.webstore.service.SrvSettingsAdd;
 import org.beigesoft.webstore.service.SrvTradingSettings;
 
@@ -99,8 +103,12 @@ public class FactoryAccServices<RS> implements IFactoryAppBeans {
       return lazyGetHndTrdSmpReq();
     } else if (getHndTrdTrnsReqName().equals(pBeanName)) {
       return lazyGetHndTrdTrnsReq();
+    } else if (getPdfFactoryName().equals(pBeanName)) {
+      return lazyGetPdfFactory();
     } else if (getEntryDateFormatterName().equals(pBeanName)) {
       return lazyGetEntryDateFormatter();
+    } else if (getHndlBalancePdfReqName().equals(pBeanName)) {
+      return lazyGetHndlBalancePdfReq();
     } else if (getSrvReqBalanceSheetName().equals(pBeanName)) {
       return lazyGetSrvReqBalanceSheet();
     } else if (getSrvBalanceName().equals(pBeanName)) {
@@ -144,6 +152,33 @@ public class FactoryAccServices<RS> implements IFactoryAppBeans {
   @Override
   public final void releaseBeans() throws Exception {
     // nothing cause all beans are in [main factory].beanMap
+  }
+
+  /**
+   * <p>Getter for pdfFactory.</p>
+   * @return PdfFactory
+   * @throws Exception - an exception
+   **/
+  public final PdfFactory lazyGetPdfFactory() throws Exception {
+    String beanName = getPdfFactoryName();
+    PdfFactory pdfFactory = (PdfFactory) this.factoryAppBeans
+      .getBeansMap().get(beanName);
+    if (pdfFactory == null) {
+      pdfFactory = new PdfFactory();
+      pdfFactory.setLogger(this.factoryAppBeans.lazyGetLogger());
+      pdfFactory.init();
+      //assigning fully initialized object:
+      this.factoryAppBeans.getBeansMap().put(beanName, pdfFactory);
+    }
+    return pdfFactory;
+  }
+
+  /**
+   * <p>Get PdfFactory name.</p>
+   * @return PdfFactory name
+   */
+  public final String getPdfFactoryName() {
+    return "IPdfFactory";
   }
 
   /**
@@ -782,6 +817,51 @@ public class FactoryAccServices<RS> implements IFactoryAppBeans {
    */
   public final String getMngSettingsReplTaxMarketName() {
     return "mngSettingsReplTaxMarket";
+  }
+
+  /**
+   * <p>Get HndlBalancePdfReq  in lazy mode.</p>
+   * @return HndlBalancePdfReq - HndlBalancePdfReq
+   * @throws Exception - an exception
+   */
+  public final HndlBalancePdfReq<RS> lazyGetHndlBalancePdfReq(
+    ) throws Exception {
+    String beanName = getHndlBalancePdfReqName();
+    @SuppressWarnings("unchecked")
+    HndlBalancePdfReq<RS> hndlBalancePdfReq =
+      (HndlBalancePdfReq<RS>) this.factoryAppBeans.getBeansMap()
+        .get(beanName);
+    if (hndlBalancePdfReq == null) {
+      hndlBalancePdfReq = new HndlBalancePdfReq<RS>();
+      hndlBalancePdfReq.setSrvDatabase(this.factoryAppBeans
+        .lazyGetSrvDatabase());
+      hndlBalancePdfReq.setSrvDate(this.factoryAppBeans
+        .lazyGetSrvDate());
+      hndlBalancePdfReq.setSrvAccSettings(lazyGetSrvAccSettings());
+      BalanceSheetPdf<RS, HasPdfContent> bSheetPdf =
+        new BalanceSheetPdf<RS, HasPdfContent>();
+      bSheetPdf.setPdfFactory(lazyGetPdfFactory());
+      bSheetPdf.setSrvAccSettings(lazyGetSrvAccSettings());
+      bSheetPdf.setSrvI18n(this.factoryAppBeans.lazyGetSrvI18n());
+      hndlBalancePdfReq.setBalanceSheetPdf(bSheetPdf);
+      SrvBalanceSheet<RS> srvBalanceSheet = new SrvBalanceSheet<RS>(this
+        .factoryAppBeans.lazyGetSrvDatabase(), lazyGetSrvAccSettings(),
+          lazyGetSrvBalanceStd());
+      hndlBalancePdfReq.setSrvBalanceSheet(srvBalanceSheet);
+      this.factoryAppBeans.lazyGetLogger().info(null, FactoryAccServices.class,
+        "HndlBalancePdfReq has been created.");
+      this.factoryAppBeans.getBeansMap()
+        .put(beanName, hndlBalancePdfReq);
+    }
+    return hndlBalancePdfReq;
+  }
+
+  /**
+   * <p>Get hndlBalancePdfReq name.</p>
+   * @return hndlBalancePdfReq name
+   */
+  public final String getHndlBalancePdfReqName() {
+    return "hndlBalancePdfReq";
   }
 
   /**

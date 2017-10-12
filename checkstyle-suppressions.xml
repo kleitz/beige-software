@@ -12,9 +12,10 @@
   <suppress checks="EmptyBlock"
     files="ReplicatorXmlHttp"/>
   <!--Factory contains of only repeatable initialization logic
-  that is easy to understand/edit/fix despite of large file or method-->
+  that is easy to understand/edit/fix despite of large file or method.
+  All reports are long.-->
   <suppress checks="MethodLength"
-    files="FctBnAccEntitiesProcessors"/>
+    files="FctBnAccEntitiesProcessors|InvoiceReport"/>
   <suppress checks="FileLength"
     files="FctBnAccEntitiesProcessors"/>
   <suppress checks="MagicNumberCheck"
@@ -34,5 +35,5 @@
   <suppress checks="MagicNumberCheck"
     files="ServiceToSaleCategory|SrvBalanceSheet|TradingSettings|FillEntityFromReq|HolderRapiGetters|HolderRapiSetters"/>
   <suppress checks="MagicNumberCheck"
-    files="CnvObjectToColumnsValues|FillerEntitiesFromRs"/>
+    files="CnvObjectToColumnsValues|FillerEntitiesFromRs|InvoiceReport|BalanceSheetPdf"/>
 </suppressions>
