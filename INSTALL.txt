@@ -34,7 +34,7 @@ In psql add user beigeaccounting: "CREATE USER beigeaccounting WITH PASSWORD 'be
 Then add database beigeaccounting: "CREATE DATABASE beigeaccounting OWNER beigeaccounting;"
 Then add database beigeaccountingtest: "CREATE DATABASE beigeaccountingtest OWNER beigeaccounting;"
 Type "\q" to exit from psql
-Change authentication (change ident to password for IPV4): "nano /var/lib/pgsql/data/pg_hba.conf"
+Change authentication (change "ident" to "password" for IPV4 local connections): "nano /var/lib/pgsql/data/pg_hba.conf"
 To restart run: "systemctl restart postgresql"
 
 5. Install MySql:

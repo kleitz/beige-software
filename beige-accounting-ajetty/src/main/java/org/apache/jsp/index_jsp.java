@@ -110,7 +110,7 @@ public final class index_jsp extends org.apache.jasper.runtime.HttpJspBase
         return;
       out.write("\n        <a href=\"mngSoftware/?nmRnd=mngSoftware\">");
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${pageContext.servletContext.getAttribute(\"srvI18n\").getMsg(\"SoftwareManagement\")}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
-      out.write("</a>\n        <a href=\"secure/service?nmHnd=hndTrdTrnsReq&nmRnd=webstore&nmPrc=PrcWebstorePage\" target=\"_blank\">");
+      out.write("</a>\n        <a href=\"servicePublic?nmHnd=hndTrdTrnsReq&nmRnd=webstore&nmPrc=PrcWebstorePage\" target=\"_blank\">");
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${pageContext.servletContext.getAttribute(\"srvI18n\").getMsg(\"Webstore\")}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
       out.write("</a>\n      </div>\n    </div>\n    <div class=\"nav-right\">\n      <a href=\"http://www.beigesoft.org/\" target=\"_blank\">Beigesoft ™</a>\n    </div>\n  </div>  \n\n</body>\n</html>\n");
     } catch (java.lang.Throwable t) {

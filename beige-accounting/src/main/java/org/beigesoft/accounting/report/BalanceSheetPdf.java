@@ -113,8 +113,10 @@ public class BalanceSheetPdf<RS, WI> implements IBalanceSheetPdf {
     tblBal.getItsColumns().get(3).setWidthInPercentage(20.0);
     tblBal.getItsCells().get(0).setItsContent(this.srvI18n
       .getMsg("AssetsTitle"));
+    tblBal.getItsCells().get(0).setMergedCell(tblBal.getItsCells().get(1));
     tblBal.getItsCells().get(2).setItsContent(this.srvI18n
       .getMsg("LiabilitiesTitle"));
+    tblBal.getItsCells().get(2).setMergedCell(tblBal.getItsCells().get(3));
     int row = 1;
     for (int i = 0; i < pBalance.getTotalLinesAssets(); i++) {
       String cnt;
@@ -166,8 +168,11 @@ public class BalanceSheetPdf<RS, WI> implements IBalanceSheetPdf {
       .setAlignHorizontal(EAlignHorizontal.RIGHT);
     tblBal.getItsCells().get(pBalance.getTotalLinesLiabilities() * 4 + 7)
       .setItsContent(pBalance.getTotalLiabilities().toString());
-    tblBal.getItsCells().get(pBalance.getTotalLinesLiabilities() * 4 + 10)
+    int oetIdx = pBalance.getTotalLinesLiabilities() * 4 + 10;
+    tblBal.getItsCells().get(oetIdx)
       .setItsContent(this.srvI18n.getMsg("OwnersEquityTitle"));
+    tblBal.getItsCells().get(oetIdx)
+      .setMergedCell(tblBal.getItsCells().get(oetIdx + 1));
     row = 1 + pBalance.getTotalLinesLiabilities() + 2;
     for (int i = totAssLeab;
       i < totAssLeab + pBalance.getTotalLinesOwnersEquity(); i++) {

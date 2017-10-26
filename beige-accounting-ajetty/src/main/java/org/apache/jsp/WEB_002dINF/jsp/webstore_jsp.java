@@ -95,11 +95,11 @@ public final class webstore_jsp extends org.apache.jasper.runtime.HttpJspBase
       out = pageContext.getOut();
       _jspx_out = out;
 
-      out.write("\n\n<!DOCTYPE html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"utf-8\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->\n    <meta name=\"description\" content=\"\">\n    <meta name=\"author\" content=\"\">\n    \n    <link rel=\"icon\" type=\"image/png\" href=\"../static/img/favicon.png\">\n\n    <title>Beige-WEB-Store</title>\n\n    <!-- Bootstrap core CSS -->\n    <link href=\"../static/css/bootstrap.min.css\" rel=\"stylesheet\">\n    <!-- Bootstrap theme -->\n    <link href=\"../static/css/bootstrap-theme.min.css\" rel=\"stylesheet\">\n    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->\n    <link href=\"../static/css/ie10-viewport-bug-workaround.css\" rel=\"stylesheet\">\n\n    <!-- Custom styles for this template -->\n    <link href=\"../static/css/theme.css\" rel=\"stylesheet\">\n\n    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->\n");
-      out.write("    <!--[if lt IE 9]><script src=\"../assets/js/ie8-responsive-file-warning.js\"></script><![endif]-->\n    <script src=\"../static/js/ie-emulation-modes-warning.js\"></script>\n\n    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->\n    <!--[if lt IE 9]>\n      <script src=\"https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js\"></script>\n      <script src=\"https://oss.maxcdn.com/respond/1.4.2/respond.min.js\"></script>\n    <![endif]-->\n  </head>\n\n  <body>\n\n\n    <!-- Fixed navbar -->\n    <nav class=\"navbar navbar-inverse navbar-fixed-top\">\n      <div class=\"container\">\n        <div class=\"navbar-header\">\n          <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#navbar\" aria-expanded=\"false\" aria-controls=\"navbar\">\n            <span class=\"sr-only\">Toggle navigation</span>\n            <span class=\"icon-bar\"></span>\n            <span class=\"icon-bar\"></span>\n            <span class=\"icon-bar\"></span>\n          </button>\n          ");
+      out.write("\n\n<!DOCTYPE html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"utf-8\">\n    <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->\n    <meta name=\"description\" content=\"\">\n    <meta name=\"author\" content=\"\">\n    \n    <link rel=\"icon\" type=\"image/png\" href=\"static/img/favicon.png\">\n\n    <title>Beige-WEB-Store</title>\n\n    <!-- Bootstrap core CSS -->\n    <link href=\"static/css/bootstrap.min.css\" rel=\"stylesheet\">\n    <!-- Bootstrap theme -->\n    <link href=\"static/css/bootstrap-theme.min.css\" rel=\"stylesheet\">\n    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->\n    <link href=\"static/css/ie10-viewport-bug-workaround.css\" rel=\"stylesheet\">\n\n    <!-- Custom styles for this template -->\n    <link href=\"static/css/theme.css\" rel=\"stylesheet\">\n\n    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->\n");
+      out.write("    <!--[if lt IE 9]><script src=\"../assets/js/ie8-responsive-file-warning.js\"></script><![endif]-->\n    <script src=\"static/js/ie-emulation-modes-warning.js\"></script>\n\n    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->\n    <!--[if lt IE 9]>\n      <script src=\"https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js\"></script>\n      <script src=\"https://oss.maxcdn.com/respond/1.4.2/respond.min.js\"></script>\n    <![endif]-->\n  </head>\n\n  <body>\n\n\n    <!-- Fixed navbar -->\n    <nav class=\"navbar navbar-inverse navbar-fixed-top\">\n      <div class=\"container\">\n        <div class=\"navbar-header\">\n          <button type=\"button\" class=\"navbar-toggle collapsed\" data-toggle=\"collapse\" data-target=\"#navbar\" aria-expanded=\"false\" aria-controls=\"navbar\">\n            <span class=\"sr-only\">Toggle navigation</span>\n            <span class=\"icon-bar\"></span>\n            <span class=\"icon-bar\"></span>\n            <span class=\"icon-bar\"></span>\n          </button>\n          ");
       if (_jspx_meth_c_005fif_005f0(_jspx_page_context))
         return;
-      out.write("\n          <a class=\"navbar-brand\" href=\"service?nmRnd=webstore&nmHnd=hndTrdTrnsReq&nmPrc=PrcWebstorePage\">");
+      out.write("\n          <a class=\"navbar-brand\" href=\"servicePublic?nmRnd=webstore&nmHnd=hndTrdTrnsReq&nmPrc=PrcWebstorePage\">");
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${tradingSettings.webStoreName}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
       out.write("</a>\n        </div>\n        <div id=\"navbar\" class=\"navbar-collapse collapse\">\n          <ul class=\"nav navbar-nav\">\n            ");
       if (_jspx_meth_c_005fforEach_005f0(_jspx_page_context))
@@ -139,7 +139,7 @@ public final class webstore_jsp extends org.apache.jasper.runtime.HttpJspBase
         return;
       out.write("\n\n<!-- Modal cart item adder -->\n<div class=\"modal fade\" id=\"cartAddMdl\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"cartAddMdlLabel\">\n  <div class=\"modal-dialog\" role=\"document\">\n    <div class=\"modal-content\">\n      <div class=\"modal-header\">\n        <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>\n        <h4 class=\"modal-title\" id=\"cartAddMdlLabel\"><span class=\"glyphicon glyphicon-shopping-cart\"></span><span class=\"glyphicon glyphicon-cart\"></span>");
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${srvI18n.getMsg(\"add_item_to_cart\")}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
-      out.write("</h4>\n      </div>\n      <div class=\"modal-body\">\n        <form action=\"service\" method=\"POST\">\n          <input type=\"hidden\" name=\"nmRnd\" value=\"webstore\">\n          <input type=\"hidden\" name=\"nmHnd\" value=\"hndTrdTrnsReq\">\n          <input type=\"hidden\" name=\"nmPrc\" value=\"PrcItemInCart\">\n          ");
+      out.write("</h4>\n      </div>\n      <div class=\"modal-body\">\n        <form action=\"servicePublic\" method=\"POST\">\n          <input type=\"hidden\" name=\"nmRnd\" value=\"webstore\">\n          <input type=\"hidden\" name=\"nmHnd\" value=\"hndTrdTrnsReq\">\n          <input type=\"hidden\" name=\"nmPrc\" value=\"PrcItemInCart\">\n          ");
       if (_jspx_meth_c_005fif_005f19(_jspx_page_context))
         return;
       out.write("\n          <div class=\"form-group\">\n            <label>");
@@ -153,7 +153,7 @@ public final class webstore_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write(":</label>\n            <input id=\"cartItemTotal\" readonly class=\"form-control\">\n            <input type=\"hidden\" id=\"cartItemAvailableQuantity\" name=\"cartItemAvailableQuantity\">\n            <input type=\"hidden\" id=\"cartItemType\" name=\"cartItemType\">\n            <input type=\"hidden\" id=\"cartItemId\" name=\"cartItemId\">\n          </div>\n          <div class=\"modal-footer\">\n            <button type=\"submit\" class=\"btn btn-primary\">Save</button>\n            <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n          </div>\n        </form>\n      </div>\n    </div>\n  </div>\n</div>\n\n<!-- Modal cart item edit -->\n<div class=\"modal fade\" id=\"cartEditMdl\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"cartEditMdlLabel\">\n  <div class=\"modal-dialog\" role=\"document\">\n    <div class=\"modal-content\">\n      <div class=\"modal-header\">\n        <button type=\"button\" class=\"close\" data-dismiss=\"modal\" onclick=\"$('#cartMdl').modal('show');\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>\n");
       out.write("        <h4 class=\"modal-title\" id=\"cartEditMdlLabel\"><span class=\"glyphicon glyphicon-shopping-cart\"></span><span class=\"glyphicon glyphicon-cart\"></span>");
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${srvI18n.getMsg(\"item_change_quantity\")}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
-      out.write("</h4>\n      </div>\n      <div class=\"modal-body\">\n        <form action=\"service\" method=\"POST\">\n          <input type=\"hidden\" name=\"nmRnd\" value=\"webstore\">\n          <input type=\"hidden\" name=\"nmHnd\" value=\"hndTrdTrnsReq\">\n          <input type=\"hidden\" name=\"nmPrc\" value=\"PrcItemInCart\">\n          ");
+      out.write("</h4>\n      </div>\n      <div class=\"modal-body\">\n        <form action=\"servicePublic\" method=\"POST\">\n          <input type=\"hidden\" name=\"nmRnd\" value=\"webstore\">\n          <input type=\"hidden\" name=\"nmHnd\" value=\"hndTrdTrnsReq\">\n          <input type=\"hidden\" name=\"nmPrc\" value=\"PrcItemInCart\">\n          ");
       if (_jspx_meth_c_005fif_005f20(_jspx_page_context))
         return;
       out.write("\n          <div class=\"form-group\">\n            <label>");
@@ -168,7 +168,7 @@ public final class webstore_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${srvI18n.getMsg(\"Close\")}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
       out.write("</button>\n          </div>\n        </form>\n      </div>\n    </div>\n  </div>\n</div>\n\n<!-- Modal cart item remove -->\n<div class=\"modal fade\" id=\"cartDelMdl\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"cartDelMdlLabel\">\n  <div class=\"modal-dialog\" role=\"document\">\n    <div class=\"modal-content\">\n      <div class=\"modal-header\">\n        <button type=\"button\" class=\"close\" data-dismiss=\"modal\" onclick=\"$('#cartMdl').modal('show');\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>\n        <h4 class=\"modal-title\" id=\"cartDelMdlLabel\"><span class=\"glyphicon glyphicon-shopping-cart\"></span><span class=\"glyphicon glyphicon-cart\"></span>");
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${srvI18n.getMsg(\"item_remove\")}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
-      out.write("</h4>\n      </div>\n      <div class=\"modal-body\">\n        <form action=\"service\" method=\"POST\">\n          <input type=\"hidden\" name=\"nmRnd\" value=\"webstore\">\n          <input type=\"hidden\" name=\"nmHnd\" value=\"hndTrdTrnsReq\">\n          <input type=\"hidden\" name=\"nmPrc\" value=\"PrcDelItemFromCart\">\n          ");
+      out.write("</h4>\n      </div>\n      <div class=\"modal-body\">\n        <form action=\"servicePublic\" method=\"POST\">\n          <input type=\"hidden\" name=\"nmRnd\" value=\"webstore\">\n          <input type=\"hidden\" name=\"nmHnd\" value=\"hndTrdTrnsReq\">\n          <input type=\"hidden\" name=\"nmPrc\" value=\"PrcDelItemFromCart\">\n          ");
       if (_jspx_meth_c_005fif_005f21(_jspx_page_context))
         return;
       out.write("\n          <div class=\"form-group\">\n            <label>");
@@ -196,15 +196,15 @@ public final class webstore_jsp extends org.apache.jasper.runtime.HttpJspBase
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${shoppingCart.itsTotal}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
       out.write("</b>\n          </div>\n        </div>\n      </div>\n      <div class=\"modal-footer\">\n        <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">");
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${srvI18n.getMsg(\"Close\")}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
-      out.write("</button>\n        <a href=\"service?nmRnd=webstore&nmHnd=hndTrdTrnsReq&nmPrc=PrcCartCheckOut\" type=\"button\" class=\"btn btn-primary\">");
+      out.write("</button>\n        <a href=\"servicePublic?nmRnd=webstore&nmHnd=hndTrdTrnsReq&nmPrc=PrcCartCheckOut\" type=\"button\" class=\"btn btn-primary\">");
       out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${srvI18n.getMsg(\"check_out\")}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
       out.write("</a>\n      </div>\n    </div>\n  </div>\n</div>\n\n<!-- Modal filter -->\n<div class=\"modal fade\" id=\"filterMdl\" tabindex=\"-1\" role=\"dialog\" aria-labelledby=\"filterMdlLabel\">\n  <div class=\"modal-dialog\" role=\"document\">\n    <div class=\"modal-content\">\n      <div class=\"modal-header\">\n        <button type=\"button\" class=\"close\" data-dismiss=\"modal\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>\n        <h4 class=\"modal-title\" id=\"filterMdlLabel\"><span class=\"glyphicon glyphicon-filter\"></span><span class=\"glyphicon glyphicon-sort\"></span> Computers and notebooks</h4>\n      </div>\n      <div class=\"modal-body\">\n      </div>\n      <div class=\"modal-footer\">\n        <button type=\"button\" class=\"btn btn-default\" data-dismiss=\"modal\">Close</button>\n        <button type=\"button\" class=\"btn btn-primary\">Apply</button>\n      </div>\n    </div>\n  </div>\n</div>\n\n<!-- Modal subcatalogs -->\n");
       if (_jspx_meth_c_005fforEach_005f5(_jspx_page_context))
         return;
-      out.write("\n\n    </div> <!-- /container -->\n\n\n    <!-- Bootstrap core JavaScript\n    ================================================== -->\n    <!-- Placed at the end of the document so the pages load faster -->\n    <script src=\"../static/js/jquery.min.js\"></script>\n    <script src=\"../static/js/bootstrap.min.js\"></script>\n    <script src=\"../static/js/beige.webstore.js\"></script>\n    ");
+      out.write("\n\n    </div> <!-- /container -->\n\n\n    <!-- Bootstrap core JavaScript\n    ================================================== -->\n    <!-- Placed at the end of the document so the pages load faster -->\n    <script src=\"static/js/jquery.min.js\"></script>\n    <script src=\"static/js/bootstrap.min.js\"></script>\n    <script src=\"static/js/beige.webstore.js\"></script>\n    ");
       if (_jspx_meth_c_005fif_005f29(_jspx_page_context))
         return;
-      out.write("\n     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->\n    <script src=\"../static/js/ie10-viewport-bug-workaround.js\"></script>\n  </body>\n</html>\n");
+      out.write("\n     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->\n    <script src=\"static/js/ie10-viewport-bug-workaround.js\"></script>\n  </body>\n</html>\n");
     } catch (java.lang.Throwable t) {
       if (!(t instanceof javax.servlet.jsp.SkipPageException)){
         out = _jspx_out;
@@ -237,7 +237,7 @@ public final class webstore_jsp extends org.apache.jasper.runtime.HttpJspBase
     int _jspx_eval_c_005fif_005f0 = _jspx_th_c_005fif_005f0.doStartTag();
     if (_jspx_eval_c_005fif_005f0 != javax.servlet.jsp.tagext.Tag.SKIP_BODY) {
       do {
-        out.write("\n            <a href=\"service?nmRnd=webstore&nmHnd=hndTrdTrnsReq&nmPrc=PrcWebstorePage&catalogId\" class=\"navbar-brand navbar-brand-img\"><img src=\"../static/img/logo-web-store.png\"></a>\n          ");
+        out.write("\n            <a href=\"servicePublic?nmRnd=webstore&nmHnd=hndTrdTrnsReq&nmPrc=PrcWebstorePage&catalogId\" class=\"navbar-brand navbar-brand-img\"><img src=\"static/img/logo-web-store.png\"></a>\n          ");
         int evalDoAfterBody = _jspx_th_c_005fif_005f0.doAfterBody();
         if (evalDoAfterBody != javax.servlet.jsp.tagext.BodyTag.EVAL_BODY_AGAIN)
           break;
@@ -417,7 +417,7 @@ public final class webstore_jsp extends org.apache.jasper.runtime.HttpJspBase
     int _jspx_eval_c_005fif_005f3 = _jspx_th_c_005fif_005f3.doStartTag();
     if (_jspx_eval_c_005fif_005f3 != javax.servlet.jsp.tagext.Tag.SKIP_BODY) {
       do {
-        out.write("\n                        <li><a href=\"service?nmRnd=webstore&nmHnd=hndTrdTrnsReq&nmPrc=PrcWebstorePage&catalogName=");
+        out.write("\n                        <li><a href=\"servicePublic?nmRnd=webstore&nmHnd=hndTrdTrnsReq&nmPrc=PrcWebstorePage&catalogName=");
         out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${cat2l.itsName}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
         out.write("&catalogId=");
         out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${cat2l.itsId}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
@@ -451,7 +451,7 @@ public final class webstore_jsp extends org.apache.jasper.runtime.HttpJspBase
     int _jspx_eval_c_005fif_005f4 = _jspx_th_c_005fif_005f4.doStartTag();
     if (_jspx_eval_c_005fif_005f4 != javax.servlet.jsp.tagext.Tag.SKIP_BODY) {
       do {
-        out.write("\n                <li><a href=\"service?nmRnd=webstore&nmHnd=hndTrdTrnsReq&nmPrc=PrcWebstorePage&catalogName=");
+        out.write("\n                <li><a href=\"servicePublic?nmRnd=webstore&nmHnd=hndTrdTrnsReq&nmPrc=PrcWebstorePage&catalogName=");
         out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${cat1l.itsName}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
         out.write("&catalogId=");
         out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${cat1l.itsId}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
@@ -1719,7 +1719,7 @@ public final class webstore_jsp extends org.apache.jasper.runtime.HttpJspBase
     int _jspx_eval_c_005fif_005f23 = _jspx_th_c_005fif_005f23.doStartTag();
     if (_jspx_eval_c_005fif_005f23 != javax.servlet.jsp.tagext.Tag.SKIP_BODY) {
       do {
-        out.write("\n                  <a href=\"service?nmRnd=webstore&nmHnd=hndTrdTrnsReq&nmPrc=PrcWebstorePage&catalogId=");
+        out.write("\n                  <a href=\"servicePublic?nmRnd=webstore&nmHnd=hndTrdTrnsReq&nmPrc=PrcWebstorePage&catalogId=");
         out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${cat3l.itsId}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
         out.write("&catalogName=");
         out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${cat3l.itsName}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
@@ -1827,7 +1827,7 @@ public final class webstore_jsp extends org.apache.jasper.runtime.HttpJspBase
     int _jspx_eval_c_005fif_005f25 = _jspx_th_c_005fif_005f25.doStartTag();
     if (_jspx_eval_c_005fif_005f25 != javax.servlet.jsp.tagext.Tag.SKIP_BODY) {
       do {
-        out.write("\n                        <a href=\"service?nmRnd=webstore&nmHnd=hndTrdTrnsReq&nmPrc=PrcWebstorePage&catalogId=");
+        out.write("\n                        <a href=\"servicePublic?nmRnd=webstore&nmHnd=hndTrdTrnsReq&nmPrc=PrcWebstorePage&catalogId=");
         out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${cat4l.itsId}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
         out.write("&catalogName=");
         out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${cat4l.itsName}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
@@ -1935,7 +1935,7 @@ public final class webstore_jsp extends org.apache.jasper.runtime.HttpJspBase
     int _jspx_eval_c_005fif_005f27 = _jspx_th_c_005fif_005f27.doStartTag();
     if (_jspx_eval_c_005fif_005f27 != javax.servlet.jsp.tagext.Tag.SKIP_BODY) {
       do {
-        out.write("\n                              <a href=\"service?nmRnd=webstore&nmHnd=hndTrdTrnsReq&nmPrc=PrcWebstorePage&catalogId=");
+        out.write("\n                              <a href=\"servicePublic?nmRnd=webstore&nmHnd=hndTrdTrnsReq&nmPrc=PrcWebstorePage&catalogId=");
         out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${cat5l.itsId}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
         out.write("&catalogName=");
         out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${cat5l.itsName}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
@@ -2004,7 +2004,7 @@ public final class webstore_jsp extends org.apache.jasper.runtime.HttpJspBase
       int _jspx_eval_c_005fforEach_005f9 = _jspx_th_c_005fforEach_005f9.doStartTag();
       if (_jspx_eval_c_005fforEach_005f9 != javax.servlet.jsp.tagext.Tag.SKIP_BODY) {
         do {
-          out.write("\n                                <li>\n                                  <a href=\"service?nmRnd=webstore&nmHnd=hndTrdTrnsReq&nmPrc=PrcWebstorePage&catalogId=");
+          out.write("\n                                <li>\n                                  <a href=\"servicePublic?nmRnd=webstore&nmHnd=hndTrdTrnsReq&nmPrc=PrcWebstorePage&catalogId=");
           out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${cat6l.itsId}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
           out.write("&catalogName=");
           out.write((java.lang.String) org.apache.jasper.runtime.PageContextImpl.proprietaryEvaluate("${cat6l.itsName}", java.lang.String.class, (javax.servlet.jsp.PageContext)_jspx_page_context, null, false));
