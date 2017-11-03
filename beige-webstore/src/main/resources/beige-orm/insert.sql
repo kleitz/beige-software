@@ -1,8 +1,3 @@
-insert into USERTOMCAT values ('admin', 'admin');
-insert into USERTOMCAT values ('user', 'user');
-insert into USERROLETOMCAT  values ('admin', 'admin');
-insert into USERROLETOMCAT  values ('user', 'user');
-
 insert into ACCOUNT (NORMALBALANCETYPE, ITSID, ITSNUMBER, ITSNAME, ISUSED, ITSTYPE, SUBACCTYPE, ISCREATEDBYUSER, DESCRIPTION, ITSVERSION) values (0, 'CashOnHand', '1020', 'Cash On Hand', 0, 0, null, 0, null, 1462867931627);
 insert into ACCOUNT (NORMALBALANCETYPE, ITSID, ITSNUMBER, ITSNAME, ISUSED, ITSTYPE, SUBACCTYPE, ISCREATEDBYUSER, DESCRIPTION, ITSVERSION) values (0, 'CashInBanks', '1030', 'Cash In Banks', 1, 0, 2002, 0, null, 1462867931627);
 insert into ACCOUNT (NORMALBALANCETYPE, ITSID, ITSNUMBER, ITSNAME, ISUSED, ITSTYPE, SUBACCTYPE, ISCREATEDBYUSER, DESCRIPTION, ITSVERSION) values (0, 'OwnerDraws', '1045', 'Owner''s Withdrawals', 1, 0, null, 0, null, 1462867931627);

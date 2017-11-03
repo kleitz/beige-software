@@ -8,7 +8,10 @@
       <button onclick="closeDlgCareful('frmReportEdit')" class="btn-close">x</button>
     </div>
     <form id="frmReportEditFrm" action="reportPdf/" method="GET" target="_blank">
-      <input type="hidden" name="nmHnd" value="hndlBalancePdfReq">
+      <input id="hndNmInput" type="hidden" name="nmHnd" value="hndlBalancePdfReq">
+      
+      <input type="hidden" name="nmRnd" value="balanceSheet">
+
       <table class="tbl-fieldset">
         <tr>
           <td>
@@ -22,7 +25,8 @@
         </tr>
       </table>
       <div class="form-actions">
-        <button type="button" onclick="submitFormForNewWindow('frmReportEditFrm', false);">${srvI18n.getMsg("Report")}</button>
+        <button type="button" onclick="submitFormForNewWindow('frmReportEditFrm', false);">${srvI18n.getMsg("ReportPdf")}</button>
+        <button type="button" onclick="this.form.action='service/';document.getElementById('hndNmInput').value='srvReqBalanceSheet';submitFormForNewWindow('frmReportEditFrm', false);">${srvI18n.getMsg("Report")}</button>
         <a href="#" onclick="closeDlgCareful('frmReportEdit');">${srvI18n.getMsg("Close")}</a>
       </div>
     </form>
