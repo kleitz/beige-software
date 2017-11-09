@@ -1,3 +1,5 @@
+This bundle is deprecated and parted into several new projects.
+
 site: http://www.beigesoft.org
 or https://sites.google.com/site/beigesoftware
 

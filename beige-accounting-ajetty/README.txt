@@ -34,7 +34,13 @@ part of Jetty 9.2 by Mort Bay Consulting Pty. Ltd (adapted for Android):
 The Eclipse Public License, Version 1.0
 http://www.eclipse.org/legal/epl-v10.html
 
-HikariCP by Brett Wooldridge:
+SQLite JDBC (included SQLite database) by Taro L. Saito (http://xerial.org/software/)
+The Apache Software License, Version 2.0
+http://www.apache.org/licenses/LICENSE-2.0.txt
+SQLite database is Public Domain:
+https://www.sqlite.org/copyright.html
+
+HikariCP JDBC-pool by Brett Wooldridge:
 The Apache Software License, Version 2.0
 http://www.apache.org/licenses/LICENSE-2.0.txt
 
